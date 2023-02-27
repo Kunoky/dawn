@@ -122,6 +122,11 @@ export const useAppStore = defineStore('app', {
           key: 'https://vitest.dev/',
           val: 'Vitest',
         },
+        {
+          id: 10,
+          key: 'https://github.com/vuejs/awesome-vue',
+          val: 'awesome',
+        },
       ]
 
       const [menuTree] = arr2tree(menu)
