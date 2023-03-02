@@ -33,6 +33,14 @@ export const useAppStore = defineStore('app', {
   },
   getters: {
     total: state => state.posts.length,
+    getUserById: state => {
+      return id => {
+        if (!Object.hasOwn(state.user, id)) {
+          state.getUser(id)
+        }
+        return state.user[id]
+      }
+    },
   },
   actions: {
     async listPost() {
@@ -48,16 +56,12 @@ export const useAppStore = defineStore('app', {
     },
     async getUser(id, force) {
       if (this.user[id] && !force) return
-      this.user[id] = true
+      this.user[id] = null
       try {
         const user = await service.getUser(id)
         this.user = { ...this.user, [id]: user }
       } catch (e) {
         console.error('load post fail: ', e)
-      } finally {
-        if (this.user[id] === true) {
-          this.user[id] = null
-        }
       }
     },
     async setLang(lang) {

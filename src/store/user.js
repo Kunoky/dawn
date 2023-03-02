@@ -53,7 +53,7 @@ export const useUserStore = defineStore('user', {
       removeToken()
       localStorage.removeItem('user')
       localStorage.removeItem('menuTree')
-      const route = router.history.current
+      const route = router.currentRoute
       // TODO 当前路由是否需要登录
       const authRequired = true
       if (go2login || authRequired) {

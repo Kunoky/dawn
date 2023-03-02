@@ -1,10 +1,7 @@
-import Vue from 'vue'
-import VueI18n from 'vue-i18n'
+import { createI18n } from 'vue-i18n'
 import messages from '@/locales/zh-CN'
 
-Vue.use(VueI18n)
-
-export const i18n = new VueI18n({
+export const i18n = createI18n({
   locale: 'zh-CN', // 设置语言环境
   fallbackLocale: 'zh-CN',
   messages: {

@@ -1,3 +1,40 @@
+<script setup>
+import { useUserStore } from '@/store/user'
+import { storeToRefs } from 'pinia'
+import { reactive, ref } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+const userStore = useUserStore()
+const { loading } = storeToRefs(userStore)
+const loginFormInstance = ref()
+const appName = __APP_NAME__
+const loginForm = reactive({
+  username: '',
+  password: '',
+})
+const loginRules = {
+  username: [{ required: true, trigger: 'blur', message: '请输入用户名称' }],
+  password: [{ required: true, trigger: 'blur', message: '请输入登录密码' }],
+}
+
+const handleLogin = () => {
+  loginFormInstance.value.validate(async valid => {
+    const user = {
+      username: loginForm.username,
+      password: loginForm.password,
+    }
+    if (valid) {
+      const success = await userStore.login(user)
+      if (success === true) {
+        router.push(router.currentRoute.value.query.redirect || '/')
+      } else {
+        ElMessage.error(success.msg)
+      }
+    }
+  })
+}
+</script>
 <template>
   <section>
     <!-- safari卡顿 -->
@@ -15,10 +52,10 @@
       <div class="container">
         <div class="login-form">
           <h2>{{ appName }} 登录</h2>
-          <el-form ref="loginForm" :model="loginForm" :rules="loginRules">
+          <el-form ref="loginFormInstance" :model="loginForm" :rules="loginRules">
             <el-form-item prop="username">
-              <el-input v-model="loginForm.username" type="text" placeholder="用户名">
-                <i slot="prefix" class="el-icon-user" />
+              <el-input v-model="loginForm.username" type="text" placeholder="用户名" @keyup.enter="handleLogin">
+                <template #prefix><i-ep-user /></template>
               </el-input>
             </el-form-item>
             <el-form-item prop="password">
@@ -26,14 +63,15 @@
                 v-model="loginForm.password"
                 type="password"
                 placeholder="密码"
-                @keyup.enter.native="handleLogin"
+                show-password
+                @keyup.enter="handleLogin"
               >
-                <i slot="prefix" class="el-icon-lock" />
+                <template #prefix><i-ep-lock /></template>
               </el-input>
             </el-form-item>
             <div class="tc-1">username: admin, password: admin</div>
             <el-form-item style="width: 100%">
-              <el-button class="submit" :loading="loading.login" size="medium" @click.native.prevent="handleLogin">
+              <el-button class="submit" :loading="loading.login" size="default" @click.prevent="handleLogin">
                 登 录
               </el-button>
             </el-form-item>
@@ -49,60 +87,6 @@
     </div>
   </section>
 </template>
-
-<script>
-import { useUserStore } from '@/store/user'
-import { mapState, mapActions } from 'pinia'
-
-export default {
-  name: 'UserLogin',
-  computed: {
-    ...mapState(useUserStore, ['loading']),
-  },
-  data() {
-    return {
-      /* global __APP_NAME__ */
-      appName: __APP_NAME__,
-      loginForm: {
-        username: '',
-        password: '',
-      },
-      loginRules: {
-        username: [{ required: true, trigger: 'blur', message: '请输入用户名称' }],
-        password: [{ required: true, trigger: 'blur', message: '请输入登录密码' }],
-      },
-      redirect: undefined,
-    }
-  },
-  watch: {
-    $route: {
-      handler: function (route) {
-        this.redirect = route.query && route.query.redirect
-      },
-      immediate: true,
-    },
-  },
-  methods: {
-    ...mapActions(useUserStore, ['login']),
-    handleLogin() {
-      this.$refs.loginForm.validate(async valid => {
-        const user = {
-          username: this.loginForm.username,
-          password: this.loginForm.password,
-        }
-        if (valid) {
-          const success = await this.login(user)
-          if (success === true) {
-            this.$router.push({ path: this.redirect || '/' })
-          } else {
-            this.$message.error(success.msg)
-          }
-        }
-      })
-    },
-  },
-}
-</script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
 section {
@@ -233,17 +217,18 @@ section {
       background: #fff;
     }
   }
-
-  ::v-deep .el-input__inner {
-    width: 100%;
+  :deep(.el-input__wrapper) {
+    border-radius: 35px;
     background-color: rgba(255, 255, 255, 0.2);
+    padding: 0 8px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  :deep(.el-input__inner) {
+    width: 100%;
+    background-color: transparent;
     border: none;
     outline: none;
-    // padding: 10px 20px;
-    border-radius: 35px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-right: 1px solid rgba(255, 255, 255, 0.2);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
     font-size: 16px;
     letter-spacing: 1px;
     color: #fff;
@@ -254,12 +239,12 @@ section {
       color: #fff;
     }
   }
-  ::v-deep .el-input__prefix {
+  :deep(.el-input__prefix) {
     color: #fff;
     left: 8px;
   }
-  ::v-deep .el-checkbox__input.is-checked + .el-checkbox__label,
-  ::v-deep .el-checkbox__label {
+  :deep(.el-checkbox__input.is-checked + .el-checkbox__label),
+  :deep(.el-checkbox__label) {
     color: #fff;
   }
 

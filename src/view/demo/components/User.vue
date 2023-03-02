@@ -1,12 +1,12 @@
 <template>
-  <span v-if="user">
-    <b>{{ user[id].name }}</b>
-    <span>{{ user[id].phone }}</span>
+  <span>
+    <b>{{ user.name }}</b>
+    <span>{{ user.phone }}</span>
   </span>
 </template>
 <script>
 import { useAppStore } from '@/store/app'
-import { mapState, mapActions } from 'pinia'
+import { mapState } from 'pinia'
 
 export default {
   name: 'DemoUser',
@@ -19,16 +19,13 @@ export default {
   data() {
     return {}
   },
-  created() {
-    if (!this.user[this.id]) {
-      this.getUser(this.id)
-    }
-  },
+
   computed: {
-    ...mapState(useAppStore, ['user']),
-  },
-  methods: {
-    ...mapActions(useAppStore, ['getUser']),
+    ...mapState(useAppStore, ['getUserById']),
+    user() {
+      const u = this.getUserById(this.id)
+      return u || {}
+    },
   },
 }
 </script>

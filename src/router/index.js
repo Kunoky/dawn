@@ -1,13 +1,15 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import { Message } from 'element-ui'
+import { h } from 'vue'
+import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
+import { ElMessage } from 'element-plus'
 import { getToken } from '@/utils/auth'
-Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/login',
     name: 'login',
+    meta: {
+      title: '登录',
+    },
     component: () => import('@/view/user/login.vue'),
   },
   {
@@ -20,29 +22,30 @@ const routes = [
     redirect: '/demo',
     children: [
       { path: 'demo', component: () => import('@/view/demo/index.vue') },
-      { path: 'path1', component: { render: h => h('h1', 'path1') } },
-      { path: 'path2', component: { render: h => h('h1', 'path2') } },
-      { path: 'path2/path3', pName: 'layout', component: { render: h => h('h1', 'path3') } },
-      { path: 'path2/path4', pName: 'layout', component: { render: h => h('h1', 'path4') } },
-      { path: 'path2/path4/path5', pName: 'layout', component: { render: h => h('h1', 'path4') } },
+      { path: 'path1', component: h('h1', 'path1') },
+      { path: 'path2', component: h('h1', 'path2') },
+      { path: 'path2/path3', component: h('h1', 'path3') },
+      { path: 'path2/path4', component: h('h1', 'path4') },
+      { path: 'path2/path4/path5', component: h('h1', 'path4') },
     ],
   },
   {
-    path: '*',
+    path: '/:pathMatch(.*)*',
     name: '404',
-    component: { render: h => h('h1', '404') },
+    component: h('h1', '404'),
   },
 ]
 
 // 若路由组件存在嵌套，请确保父组件在前，子组件在后；父组件有且唯一的name属性，子组件使用pName指向父组件的name属性，以便于后面迭代此数组一遍便可完成动态添加
 export const dynamicRoutes = [
-  { path: 'path6', pName: 'layout', component: { render: h => h('h1', 'path3') } },
-  { path: 'path7', pName: 'layout', component: { render: h => h('h1', 'path4') } },
+  { path: 'path6', pName: 'layout', component: h('h1', 'path6') },
+  { path: 'path7', pName: 'layout', component: h('h1', 'path7') },
 ]
 
-const router = new VueRouter({
-  mode: import.meta.env.DEV ? 'hash' : 'history',
-  base: import.meta.env.BASE_URL,
+const router = createRouter({
+  history: import.meta.env.DEV
+    ? createWebHashHistory(import.meta.env.BASE_URL)
+    : createWebHistory(import.meta.env.BASE_URL),
   routes,
 })
 
@@ -53,7 +56,7 @@ router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
     if (hasAuth) return next()
     if (hasLogin) {
-      Message({
+      ElMessage({
         message: '权限不足',
         type: 'error',
         duration: 5 * 1000,
@@ -75,7 +78,6 @@ router.beforeEach((to, from, next) => {
 router.afterEach(to => {
   let i = to.matched.length - 1,
     item,
-    /* global __APP_NAME__ */
     title = __APP_NAME__
   for (; i > -1; i--) {
     item = to.matched[i]
@@ -93,7 +95,7 @@ router.scrollBehavior = (to, from, savedPosition) => {
   if (savedPosition) {
     return savedPosition
   } else {
-    return { x: 0, y: 0 }
+    return { left: 0, top: 0 }
   }
 }
 

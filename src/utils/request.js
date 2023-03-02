@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { Message } from 'element-ui'
+import { ElMessage } from 'element-plus'
 import { useUserStore } from '@/store/user'
 import { getToken } from '@/utils/auth'
 import { i18n } from '@/i18nSetup'
@@ -15,7 +15,6 @@ const service = axios.create({
 service.interceptors.request.use(
   config => {
     // do something before request is sent
-    /* global __TOKEN_KEY__ */
     config.headers = {
       [__TOKEN_KEY__]: getToken(),
       'Call-Source': 'WEB',
@@ -46,19 +45,19 @@ service.interceptors.response.use(
    */
   response => {
     const { data, status, config } = response
-    const { locale, messages } = i18n
+    const { locale, messages } = i18n.global
     const codeMessage = messages[locale].httpCode
     const msg = codeMessage[status]
     if (config.method !== 'get') {
       // 业务异常
       if (data?.code) {
-        Message({
+        ElMessage({
           message: data.msg || msg || '操作失败',
           type: 'warning',
           duration: 5 * 1000,
         })
       } else {
-        Message({
+        ElMessage({
           message: data.msg || msg || '操作成功',
           type: 'success',
           duration: 5 * 1000,
@@ -69,19 +68,22 @@ service.interceptors.response.use(
   },
   error => {
     console.error(error) // for debug
-    const { status } = error.response
-    const { locale, messages } = i18n
-    const codeMessage = messages[locale].httpCode
-    let msg = status + ' ' + codeMessage[status] || error.message
-    let store
-    switch (status) {
-      case 401:
-        store = useUserStore()
-        store.logout(true)
-        break
-      default:
+    let msg = error.message
+    if (error.response) {
+      const { status } = error.response
+      const { locale, messages } = i18n
+      const codeMessage = messages[locale].httpCode
+      msg = status + ' ' + codeMessage[status]
+      let store
+      switch (status) {
+        case 401:
+          store = useUserStore()
+          store.logout(true)
+          break
+        default:
+      }
     }
-    Message({
+    ElMessage({
       message: msg,
       type: 'error',
       duration: 5 * 1000,

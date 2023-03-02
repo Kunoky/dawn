@@ -1,5 +1,3 @@
-/* global __TOKEN_KEY__ */
-
 export function getToken() {
   return localStorage.getItem(__TOKEN_KEY__)
 }

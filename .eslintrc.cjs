@@ -5,7 +5,7 @@ module.exports = {
   },
   extends: [
     'eslint:recommended',
-    'plugin:vue/essential',
+    'plugin:vue/vue3-essential',
     'plugin:prettier/recommended',
   ],
   "overrides": [
@@ -29,5 +29,13 @@ module.exports = {
     'prettier/prettier': 'error',
     "eqeqeq": ["error", "always"],
     "no-unused-expressions": ['error', { "allowShortCircuit": true, "allowTernary": true }],
+    'vue/multi-word-component-names': 0,
   },
+  globals: {
+    __APP_NAME__: "readonly",
+    __TOKEN_KEY__: "readonly",
+    ElMessage: "readonly",
+    ElMessageBox: "readonly",
+    ElLoading: "readonly",
+  }
 }
