@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import * as service from '@/services/app'
 import { loadLanguageAsync } from '@/i18nSetup'
 import { arr2tree } from '@/utils/common'
+import zhCn from 'element-plus/dist/locale/zh-cn'
 
 export const useAppStore = defineStore('app', {
   state: () => {
@@ -25,6 +26,16 @@ export const useAppStore = defineStore('app', {
           label: 'English',
         },
       ],
+      elLangs: {
+        'zh-CN': {
+          value: zhCn,
+          name: 'zh-cn',
+        },
+        en: {
+          value: null,
+          name: 'en',
+        },
+      },
       loading: {
         posts: false,
         lang: false,
@@ -41,6 +52,7 @@ export const useAppStore = defineStore('app', {
         return state.user[id]
       }
     },
+    elLang: state => state.elLangs[state.lang].value,
   },
   actions: {
     async listPost() {
@@ -67,7 +79,14 @@ export const useAppStore = defineStore('app', {
     async setLang(lang) {
       this.loading.lang = true
       try {
-        await loadLanguageAsync(lang)
+        const loaders = [loadLanguageAsync(lang)]
+        if (!this.elLangs[lang].value) {
+          loaders.push(import(`../../node_modules/element-plus/dist/locale/${this.elLangs[lang].name}.mjs`))
+        }
+        const [, elLang] = await Promise.all(loaders)
+        if (elLang) {
+          this.elLangs[lang].value = elLang.default
+        }
         this.lang = lang
       } finally {
         this.loading.lang = false

@@ -1,11 +1,11 @@
-<script>
-export default {
-  name: 'App',
-}
+<script setup>
+import { useAppStore } from '@/store/app'
+
+const appStore = useAppStore()
 </script>
 
 <template>
-  <router-view />
+  <el-config-provider :locale="appStore.elLang">
+    <router-view />
+  </el-config-provider>
 </template>
-
-<style lang="scss" scoped></style>

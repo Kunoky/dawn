@@ -12,7 +12,7 @@ export const i18n = createI18n({
 const loadedLanguages = ['zh-CN'] // 我们的预装默认语言
 
 function setI18nLanguage(lang) {
-  i18n.locale = lang
+  i18n.global.locale = lang
   document.querySelector('html').setAttribute('lang', lang)
   return lang
 }
@@ -24,7 +24,7 @@ export async function loadLanguageAsync(lang) {
   }
   // 如果尚未加载语言
   const messages = await import(`@/locales/${lang}.js`)
-  i18n.setLocaleMessage(lang, messages.default)
+  i18n.global.setLocaleMessage(lang, messages.default)
   loadedLanguages.push(lang)
   return setI18nLanguage(lang)
 }
