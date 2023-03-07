@@ -21,7 +21,20 @@ const routes = [
     component: () => import('../layouts/index.vue'),
     redirect: '/demo',
     children: [
-      { path: 'demo', component: () => import('@/view/demo/index.vue') },
+      {
+        path: 'demo',
+        meta: {
+          title: 'demo',
+        },
+        component: () => import('@/view/demo/index.vue'),
+      },
+      {
+        path: 'component/page-wrapper',
+        meta: {
+          title: '分页容器',
+        },
+        component: () => import('@/view/components/PageWrapper.vue'),
+      },
       { path: 'path1', component: h('h1', 'path1') },
       { path: 'path2', component: h('h1', 'path2') },
       { path: 'path2/path3', component: h('h1', 'path3') },

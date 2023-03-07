@@ -7,6 +7,7 @@ module.exports = {
     'eslint:recommended',
     'plugin:vue/vue3-essential',
     'plugin:prettier/recommended',
+    "./.eslintrc-auto-import.json",
   ],
   "overrides": [
     {
@@ -34,8 +35,8 @@ module.exports = {
   globals: {
     __APP_NAME__: "readonly",
     __TOKEN_KEY__: "readonly",
-    ElMessage: "readonly",
-    ElMessageBox: "readonly",
-    ElLoading: "readonly",
+    // ElMessage: "readonly",
+    // ElMessageBox: "readonly",
+    // ElLoading: "readonly",
   }
 }

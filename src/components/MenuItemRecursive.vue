@@ -14,14 +14,11 @@
     <el-menu-item :index="String(data.id)">{{ data.val }}</el-menu-item>
   </router-link>
 </template>
-<script>
-export default {
-  name: 'MenuItemRecursive',
-  props: {
-    data: {
-      type: Object,
-      required: true,
-    },
+<script setup>
+defineProps({
+  data: {
+    type: Object,
+    required: true,
   },
-}
+})
 </script>

@@ -131,6 +131,17 @@ export const useAppStore = defineStore('app', {
           pId: 4,
         },
         {
+          id: 11,
+          key: '/component',
+          val: '组件',
+        },
+        {
+          id: 12,
+          key: '/component/page-wrapper',
+          val: '分页容器',
+          pId: 11,
+        },
+        {
           id: 7,
           key: 'https://cn.vitejs.dev/',
           val: 'Vite',
