@@ -1,0 +1,6 @@
+{
+  "globals": {
+    "axios": true,
+    "useAsync": true
+  }
+}

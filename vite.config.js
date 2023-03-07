@@ -19,6 +19,15 @@ const plugins = [
         prefix: 'Icon',
       }),
     ],
+    imports: [
+      {
+        '@/utils/request': [['default', 'axios']],
+      },
+    ],
+    dirs: ['./src/hooks'],
+    eslintrc: {
+      enabled: true,
+    },
   }),
   Components({
     resolvers: [
