@@ -35,8 +35,5 @@ module.exports = {
   globals: {
     __APP_NAME__: "readonly",
     __TOKEN_KEY__: "readonly",
-    // ElMessage: "readonly",
-    // ElMessageBox: "readonly",
-    // ElLoading: "readonly",
   }
 }
