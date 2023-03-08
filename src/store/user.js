@@ -59,7 +59,7 @@ export const useUserStore = defineStore('user', {
       if (go2login || authRequired) {
         router.push({
           path: '/login',
-          query: { redirect: route.fullPath },
+          query: { redirect: route.value.fullPath },
         })
       }
     },
