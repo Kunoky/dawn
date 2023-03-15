@@ -5,7 +5,6 @@ import { useUserStore } from '@/store/user'
 import { storeToRefs } from 'pinia'
 import MenuItemRecursive from '@/components/MenuItemRecursive.vue'
 import { useRoute } from 'vue-router'
-import LoadingComponent from '@/components/Loading.vue'
 
 const userStore = useUserStore()
 const appStore = useAppStore()
@@ -86,12 +85,7 @@ const handleUserCommand = e => {
         </div>
       </el-header>
       <el-main>
-        <Suspense timeout="200">
-          <router-view />
-          <template #fallback>
-            <LoadingComponent />
-          </template>
-        </Suspense>
+        <router-view />
       </el-main>
     </el-container>
   </el-container>

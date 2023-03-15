@@ -1,6 +1,6 @@
 import { h } from 'vue'
 import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
-import { ElMessage } from 'element-plus'
+import { ElLoading, ElMessage } from 'element-plus'
 import { getToken } from '@/utils/auth'
 
 const routes = [
@@ -68,8 +68,14 @@ const router = createRouter({
     : createWebHistory(import.meta.env.BASE_URL),
   routes,
 })
-
+let loadingInstance, timer
 router.beforeEach((to, from, next) => {
+  timer = setTimeout(() => {
+    clearTimeout(timer)
+    loadingInstance = ElLoading.service({
+      target: '.el-main',
+    })
+  }, 200)
   // TODO 真正的权限判断
   let hasLogin = true,
     hasAuth = true
@@ -96,6 +102,9 @@ router.beforeEach((to, from, next) => {
 })
 
 router.afterEach(to => {
+  clearTimeout(timer)
+  timer = 0
+  loadingInstance?.close()
   let i = to.matched.length - 1,
     item,
     title = __APP_NAME__
