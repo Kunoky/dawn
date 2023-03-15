@@ -6,7 +6,7 @@ import { ref, watch } from 'vue'
  *
  * @param {function} service 异步函数
  * @param {object} options {
- *  manual: boolean                           默认 false。 即在初始化时自动执行 service。如果设置为 true，则需要手动调用 run 触发执行
+ *  manual: boolean                           默认 true，需要手动调用 run 触发执行， 如果设置为 false， 则在初始化时自动执行 service。
  *  initialData: any                          data默认值
  *  source: ref | getter                      监听数据源, 在 manual = false 时，watchSource 变化后，会使用之前的 params 重新执行 service
  *  onSuccess: function(data, params)         service resolve 时触发，参数为 data 和 params
@@ -23,8 +23,8 @@ import { ref, watch } from 'vue'
  *  refresh: function       使用上一次的 params，重新执行 service
  * }
  */
-export default function useAsync(service, options = {}) {
-  const { manual = false, initialData, onSuccess, onError, onFinally, source, delay = 0 } = options
+export function useAsync(service, options = {}) {
+  const { manual = true, initialData, onSuccess, onError, onFinally, source, delay = 0 } = options
 
   const data = ref(initialData)
   const error = ref()

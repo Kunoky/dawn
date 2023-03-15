@@ -2,7 +2,7 @@
   <div class="dp-f fd-c ht-100">
     <h2>分页容器</h2>
     <section class="fl-1 of-a pdr-m">
-      <h3>photo 列表</h3>
+      <h3 class="mg-0">photo 列表</h3>
       <PageWrapper action="/albums/1/photos" totalKey="length" dataKey="" placement="top">
         <template v-slot="{ data, total, loading }">
           <div>total: {{ total }}</div>

@@ -1,14 +1,15 @@
 <template>
-  <slot v-if="placement === 'bottom'" :data="data" :total="total" :loading="loading"></slot>
+  <slot v-if="placement === 'bottom'" :data="data" :total="total" :loading="loading" :error="error"></slot>
   <el-pagination
+    class="mgv-s"
     :style="{ justifyContent }"
     layout="total, prev, pager, next, sizes, jumper"
-    v-bind="pagination"
+    v-bind="$attrs"
     v-model:current-page="page"
     v-model:page-size="size"
     :total="total"
   />
-  <slot v-if="placement === 'top'" :data="data" :total="total" :loading="loading"></slot>
+  <slot v-if="placement === 'top'" :data="data" :total="total" :loading="loading" :error="error"></slot>
 </template>
 <script setup>
 import { ref, watch } from 'vue'
@@ -46,7 +47,6 @@ const props = defineProps({
     type: String,
     default: 'size',
   },
-  pagination: Object, // el-pagination配置项
   // 分页位置： top|bottom
   placement: {
     type: String,
@@ -64,7 +64,7 @@ const size = ref(props.defaultSize)
 const total = ref(0)
 
 const req = typeof props.action === 'function' ? props.action : params => axios.get(props.action, { params })
-const { data, loading, run } = useAsync(
+const { data, loading, run, error } = useAsync(
   () =>
     req({
       [props.pageKey]: page.value,
@@ -77,22 +77,29 @@ const { data, loading, run } = useAsync(
     }),
   {
     delay: props.delay,
-    manual: true,
   }
 )
 
 const refresh = () => {
-  page.value = 1
-  size.value = props.defaultSize
+  if (page.value !== 1 || size.value !== props.defaultSize) {
+    page.value = 1
+    size.value = props.defaultSize
+  } else {
+    run()
+  }
 }
 
 watch([page, size], run, { immediate: true })
 
-if (props.params) {
-  watch(props.params, refresh, { deep: true })
-}
+watch(() => props.params, refresh, { deep: true })
 
 defineExpose({
   refresh,
+  data,
+  loading,
+  total,
+  page,
+  size,
+  error,
 })
 </script>
