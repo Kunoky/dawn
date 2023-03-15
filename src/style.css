@@ -1,3 +1,5 @@
+/* @import '@/assets/iconfont/iconfont.css'; */
+@import '//at.alicdn.com/t/c/font_3942014_ys2a1qs0qp.css';
 body {
   margin: 0;
 }
@@ -6,4 +8,34 @@ body {
 }
 a {
   text-decoration: inherit;
+}
+ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+}
+.iconfont {
+  font-size: inherit;
+}
+/* iconfont symbol模式 */
+.icon {
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.15em;
+  fill: currentColor;
+  overflow: hidden;
+}
+
+.clearfix::after {
+  content: '';
+  clear: both;
+  display: table;
 }
