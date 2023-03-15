@@ -45,10 +45,9 @@ service.interceptors.response.use(
    */
   response => {
     const { data, status, config } = response
-    const { locale, messages } = i18n.global
-    const codeMessage = messages[locale].httpCode
-    const msg = codeMessage[status]
+
     if (config.method !== 'get') {
+      const msg = i18n.global.t('httpCode.' + status)
       // 业务异常
       if (data?.code) {
         ElMessage({
@@ -71,9 +70,7 @@ service.interceptors.response.use(
     let msg = error.message
     if (error.response) {
       const { status } = error.response
-      const { locale, messages } = i18n
-      const codeMessage = messages[locale].httpCode
-      msg = status + ' ' + codeMessage[status]
+      msg = status + ' ' + i18n.global.t('httpCode.' + status)
       let store
       switch (status) {
         case 401:

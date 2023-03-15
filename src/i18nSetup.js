@@ -2,6 +2,7 @@ import { createI18n } from 'vue-i18n'
 import messages from '@/locales/zh-CN'
 
 export const i18n = createI18n({
+  legacy: false,
   locale: 'zh-CN', // 设置语言环境
   fallbackLocale: 'zh-CN',
   messages: {
@@ -12,7 +13,7 @@ export const i18n = createI18n({
 const loadedLanguages = ['zh-CN'] // 我们的预装默认语言
 
 function setI18nLanguage(lang) {
-  i18n.global.locale = lang
+  i18n.global.locale.value = lang
   document.querySelector('html').setAttribute('lang', lang)
   return lang
 }
