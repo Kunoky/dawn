@@ -17,4 +17,33 @@ export default {
     503: '服务不可用，服务器暂时过载或处于维护状态',
     504: '网关超时',
   },
+  common: {
+    add: '新增',
+    edit: '编辑',
+    update: '更新',
+    search: '查询',
+    query: '查询',
+    submit: '提交',
+    refresh: '刷新',
+    reset: '重置',
+    detail: '详情',
+  },
+  component: {
+    CTable: {
+      size: '密度',
+      sizes: {
+        large: '宽大',
+        default: '中等',
+        small: '紧凑',
+      },
+      setting: '列设置',
+      display: '列展示',
+      pinLeft: '钉在左侧',
+      pinRight: '钉在右侧',
+      unpin: '不固定',
+      fixedLeft: '固定在左侧',
+      fixedRight: '固定在右侧',
+      notFixed: '不固定',
+    },
+  },
 }

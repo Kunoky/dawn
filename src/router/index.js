@@ -18,7 +18,7 @@ const routes = [
     meta: {
       title: '',
     },
-    component: () => import('../layouts/index.vue'),
+    component: () => import('../layouts/BaseLayout.vue'),
     redirect: '/demo',
     children: [
       {
@@ -34,6 +34,13 @@ const routes = [
           title: '分页容器',
         },
         component: () => import('@/view/components/PageWrapper.vue'),
+      },
+      {
+        path: 'component/c-table',
+        meta: {
+          title: '通用表格',
+        },
+        component: () => import('@/view/components/CTable.vue'),
       },
       { path: 'path1', component: h('h1', 'path1') },
       { path: 'path2', component: h('h1', 'path2') },

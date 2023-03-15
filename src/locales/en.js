@@ -17,4 +17,33 @@ export default {
     503: 'The service is unavailable, the server is temporarily overloaded or maintained.',
     504: 'Gateway timed out.',
   },
+  common: {
+    add: 'Add',
+    edit: 'Edit',
+    update: 'Update',
+    search: 'Search',
+    query: 'Query',
+    submit: 'Submit',
+    refresh: 'Refresh',
+    reset: 'Reset',
+    detail: 'Detail',
+  },
+  component: {
+    CTable: {
+      size: 'Size',
+      sizes: {
+        large: 'Large',
+        default: 'Middle',
+        small: 'Small',
+      },
+      setting: 'Settings',
+      display: 'Column Display',
+      pinLeft: 'Pin to left',
+      pinRight: 'Pin to right',
+      unpin: 'Unpinned',
+      fixedLeft: 'Fixed the left',
+      fixedRight: 'Fixed the right',
+      notFixed: 'Not Fixed',
+    },
+  },
 }

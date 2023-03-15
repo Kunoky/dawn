@@ -142,6 +142,12 @@ export const useAppStore = defineStore('app', {
           pId: 11,
         },
         {
+          id: 13,
+          key: '/component/c-table',
+          val: '通用表格',
+          pId: 11,
+        },
+        {
           id: 7,
           key: 'https://cn.vitejs.dev/',
           val: 'Vite',

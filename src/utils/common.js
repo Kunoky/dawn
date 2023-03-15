@@ -16,12 +16,9 @@ export function arr2tree(arr) {
       idObj[i.id] = i
     }
     if (i.pId) {
-      let parent = idObj[i.pId]
-      if (!parent) {
-        parent = { children: [] }
-      }
-      parent.children || (parent.children = [])
-      parent.children.push(i)
+      idObj[i.pId] ||= { children: [] }
+      idObj[i.pId].children ||= []
+      idObj[i.pId].children.push(i)
     } else {
       root.push(i)
     }
