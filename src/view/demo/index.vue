@@ -1,13 +1,15 @@
 <template>
-  <div class="dp-f fd-c ht-100">
-    <h2>demo</h2>
-    <section v-loading="loading.posts" class="fl-1 of-a">
-      <h3>posts 列表</h3>
-      <div>total: {{ total }}</div>
-      <ul class="ls-n">
+  <div class="ht-100">
+    <section v-loading="loading.posts" class="ht-100 dp-f fd-c">
+      <div class="bg">
+        <h3>posts 列表</h3>
+        <div>total: {{ total }}</div>
+      </div>
+      <ul class="bg ls-n fl-1 of-a">
         <li v-for="i in posts" :key="i.id" class="bsd-4 pd-m mgb-m">
           <div>
             <span>ID:</span>
+            &nbsp;
             <b>{{ i.id }}</b>
             &nbsp;&nbsp;
             <demo-user :id="i.userId" />

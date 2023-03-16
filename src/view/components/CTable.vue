@@ -1,7 +1,5 @@
 <template>
-  <div class="dp-f fd-c ht-100">
-    <h2>通用表格</h2>
-
+  <div>
     <CTable
       :page-conf="{
         action: '/users',
@@ -11,6 +9,7 @@
       title="用户表格"
       ref="tableRef"
       id="viewComponentTable"
+      class="bg"
     >
       <el-table-column v-if="showSelect" type="selection" width="55" />
       <el-table-column prop="id" label="ID" width="80" sortable="custom"></el-table-column>

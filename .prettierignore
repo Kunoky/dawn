@@ -2,6 +2,7 @@
 coverage
 public
 
+*.snap
 # Logs
 logs
 *.log

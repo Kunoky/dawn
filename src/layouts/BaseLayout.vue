@@ -46,9 +46,9 @@ const handleUserCommand = e => {
 }
 </script>
 <template>
-  <el-container>
-    <el-aside :width="isCollapse ? '64px' : '200px'" class="aside ht-100vh dp-f fd-c">
-      <el-menu :default-active="active" :collapse="isCollapse" class="fl-1 menu">
+  <el-container class="base-layout">
+    <el-aside :width="isCollapse ? '64px' : '200px'" class="base-layout_aside ht-100vh dp-f fd-c">
+      <el-menu :default-active="active" :collapse="isCollapse" class="fl-1 base-layout_menu">
         <menu-item-recursive v-for="i in menuTree" :key="i.id" :data="i" />
       </el-menu>
       <div class="bdt bdc-4 pd-s cs-p">
@@ -57,7 +57,7 @@ const handleUserCommand = e => {
       </div>
     </el-aside>
     <el-container class="ht-100vh">
-      <el-header class="header">
+      <el-header class="base-layout_header">
         <span>{{ appName }}</span>
         <div class="ft-r">
           <el-dropdown @command="handleCommand">
@@ -84,29 +84,50 @@ const handleUserCommand = e => {
           </el-dropdown>
         </div>
       </el-header>
-      <el-main>
+      <el-main class="base-layout_main">
         <router-view />
       </el-main>
     </el-container>
   </el-container>
 </template>
-<style scoped lang="scss">
-.header {
-  line-height: 60px;
-  box-shadow: 0 2px 8px 0 rgb(29 35 41 / 5%);
-  :deep(.el-dropdown) {
+<style lang="scss">
+.base-layout {
+  min-width: 1280px;
+  max-width: 2000px;
+  margin: 0 auto;
+  &_header {
     line-height: 60px;
-    .el-tooltip__trigger > svg {
-      vertical-align: middle;
+    box-shadow: 0 2px 8px 0 rgb(29 35 41 / 5%);
+    .el-dropdown {
+      line-height: 60px;
+      .el-tooltip__trigger > svg {
+        vertical-align: middle;
+      }
     }
   }
-}
-.aside {
-  transition: width 0.3s;
-  box-shadow: 2px 0 8px 0 rgb(29 35 41 / 5%);
-  overflow: hidden;
-}
-.menu {
-  border-right: none;
+  &_aside {
+    transition: width 0.3s;
+    box-shadow: 2px 0 8px 0 rgb(29 35 41 / 5%);
+    overflow: hidden;
+  }
+  &_menu {
+    border-right: none;
+  }
+  &_main {
+    background-color: var(--gray-3);
+    padding: var(--size-m);
+    & > * {
+      min-height: 100%;
+      box-sizing: border-box;
+    }
+    .bg {
+      background-color: var(--gray-1);
+      border-radius: 2px;
+      padding: var(--size-m);
+      & + .bg {
+        margin-top: var(--size-m);
+      }
+    }
+  }
 }
 </style>

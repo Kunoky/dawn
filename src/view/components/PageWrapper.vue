@@ -1,12 +1,10 @@
 <template>
-  <div class="dp-f fd-c ht-100">
-    <h2>分页容器</h2>
-    <section class="fl-1 of-a pdr-m">
-      <h3 class="mg-0">photo 列表</h3>
+  <div class="view-page-wrapper">
+    <section class="dp-f fd-c ht-100">
+      <h3 class="bg">photo 列表</h3>
       <PageWrapper action="/albums/1/photos" totalKey="length" dataKey="" placement="top">
-        <template v-slot="{ data, total, loading }">
-          <div>total: {{ total }}</div>
-          <ul class="ls-n" v-loading="loading">
+        <template v-slot="{ data, loading }">
+          <ul class="ls-n fl-1 of-a bg mgt-m" v-loading="loading">
             <li v-for="i in data" :key="i.id" class="bsd-4 pd-m mgb-m dp-f">
               <el-image style="width: 100px; height: 100px" :src="i.url"></el-image>
               <div class="fl-1 pdl-m">
@@ -22,3 +20,13 @@
 <script setup>
 import PageWrapper from '@/components/PageWrapper.vue'
 </script>
+<style lang="scss">
+.view-page-wrapper {
+  height: 100%;
+  .el-pagination {
+    background-color: var(--gray-1);
+    margin: 0;
+    padding: 0 var(--size-m) var(--size-m) 0;
+  }
+}
+</style>

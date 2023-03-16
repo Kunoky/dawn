@@ -1,6 +1,7 @@
 <template>
   <span>
     <b>{{ user.name }}</b>
+    &nbsp;
     <span>{{ user.phone }}</span>
   </span>
 </template>

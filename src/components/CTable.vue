@@ -14,126 +14,122 @@
         <el-button @click="handleQueryReset">{{ $t('common.reset') }}</el-button>
       </el-form-item>
     </el-form>
+    <div v-if="showHeader" class="c-table__header">
+      <div class="c-table__title">
+        <slot name="title">{{ title }}</slot>
+      </div>
+      <div class="c-table__actions">
+        <slot name="actions"></slot>
+        <el-tooltip v-if="$slots.form" :content="$t('common.query')" placement="top">
+          <el-button link @click="showQuery = !showQuery">
+            <template #icon>
+              <i-ep-search />
+            </template>
+          </el-button>
+        </el-tooltip>
+        <el-tooltip :content="$t('common.refresh')" placement="top">
+          <el-button link @click="refresh">
+            <template #icon>
+              <i-ep-refresh />
+            </template>
+          </el-button>
+        </el-tooltip>
+        <CDropdown v-model="tableSize" :options="$tm('component.CTable.sizes')" trigger="click">
+          <el-button link>
+            <template #icon>
+              <el-tooltip :content="$t('component.CTable.size')" placement="top">
+                <IconFont icon="enlarge" />
+              </el-tooltip>
+            </template>
+          </el-button>
+        </CDropdown>
+        <el-tooltip v-if="id" :content="$t('component.CTable.save')" placement="top">
+          <el-button link @click="handleSave">
+            <template #icon>
+              <IconFont icon="save" />
+            </template>
+          </el-button>
+        </el-tooltip>
+        <el-popover trigger="click" width="200px" popper-class="c-table__setting">
+          <template #reference>
+            <el-button link>
+              <template #icon>
+                <el-tooltip :content="$t('component.CTable.setting')" placement="top">
+                  <i-ep-setting />
+                </el-tooltip>
+              </template>
+            </el-button>
+          </template>
+          <div>
+            <h4>
+              <el-checkbox
+                v-model="columnCheckAll"
+                @change="handleColumnCheckAll"
+                :indeterminate="columnIndeterminate"
+              ></el-checkbox>
+              {{ $t('component.CTable.display') }}
+              <el-button link type="primary" @click="handleColReset">
+                <b>{{ $t('common.reset') }}</b>
+              </el-button>
+            </h4>
+            <template v-for="(i, idx) in columnsOptions" :key="i.label">
+              <template v-if="i.children.length">
+                <div v-if="i.children.length < Object.keys(columnsSetting).length" class="group-title">
+                  {{ $t('component.CTable.' + i.label) }}
+                </div>
+
+                <Draggable
+                  tag="ul"
+                  :list="i.children"
+                  group="col"
+                  handle=".handle"
+                  item-key="prop"
+                  @update="handleDragUpdate"
+                  @add="handleDragAdd"
+                  :data-idx="idx"
+                >
+                  <template #item="{ element }">
+                    <li>
+                      <span>
+                        <IconFont v-if="i.children.length > 1" icon="justify" class="handle" />
+                        <el-checkbox v-model="element.isShow">{{ element.label }}</el-checkbox>
+                      </span>
+                      <span class="right">
+                        <el-tooltip
+                          v-if="element.props.fixed !== 'left'"
+                          :content="$t('component.CTable.pinLeft')"
+                          placement="top"
+                        >
+                          <IconFont icon="to-top" @click="element.props.fixed = 'left'" />
+                        </el-tooltip>
+                        <el-tooltip v-if="element.props.fixed" :content="$t('component.CTable.unpin')" placement="top">
+                          <IconFont icon="to-center" @click="element.props.fixed = false" />
+                        </el-tooltip>
+                        <el-tooltip
+                          v-if="element.props.fixed !== 'right'"
+                          :content="$t('component.CTable.pinRight')"
+                          placement="top"
+                        >
+                          <IconFont icon="to-bottom" @click="element.props.fixed = 'right'" />
+                        </el-tooltip>
+                      </span>
+                    </li>
+                  </template>
+                </Draggable>
+              </template>
+            </template>
+          </div>
+        </el-popover>
+      </div>
+    </div>
     <PageWrapper ref="pageRef" v-bind="pageConf" :params="mergedParams">
       <template v-slot="{ data, loading }">
-        <div v-if="showHeader" class="c-table__header">
-          <div class="c-table__title">
-            <slot name="title">{{ title }}</slot>
-          </div>
-          <div class="c-table__actions">
-            <slot name="actions"></slot>
-            <el-tooltip v-if="$slots.form" :content="$t('common.query')" placement="top">
-              <el-button link @click="showQuery = !showQuery">
-                <template #icon>
-                  <i-ep-search />
-                </template>
-              </el-button>
-            </el-tooltip>
-            <el-tooltip :content="$t('common.refresh')" placement="top">
-              <el-button link @click="refresh">
-                <template #icon>
-                  <i-ep-refresh />
-                </template>
-              </el-button>
-            </el-tooltip>
-            <CDropdown v-model="tableSize" :options="$tm('component.CTable.sizes')" trigger="click">
-              <el-button link>
-                <template #icon>
-                  <el-tooltip :content="$t('component.CTable.size')" placement="top">
-                    <IconFont icon="enlarge" />
-                  </el-tooltip>
-                </template>
-              </el-button>
-            </CDropdown>
-            <el-tooltip v-if="id" :content="$t('component.CTable.save')" placement="top">
-              <el-button link @click="handleSave">
-                <template #icon>
-                  <IconFont icon="save" />
-                </template>
-              </el-button>
-            </el-tooltip>
-            <el-popover trigger="click" width="200px" popper-class="c-table__setting">
-              <template #reference>
-                <el-button link>
-                  <template #icon>
-                    <el-tooltip :content="$t('component.CTable.setting')" placement="top">
-                      <i-ep-setting />
-                    </el-tooltip>
-                  </template>
-                </el-button>
-              </template>
-              <div>
-                <h4>
-                  <el-checkbox
-                    v-model="columnCheckAll"
-                    @change="handleColumnCheckAll"
-                    :indeterminate="columnIndeterminate"
-                  ></el-checkbox>
-                  {{ $t('component.CTable.display') }}
-                  <el-button link type="primary" @click="handleColReset">
-                    <b>{{ $t('common.reset') }}</b>
-                  </el-button>
-                </h4>
-                <template v-for="(i, idx) in columnsOptions" :key="i.label">
-                  <template v-if="i.children.length">
-                    <div v-if="i.children.length < Object.keys(columnsSetting).length" class="group-title">
-                      {{ $t('component.CTable.' + i.label) }}
-                    </div>
-
-                    <Draggable
-                      tag="ul"
-                      :list="i.children"
-                      group="col"
-                      handle=".handle"
-                      item-key="prop"
-                      @update="handleDragUpdate"
-                      @add="handleDragAdd"
-                      :data-idx="idx"
-                    >
-                      <template #item="{ element }">
-                        <li>
-                          <span>
-                            <IconFont v-if="i.children.length > 1" icon="justify" class="handle" />
-                            <el-checkbox v-model="element.isShow">{{ element.label }}</el-checkbox>
-                          </span>
-                          <span class="right">
-                            <el-tooltip
-                              v-if="element.props.fixed !== 'left'"
-                              :content="$t('component.CTable.pinLeft')"
-                              placement="top"
-                            >
-                              <IconFont icon="to-top" @click="element.props.fixed = 'left'" />
-                            </el-tooltip>
-                            <el-tooltip
-                              v-if="element.props.fixed"
-                              :content="$t('component.CTable.unpin')"
-                              placement="top"
-                            >
-                              <IconFont icon="to-center" @click="element.props.fixed = false" />
-                            </el-tooltip>
-                            <el-tooltip
-                              v-if="element.props.fixed !== 'right'"
-                              :content="$t('component.CTable.pinRight')"
-                              placement="top"
-                            >
-                              <IconFont icon="to-bottom" @click="element.props.fixed = 'right'" />
-                            </el-tooltip>
-                          </span>
-                        </li>
-                      </template>
-                    </Draggable>
-                  </template>
-                </template>
-              </div>
-            </el-popover>
-          </div>
-        </div>
         <el-table
           ref="tableRef"
           class="mgb-s"
           :data="data"
           v-loading="loading"
-          v-bind="$attrs"
+          v-bind="{ ...$attrs, class: null }"
           :size="tableSize"
           @sort-change="handleSortChange"
         >
@@ -354,7 +350,6 @@ defineExpose({
 @import url('@/style.css');
 .c-table {
   &-form {
-    padding-top: var(--size-m);
     &::after {
       content: '';
       clear: both;
@@ -362,11 +357,12 @@ defineExpose({
     }
     .btns {
       float: right;
+      margin: 0;
     }
   }
   &__header {
     display: flex;
-    padding: var(--size-s) 0;
+    padding-bottom: var(--size-s);
   }
   &__title {
     font-size: 16px;
@@ -375,7 +371,11 @@ defineExpose({
     flex: 1;
     text-align: right;
     .el-button {
-      font-size: 16px;
+      .el-icon,
+      .iconfont,
+      .icon {
+        font-size: 16px;
+      }
       & + .el-dropdown {
         margin-left: 12px;
       }
