@@ -10,6 +10,7 @@
       }"
       title="用户表格"
       ref="tableRef"
+      id="viewComponentTable"
     >
       <el-table-column v-if="showSelect" type="selection" width="55" />
       <el-table-column prop="id" label="ID" width="80" sortable="custom"></el-table-column>
@@ -36,7 +37,6 @@
   </div>
 </template>
 <script setup>
-// import CTable from '@/components/CTable/index.vue'
 import CTable from '@/components/CTable.vue'
 import { ref } from 'vue'
 

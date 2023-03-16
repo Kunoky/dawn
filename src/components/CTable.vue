@@ -1,5 +1,5 @@
 <template>
-  <div class="c-table">
+  <div class="c-table" :id="id">
     <el-form
       v-if="showQuery"
       :inline="true"
@@ -45,6 +45,13 @@
                 </template>
               </el-button>
             </CDropdown>
+            <el-tooltip v-if="id" :content="$t('component.CTable.save')" placement="top">
+              <el-button link @click="handleSave">
+                <template #icon>
+                  <IconFont icon="save" />
+                </template>
+              </el-button>
+            </el-tooltip>
             <el-popover trigger="click" width="200px" popper-class="c-table__setting">
               <template #reference>
                 <el-button link>
@@ -186,15 +193,28 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  id: String, // 组件id，提供时可以对form，columnSetting数据进行缓存
 })
 const pageRef = ref()
 const tableRef = ref()
 const tableSize = ref(props.size)
 const refresh = () => pageRef.value.refresh()
 
+let catchData = {
+  value: {
+    form: {},
+    columnsSetting: {},
+  },
+}
+if (props.id) {
+  catchData = useStorage(props.id, {
+    form: {},
+    columnsSetting: {},
+  })
+}
 const mergedParams = reactive({ ...props.params })
 const showQuery = ref(useSlots().form)
-const form = reactive({})
+const form = reactive(catchData.value.form)
 const handleQuery = () => {
   Object.assign(mergedParams, form)
 }
@@ -227,7 +247,7 @@ watch(
   { deep: true }
 )
 
-const columnsSetting = reactive({})
+const columnsSetting = reactive(catchData.value.columnsSetting)
 const columnsOptions = computed(() => {
   const options = [
     {
@@ -317,6 +337,12 @@ const handleColReset = () => {
     i.order = 0
     i.props = {}
   })
+}
+const handleSave = () => {
+  catchData.value = {
+    form,
+    columnsSetting,
+  }
 }
 defineExpose({
   refresh,

@@ -44,6 +44,7 @@ export default {
       fixedLeft: '固定在左侧',
       fixedRight: '固定在右侧',
       notFixed: '不固定',
+      save: '保存设置',
     },
   },
 }

@@ -44,6 +44,7 @@ export default {
       fixedLeft: 'Fixed the left',
       fixedRight: 'Fixed the right',
       notFixed: 'Not Fixed',
+      save: 'Save Settings',
     },
   },
 }
