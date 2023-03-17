@@ -39,3 +39,24 @@ h6 {
   clear: both;
   display: table;
 }
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background-color: #ccc;
+}
+
+::-webkit-scrollbar-button {
+  display: none;
+}
+
+html {
+  overflow: overlay;
+}
+*.of-a {
+  scrollbar-gutter: stable;
+}

@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { ElMessage } from 'element-plus'
 import { useUserStore } from '@/store/user'
 import { getToken } from '@/utils/auth'
 import { i18n } from '@/i18nSetup'
