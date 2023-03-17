@@ -81,9 +81,8 @@ const { data, loading, run, error } = useAsync(
 )
 
 const refresh = () => {
-  if (page.value !== 1 || size.value !== props.defaultSize) {
+  if (page.value !== 1) {
     page.value = 1
-    size.value = props.defaultSize
   } else {
     run()
   }
@@ -94,6 +93,7 @@ watch([page, size], run, { immediate: true })
 watch(() => props.params, refresh, { deep: true })
 
 defineExpose({
+  run,
   refresh,
   data,
   loading,

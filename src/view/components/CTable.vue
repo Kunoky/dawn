@@ -9,7 +9,7 @@
       title="用户表格"
       ref="tableRef"
       id="viewComponentTable"
-      class="bg"
+      class="view-component-table"
     >
       <el-table-column v-if="showSelect" type="selection" width="55" />
       <el-table-column prop="id" label="ID" width="80" sortable="custom"></el-table-column>
@@ -47,3 +47,27 @@ const handleSelect = () => {
 }
 const refresh = () => tableRef.value.refresh()
 </script>
+<style lang="scss">
+.view-component-table {
+  .c-table__form,
+  .c-table__body,
+  .el-pagination {
+    background-color: var(--gray-1);
+    border-radius: 2px;
+    padding-left: var(--size-m);
+    padding-right: var(--size-m);
+  }
+
+  .c-table__form {
+    padding-top: var(--size-m);
+    margin-bottom: var(--size-m);
+  }
+  .c-table__toolbar {
+    padding-top: var(--size-m);
+  }
+  .el-pagination {
+    margin: 0;
+    padding: var(--size-m);
+  }
+}
+</style>
