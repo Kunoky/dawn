@@ -27,6 +27,9 @@ export default {
     refresh: '刷新',
     reset: '重置',
     detail: '详情',
+    save: '保存',
+    success: '操作成功',
+    fail: '操作失败',
   },
   component: {
     CTable: {

@@ -50,7 +50,7 @@ const refresh = () => tableRef.value.refresh()
 <style lang="scss">
 .view-component-table {
   .c-table__form,
-  .c-table__body,
+  .c-table__main,
   .el-pagination {
     background-color: var(--gray-1);
     border-radius: 2px;

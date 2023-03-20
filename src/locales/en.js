@@ -27,6 +27,9 @@ export default {
     refresh: 'Refresh',
     reset: 'Reset',
     detail: 'Detail',
+    save: 'Save',
+    success: 'Operated Successfully',
+    fail: 'Operation Failed',
   },
   component: {
     CTable: {
