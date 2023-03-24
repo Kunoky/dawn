@@ -217,14 +217,15 @@ let cachedData = {
     defaultOrder: undefined,
   },
 }
+const CACHE_KEY = 'c-table__' + props.id
 if (props.id) {
-  cachedData = useStorage(props.id, cachedData.value)
+  cachedData = useStorage(CACHE_KEY, cachedData.value)
 }
 const defaultSize = ref(cachedData.value.defaultSize)
 
 const form = reactive(cachedData.value.form)
 const mergedParams = reactive(cachedData.value.mergedParams || { ...props.params, ...form })
-const showQuery = ref(cachedData.value.showQuery && !!useSlots().form)
+const showQuery = ref(cachedData.value.showQuery === false ? false : !!useSlots().form)
 const handleQuery = () => {
   // 回车事件
   if (pageRef.value.loading) return
@@ -373,7 +374,7 @@ const handleSave = () => {
     mergedParams,
     defaultOrder: cachedOrder.value,
   }
-  ElMessage.success(i18n.t('common.success'))
+  ElMessage.success(i18n.t('tip.success'))
 }
 defineExpose({
   pageRef,
