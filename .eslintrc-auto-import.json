@@ -1,6 +1,7 @@
 {
   "globals": {
     "ElMessage": true,
+    "ElMessageBox": true,
     "axios": true,
     "useAsync": true,
     "useStorage": true

@@ -148,6 +148,17 @@ export const useAppStore = defineStore('app', {
           pId: 11,
         },
         {
+          id: 14,
+          key: '/setting',
+          val: '设置',
+        },
+        {
+          id: 15,
+          pId: 14,
+          key: '/setting/dict',
+          val: '字典管理',
+        },
+        {
           id: 7,
           key: 'https://cn.vitejs.dev/',
           val: 'Vite',

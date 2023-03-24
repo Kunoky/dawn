@@ -1,4 +1,5 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-npx lint-staged
+# --no-stash: If a large number of changes are submitted at one time, the backup may fail, resulting in hard rollback of the code. This is too scary
+npx lint-staged --no-stash

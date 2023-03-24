@@ -127,6 +127,32 @@ const handleUserCommand = e => {
       & + .bg {
         margin-top: var(--size-m);
       }
+      &.of-a {
+        padding-right: var(--size-s);
+        padding-bottom: var(--size-s);
+      }
+    }
+  }
+  .c-table {
+    .c-table__form,
+    .c-table__main,
+    .el-pagination {
+      background-color: var(--gray-1);
+      border-radius: 2px;
+      padding-left: var(--size-m);
+      padding-right: var(--size-m);
+    }
+
+    .c-table__form {
+      padding-top: var(--size-m);
+      margin-bottom: var(--size-m);
+    }
+    .c-table__toolbar {
+      padding-top: var(--size-m);
+    }
+    .el-pagination {
+      margin: 0;
+      padding: var(--size-m);
     }
   }
 }

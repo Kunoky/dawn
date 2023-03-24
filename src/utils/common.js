@@ -7,7 +7,7 @@ export function arr2tree(arr) {
   const idObj = {},
     root = []
   arr.forEach(i => {
-    if (i.meta) {
+    if (i.meta && typeof i.meta === 'string') {
       i.meta = JSON.parse(i.meta)
     }
     if (idObj[i.id]) {

@@ -42,6 +42,13 @@ const routes = [
         },
         component: () => import('@/view/components/CTable.vue'),
       },
+      {
+        path: 'setting/dict',
+        meta: {
+          title: '字典管理',
+        },
+        component: () => import('@/view/dict/index.vue'),
+      },
       { path: 'path1', component: h('h1', 'path1') },
       { path: 'path2', component: h('h1', 'path2') },
       { path: 'path2/path3', component: h('h1', 'path3') },
@@ -77,7 +84,7 @@ router.beforeEach((to, from, next) => {
     })
   }, 200)
   // TODO 真正的权限判断
-  let hasLogin = true,
+  let hasLogin = getToken(),
     hasAuth = true
   if (to.matched.some(record => record.meta.requiresAuth)) {
     if (hasAuth) return next()

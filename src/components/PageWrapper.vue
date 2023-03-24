@@ -30,7 +30,7 @@ const props = defineProps({
   // 从action返回的对象中获取data的key值，缺省则是对象自身
   dataKey: {
     type: String,
-    default: 'record',
+    default: 'list',
   },
   // 从action返回的对象中获取total的key值
   totalKey: {
