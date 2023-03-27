@@ -4,14 +4,14 @@ import ElementPlus from 'element-plus'
 import { i18n } from './i18nSetup'
 import { createPinia } from 'pinia'
 import App from './App.vue'
+import { init as initDict } from './utils/dict'
 import 'oocss/src/index.css'
 import './style.css'
-import IconFont from '@/components/IconFont.vue'
+
+initDict()
 
 const pinia = createPinia()
 const app = createApp(App)
-
-app.component('icon-font', IconFont)
 
 app.use(pinia)
 app.use(router)

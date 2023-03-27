@@ -28,6 +28,9 @@ const plugins = [
         '@/utils/common': [['*', 'utils']],
       },
       {
+        '@/utils/dict': ['useDict'],
+      },
+      {
         '@/utils/request': [['default', 'axios']],
       },
     ],

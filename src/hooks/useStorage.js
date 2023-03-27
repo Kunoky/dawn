@@ -1,5 +1,3 @@
-import { ref, computed } from 'vue'
-
 export function useStorage(key, defaultValue, storage) {
   storage ||= localStorage
   const str = storage.getItem(key)

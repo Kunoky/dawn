@@ -71,6 +71,7 @@
     "useAttrs": true,
     "useCssModule": true,
     "useCssVars": true,
+    "useDict": true,
     "useI18n": true,
     "useLink": true,
     "useRoute": true,

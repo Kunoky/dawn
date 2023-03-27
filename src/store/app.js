@@ -34,6 +34,7 @@ export const useAppStore = defineStore('app', {
         en: {
           value: null,
           name: 'en',
+          loader: () => import('element-plus/dist/locale/en'),
         },
       },
       loading: {
@@ -81,7 +82,8 @@ export const useAppStore = defineStore('app', {
       try {
         const loaders = [loadLanguageAsync(lang)]
         if (!this.elLangs[lang].value) {
-          loaders.push(import(`../../node_modules/element-plus/dist/locale/${this.elLangs[lang].name}.mjs`))
+          // loaders.push(import(`../../node_modules/element-plus/dist/locale/${this.elLangs[lang].name}.mjs`))
+          loaders.push(this.elLangs[lang].loader())
         }
         const [, elLang] = await Promise.all(loaders)
         if (elLang) {

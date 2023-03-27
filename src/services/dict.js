@@ -231,11 +231,25 @@ export async function getDict(id) {
   return syncOp('get', id)
 }
 
-export async function listDict({ category, pId, page, size }) {
+export async function listDict({ id, category, pId, page, size }) {
   let list = await syncOp('getAll')
   list = list.filter(i => {
-    if (category && i.category !== category) return false
-    if ((pId || pId === 0) && i.pId !== pId) return false
+    if (Array.isArray(id)) {
+      if (!id.includes(i.id)) return false
+    } else {
+      if (id && i.id !== id) return false
+    }
+    if (Array.isArray(category)) {
+      if (!category.includes(i.category)) return false
+    } else {
+      if (category && i.category !== category) return false
+    }
+    if (Array.isArray(pId)) {
+      if (!pId.includes(i.pId)) return false
+    } else {
+      if ((pId || pId === 0) && i.pId !== pId) return false
+    }
+
     return true
   })
   const total = list.length
