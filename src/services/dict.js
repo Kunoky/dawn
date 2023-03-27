@@ -1,3 +1,163 @@
+const dicts = [
+  {
+    sort: 0,
+    key: 'menu',
+    val: 'Menu',
+    category: 'menu',
+    remark: '菜单字典',
+    pId: 0,
+    version: 14,
+    createdTime: '2023-03-24T09:20:08.291Z',
+    updatedTime: '2023-03-24T09:56:06.801Z',
+    id: 1,
+  },
+  {
+    pId: 1,
+    category: 'menu',
+    sort: 1,
+    key: '/component',
+    val: 'Component',
+    meta: {
+      title: 'Component',
+    },
+    version: 1,
+    createdTime: '2023-03-24T09:23:28.542Z',
+    updatedTime: '2023-03-24T09:23:28.542Z',
+    id: 2,
+  },
+  {
+    pId: 2,
+    category: 'menu',
+    sort: 1,
+    key: '/component/page-wrapper',
+    val: 'Page Wrapper',
+    version: 1,
+    createdTime: '2023-03-24T09:24:47.639Z',
+    updatedTime: '2023-03-24T09:24:47.639Z',
+    id: 3,
+  },
+  {
+    pId: 5,
+    category: 'menu',
+    sort: 1,
+    key: '/setting/dict',
+    val: 'Dictionary',
+    version: 1,
+    createdTime: '2023-03-24T09:28:40.040Z',
+    updatedTime: '2023-03-24T09:28:40.040Z',
+    id: 6,
+  },
+  {
+    pId: 7,
+    category: 'menu',
+    sort: 1,
+    key: '/path1',
+    val: 'Level2-1',
+    version: 1,
+    createdTime: '2023-03-24T09:51:27.269Z',
+    updatedTime: '2023-03-24T09:51:27.269Z',
+    id: 8,
+  },
+  {
+    pId: 9,
+    category: 'menu',
+    sort: 1,
+    key: '/path2/path3',
+    val: 'Level3-1',
+    version: 1,
+    createdTime: '2023-03-24T09:52:22.396Z',
+    updatedTime: '2023-03-24T09:52:22.396Z',
+    id: 10,
+  },
+  {
+    pId: 2,
+    category: 'menu',
+    sort: 2,
+    key: '/component/c-table',
+    val: 'Common Table',
+    version: 1,
+    createdTime: '2023-03-24T09:25:51.375Z',
+    updatedTime: '2023-03-24T09:25:51.375Z',
+    id: 4,
+  },
+  {
+    pId: 1,
+    category: 'menu',
+    sort: 2,
+    key: '/setting',
+    val: 'Setting',
+    version: 1,
+    createdTime: '2023-03-24T09:26:36.909Z',
+    updatedTime: '2023-03-24T09:26:36.909Z',
+    id: 5,
+  },
+  {
+    pId: 7,
+    category: 'menu',
+    sort: 2,
+    key: '/path2',
+    val: 'Level2-2',
+    version: 1,
+    createdTime: '2023-03-24T09:51:51.227Z',
+    updatedTime: '2023-03-24T09:51:51.227Z',
+    id: 9,
+  },
+  {
+    pId: 1,
+    category: 'menu',
+    sort: 3,
+    key: '/',
+    val: 'Level 1',
+    version: 1,
+    createdTime: '2023-03-24T09:50:48.512Z',
+    updatedTime: '2023-03-24T09:50:48.512Z',
+    id: 7,
+  },
+  {
+    pId: 1,
+    category: 'menu',
+    sort: 4,
+    key: 'https://cn.vitejs.dev',
+    val: 'Vite',
+    version: 1,
+    createdTime: '2023-03-24T09:53:14.400Z',
+    updatedTime: '2023-03-24T09:53:14.400Z',
+    id: 11,
+  },
+  {
+    pId: 1,
+    category: 'menu',
+    sort: 5,
+    key: 'https://pinia.vuejs.org',
+    val: 'Pinia',
+    version: 1,
+    createdTime: '2023-03-24T09:53:45.230Z',
+    updatedTime: '2023-03-24T09:53:45.230Z',
+    id: 12,
+  },
+  {
+    pId: 1,
+    category: 'menu',
+    sort: 6,
+    key: 'https://vitest.dev',
+    val: 'Vitest',
+    version: 1,
+    createdTime: '2023-03-24T09:55:10.674Z',
+    updatedTime: '2023-03-24T09:55:10.674Z',
+    id: 13,
+  },
+  {
+    pId: 1,
+    category: 'menu',
+    sort: 7,
+    key: 'https://github.com/vuejs/awesome-vue',
+    val: 'Awesome',
+    version: 1,
+    createdTime: '2023-03-24T09:56:06.796Z',
+    updatedTime: '2023-03-24T09:56:06.796Z',
+    id: 14,
+  },
+]
 // 该service仅作本地调试
 let IDB
 
@@ -20,6 +180,9 @@ const openDB = () =>
       dict.createIndex('category', 'category', { unique: false })
       dict.createIndex('pId', 'pId', { unique: false })
       dict.createIndex('pIdKey', ['pId', 'key'], { unique: true })
+      dicts.forEach(i => {
+        dict.add(i)
+      })
     }
   })
 
@@ -118,6 +281,7 @@ export async function listDict({ category, pId, page, size }) {
     return true
   })
   const total = list.length
+  list.sort((a, b) => a.sort - b.sort)
   if (size) {
     const end = page * size
     list = list.slice(end - size, end)

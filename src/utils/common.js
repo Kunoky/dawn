@@ -16,11 +16,11 @@ export function arr2tree(arr) {
       idObj[i.id] = i
     }
     if (i.pId) {
-      idObj[i.pId] ||= { children: [] }
+      idObj[i.pId] ||= {}
       idObj[i.pId].children ||= []
-      idObj[i.pId].children.push(i)
+      idObj[i.pId].children.push(idObj[i.id])
     } else {
-      root.push(i)
+      root.push(idObj[i.id])
     }
   })
   return [root, idObj]
