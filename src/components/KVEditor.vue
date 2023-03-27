@@ -15,7 +15,6 @@
   </ul>
 </template>
 <script setup>
-import { ref, reactive, watch } from 'vue'
 const emit = defineEmits(['update:modelValue'])
 const props = defineProps({
   modelValue: Object,

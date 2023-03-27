@@ -1,10 +1,7 @@
 <script setup>
-import { ref, watch, onBeforeMount, nextTick } from 'vue'
 import { useAppStore } from '@/store/app'
 import { useUserStore } from '@/store/user'
-import { storeToRefs } from 'pinia'
 import MenuItemRecursive from '@/components/MenuItemRecursive.vue'
-import { useRoute } from 'vue-router'
 
 const userStore = useUserStore()
 const appStore = useAppStore()

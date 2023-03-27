@@ -53,10 +53,7 @@
   </div>
 </template>
 <script setup>
-import CTable from '@/components/CTable.vue'
-import { reactive, ref } from 'vue'
 import { listDict, delDict } from '@/services/dict'
-import { useI18n } from 'vue-i18n'
 import FormDialog from './components/FormDialog.vue'
 import ViewTree from './components/ViewTree.vue'
 

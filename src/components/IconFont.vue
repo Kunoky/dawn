@@ -6,8 +6,6 @@
   <i :class="['iconfont', type]" />
 </template>
 <script setup>
-import { computed } from 'vue'
-
 const props = defineProps({
   icon: String, // icon
   // symbol: Boolean, // 是否symbol模式

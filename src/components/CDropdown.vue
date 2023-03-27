@@ -16,7 +16,6 @@
   </el-dropdown>
 </template>
 <script setup>
-import { computed } from 'vue'
 defineEmits(['update:modelValue'])
 const props = defineProps({
   // 下拉选项，支持对象数组和对象，对象数组结构为{label, value}

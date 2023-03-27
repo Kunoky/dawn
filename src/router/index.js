@@ -33,14 +33,14 @@ const routes = [
         meta: {
           title: '分页容器',
         },
-        component: () => import('@/view/components/PageWrapper.vue'),
+        component: () => import('@/view/components/PageWrapperView.vue'),
       },
       {
         path: 'component/c-table',
         meta: {
           title: '通用表格',
         },
-        component: () => import('@/view/components/CTable.vue'),
+        component: () => import('@/view/components/CTableView.vue'),
       },
       {
         path: 'setting/dict',

@@ -22,12 +22,9 @@
 </template>
 
 <script setup>
-import { reactive, ref, watch } from 'vue'
 import { listDict } from '@/services/dict'
-import { arr2tree } from '@/utils/common'
 import FormDialog from './FormDialog.vue'
-import { delDict } from '../../../services/dict'
-import { useI18n } from 'vue-i18n'
+import { delDict } from '@/services/dict'
 
 const emit = defineEmits(['update:modelValue', 'success'])
 const props = defineProps({
@@ -48,7 +45,7 @@ const {
 } = useAsync(
   async () => {
     const res = await listDict({ category: props.root.category })
-    const [tree, idNode] = arr2tree(res.list)
+    const [tree, idNode] = utils.arr2tree(res.list)
     return {
       tree,
       idNode,

@@ -38,9 +38,7 @@
 </template>
 
 <script setup>
-import { nextTick, ref, toRaw, watch } from 'vue'
 import { addDict, putDict } from '@/services/dict'
-import KVEditor from '@/components/KVEditor.vue'
 
 const emit = defineEmits(['update:modelValue', 'success'])
 const props = defineProps({

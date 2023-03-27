@@ -20,6 +20,13 @@ const plugins = [
       }),
     ],
     imports: [
+      'vue',
+      'vue-router',
+      'vue-i18n',
+      'pinia',
+      {
+        '@/utils/common': [['*', 'utils']],
+      },
       {
         '@/utils/request': [['default', 'axios']],
       },

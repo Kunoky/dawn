@@ -12,8 +12,6 @@
   <slot v-if="placement === 'top'" :data="data" :total="total" :loading="loading" :error="error"></slot>
 </template>
 <script setup>
-import { ref, watch } from 'vue'
-
 const props = defineProps({
   // 默认分页尺寸
   defaultSize: {

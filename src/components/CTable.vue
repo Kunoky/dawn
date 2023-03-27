@@ -157,13 +157,10 @@
   </div>
 </template>
 <script setup>
-import { computed, nextTick, reactive, ref, useSlots, watch } from 'vue'
 import PageWrapper from './PageWrapper.vue'
 import CDropdown from './CDropdown.vue'
 import FW from './FW.jsx'
 import Draggable from 'vuedraggable'
-import { ElMessage } from 'element-plus'
-import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
   // 分页容器设置

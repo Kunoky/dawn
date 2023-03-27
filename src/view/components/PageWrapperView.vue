@@ -17,9 +17,7 @@
     </section>
   </div>
 </template>
-<script setup>
-import PageWrapper from '@/components/PageWrapper.vue'
-</script>
+<script setup></script>
 <style lang="scss">
 .view-page-wrapper {
   height: 100%;

@@ -36,9 +36,6 @@
   </div>
 </template>
 <script setup>
-import CTable from '@/components/CTable.vue'
-import { ref } from 'vue'
-
 const tableRef = ref()
 const showSelect = ref(false)
 
