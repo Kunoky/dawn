@@ -12,12 +12,6 @@ const isCollapse = ref(false)
 const { langs, menuTree, loading } = storeToRefs(appStore)
 const { user } = storeToRefs(userStore)
 
-onBeforeMount(() => {
-  if (!localStorage.getItem('menuTree')) {
-    appStore.genMenu()
-  }
-})
-
 watch(
   route,
   async () => {

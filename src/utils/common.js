@@ -25,3 +25,25 @@ export function arr2tree(arr) {
   })
   return [root, idObj]
 }
+
+/**
+ * 树转数组
+ * @param {Array} tree 树形数据
+ * @param {String} key 需要返回的key值，否则返回对象自身
+ * @param {Array} arr 最终返回的数组
+ * @returns {Array}
+ */
+export function tree2arr(tree, key, arr = []) {
+  tree.forEach(i => {
+    const { children, ...rest } = i
+    if (key) {
+      arr.push(i[key])
+    } else {
+      arr.push(rest)
+    }
+    if (Array.isArray(children)) {
+      tree2arr(children, key, arr)
+    }
+  })
+  return arr
+}

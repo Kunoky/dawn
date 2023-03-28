@@ -90,7 +90,7 @@ const handleDel = async node => {
     confirmButtonText: i18n.t('common.confirm'),
     cancelButtonText: i18n.t('common.cancel'),
     type: 'warning',
-  }).then(() => del(node.data.id))
+  }).then(() => del(utils.tree2arr([node.data], 'id')))
 }
 </script>
 <style lang="scss">

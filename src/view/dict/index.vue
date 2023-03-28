@@ -15,7 +15,7 @@
       <el-table-column prop="val" label="Value"></el-table-column>
       <el-table-column prop="category" label="Category"></el-table-column>
       <el-table-column prop="pId" label="PID"></el-table-column>
-      <el-table-column prop="remark" label="Remark"></el-table-column>
+      <el-table-column prop="remark" label="Remark" show-overflow-tooltip></el-table-column>
       <el-table-column prop="createdTime" label="Created Time" width="128">
         <template v-slot="{ row }">
           {{ row.createdTime?.toLocaleString() }}

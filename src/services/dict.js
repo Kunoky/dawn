@@ -115,6 +115,17 @@ const dicts = [
     val: 'Awesome',
     id: 14,
   },
+  {
+    pId: 1,
+    category: 'menu',
+    sort: 0,
+    key: '/demo',
+    val: 'Demo',
+    meta: {
+      title: 'Demo',
+    },
+    id: 15,
+  },
 ]
 // 该service仅作本地调试
 let IDB
@@ -220,11 +231,13 @@ export async function putDict(dict) {
 }
 
 export async function delDict(id) {
-  const dict = await getDict(id)
+  if (!Array.isArray(id)) {
+    id = [id]
+  }
+  const dict = await getDict(id[0])
   const store = await getStore()
   if (dict.pId) await rootUpdate(store, dict.category)
-  const res = await syncReq(store.delete(id))
-  return res
+  return Promise.all(id.map(i => syncReq(store.delete(i))))
 }
 
 export async function getDict(id) {
