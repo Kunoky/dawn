@@ -1,7 +1,7 @@
 import { listDict } from '@/services/dict'
 import { cloneDeep } from 'lodash'
 
-let source = ref([])
+const source = ref([])
 const loading = {},
   CACHE_KEY = 'dict_source'
 
@@ -56,16 +56,20 @@ export async function init() {
   await fetchCategory(updateQueue)
 }
 export function useDict(category) {
-  const arr = ref(source.value.filter(i => i.category === category))
+  const arr = ref([])
+  watch(
+    source,
+    () => {
+      arr.value = cloneDeep(source.value.filter(i => i.category === category))
+    },
+    { immediate: true }
+  )
   if (!arr.value.length) {
     fetchCategory(category)
   }
   const dict = computed(() => {
     const kv = {}
     arr.value.forEach(i => {
-      // 适应element-plus
-      i.label = i.val
-      i.value = i.key
       kv[i.key] = i.val
     })
     const [tree, idNode] = utils.arr2tree(arr.value)
@@ -78,12 +82,5 @@ export function useDict(category) {
     }
   })
 
-  watch(
-    source,
-    () => {
-      arr.value = cloneDeep(source.value.filter(i => i.category === category))
-    },
-    { immediate: true }
-  )
   return dict
 }
