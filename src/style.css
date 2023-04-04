@@ -1,5 +1,5 @@
 /* @import '@/assets/iconfont/iconfont.css'; */
-@import '//at.alicdn.com/t/c/font_3942014_o7i0gaaqv5r.css';
+@import '//at.alicdn.com/t/c/font_3942014_b3iqgz7lxa.css';
 body {
   margin: 0;
 }
@@ -56,7 +56,4 @@ h6 {
 
 html {
   overflow: overlay;
-}
-*.of-a {
-  scrollbar-gutter: stable;
 }
