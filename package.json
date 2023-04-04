@@ -1,7 +1,7 @@
 {
   "name": "dawn",
   "private": true,
-  "description": "vite + vue + pinia + element-ui + axios + vitest",
+  "description": "vite + vue + pinia + element-plus + axios + vitest",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
@@ -59,7 +59,7 @@
     "dawn",
     "vue",
     "vite",
-    "element-ui",
+    "element-plus",
     "pinia"
   ],
   "license": "MIT"

@@ -1,7 +1,8 @@
-import { h } from 'vue'
+// import { h } from 'vue'
 import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
-import { ElLoading, ElMessage } from 'element-plus'
+// import { ElLoading, ElMessage } from 'element-plus'
 import { getToken } from '@/utils/auth'
+import { useUserStore } from '../store/user'
 
 const routes = [
   {
@@ -9,6 +10,7 @@ const routes = [
     name: 'login',
     meta: {
       title: '登录',
+      public: true,
     },
     component: () => import('@/view/user/login.vue'),
   },
@@ -19,10 +21,20 @@ const routes = [
       title: '',
     },
     component: () => import('../layouts/BaseLayout.vue'),
-    redirect: '/demo',
+    redirect: '/home',
     children: [
       {
+        path: 'home',
+        name: 'home',
+        meta: {
+          title: 'demo',
+          public: true,
+        },
+        component: () => import('@/view/Home.vue'),
+      },
+      {
         path: 'demo',
+        name: 'demo',
         meta: {
           title: 'demo',
         },
@@ -30,6 +42,7 @@ const routes = [
       },
       {
         path: 'component/page-wrapper',
+        name: 'componentPageWrapper',
         meta: {
           title: '分页容器',
         },
@@ -37,6 +50,7 @@ const routes = [
       },
       {
         path: 'component/c-table',
+        name: 'componentCTable',
         meta: {
           title: '通用表格',
         },
@@ -44,21 +58,49 @@ const routes = [
       },
       {
         path: 'setting/dict',
+        name: 'settingDict',
         meta: {
           title: '字典管理',
         },
         component: () => import('@/view/dict/index.vue'),
       },
-      { path: 'path1', component: h('h1', 'path1') },
-      { path: 'path2', component: h('h1', 'path2') },
-      { path: 'path2/path3', component: h('h1', 'path3') },
-      { path: 'path2/path4', component: h('h1', 'path4') },
-      { path: 'path2/path4/path5', component: h('h1', 'path4') },
+      {
+        path: 'setting/permission',
+        name: 'settingPermission',
+        meta: {
+          title: '权限管理',
+        },
+        component: () => import('@/view/setting/permission/index.vue'),
+      },
+      {
+        path: 'setting/role',
+        name: 'settingRole',
+        meta: {
+          title: '角色管理',
+        },
+        component: () => import('@/view/setting/role/index.vue'),
+      },
+      {
+        path: 'setting/user',
+        name: 'settingUser',
+        meta: {
+          title: '用户管理',
+        },
+        component: () => import('@/view/setting/user/index.vue'),
+      },
+      { path: 'path1', name: 'path1', component: h('h1', 'path1') },
+      { path: 'path2', name: 'path2', component: h('h1', 'path2') },
+      { path: 'path3', name: 'path3', component: h('h1', 'path3') },
+      { path: 'path4', name: 'path4', component: h('h1', 'path4') },
+      { path: 'path5', name: 'path5', component: h('h1', 'path5') },
     ],
   },
   {
     path: '/:pathMatch(.*)*',
     name: '404',
+    meta: {
+      public: true,
+    },
     component: () => import('@/view/NotFound.vue'),
   },
 ]
@@ -76,36 +118,48 @@ const router = createRouter({
   routes,
 })
 let loadingInstance, timer
-router.beforeEach((to, from, next) => {
-  timer = setTimeout(() => {
+router.beforeEach(async (to, from) => {
+  if (timer) {
     clearTimeout(timer)
+  }
+  timer = setTimeout(() => {
     loadingInstance = ElLoading.service({
       target: '.el-main',
     })
   }, 200)
-  // TODO 真正的权限判断
-  let hasLogin = getToken(),
-    hasAuth = true
-  if (to.matched.some(record => record.meta.requiresAuth)) {
-    if (hasAuth) return next()
-    if (hasLogin) {
-      ElMessage({
-        message: '权限不足',
-        type: 'error',
-        duration: 5 * 1000,
-      })
-      return next(false)
-    }
-    return next({
-      path: '/login',
-      query: { redirect: to.fullPath },
-    })
-  } else if (to.path === '/login') {
-    if (getToken()) {
-      return next('/')
+  const hasToken = !!getToken()
+  if (to.path === '/login') {
+    if (hasToken) {
+      return '/'
     }
   }
-  next()
+  const userStore = useUserStore()
+  const meta = userStore.keyMenu[to.name]?.meta
+  const permissionCode = userStore.permission[to.name]
+  to.meta = {
+    ...to.meta,
+    ...meta,
+  }
+  if (to.meta.public) return
+  const hasAuth = userStore.hasPermission(to.name)
+  if (hasAuth) {
+    to.meta.permissionCode = userStore.permission[to.name]
+    to.meta.hasPermission = n => utils.hasBit(permissionCode, n)
+    return
+  }
+  if (hasToken) {
+    if (from.name === 'login') return '/'
+    ElMessage({
+      message: '权限不足',
+      type: 'error',
+      duration: 5 * 1000,
+    })
+    return false
+  }
+  return {
+    path: '/login',
+    query: { redirect: to.fullPath },
+  }
 })
 
 router.afterEach(to => {
@@ -136,6 +190,7 @@ router.scrollBehavior = (to, from, savedPosition) => {
 }
 
 router.onError(error => {
+  console.error(error)
   const pattern = /Loading chunk (\d) + failed/g
   const isChunkLoadFailed = error.message.match(pattern)
   if (isChunkLoadFailed) {

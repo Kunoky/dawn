@@ -37,6 +37,9 @@ export default {
     close: 'Close',
     expand: 'Expand',
     collapse: 'Collapse',
+    config: 'Config',
+    login: 'Login',
+    logout: 'Logout',
   },
   tip: {
     delete: 'Data cannot be restored after deletion. Continue?',

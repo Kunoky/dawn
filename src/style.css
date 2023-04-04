@@ -1,5 +1,6 @@
 /* @import '@/assets/iconfont/iconfont.css'; */
-@import '//at.alicdn.com/t/c/font_3942014_b3iqgz7lxa.css';
+/* CDN 服务仅供平台体验和调试使用，平台不承诺服务的稳定性，企业客户需下载字体包自行发布使用并做好备份 */
+@import '//at.alicdn.com/t/c/font_3942014_4h85gbo1yhf.css';
 body {
   margin: 0;
 }

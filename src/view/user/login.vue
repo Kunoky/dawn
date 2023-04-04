@@ -25,11 +25,11 @@ const handleLogin = () => {
       password: loginForm.password,
     }
     if (valid) {
-      const success = await userStore.login(user)
-      if (success === true) {
+      const res = await userStore.login(user)
+      if (!res.code) {
         router.push(router.currentRoute.value.query.redirect || '/')
       } else {
-        ElMessage.error(success.msg)
+        ElMessage.error(res.msg)
       }
     }
   })

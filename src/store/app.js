@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
 import * as service from '@/services/app'
-import { listDict } from '@/services/dict'
 import { loadLanguageAsync } from '@/i18nSetup'
 import zhCn from 'element-plus/dist/locale/zh-cn'
 
@@ -42,7 +41,7 @@ export const useAppStore = defineStore('app', () => {
   }
 
   const lang = ref('zh-CN')
-  const langs = [
+  const langs = ref([
     {
       value: 'zh-CN',
       label: '简体中文',
@@ -51,7 +50,7 @@ export const useAppStore = defineStore('app', () => {
       value: 'en',
       label: 'English',
     },
-  ]
+  ])
   const elLangs = reactive({
     'zh-CN': {
       value: zhCn,
@@ -82,22 +81,6 @@ export const useAppStore = defineStore('app', () => {
     }
   }
 
-  const menuStr = localStorage.getItem('menuTree')
-  let menu = []
-  if (menuStr) {
-    menu = JSON.parse(menuStr)
-  } else {
-    genMenu()
-  }
-  const menuTree = ref(menu)
-  async function genMenu() {
-    const res = await listDict({ category: 'menu' })
-    // TODO 权限过滤
-    const [tree] = utils.arr2tree(res.list)
-    menuTree.value = tree[0]?.children || []
-    localStorage.setItem('menuTree', JSON.stringify(menuTree.value))
-  }
-
   return {
     posts,
     total,
@@ -106,11 +89,9 @@ export const useAppStore = defineStore('app', () => {
     lang,
     langs,
     elLang,
-    menuTree,
     loading,
     listPost,
     getUser,
     setLang,
-    genMenu,
   }
 })

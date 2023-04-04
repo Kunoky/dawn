@@ -4,9 +4,21 @@
       <div class="bg">
         <h3>posts 列表</h3>
         <div>total: {{ total }}</div>
+        <div class="ta-r">
+          <b class="bottom-m pt-r">Permissions:</b>
+          <div class="permission-group">
+            <span><el-button v-permission type="primary">logged in</el-button></span>
+            <span><el-button v-permission:demo type="primary">demo</el-button></span>
+            <span><el-button v-permission:demo="1" type="primary">create</el-button></span>
+            <span><el-button v-permission:demo="2" type="primary">update</el-button></span>
+            <span><el-button v-permission:demo="3" type="primary">delete</el-button></span>
+            <span><el-button v-if="hasP(4)" type="primary">custom 4</el-button></span>
+            <span><el-button v-if="$hasPermission('demo', 5)" type="primary">custom 5</el-button></span>
+          </div>
+        </div>
       </div>
       <ul class="bg ls-n fl-1 of-a">
-        <li v-for="i in posts" :key="i.id" class="bsd-4 pd-m mgb-m">
+        <li v-for="i in posts" :key="i.id" class="bsd-4 pd-m mgb-m tc-8">
           <div>
             <span>ID:</span>
             &nbsp;
@@ -34,6 +46,12 @@ export default {
       post: null,
     }
   },
+  setup() {
+    const hasP = usePermission('demo')
+    return {
+      hasP,
+    }
+  },
   created() {
     this.listPost()
   },
@@ -45,3 +63,23 @@ export default {
   },
 }
 </script>
+<style lang="scss">
+.permission-group {
+  margin-left: var(--size-s);
+  display: inline-block;
+  border: 1px dashed var(--gray-5);
+  height: 48px;
+  & > span {
+    width: 100px;
+    height: 48px;
+    line-height: 48px;
+    vertical-align: bottom;
+    display: inline-block;
+    text-align: center;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Ctext x='50%25' y='50%25' font-size='14' fill='%23a2a9b6' font-family='system-ui, sans-serif' text-anchor='middle' dominant-baseline='middle'%3Eaction%3C/text%3E%3C/svg%3E");
+    & + span {
+      border-left: 1px dashed var(--gray-5);
+    }
+  }
+}
+</style>

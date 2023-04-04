@@ -9,9 +9,8 @@ const route = useRoute()
 const appName = __APP_NAME__
 const active = ref('')
 const isCollapse = ref(false)
-const { langs, menuTree, loading } = storeToRefs(appStore)
-const { user } = storeToRefs(userStore)
-
+const { langs, loading } = storeToRefs(appStore)
+const { user, menuTree } = storeToRefs(userStore)
 watch(
   route,
   async () => {
@@ -62,17 +61,18 @@ const handleUserCommand = e => {
               </el-dropdown-menu>
             </template>
           </el-dropdown>
-          <el-dropdown @command="handleUserCommand">
+          <el-dropdown v-if="user" @command="handleUserCommand">
             <span class="mgl-s">
               <span>{{ user?.name }}</span>
               <i-ep-arrow-down />
             </span>
             <template #dropdown>
               <el-dropdown-menu>
-                <el-dropdown-item command="logout">登出</el-dropdown-item>
+                <el-dropdown-item command="logout">{{ $t('common.logout') }}</el-dropdown-item>
               </el-dropdown-menu>
             </template>
           </el-dropdown>
+          <router-link v-else to="/login" class="fs-5 tc-8 mgl-s">{{ $t('common.login') }}</router-link>
         </div>
       </el-header>
       <el-main class="base-layout_main">
@@ -103,6 +103,12 @@ const handleUserCommand = e => {
   }
   &_menu {
     border-right: none;
+    .el-sub-menu__title,
+    .el-menu-item {
+      & i {
+        font-size: 18px;
+      }
+    }
   }
   &_main {
     background-color: var(--gray-3);

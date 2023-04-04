@@ -37,6 +37,9 @@ export default {
     close: '关闭',
     expand: '展开',
     collapse: '折叠',
+    config: '配置',
+    login: '登录',
+    logout: '登出',
   },
   tip: {
     delete: '数据删除后无法恢复，确定继续？',
