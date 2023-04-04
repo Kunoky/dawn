@@ -6,6 +6,9 @@ const dicts = [
     category: 'menu',
     remark: '菜单字典',
     pId: 0,
+    meta: {
+      public: true,
+    },
     id: 1,
   },
   {
@@ -228,7 +231,7 @@ const users = [
     username: 'test',
     password: 'test',
     name: 'Test',
-    role: ['test', 'componentAdmin', 'guest'],
+    role: ['test', 'test2', 'componentAdmin', 'guest'],
   },
   {
     username: 'guest',
@@ -267,6 +270,7 @@ const roles = [
   {
     name: 'componentAdmin',
     permission: {
+      component: 0,
       componentPageWrapper: 7,
       componentCTable: 7,
     },
@@ -274,6 +278,7 @@ const roles = [
   {
     name: 'test',
     permission: {
+      setting: 0,
       settingDict: 3,
       settingPermission: 1,
       settingRole: 2,
@@ -282,6 +287,7 @@ const roles = [
   {
     name: 'test2',
     permission: {
+      setting: 0,
       settingDict: 3,
       settingPermission: 3,
       settingRole: 4,

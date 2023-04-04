@@ -93,12 +93,12 @@ export const useUserStore = defineStore('user', {
       const keyMenu = {}
       const menu = this.menu.filter(i => {
         keyMenu[i.key] = i
-        if (this.hasPermission(i.key)) return true
+        if (i.meta?.public || this.hasPermission(i.key)) return true
         return false
       })
       const [tree] = utils.arr2tree(menu)
       this.keyMenu = keyMenu
-      this.menuTree = tree[0].children
+      this.menuTree = tree[0]?.children
     },
     addDynamicRoutes() {
       // TODO 如果需要，将此代码移至权限获取处，并完善动态添加路由

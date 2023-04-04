@@ -5,9 +5,9 @@
         <span class="dict-tree-item">
           <span>{{ node.data.val }}</span>
           <span class="actions">
-            <i-ep-edit @click.stop="handleEdit(node)" />
-            <i-ep-plus @click.stop="handleAdd(node)" />
-            <i-ep-delete v-if="node.data.pId" @click.stop="handleDel(node)" />
+            <i-ep-edit v-permission:settingDict="2" @click.stop="handleEdit(node)" />
+            <i-ep-plus v-permission:settingDict="1" @click.stop="handleAdd(node)" />
+            <i-ep-delete v-permission:settingDict="3" v-if="node.data.pId" @click.stop="handleDel(node)" />
           </span>
         </span>
       </template>

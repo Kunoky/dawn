@@ -4,7 +4,7 @@
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="handleClose">{{ $t('common.close') }}</el-button>
-        <el-button type="primary" @click="handleSave">{{ $t('common.save') }}</el-button>
+        <el-button v-permission:settingUser="2" type="primary" @click="handleSave">{{ $t('common.save') }}</el-button>
       </span>
     </template>
   </el-dialog>
