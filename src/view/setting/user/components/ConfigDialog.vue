@@ -1,6 +1,12 @@
 <template>
   <el-dialog :model-value="modelValue" @close="handleClose" title="User Configuration" width="60%" v-bind="$attrs">
-    <el-transfer v-model="role" :data="source" :props="{ key: 'name', label: 'name' }" />
+    <el-transfer
+      v-model="role"
+      :data="source"
+      :props="{ key: 'name', label: 'name' }"
+      :titles="['Role Source', 'Role Added']"
+      :button-texts="[$t('common.remove'), $t('common.add')]"
+    />
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="handleClose">{{ $t('common.close') }}</el-button>

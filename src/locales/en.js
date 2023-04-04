@@ -40,6 +40,7 @@ export default {
     config: 'Config',
     login: 'Login',
     logout: 'Logout',
+    remove: 'Remove',
   },
   tip: {
     delete: 'Data cannot be restored after deletion. Continue?',

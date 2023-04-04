@@ -10,7 +10,7 @@
       v-loading="loading.get"
     >
       <template #default="{ node }">
-        <span class="dict-tree-item">
+        <span>
           <span>{{ node.label }}</span>
           <span v-if="node.data.remark" class="tc-7 mgl-s">({{ node.data.remark }})</span>
         </span>

@@ -40,6 +40,7 @@ export default {
     config: '配置',
     login: '登录',
     logout: '登出',
+    remove: '移除',
   },
   tip: {
     delete: '数据删除后无法恢复，确定继续？',
