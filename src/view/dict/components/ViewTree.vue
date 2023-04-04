@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :model-value="modelValue" @close="handleClose" title="Dictionary Tree" width="60%" v-bind="$attrs">
+  <el-dialog :model-value="modelValue" @close="handleClose" title="Dictionary Tree" width="40%" v-bind="$attrs">
     <el-tree :data="data.tree" node-key="id" v-loading="loading || deleting" default-expand-all>
       <template #default="{ node }">
         <span class="dict-tree-item">
@@ -22,9 +22,8 @@
 </template>
 
 <script setup>
-import { listDict } from '@/services/dict'
+import { listDict, delDict } from '@/services/dict'
 import FormDialog from './FormDialog.vue'
-import { delDict } from '@/services/dict'
 
 const emit = defineEmits(['update:modelValue', 'success'])
 const props = defineProps({
@@ -95,6 +94,9 @@ const handleDel = async node => {
 </script>
 <style lang="scss">
 .dict-tree-item {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
   .actions {
     margin-left: var(--size-l);
     color: var(--primary-color);

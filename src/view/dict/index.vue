@@ -16,17 +16,17 @@
       <el-table-column prop="category" label="Category"></el-table-column>
       <el-table-column prop="pId" label="PID"></el-table-column>
       <el-table-column prop="remark" label="Remark" show-overflow-tooltip></el-table-column>
-      <el-table-column prop="createdTime" label="Created Time" width="128">
+      <el-table-column prop="createdTime" label="Created Time" width="168">
         <template v-slot="{ row }">
           {{ row.createdTime?.toLocaleString() }}
         </template>
       </el-table-column>
-      <el-table-column prop="updatedTime" label="Updated Time" width="128">
+      <el-table-column prop="updatedTime" label="Updated Time" width="168">
         <template v-slot="{ row }">
           {{ row.updatedTime?.toLocaleString() }}
         </template>
       </el-table-column>
-      <el-table-column prop="operation" label="Operation" width="200">
+      <el-table-column prop="operation" label="Operation" width="240">
         <template v-slot="{ row }">
           <el-button @click="hadnleView(row)" :disabled="current?.id === row.id && current?.deleting">
             {{ $t('common.view') }}

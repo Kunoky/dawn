@@ -54,14 +54,23 @@ watch(
   () => props.modelValue,
   v => {
     if (v) {
-      form.value = { ...props.data } || {
+      form.value = {
         key: '',
         val: '',
         category: '',
         sort: 0,
         remark: '',
+        meta: {},
       }
-      form.value.sort ??= 0
+      if (props.data) {
+        for (let k in form.value) {
+          form.value[k] = props.data[k]
+        }
+        if (props.data.id) {
+          form.value.id = props.data.id
+        }
+        form.value.pId = props.data.pId
+      }
       nextTick(() => {
         formRef.value.clearValidate()
       })
