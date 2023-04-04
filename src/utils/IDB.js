@@ -19,6 +19,7 @@ const dicts = [
     val: 'Component',
     meta: {
       title: 'Component',
+      icon: 'yingyongchangjing',
     },
     id: 2,
   },
@@ -44,6 +45,9 @@ const dicts = [
     sort: 2,
     key: 'setting',
     val: 'Setting',
+    meta: {
+      icon: 'guanli',
+    },
     id: 5,
   },
   {
@@ -126,6 +130,7 @@ const dicts = [
     val: 'Demo',
     meta: {
       title: 'Custom Name',
+      icon: 'zujian',
     },
     id: 15,
   },
@@ -216,6 +221,9 @@ const dicts = [
     sort: 0,
     key: 'home',
     val: 'Home',
+    meta: {
+      icon: 'home',
+    },
     id: 27,
   },
 ]
