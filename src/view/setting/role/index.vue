@@ -29,14 +29,14 @@
             {{ $t('common.config') }}
           </el-button>
           <el-button
-            v-permission:settingRole="2"
+            v-permission:settingRole="1"
             @click="hadnleEdit(row)"
             :disabled="current?.id === row.id && current?.deleting"
           >
             {{ $t('common.edit') }}
           </el-button>
           <el-button
-            v-permission:settingRole="3"
+            v-permission:settingRole="2"
             type="danger"
             @click="hadnleDel(row)"
             :loading="current?.id === row.id && current?.deleting"
@@ -46,7 +46,7 @@
         </template>
       </el-table-column>
       <template #actions>
-        <el-button v-permission:settingRole="1" type="primary" @click="hadnleAdd">{{ $t('common.add') }}</el-button>
+        <el-button v-permission:settingRole="0" type="primary" @click="hadnleAdd">{{ $t('common.add') }}</el-button>
       </template>
       <template #form="{ form }">
         <el-form-item label="Name">

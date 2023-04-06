@@ -9,11 +9,11 @@
           <div class="permission-group">
             <span><el-button v-permission type="primary">logged in</el-button></span>
             <span><el-button v-permission:demo type="primary">demo</el-button></span>
-            <span><el-button v-permission:demo="1" type="primary">create</el-button></span>
-            <span><el-button v-permission:demo="2" type="primary">update</el-button></span>
-            <span><el-button v-permission:demo="3" type="primary">delete</el-button></span>
-            <span><el-button v-if="hasP(4)" type="primary">custom 4</el-button></span>
-            <span><el-button v-if="$hasPermission('demo', 5)" type="primary">custom 5</el-button></span>
+            <span><el-button v-permission:demo="0" type="primary">create</el-button></span>
+            <span><el-button v-permission:demo="1" type="primary">update</el-button></span>
+            <span><el-button v-permission:demo="2" type="primary">delete</el-button></span>
+            <span><el-button v-if="hasP(3)" type="primary">custom 4</el-button></span>
+            <span><el-button v-if="$hasPermission('demo', 4)" type="primary">custom 5</el-button></span>
           </div>
         </div>
       </div>

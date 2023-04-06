@@ -135,18 +135,13 @@ router.beforeEach(async (to, from) => {
   }
   const userStore = useUserStore()
   const meta = userStore.keyMenu[to.name]?.meta
-  const permissionCode = userStore.permission[to.name]
   to.meta = {
     ...to.meta,
     ...meta,
   }
   if (to.meta.public) return
   const hasAuth = userStore.hasPermission(to.name)
-  if (hasAuth) {
-    to.meta.permissionCode = userStore.permission[to.name]
-    to.meta.hasPermission = n => utils.hasBit(permissionCode, n)
-    return
-  }
+  if (hasAuth) return
   if (hasToken) {
     if (from.name === 'login') return '/'
     ElMessage({

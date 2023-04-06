@@ -24,14 +24,14 @@
       <el-table-column prop="operation" label="Operation" width="168">
         <template v-slot="{ row }">
           <el-button
-            v-permission:settingPermission="2"
+            v-permission:settingPermission="1"
             @click="hadnleEdit(row)"
             :disabled="current?.id === row.id && current?.deleting"
           >
             {{ $t('common.edit') }}
           </el-button>
           <el-button
-            v-permission:settingPermission="3"
+            v-permission:settingPermission="2"
             type="danger"
             @click="hadnleDel(row)"
             :loading="current?.id === row.id && current?.deleting"
@@ -41,7 +41,7 @@
         </template>
       </el-table-column>
       <template #actions>
-        <el-button v-permission:settingPermission="1" type="primary" @click="hadnleAdd">
+        <el-button v-permission:settingPermission="0" type="primary" @click="hadnleAdd">
           {{ $t('common.add') }}
         </el-button>
       </template>

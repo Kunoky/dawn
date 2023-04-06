@@ -11,7 +11,7 @@ export default {
         const { value, arg } = binding
         // 登录即可
         if (!arg && getToken()) {
-          if (value) console.warn('value requires args to take effect')
+          if (value || value === 0) console.warn('value requires args to take effect')
           return
         }
         if (hasPermission(arg, value)) return

@@ -19,7 +19,7 @@
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="handleClose">{{ $t('common.close') }}</el-button>
-        <el-button v-permission:settingRole="2" type="primary" @click="handleSave">{{ $t('common.save') }}</el-button>
+        <el-button v-permission:settingRole="1" type="primary" @click="handleSave">{{ $t('common.save') }}</el-button>
       </span>
     </template>
   </el-dialog>
@@ -53,7 +53,7 @@ const init = () => {
         const operations = ['create', 'update', 'delete']
         for (let j = 0; j < i.operand; j++) {
           i.children.push({
-            label: operations[j] || 'custom ' + (j + 1),
+            label: operations[j] || 'custom ' + (j - 2),
             name: i.name + NAME_SEPARATOR + j,
           })
         }

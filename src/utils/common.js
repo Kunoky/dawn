@@ -49,14 +49,11 @@ export function tree2arr(tree, key, arr = []) {
 }
 
 /**
- * 将num转成2进制，看从右到左第n（从1开始）位是否有值
+ * 将num转成2进制，看从右到左第n位是否有值
  * @param {Number} num
  * @param {Number} n
  * @returns {Boolean}
  */
 export function hasBit(num, n) {
-  const binary = num.toString(2)
-  const len = binary.length
-  if (binary[len - n] !== '1') return false
-  return true
+  return !!((num >> n) % 2)
 }
