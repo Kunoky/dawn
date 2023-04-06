@@ -124,9 +124,17 @@ const handleUserCommand = e => {
       & + .bg {
         margin-top: var(--size-m);
       }
-      &.of-a {
+    }
+    /* Chrome 29+ */
+    @media screen and (-webkit-min-device-pixel-ratio: 0) and (min-resolution: 0.001dpcm) {
+      .bg.of-a {
         padding-right: var(--size-s);
-        padding-bottom: var(--size-s);
+      }
+    }
+    /* firefox */
+    @-moz-document url-prefix() {
+      .bg.of-a {
+        padding-right: var(--size-m);
       }
     }
   }
