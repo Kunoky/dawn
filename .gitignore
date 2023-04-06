@@ -2,6 +2,7 @@
 coverage
 
 stats.html
+.eslintrc-auto-import.json
 # Logs
 logs
 *.log
