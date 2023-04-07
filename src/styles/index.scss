@@ -1,7 +1,15 @@
+// import dark theme
+@use 'element-plus/theme-chalk/src/dark/css-vars.scss' as *;
+
 /* @import '@/assets/iconfont/iconfont.css'; */
 /* CDN 服务仅供平台体验和调试使用，平台不承诺服务的稳定性，企业客户需下载字体包自行发布使用并做好备份 */
 @import '//at.alicdn.com/t/c/font_3942014_4h85gbo1yhf.css';
+
 body {
+  font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial,
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   margin: 0;
 }
 :focus-visible {
@@ -41,20 +49,7 @@ h6 {
   display: table;
 }
 
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-thumb {
-  border-radius: 4px;
-  background-color: #ccc;
-}
-
-::-webkit-scrollbar-button {
-  display: none;
-}
-
 html {
   overflow: overlay;
+  --bgc: var(--gray-9);
 }

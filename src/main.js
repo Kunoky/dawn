@@ -8,7 +8,7 @@ import { init as initDict } from './utils/dict'
 import Permission from '@/plugins/permission'
 import { useUserStore } from './store/user'
 import 'oocss/src/index.css'
-import './style.css'
+import './styles/index.scss'
 
 initDict()
 

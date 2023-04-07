@@ -14,7 +14,9 @@ const plugins = [
   vueJsx(),
   AutoImport({
     resolvers: [
-      ElementPlusResolver(),
+      ElementPlusResolver({
+        importStyle: 'sass',
+      }),
       IconsResolver({
         prefix: 'Icon',
       }),
@@ -34,14 +36,16 @@ const plugins = [
         '@/utils/request': [['default', 'axios']],
       },
     ],
-    dirs: ['./src/hooks'],
+    dirs: ['./src/composables'],
     eslintrc: {
       enabled: true,
     },
   }),
   Components({
     resolvers: [
-      ElementPlusResolver(),
+      ElementPlusResolver({
+        importStyle: 'sass',
+      }),
       IconsResolver({
         enabledCollections: ['ep'],
       }),
@@ -78,10 +82,17 @@ export default defineConfig({
   },
   define: {
     __APP_NAME__: '"破晓"', // 项目名
-    __TOKEN_KEY__: '"satoken"', // token键名，localStorage和header均使用此名
+    __TOKEN_KEY__: '"satoken"', // token键名，localStorage和axios的header均使用此名
   },
   test: {
     globals: true,
     environment: 'jsdom',
+  },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: `@use "@/styles/element/index.scss" as *;`,
+      },
+    },
   },
 })

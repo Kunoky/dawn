@@ -12,8 +12,8 @@
             <span><el-button v-permission:demo="0" type="primary">create</el-button></span>
             <span><el-button v-permission:demo="1" type="primary">update</el-button></span>
             <span><el-button v-permission:demo="2" type="primary">delete</el-button></span>
-            <span><el-button v-if="hasP(3)" type="primary">custom 4</el-button></span>
-            <span><el-button v-if="$hasPermission('demo', 4)" type="primary">custom 5</el-button></span>
+            <span><el-button v-if="hasP(3)" type="primary">custom 1</el-button></span>
+            <span><el-button v-if="$hasPermission('demo', 4)" type="primary">custom 2</el-button></span>
           </div>
         </div>
       </div>

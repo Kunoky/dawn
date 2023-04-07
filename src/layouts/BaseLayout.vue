@@ -34,6 +34,8 @@ const handleUserCommand = e => {
     default:
   }
 }
+
+const { isDark, toggle } = useTheme()
 </script>
 <template>
   <el-container class="base-layout">
@@ -50,8 +52,12 @@ const handleUserCommand = e => {
       <el-header class="base-layout_header">
         <span>{{ appName }}</span>
         <div class="ft-r">
+          <el-button link @click="toggle()">
+            <i-ep-sunny v-if="isDark"></i-ep-sunny>
+            <i-ep-moon v-else></i-ep-moon>
+          </el-button>
           <el-dropdown @command="handleCommand">
-            <span v-loading="loading.lang">
+            <span class="mgl-s" v-loading="loading.lang">
               <span>{{ $t('lang') }}</span>
               <i-ep-arrow-down />
             </span>
@@ -83,6 +89,7 @@ const handleUserCommand = e => {
 </template>
 <style lang="scss">
 .base-layout {
+  color: var(--el-text-color-primary);
   min-width: 1280px;
   max-width: 2000px;
   margin: 0 auto;

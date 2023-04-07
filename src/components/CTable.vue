@@ -386,7 +386,6 @@ defineExpose({
 })
 </script>
 <style lang="scss">
-@import url('@/style.css');
 .c-table {
   &__form {
     &::after {
