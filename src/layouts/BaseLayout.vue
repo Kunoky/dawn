@@ -90,6 +90,7 @@ const { isDark, toggle } = useTheme()
 <style lang="scss">
 .base-layout {
   color: var(--el-text-color-primary);
+  background-color: var(--gray-1);
   min-width: 1280px;
   max-width: 2000px;
   margin: 0 auto;
