@@ -2,12 +2,15 @@ import axios from 'axios'
 import { useUserStore } from '@/store/user'
 import { getToken } from '@/utils/auth'
 import { i18n } from '@/i18nSetup'
+// import axiosTauriApiAdapter from 'axios-tauri-api-adapter'
 
 // create an axios instance
 const service = axios.create({
   baseURL: import.meta.env.VITE_SERVER_PATH, // url = base url + request url
   // withCredentials: true, // send cookies when cross-domain requests
   timeout: 5000, // request timeout
+  // adapter: ['http'], // polyfill tauri
+  // adapter: axiosTauriApiAdapter， // polyfill tauri
 })
 
 // request interceptor

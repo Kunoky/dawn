@@ -13,7 +13,11 @@
     "preview": "vite preview",
     "prepare": "husky install",
     "test": "vitest",
-    "coverage": "vitest run --coverage"
+    "coverage": "vitest run --coverage",
+    "tauri": "tauri",
+    "build:tauri": "tauri build",
+    "build:tauri_debug": "tauri build --debug",
+    "dev:tauri": "tauri dev"
   },
   "dependencies": {
     "@vueuse/core": "^9.13.0",
@@ -29,10 +33,12 @@
   },
   "devDependencies": {
     "@iconify-json/ep": "^1.1.9",
+    "@tauri-apps/cli": "^1.2.3",
     "@vitejs/plugin-vue": "^4.0.0",
     "@vitejs/plugin-vue-jsx": "^3.0.0",
     "@vitest/coverage-c8": "^0.28.5",
     "@vue/test-utils": "^2.3.0",
+    "axios-tauri-api-adapter": "^0.2.0",
     "cross-env": "^7.0.3",
     "eslint": "^8.34.0",
     "eslint-config-prettier": "^8.6.0",

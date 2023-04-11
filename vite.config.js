@@ -66,6 +66,7 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: '8000',
+    strictPort: true,
     proxy: {
       '^/api': {
         target: 'http://jsonplaceholder.typicode.com/',
@@ -94,5 +95,18 @@ export default defineConfig({
         additionalData: `@use "@/styles/element/index.scss" as *;`,
       },
     },
+  },
+  // https://tauri.app/zh-cn/v1/guides/getting-started/prerequisites/
+  // to make use of `TAURI_PLATFORM`, `TAURI_ARCH`, `TAURI_FAMILY`,
+  // `TAURI_PLATFORM_VERSION`, `TAURI_PLATFORM_TYPE` and `TAURI_DEBUG`
+  // env variables
+  envPrefix: ['VITE_', 'TAURI_'],
+  build: {
+    // Tauri uses Chromium on Windows and WebKit on macOS and Linux
+    target: process.env.TAURI_PLATFORM === 'windows' ? 'chrome105' : 'safari13',
+    // don't minify for debug builds
+    minify: !process.env.TAURI_DEBUG ? 'esbuild' : false,
+    // 为调试构建生成源代码映射 (sourcemap)
+    sourcemap: !!process.env.TAURI_DEBUG,
   },
 })
