@@ -1,5 +1,5 @@
 import { listDict } from '@/services/dict'
-import { cloneDeep } from 'lodash'
+import { cloneDeep } from 'lodash-es'
 
 const source = ref([])
 const loading = {},
