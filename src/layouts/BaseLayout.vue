@@ -44,15 +44,20 @@ const { isDark, toggle } = useTheme()
         <menu-item-recursive v-for="i in menuTree" :key="i.id" :data="i" />
       </el-menu>
       <div class="bdt bdc-4 pd-s cs-p">
-        <i-ep-expand v-if="isCollapse" @click="isCollapse = !isCollapse" />
-        <i-ep-fold v-else @click="isCollapse = !isCollapse" />
+        <i-ep-expand
+          v-if="isCollapse"
+          @click="isCollapse = !isCollapse"
+          role="button"
+          :aria-description="$t('common.expand')"
+        />
+        <i-ep-fold v-else @click="isCollapse = !isCollapse" role="button" :aria-description="$t('common.collapse')" />
       </div>
     </el-aside>
     <el-container class="ht-100vh">
       <el-header class="base-layout_header">
         <span>{{ appName }}</span>
         <div class="ft-r">
-          <el-button link @click="toggle()">
+          <el-button link @click="toggle()" :aria-description="isDark ? $t('theme.light') : $t('theme.dark')">
             <i-ep-sunny v-if="isDark"></i-ep-sunny>
             <i-ep-moon v-else></i-ep-moon>
           </el-button>

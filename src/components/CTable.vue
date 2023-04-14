@@ -22,21 +22,21 @@
         <div class="c-table__actions">
           <slot name="actions"></slot>
           <el-tooltip v-if="$slots.form" :content="$t('common.query')" placement="top">
-            <el-button link @click="showQuery = !showQuery">
+            <el-button link @click="showQuery = !showQuery" :aria-description="$t('common.query')">
               <template #icon>
                 <i-ep-search />
               </template>
             </el-button>
           </el-tooltip>
           <el-tooltip :content="$t('common.refresh')" placement="top">
-            <el-button link @click="refresh">
+            <el-button link @click="refresh" :aria-description="$t('common.refresh')">
               <template #icon>
                 <i-ep-refresh />
               </template>
             </el-button>
           </el-tooltip>
           <CDropdown v-model="tableSize" :options="$tm('component.CTable.sizes')" trigger="click">
-            <el-button link>
+            <el-button link :aria-description="$t('component.CTable.size')">
               <template #icon>
                 <el-tooltip :content="$t('component.CTable.size')" placement="top">
                   <IconFont icon="enlarge" />
@@ -45,7 +45,7 @@
             </el-button>
           </CDropdown>
           <el-tooltip v-if="id" :content="$t('component.CTable.save')" placement="top">
-            <el-button link @click="handleSave">
+            <el-button link @click="handleSave" :aria-description="$t('component.CTable.save')">
               <template #icon>
                 <IconFont icon="save" />
               </template>
@@ -53,7 +53,7 @@
           </el-tooltip>
           <el-popover trigger="click" width="200px" popper-class="c-table__setting">
             <template #reference>
-              <el-button link>
+              <el-button link :aria-description="$t('component.CTable.setting')">
                 <template #icon>
                   <el-tooltip :content="$t('component.CTable.setting')" placement="top">
                     <i-ep-setting />

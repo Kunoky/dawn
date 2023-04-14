@@ -66,4 +66,8 @@ export default {
       save: 'Save Settings',
     },
   },
+  theme: {
+    dark: 'Dark',
+    light: 'Light',
+  },
 }

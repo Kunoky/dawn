@@ -66,4 +66,8 @@ export default {
       save: '保存设置',
     },
   },
+  theme: {
+    dark: '暗黑',
+    light: '明亮',
+  },
 }
