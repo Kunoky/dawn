@@ -8,6 +8,7 @@ import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import Icons from 'unplugin-icons/vite'
 import IconsResolver from 'unplugin-icons/resolver'
+import purgecss from '@mojojoejo/vite-plugin-purgecss'
 
 const plugins = [
   vue(),
@@ -54,10 +55,15 @@ const plugins = [
   Icons({
     autoInstall: true,
   }),
+  {
+    ...purgecss(),
+    apply: 'build',
+  },
+  {
+    ...visualizer(),
+    apply: () => process.env.stats,
+  },
 ]
-if (process.env.stats) {
-  plugins.push(visualizer())
-}
 
 // https://vitejs.dev/config/
 export default defineConfig({
