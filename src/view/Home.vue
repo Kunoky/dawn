@@ -1,6 +1,6 @@
 <template>
   <div>
-    <pre class="bg mg-0 tc-8">
+    <pre class="bg mg-0 cl-8">
   这个项目集成了vite、vue、pinia、vue-i18n、vue-router、vitest、element-plus、axios等技术；
   实现了权限，字典等功能；
   封装了通用分页、表格、IconFont、useAsync、useStorage、useDict等组件和组合式函数；

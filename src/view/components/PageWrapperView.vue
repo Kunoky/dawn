@@ -4,10 +4,10 @@
       <h3 class="bg">photo 列表</h3>
       <PageWrapper action="/albums/1/photos" totalKey="length" dataKey="" placement="top">
         <template v-slot="{ data, loading }">
-          <ul class="ls-n fl-1 of-a bg mgt-m" v-loading="loading">
-            <li v-for="i in data" :key="i.id" class="bsd-4 pd-m mgb-m dp-f">
+          <ul class="ls-n fx-1 of-a pd-m bg mgt-m" v-loading="loading">
+            <li v-for="i in data" :key="i.id" class="bs pd-m mgb-m dp-f">
               <el-image style="width: 100px; height: 100px" :src="i.url"></el-image>
-              <div class="fl-1 pdl-m">
+              <div class="fx-1 pdl-m">
                 <h4>{{ i.title }}</h4>
               </div>
             </li>

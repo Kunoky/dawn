@@ -19,7 +19,7 @@
       <el-table-column prop="company.name" label="公司"></el-table-column>
       <el-table-column prop="website" label="网站">
         <template v-slot="{ row }">
-          <a class="tc-p" :href="row.website" target="_blank">{{ row.website }}</a>
+          <a class="cl-p" :href="row.website" target="_blank">{{ row.website }}</a>
         </template>
       </el-table-column>
       <template #actions>

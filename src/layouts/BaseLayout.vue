@@ -40,7 +40,7 @@ const { isDark, toggle } = useTheme()
 <template>
   <el-container class="base-layout">
     <el-aside :width="isCollapse ? '64px' : '200px'" class="base-layout_aside ht-100vh dp-f fd-c">
-      <el-menu :default-active="active" :collapse="isCollapse" class="fl-1 base-layout_menu">
+      <el-menu :default-active="active" :collapse="isCollapse" class="fx-1 base-layout_menu of-o">
         <menu-item-recursive v-for="i in menuTree" :key="i.id" :data="i" />
       </el-menu>
       <div class="bdt bdc-4 pd-s cs-p">
@@ -83,7 +83,7 @@ const { isDark, toggle } = useTheme()
               </el-dropdown-menu>
             </template>
           </el-dropdown>
-          <router-link v-else to="/login" class="fs-5 tc-8 mgl-s">{{ $t('common.login') }}</router-link>
+          <router-link v-else to="/login" class="fs-5 cl-8 mgl-s">{{ $t('common.login') }}</router-link>
         </div>
       </el-header>
       <el-main class="base-layout_main">
@@ -133,21 +133,11 @@ const { isDark, toggle } = useTheme()
     .bg {
       background-color: var(--gray-1);
       border-radius: 2px;
-      padding: var(--size-m);
+      &:not(.of-a):not(.of-s) {
+        padding: var(--size-m);
+      }
       & + .bg {
         margin-top: var(--size-m);
-      }
-    }
-    /* Chrome 29+ */
-    @media screen and (-webkit-min-device-pixel-ratio: 0) and (min-resolution: 0.001dpcm) {
-      .bg.of-a {
-        padding-right: var(--size-s);
-      }
-    }
-    /* firefox */
-    @-moz-document url-prefix() {
-      .bg.of-a {
-        padding-right: var(--size-m);
       }
     }
   }

@@ -69,7 +69,7 @@ const handleLogin = () => {
                 <template #prefix><i-ep-lock /></template>
               </el-input>
             </el-form-item>
-            <div class="tc-1">username: admin, password: admin</div>
+            <div class="cl-1">username: admin, password: admin</div>
             <el-form-item style="width: 100%">
               <el-button class="submit" :loading="loading.login" size="default" @click.prevent="handleLogin">
                 登 录
@@ -94,7 +94,7 @@ section {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: linear-gradient(#f1f4f9 0, #a0a3a9 5%, #606266 10%, #303236 15%, #111112 20%);
+  background: linear-gradient(#c2a6a6 0, #3d3a68 40%);
   // .color>div {
   //   position: absolute;
   //   // safari卡顿

@@ -5,7 +5,7 @@
         <h3>posts 列表</h3>
         <div>total: {{ total }}</div>
         <div class="ta-r">
-          <b class="bottom-m pt-r">Permissions:</b>
+          <b class="bt-m pt-r">Permissions:</b>
           <div class="permission-group">
             <span><el-button v-permission type="primary">logged in</el-button></span>
             <span><el-button v-permission:demo type="primary">demo</el-button></span>
@@ -17,8 +17,8 @@
           </div>
         </div>
       </div>
-      <ul class="bg ls-n fl-1 of-a">
-        <li v-for="i in posts" :key="i.id" class="bsd-4 pd-m mgb-m tc-8">
+      <ul class="bg ls-n fx-1 of-a pd-m">
+        <li v-for="i in posts" :key="i.id" class="bs pd-m mgb-m cl-8">
           <div>
             <span>ID:</span>
             &nbsp;
@@ -27,7 +27,7 @@
             <demo-user :id="i.userId" />
           </div>
           <b>{{ i.title }}</b>
-          <p class="tc-7 mgb-0">{{ i.body }}</p>
+          <p class="cl-7 mgb-0">{{ i.body }}</p>
         </li>
       </ul>
     </section>

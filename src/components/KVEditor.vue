@@ -1,16 +1,16 @@
 <template>
   <ul class="kv-editor">
     <li v-for="(_, k) in obj" :key="k" class="kv-editor__item dp-f mgb-m">
-      <span class="kv-editor__k fl-1">{{ k }}</span>
+      <span class="kv-editor__k fx-1">{{ k }}</span>
       <span class="kv-editor__separator mgh-s">:</span>
-      <el-input class="kv-editor__v fl-1" v-model="obj[k]" placeholder="value"></el-input>
-      <span class="kv-editor__actions mgl-m tc-p cs-p"><i-ep-delete @click="handleDel(k)" /></span>
+      <el-input class="kv-editor__v fx-1" v-model="obj[k]" placeholder="value"></el-input>
+      <span class="kv-editor__actions mgl-m cl-p cs-p"><i-ep-delete @click="handleDel(k)" /></span>
     </li>
     <li class="kv-editor__item dp-f">
-      <el-input :class="['kv-editor__k', 'fl-1', isKeyError && 'is-error']" v-model="kv.key" placeholder="key" />
+      <el-input :class="['kv-editor__k', 'fx-1', isKeyError && 'is-error']" v-model="kv.key" placeholder="key" />
       <span class="kv-editor__separator mgh-s">:</span>
-      <el-input class="kv-editor__v fl-1" v-model="kv.val" placeholder="value"></el-input>
-      <span class="kv-editor__actions mgl-m tc-p cs-p"><i-ep-plus @click="handleAdd" /></span>
+      <el-input class="kv-editor__v fx-1" v-model="kv.val" placeholder="value"></el-input>
+      <span class="kv-editor__actions mgl-m cl-p cs-p"><i-ep-plus @click="handleAdd" /></span>
     </li>
   </ul>
 </template>

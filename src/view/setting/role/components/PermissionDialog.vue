@@ -12,7 +12,7 @@
       <template #default="{ node }">
         <span>
           <span>{{ node.label }}</span>
-          <span v-if="node.data.remark" class="tc-7 mgl-s">({{ node.data.remark }})</span>
+          <span v-if="node.data.remark" class="cl-7 mgl-s">({{ node.data.remark }})</span>
         </span>
       </template>
     </el-tree>
