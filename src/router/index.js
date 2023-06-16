@@ -113,8 +113,8 @@ export const dynamicRoutes = [
 
 const router = createRouter({
   history: import.meta.env.DEV
-    ? createWebHashHistory(import.meta.env.BASE_URL)
-    : createWebHistory(import.meta.env.BASE_URL),
+    ? createWebHashHistory(import.meta.env.VITE_BASE_URL)
+    : createWebHistory(import.meta.env.VITE_BASE_URL),
   routes,
 })
 let loadingInstance, timer
