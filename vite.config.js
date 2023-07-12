@@ -75,7 +75,7 @@ export default defineConfig({
     strictPort: true,
     proxy: {
       '^/api': {
-        target: 'http://jsonplaceholder.typicode.com/',
+        target: 'http://vue.ruoyi.vip/prod-api',
         changeOrigin: true,
         rewrite: path => path.replace(/^\/api/, ''),
       },
@@ -89,7 +89,7 @@ export default defineConfig({
   },
   define: {
     __APP_NAME__: '"破晓"', // 项目名
-    __TOKEN_KEY__: '"satoken"', // token键名，localStorage和axios的header均使用此名
+    __TOKEN_KEY__: '"satoken"', // token键名，localStorage
   },
   test: {
     globals: true,

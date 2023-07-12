@@ -138,12 +138,7 @@
             :size="tableSize"
             @sort-change="handleSortChange"
           >
-            <el-table-column v-for="i in getColumns()" :key="i.props?.prop" v-bind="i.props">
-              <!-- 这里热重载失效了... -->
-              <template v-for="(v, k) in i.children" v-slot:[k]="slotScope" :key="k">
-                <FW :component="v" :attrs="slotScope"></FW>
-              </template>
-            </el-table-column>
+            <FW :component="getColumns()"></FW>
             <template #append>
               <slot name="append"></slot>
             </template>

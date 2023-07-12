@@ -1,45 +1,12 @@
 // 该service仅作本地调试
-import { operateByStoreName, syncReq } from '@/utils/IDB'
-import { listRole } from './role'
-const { syncOp, getStore } = operateByStoreName('user')
+import { operateByStoreName } from '@/utils/IDB'
+const { syncOp } = operateByStoreName('user')
 
-export const login = async user => {
-  const store = await getStore()
-  const data = await syncReq(store.index('username').get(user.username))
-  const res = {
-    code: 0,
-    data: null,
-    msg: '',
-  }
-  if (!data || data.password !== user.password) {
-    res.code = 1
-    res.msg = '用户名或密码错误'
-  } else {
-    delete data.password
-    delete data.role
-    data.token = 'token'
-    res.data = data
-  }
-  return res
-}
+export const login = async user => axios.post('/login', user)
 
-export const getUser = async id => {
-  const user = await syncOp('get', id)
-  const role = await listRole({ name: user.role })
-  const permission = {}
-  role.list.forEach(i => {
-    for (let p in i.permission) {
-      if (permission[p]) {
-        //权限合并
-        permission[p] = permission[p] | i.permission[p]
-      } else {
-        permission[p] = i.permission[p]
-      }
-    }
-  })
-  user.permission = permission
-  return user
-}
+export const getUser = async () => axios.get('/getInfo')
+
+export const listRoute = async () => axios.get('/getRouters')
 
 export async function addUser(data) {
   data.version = 1

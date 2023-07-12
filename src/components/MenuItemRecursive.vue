@@ -1,21 +1,22 @@
 <template>
-  <el-sub-menu v-if="data.children" :index="String(data.id)">
+  <el-sub-menu v-if="data.children" :index="data.name">
     <template #title>
       <IconFont v-if="data.meta?.icon" :icon="data.meta.icon" class="mgr-s fs-3" />
-      <span>{{ data.val }}</span>
+      <span>{{ data.meta.title || data.name }}</span>
     </template>
-    <menu-item-recursive v-for="i in data.children" :key="i.id" :data="i" />
+    <menu-item-recursive v-for="i in data.children" :key="i.name" :data="i" />
   </el-sub-menu>
-  <a v-else-if="data.key.startsWith('http')" :href="data.key" target="_blank">
-    <el-menu-item :index="String(data.id)">
+  <a v-else-if="data.path.startsWith('http')" :href="data.path" target="_blank">
+    <el-menu-item :index="data.name">
       <IconFont v-if="data.meta?.icon" :icon="data.meta.icon" class="mgr-s fs-3" />
-      {{ data.val }}
+      {{ data.meta.title || data.name }}
     </el-menu-item>
   </a>
-  <router-link v-else :to="{ name: data.key }" :data-id="data.id">
-    <el-menu-item :index="String(data.id)">
+  <router-link v-else :to="{ path: data.path }" :data-id="data.name">
+    <!-- <router-link v-else :to="{ name: data.name }" :data-id="data.name"> -->
+    <el-menu-item :index="data.name">
       <IconFont v-if="data.meta?.icon" :icon="data.meta.icon" class="mgr-s fs-3" />
-      {{ data.val }}
+      {{ data.meta.title || data.name }}
     </el-menu-item>
   </router-link>
 </template>

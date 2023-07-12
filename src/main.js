@@ -3,13 +3,13 @@ import router from './router'
 import { i18n } from './i18nSetup'
 import { createPinia } from 'pinia'
 import App from './App.vue'
-import { init as initDict } from './utils/dict'
+// import { init as initDict } from './utils/dict'
 import Permission from '@/plugins/permission'
 import { useUserStore } from './store/user'
 import 'oocss/src/index.css'
 import './styles/index.scss'
 
-initDict()
+// initDict()
 
 const pinia = createPinia()
 const app = createApp(App)

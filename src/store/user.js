@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia'
 import * as service from '@/services/user'
-import { listDict } from '@/services/dict'
-import { setToken, removeToken } from '@/utils/auth'
+import { setToken, getToken, removeToken } from '@/utils/auth'
 import router, { dynamicRoutes } from '@/router'
 
 export const useUserStore = defineStore('user', {
@@ -29,7 +28,8 @@ export const useUserStore = defineStore('user', {
   },
   actions: {
     async init() {
-      if (!this.user) return
+      // if (!this.user) return
+      if (!getToken()) return
       await Promise.all([this.getUser(), this.listMenu()])
       this.genMenu()
     },
@@ -37,10 +37,10 @@ export const useUserStore = defineStore('user', {
       try {
         this.loading.login = true
         const res = await service.login(user)
-        if (!res.code) {
-          this.user = res.data
-          localStorage.setItem('user', JSON.stringify(res.data))
-          setToken(res.data.token)
+        if (res.code === 200) {
+          // this.user = res.data
+          // localStorage.setItem('user', JSON.stringify(res.data))
+          setToken(res.token)
           await this.init()
         }
         return res
@@ -51,14 +51,17 @@ export const useUserStore = defineStore('user', {
       }
     },
     async getUser() {
-      if (this.user.permission) return this.user
+      if (this.user?.permissions) return this.user
       this.loading.get = true
-      const res = await service.getUser(this.user.id)
+      const { user, roles, permissions, code } = await service.getUser()
       this.loading.get = false
+      if (code !== 200) return null
       this.user = {
-        ...this.user,
-        ...res,
+        ...user,
+        permissions,
+        roles,
       }
+      localStorage.setItem('user', JSON.stringify(this.user))
       return this.user
     },
     logout(go2login) {
@@ -81,24 +84,20 @@ export const useUserStore = defineStore('user', {
       return true
     },
     async listMenu() {
-      // const menuStr = localStorage.getItem('menu')
-      // if (menuStr) {
-      //   return this.menu = JSON.parse(menuStr)
-      // }
-      const res = await listDict({ category: 'menu' })
-      this.menu = res.list
-      // localStorage.setItem('menu', JSON.stringify(this.menu))
+      const res = await service.listRoute()
+      this.menu = res.data
     },
     genMenu() {
-      const keyMenu = {}
-      const menu = this.menu.filter(i => {
-        keyMenu[i.key] = i
-        if (i.meta?.public || this.hasPermission(i.key)) return true
-        return false
-      })
-      const [tree] = utils.arr2tree(menu)
-      this.keyMenu = keyMenu
-      this.menuTree = tree[0]?.children
+      // const keyMenu = {}
+      // const menu = this.menu.filter(i => {
+      //   keyMenu[i.key] = i
+      //   if (i.meta?.public || this.hasPermission(i.key)) return true
+      //   return false
+      // })
+      // const [tree] = utils.arr2tree(menu)
+      // this.keyMenu = keyMenu
+      // this.menuTree = tree[0]?.children
+      this.menuTree = this.menu
     },
     addDynamicRoutes() {
       // TODO 如果需要，将此代码移至权限获取处，并完善动态添加路由

@@ -12,28 +12,43 @@ const appName = __APP_NAME__
 const loginForm = reactive({
   username: '',
   password: '',
+  uuid: '',
+  code: '',
 })
 const loginRules = {
   username: [{ required: true, trigger: 'blur', message: '请输入用户名称' }],
   password: [{ required: true, trigger: 'blur', message: '请输入登录密码' }],
+  code: [{ required: true, trigger: 'blur', message: '请输入验证码' }],
 }
 
 const handleLogin = () => {
   loginFormInstance.value.validate(async valid => {
-    const user = {
-      username: loginForm.username,
-      password: loginForm.password,
-    }
     if (valid) {
-      const res = await userStore.login(user)
-      if (!res.code) {
+      const res = await userStore.login(loginForm)
+      if (res.code === 200) {
         router.push(router.currentRoute.value.query.redirect || '/')
       } else {
-        ElMessage.error(res.msg)
+        // ElMessage.error(res.msg)
+        getCode()
       }
     }
   })
 }
+
+const captchaEnabled = ref(true)
+const { data: codeUrl, run: getCode } = useAsync(
+  () =>
+    axios.get('/captchaImage').then(res => {
+      captchaEnabled.value = res.captchaEnabled === undefined ? true : res.captchaEnabled
+      if (captchaEnabled.value) {
+        loginForm.uuid = res.uuid
+        return 'data:image/gif;base64,' + res.img
+      }
+    }),
+  {
+    manual: false,
+  }
+)
 </script>
 <template>
   <section>
@@ -52,24 +67,23 @@ const handleLogin = () => {
       <div class="container">
         <div class="login-form">
           <h2>{{ appName }} 登录</h2>
-          <el-form ref="loginFormInstance" :model="loginForm" :rules="loginRules">
+          <el-form ref="loginFormInstance" :model="loginForm" :rules="loginRules" @keyup.enter="handleLogin">
             <el-form-item prop="username">
-              <el-input v-model="loginForm.username" type="text" placeholder="用户名" @keyup.enter="handleLogin">
+              <el-input v-model="loginForm.username" type="text" placeholder="用户名">
                 <template #prefix><i-ep-user /></template>
               </el-input>
             </el-form-item>
             <el-form-item prop="password">
-              <el-input
-                v-model="loginForm.password"
-                type="password"
-                placeholder="密码"
-                show-password
-                @keyup.enter="handleLogin"
-              >
+              <el-input v-model="loginForm.password" type="password" placeholder="密码" show-password>
                 <template #prefix><i-ep-lock /></template>
               </el-input>
             </el-form-item>
-            <div class="cl-1">username: admin, password: admin</div>
+            <el-form-item prop="code" v-if="captchaEnabled">
+              <el-input v-model="loginForm.code" auto-complete="off" placeholder="验证码" style="width: 63%">
+                <template #prefix><IconFont icon="anquanyinsi" /></template>
+              </el-input>
+              <img :src="codeUrl" @click="getCode" class="code-img cs-p" />
+            </el-form-item>
             <el-form-item style="width: 100%">
               <el-button class="submit" :loading="loading.login" size="default" @click.prevent="handleLogin">
                 登 录
@@ -251,6 +265,12 @@ section {
   .submit {
     border-radius: 18px;
     font-weight: bolder;
+  }
+
+  .code-img {
+    height: 36px;
+    width: 33%;
+    padding-left: 4%;
   }
 }
 </style>

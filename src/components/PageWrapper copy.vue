@@ -1,7 +1,6 @@
 <template>
   <slot v-if="placement === 'bottom'" :data="data" :total="total" :loading="loading" :error="error"></slot>
   <el-pagination
-    v-show="!hidePager"
     class="mgv-s"
     :style="{ justifyContent }"
     layout="total, prev, pager, next, sizes, jumper"
@@ -56,11 +55,6 @@ const props = defineProps({
     type: String,
     default: 'end',
   },
-  // 隐藏分页
-  hidePager: {
-    type: Boolean,
-    default: false,
-  },
 })
 
 const page = ref(1)
@@ -75,7 +69,7 @@ const { data, loading, run, error } = useAsync(
       [props.sizeKey]: size.value,
       ...props.params,
     }).then(res => {
-      total.value = res[props.totalKey] || 0
+      total.value = res[props.totalKey]
       if (props.dataKey) return res[props.dataKey]
       return res
     }),

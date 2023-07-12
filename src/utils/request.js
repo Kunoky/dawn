@@ -18,7 +18,7 @@ service.interceptors.request.use(
   config => {
     // do something before request is sent
     config.headers = {
-      [__TOKEN_KEY__]: getToken(),
+      Authorization: 'Bearer ' + getToken(),
       'Call-Source': 'WEB',
       'Api-Version': 1.0,
       'Content-Type': 'application/json;charset=utf-8',
@@ -47,23 +47,23 @@ service.interceptors.response.use(
    */
   response => {
     const { data, status, config } = response
-
-    if (config.method !== 'get') {
-      const msg = i18n.global.t('httpCode.' + status)
-      // 业务异常
-      if (data?.code) {
-        ElMessage({
-          message: data.msg || msg || '操作失败',
-          type: 'warning',
-          duration: 5 * 1000,
-        })
-      } else {
-        ElMessage({
-          message: data.msg || msg || '操作成功',
-          type: 'success',
-          duration: 5 * 1000,
-        })
-      }
+    const code = data?.code || status
+    const msg = i18n.global.t('httpCode.' + code)
+    // 业务异常
+    if (code === 401) {
+      useUserStore().logout(true)
+    } else if (code !== 200) {
+      ElMessage({
+        message: data.msg || msg || '操作失败',
+        type: 'warning',
+        duration: 5 * 1000,
+      })
+    } else if (config.method !== 'get') {
+      ElMessage({
+        message: data.msg || msg || '操作成功',
+        type: 'success',
+        duration: 5 * 1000,
+      })
     }
     return data
   },
@@ -71,10 +71,12 @@ service.interceptors.response.use(
     console.error(error) // for debug
     let msg = error.message
     if (error.response) {
-      const { status } = error.response
-      msg = status + ' ' + i18n.global.t('httpCode.' + status)
+      const { status, data } = error.response
+      const code = data?.code || status
+
+      msg = code + ' ' + i18n.global.t('httpCode.' + code)
       let store
-      switch (status) {
+      switch (code) {
         case 401:
           store = useUserStore()
           store.logout(true)

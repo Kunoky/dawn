@@ -2,9 +2,7 @@
   <div>
     <CTable
       :page-conf="{
-        action: '/users',
-        totalKey: 'length',
-        dataKey: '',
+        action: '/system/dict/type/list',
       }"
       title="用户表格"
       ref="tableRef"
@@ -12,7 +10,7 @@
     >
       <el-table-column v-if="showSelect" type="selection" width="55" />
       <el-table-column prop="id" label="ID" width="80" sortable="custom"></el-table-column>
-      <el-table-column prop="name" label="姓名" sortable></el-table-column>
+      <el-table-column prop="dictName" label="姓名" sortable></el-table-column>
       <el-table-column prop="username" label="用户名"></el-table-column>
       <el-table-column prop="email" label="Email"></el-table-column>
       <el-table-column prop="phone" label="号码"></el-table-column>
