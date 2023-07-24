@@ -34,7 +34,7 @@ const plugins = [
         '@/utils/dict': ['useDict'],
       },
       {
-        '@/utils/request': [['default', 'axios']],
+        '@/utils/request': [['default', 'req']],
       },
     ],
     dirs: ['./src/composables'],

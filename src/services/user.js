@@ -2,11 +2,11 @@
 import { operateByStoreName } from '@/utils/IDB'
 const { syncOp } = operateByStoreName('user')
 
-export const login = async user => axios.post('/login', user)
+export const login = async user => req.post('/login', user)
 
-export const getUser = async () => axios.get('/getInfo')
+export const getUser = async () => req.get('/getInfo')
 
-export const listRoute = async () => axios.get('/getRouters')
+export const listRoute = async () => req.get('/getRouters')
 
 export async function addUser(data) {
   data.version = 1

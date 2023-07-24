@@ -67,10 +67,10 @@ const page = ref(1)
 const size = ref(props.defaultSize)
 const total = ref(0)
 
-const req = typeof props.action === 'function' ? props.action : params => axios.get(props.action, { params })
+const load = typeof props.action === 'function' ? props.action : params => req.get(props.action, { params })
 const { data, loading, run, error } = useAsync(
   () =>
-    req({
+    load({
       [props.pageKey]: page.value,
       [props.sizeKey]: size.value,
       ...props.params,

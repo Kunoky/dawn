@@ -228,7 +228,7 @@ const handleConfirm = () => {
   formRef.value.validate(valid => {
     if (valid) {
       loading.value = true
-      axios[form.value.menuId ? 'put' : 'post']('system/menu', form.value)
+      req[form.value.menuId ? 'put' : 'post']('system/menu', form.value)
         .then(({ code }) => {
           if (code === 200) {
             emit('success')

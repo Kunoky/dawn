@@ -71,7 +71,7 @@ const i18n = useI18n()
 
 const allExpandKeys = ref([])
 const listData = params =>
-  axios.get('/system/menu/list', { params }).then(res => {
+  req.get('/system/menu/list', { params }).then(res => {
     const [list, obj] = arr2tree(res.data, 'menuId', 'parentId')
     const keys = []
     Object.values(obj).forEach(i => {
@@ -141,7 +141,7 @@ const handleDel = row => {
         ...row,
         deleting: true,
       }
-      return axios.delete('system/menu/' + row.menuId)
+      return req.delete('system/menu/' + row.menuId)
     })
     .then(({ code }) => {
       if (code === 200) {

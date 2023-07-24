@@ -15,7 +15,7 @@ async function fetchCategory(category) {
   loading[category] = true
   // }
 
-  const { data: list } = await axios.get('system/dict/data/type/' + category)
+  const { data: list } = await req.get('system/dict/data/type/' + category)
   // if (Array.isArray(category)) {
   //   category.forEach(i => {
   //     loading[i] = false

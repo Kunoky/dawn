@@ -38,7 +38,7 @@ const handleLogin = () => {
 const captchaEnabled = ref(true)
 const { data: codeUrl, run: getCode } = useAsync(
   () =>
-    axios.get('/captchaImage').then(res => {
+    req.get('/captchaImage').then(res => {
       captchaEnabled.value = res.captchaEnabled === undefined ? true : res.captchaEnabled
       if (captchaEnabled.value) {
         loginForm.uuid = res.uuid
