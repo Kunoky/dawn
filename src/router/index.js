@@ -1,13 +1,13 @@
 // import { h } from 'vue'
-import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router/auto'
 // import { ElLoading, ElMessage } from 'element-plus'
 import { getToken } from '@/utils/auth'
 import { useUserStore } from '../store/user'
 
-const routes = [
+const baseRoutes = [
   {
     path: '/login',
-    name: 'login',
+    name: 'Login',
     meta: {
       title: '登录',
       public: true,
@@ -16,115 +16,12 @@ const routes = [
   },
   {
     path: '/',
-    name: 'layout',
+    name: 'Layout',
     meta: {
       title: '',
     },
     component: () => import('../layouts/BaseLayout.vue'),
     redirect: '/home',
-    children: [
-      {
-        path: 'home',
-        name: 'home',
-        meta: {
-          title: 'demo',
-          public: true,
-        },
-        component: () => import('@/views/Home.vue'),
-      },
-      {
-        path: 'demo',
-        name: 'demo',
-        meta: {
-          title: 'demo',
-        },
-        component: () => import('@/views/demo/index.vue'),
-      },
-      {
-        path: 'component/page-wrapper',
-        name: 'componentPageWrapper',
-        meta: {
-          title: '分页容器',
-        },
-        component: () => import('@/views/components/PageWrapperView.vue'),
-      },
-      {
-        path: 'component/c-table',
-        name: 'componentCTable',
-        meta: {
-          title: '通用表格',
-        },
-        component: () => import('@/views/components/CTableView.vue'),
-      },
-      {
-        path: 'setting/dict',
-        name: 'settingDict',
-        meta: {
-          title: '字典管理',
-        },
-        component: () => import('@/views/dict/index.vue'),
-      },
-      {
-        path: 'setting/permission',
-        name: 'settingPermission',
-        meta: {
-          title: '权限管理',
-        },
-        component: () => import('@/views/setting/permission/index.vue'),
-      },
-      {
-        path: 'setting/role',
-        name: 'settingRole',
-        meta: {
-          title: '角色管理',
-        },
-        component: () => import('@/views/setting/role/index.vue'),
-      },
-      {
-        path: 'setting/user',
-        name: 'settingUser',
-        meta: {
-          title: '用户管理',
-        },
-        component: h('h1', 'TODO'),
-      },
-      {
-        path: '/system/menu',
-        component: () => import('@/views/system/menu/index.vue'),
-        name: 'SystemMenu',
-        meta: { title: '菜单管理', activeMenu: '/system/menu' },
-      },
-      {
-        path: '/system/user-auth/role/:userId(\\d+)',
-        component: h('h1', 'TODO'),
-        name: 'AuthRole',
-        meta: { title: '分配角色', activeMenu: '/system/user' },
-      },
-      {
-        path: '/system/role-auth/user/:roleId(\\d+)',
-        component: h('h1', 'TODO'),
-        name: 'AuthUser',
-        meta: { title: '分配用户', activeMenu: '/system/role' },
-      },
-      {
-        path: '/system/dict-data/index/:dictId(\\d+)',
-        component: h('h1', 'TODO'),
-        name: 'Data',
-        meta: { title: '字典数据', activeMenu: '/system/dict' },
-      },
-      {
-        path: '/monitor/job-log/index/:jobId(\\d+)',
-        component: h('h1', 'TODO'),
-        name: 'JobLog',
-        meta: { title: '调度日志', activeMenu: '/monitor/job' },
-      },
-      {
-        path: '/tool/gen-edit/index/:tableId(\\d+)',
-        component: h('h1', 'TODO'),
-        name: 'GenEdit',
-        meta: { title: '修改生成配置', activeMenu: '/tool/gen' },
-      },
-    ],
   },
   {
     path: '/:pathMatch(.*)*',
@@ -142,11 +39,26 @@ export const dynamicRoutes = [
   // { path: 'path7', pName: 'layout', component: h('h1', 'path7') },
 ]
 
+const nameTransfer = routes => {
+  routes.forEach(i => {
+    if (i.name) {
+      i.name = utils.sep2Hump(i.name, '/')
+    }
+    if (i.children) {
+      nameTransfer(i.children)
+    }
+  })
+}
 const router = createRouter({
   history: import.meta.env.DEV
     ? createWebHashHistory(import.meta.env.VITE_BASE_URL)
     : createWebHistory(import.meta.env.VITE_BASE_URL),
-  routes,
+  extendRoutes: routes => {
+    // routes.find((r) => r.name === '/')!.meta = {}
+    nameTransfer(routes)
+    baseRoutes[1].children = routes
+    return baseRoutes
+  },
 })
 let loadingInstance, timer
 router.beforeEach(async (to, from) => {
@@ -174,7 +86,7 @@ router.beforeEach(async (to, from) => {
   const hasAuth = true // userStore.hasPermission(to.name)
   if (hasAuth) return
   if (hasToken) {
-    if (from.name === 'login') return '/'
+    if (from.name === 'Login') return '/'
     ElMessage({
       message: '权限不足',
       type: 'error',

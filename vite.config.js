@@ -9,8 +9,14 @@ import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import Icons from 'unplugin-icons/vite'
 import IconsResolver from 'unplugin-icons/resolver'
 import purgecss from '@mojojoejo/vite-plugin-purgecss'
+import { VueRouterAutoImports } from 'unplugin-vue-router'
+import VueRouter from 'unplugin-vue-router/vite'
 
 const plugins = [
+  VueRouter({
+    routesFolder: 'src/views',
+    exclude: ['**/components/**', 'user/login.vue', 'NotFound.vue'],
+  }),
   vue(),
   vueJsx(),
   AutoImport({
@@ -24,7 +30,8 @@ const plugins = [
     ],
     imports: [
       'vue',
-      'vue-router',
+      // 'vue-router',
+      VueRouterAutoImports,
       'vue-i18n',
       'pinia',
       {

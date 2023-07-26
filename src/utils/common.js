@@ -100,3 +100,18 @@ export function parseTime(time, pattern) {
   })
   return time_str
 }
+
+/**
+ * 分隔符转驼峰
+ * @param {string} str
+ * @param {string} separator
+ * @returns
+ */
+export function sep2Hump(str, separator = '_') {
+  return str.replace(new RegExp('\\' + separator + '(\\w)|\\' + separator, 'g'), (_, letter) => {
+    if (letter) {
+      return letter.toUpperCase()
+    }
+    return ''
+  })
+}
