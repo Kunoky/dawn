@@ -23,14 +23,6 @@ const baseRoutes = [
     component: () => import('../layouts/BaseLayout.vue'),
     redirect: '/home',
   },
-  {
-    path: '/:pathMatch(.*)*',
-    name: '404',
-    meta: {
-      public: true,
-    },
-    component: () => import('@/views/NotFound.vue'),
-  },
 ]
 
 // 若路由组件存在嵌套，请确保父组件在前，子组件在后；父组件有且唯一的name属性，子组件使用pName指向父组件的name属性，以便于后面迭代此数组一遍便可完成动态添加
@@ -56,7 +48,17 @@ const router = createRouter({
   extendRoutes: routes => {
     // routes.find((r) => r.name === '/')!.meta = {}
     nameTransfer(routes)
-    baseRoutes[1].children = routes
+    baseRoutes[1].children = [
+      ...routes,
+      {
+        path: '/:pathMatch(.*)*',
+        name: '404',
+        meta: {
+          public: true,
+        },
+        component: () => import('@/views/NotFound.vue'),
+      },
+    ]
     return baseRoutes
   },
 })

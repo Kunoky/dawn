@@ -87,6 +87,16 @@ export const useUserStore = defineStore('user', {
       const res = await service.listRoute()
       this.menu = res.data
     },
+    transferRoute(routes, keyMenu = {}, pName = '') {
+      routes.forEach(i => {
+        i.name = pName + i.name
+        keyMenu[i.name] = i
+        if (i.children) {
+          this.transferRoute(i.children, keyMenu, i.name)
+        }
+      })
+      return keyMenu
+    },
     genMenu() {
       // const keyMenu = {}
       // const menu = this.menu.filter(i => {
@@ -97,6 +107,10 @@ export const useUserStore = defineStore('user', {
       // const [tree] = utils.arr2tree(menu)
       // this.keyMenu = keyMenu
       // this.menuTree = tree[0]?.children
+      if (this.menu) {
+        const keyMenu = this.transferRoute(this.menu, { Home: { name: 'Home', meta: { title: '首页', affix: true } } })
+        this.keyMenu = keyMenu
+      }
       this.menuTree = this.menu
     },
     addDynamicRoutes() {

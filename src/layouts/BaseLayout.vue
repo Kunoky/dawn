@@ -2,9 +2,11 @@
 import { useAppStore } from '@/store/app'
 import { useUserStore } from '@/store/user'
 import MenuItemRecursive from '@/components/MenuItemRecursive.vue'
+import TagsView from './components/TagsView.vue'
 
 const userStore = useUserStore()
 const appStore = useAppStore()
+const tagsViewStore = useTagsViewStore()
 const route = useRoute()
 const appName = __APP_NAME__
 const active = ref('')
@@ -36,6 +38,12 @@ const handleUserCommand = e => {
 }
 
 const { isDark, toggle } = useTheme()
+
+// 懒加载组件外面裹了一层，导致keepAlive无法获取到name进行缓存
+const setComponentName = (c, name) => {
+  c.type.name = name
+  return c
+}
 </script>
 <template>
   <el-container class="base-layout">
@@ -55,39 +63,53 @@ const { isDark, toggle } = useTheme()
     </el-aside>
     <el-container class="ht-100vh">
       <el-header class="base-layout_header">
-        <span>{{ appName }}</span>
-        <div class="ft-r">
-          <el-button link @click="toggle()" :aria-description="isDark ? $t('theme.light') : $t('theme.dark')">
-            <i-ep-sunny v-if="isDark"></i-ep-sunny>
-            <i-ep-moon v-else></i-ep-moon>
-          </el-button>
-          <el-dropdown @command="handleCommand">
-            <span class="mgl-s" v-loading="loading.lang">
-              <span>{{ $t('lang') }}</span>
-              <i-ep-arrow-down />
-            </span>
-            <template #dropdown>
-              <el-dropdown-menu>
-                <el-dropdown-item v-for="i in langs" :key="i.value" :command="i.value">{{ i.label }}</el-dropdown-item>
-              </el-dropdown-menu>
-            </template>
-          </el-dropdown>
-          <el-dropdown v-if="user" @command="handleUserCommand">
-            <span class="mgl-s">
-              <span>{{ user?.name }}</span>
-              <i-ep-arrow-down />
-            </span>
-            <template #dropdown>
-              <el-dropdown-menu>
-                <el-dropdown-item command="logout">{{ $t('common.logout') }}</el-dropdown-item>
-              </el-dropdown-menu>
-            </template>
-          </el-dropdown>
-          <router-link v-else to="/login" class="fs-5 cl-8 mgl-s">{{ $t('common.login') }}</router-link>
+        <div class="main base-layout_header dp-f jc-sb">
+          <div>
+            <span>{{ appName }}</span>
+          </div>
+
+          <div class="">
+            <el-button link @click="toggle()" :aria-description="isDark ? $t('theme.light') : $t('theme.dark')">
+              <i-ep-sunny v-if="isDark"></i-ep-sunny>
+              <i-ep-moon v-else></i-ep-moon>
+            </el-button>
+            <el-dropdown @command="handleCommand">
+              <span class="mgl-s" v-loading="loading.lang">
+                <span>{{ $t('lang') }}</span>
+                <i-ep-arrow-down />
+              </span>
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item v-for="i in langs" :key="i.value" :command="i.value">
+                    {{ i.label }}
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
+            <el-dropdown v-if="user" @command="handleUserCommand">
+              <span class="mgl-s">
+                <span>{{ user?.name }}</span>
+                <i-ep-arrow-down />
+              </span>
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item command="logout">{{ $t('common.logout') }}</el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
+            <router-link v-else to="/login" class="fs-5 cl-8 mgl-s">{{ $t('common.login') }}</router-link>
+          </div>
         </div>
+        <TagsView />
       </el-header>
       <el-main class="base-layout_main">
-        <router-view />
+        <router-view v-slot="{ Component, route }">
+          <transition name="fade-transform" mode="out-in">
+            <keep-alive :include="tagsViewStore.names">
+              <component :is="setComponentName(Component, route.name)" />
+            </keep-alive>
+          </transition>
+        </router-view>
       </el-main>
     </el-container>
   </el-container>
@@ -100,12 +122,16 @@ const { isDark, toggle } = useTheme()
   max-width: 2000px;
   margin: 0 auto;
   &_header {
-    line-height: 60px;
-    box-shadow: 0 2px 8px 0 rgb(29 35 41 / 5%);
-    .el-dropdown {
+    padding: 0;
+    & > .main {
+      padding: var(--el-header-padding);
       line-height: 60px;
-      .el-tooltip__trigger > svg {
-        vertical-align: middle;
+      box-shadow: 0 2px 8px 0 rgb(29 35 41 / 5%);
+      .el-dropdown {
+        line-height: 60px;
+        .el-tooltip__trigger > svg {
+          vertical-align: middle;
+        }
       }
     }
   }
@@ -162,6 +188,9 @@ const { isDark, toggle } = useTheme()
       margin: 0;
       padding: var(--size-m);
     }
+  }
+  .el-header {
+    height: 100px;
   }
 }
 </style>

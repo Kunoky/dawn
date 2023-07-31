@@ -44,7 +44,7 @@ const plugins = [
         '@/utils/request': [['default', 'req']],
       },
     ],
-    dirs: ['./src/composables'],
+    dirs: ['./src/composables', './src/store'],
     eslintrc: {
       enabled: true,
     },
