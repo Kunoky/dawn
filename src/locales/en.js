@@ -44,6 +44,7 @@ export default {
   },
   tip: {
     delete: 'Data cannot be restored after deletion. Continue?',
+    confirm: 'Do you want to do this?',
     success: 'Operated Succeed',
     fail: 'Operation Failed',
   },
@@ -69,5 +70,11 @@ export default {
   theme: {
     dark: 'Dark',
     light: 'Light',
+  },
+  view: {
+    user: {
+      resetPwd: 'Reset Password',
+      assignRole: 'Assign Role',
+    },
   },
 }

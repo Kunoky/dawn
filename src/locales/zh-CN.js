@@ -44,6 +44,7 @@ export default {
   },
   tip: {
     delete: '数据删除后无法恢复，确定继续？',
+    confirm: '确定执行该操作？',
     success: '操作成功',
     fail: '操作失败',
   },
@@ -69,5 +70,11 @@ export default {
   theme: {
     dark: '暗黑',
     light: '明亮',
+  },
+  view: {
+    user: {
+      resetPwd: '重置密码',
+      assignRole: '分配角色',
+    },
   },
 }
