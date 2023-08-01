@@ -192,6 +192,7 @@ const props = defineProps({
   },
   id: String, // 组件id，提供时可以对form，columnSetting数据进行缓存
 })
+const emit = defineEmits(['query', 'reset'])
 
 const i18n = useI18n()
 const pageRef = ref()
@@ -222,6 +223,7 @@ const handleQuery = () => {
   // 回车事件
   if (pageRef.value.loading) return
   Object.assign(mergedParams, form)
+  emit('query', mergedParams)
   // form未更改则不触发
   nextTick(() => {
     pageRef.value.loading || refresh()
@@ -231,6 +233,7 @@ const handleQueryReset = () => {
   for (let k in form) {
     form[k] = null
   }
+  emit('reset')
   handleQuery()
 }
 let cachedOrder = ref(cachedData.value.defaultOrder)

@@ -29,7 +29,7 @@ const props = defineProps({
   // 从action返回的对象中获取data的key值，缺省则是对象自身
   dataKey: {
     type: String,
-    default: 'list',
+    default: 'rows',
   },
   // 从action返回的对象中获取total的key值
   totalKey: {
@@ -39,12 +39,12 @@ const props = defineProps({
   // 分页页码key值
   pageKey: {
     type: String,
-    default: 'page',
+    default: 'pageNum',
   },
   // 分页尺寸key值
   sizeKey: {
     type: String,
-    default: 'size',
+    default: 'pageSize',
   },
   // 分页位置： top|bottom
   placement: {
