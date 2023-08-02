@@ -2,16 +2,10 @@
   <div>
     <el-row :gutter="16">
       <el-col :span="4" class="bgc-1 pdt-m">
-        <div class="head-container">
-          <el-input
-            v-model="deptName"
-            placeholder="请输入部门名称"
-            clearable
-            prefix-icon="Search"
-            style="margin-bottom: 20px"
-          />
+        <div>
+          <el-input v-model="deptName" placeholder="请输入部门名称" clearable style="margin-bottom: 20px" />
         </div>
-        <div class="head-container">
+        <div>
           <el-tree
             :data="deptTree"
             :props="{ label: 'label', children: 'children' }"
@@ -34,7 +28,6 @@
           ref="tableRef"
           id="systemUser"
         >
-          <el-table-column type="selection" width="50" align="center" />
           <el-table-column label="用户编号" align="center" key="userId" prop="userId" />
           <el-table-column
             label="用户名称"

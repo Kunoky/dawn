@@ -192,7 +192,7 @@ const handleConfirm = () => {
   formRef.value.validate(valid => {
     if (valid) {
       loading.value = true
-      req[form.value.menuId ? 'put' : 'post']('system/user', form.value)
+      req[form.value.userId ? 'put' : 'post']('system/user', form.value)
         .then(({ code }) => {
           if (code === 200) {
             emit('success')

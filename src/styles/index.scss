@@ -47,3 +47,7 @@ html {
   overflow: overlay;
   --bgc: var(--gray-9);
 }
+
+.el-button + a {
+  margin-left: 12px;
+}

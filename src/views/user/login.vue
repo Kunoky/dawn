@@ -10,8 +10,8 @@ const { loading } = storeToRefs(userStore)
 const loginFormInstance = ref()
 const appName = __APP_NAME__
 const loginForm = reactive({
-  username: '',
-  password: '',
+  username: 'admin',
+  password: 'admin123',
   uuid: '',
   code: '',
 })
