@@ -16,7 +16,6 @@ async function fetchCategory(category) {
   // }
 
   const { data: list } = await req.get('system/dict/data/type/' + category)
-  if (!list) return []
   // if (Array.isArray(category)) {
   //   category.forEach(i => {
   //     loading[i] = false
@@ -24,6 +23,7 @@ async function fetchCategory(category) {
   // } else {
   loading[category] = false
   // }
+  if (!list) return []
   source.value = [...source.value, ...list]
   // localStorage.setItem(CACHE_KEY, JSON.stringify(source.value))
   return list
@@ -70,9 +70,11 @@ export function useDict(category) {
   }
   const dict = computed(() => {
     const kv = {},
-      options = []
+      options = [],
+      ko = {}
     arr.value.forEach(i => {
       kv[i.dictValue] = i.dictLabel
+      ko[i.dictValue] = i
       options.push({
         key: i.dictValue,
         label: i.dictLabel,
@@ -87,6 +89,7 @@ export function useDict(category) {
       // leaves,
       kv,
       options,
+      ko,
     }
   })
 
