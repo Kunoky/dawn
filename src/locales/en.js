@@ -41,6 +41,9 @@ export default {
     login: 'Login',
     logout: 'Logout',
     remove: 'Remove',
+    clean: 'Clean',
+    lock: 'Lock',
+    unlock: 'Unlock',
   },
   tip: {
     delete: 'Data cannot be restored after deletion. Continue?',

@@ -170,13 +170,18 @@ const props = defineProps({
   // 查询参数中排序字段键名, 传入方法时，需要返回排序参数对象，形如({ column, prop, order }) => ({ orderBy: '' })
   orderKey: {
     type: [String, Function],
-    default: 'orderBy',
+    default: 'orderByColumn',
+  },
+  // 排序顺序字段
+  orderVKey: {
+    type: String,
+    default: 'isAsc',
   },
   // 同table.column
   sortOrders: {
     type: Array,
     default() {
-      return ['ASC', 'DESC', null]
+      return ['ascending', 'descending', null]
     },
   },
   // 默认尺寸
@@ -254,10 +259,18 @@ const handleSortChange = ({ column, prop, order }) => {
       Object.assign(mergedParams, orderBy)
     } else {
       const idx = baseOrder.indexOf(order)
+      // if (idx < 2) {
+      //   orderBy = prop + ' ' + props.sortOrders[idx]
+      // }
+      // mergedParams[props.orderKey] = orderBy
+
       if (idx < 2) {
-        orderBy = prop + ' ' + props.sortOrders[idx]
+        mergedParams[props.orderKey] = prop
+        mergedParams[props.orderVKey] = props.sortOrders[idx]
+      } else {
+        mergedParams[props.orderKey] = undefined
+        mergedParams[props.orderKey] = undefined
       }
-      mergedParams[props.orderKey] = orderBy
     }
   }
 }

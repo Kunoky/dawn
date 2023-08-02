@@ -41,6 +41,9 @@ export default {
     login: '登录',
     logout: '登出',
     remove: '移除',
+    clean: '清空',
+    lock: '锁定',
+    unlock: '解锁',
   },
   tip: {
     delete: '数据删除后无法恢复，确定继续？',
