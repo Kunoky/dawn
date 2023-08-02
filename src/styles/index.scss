@@ -48,6 +48,7 @@ html {
   --bgc: var(--gray-9);
 }
 
-.el-button + a {
+.el-button + a,
+a + .el-button {
   margin-left: 12px;
 }
