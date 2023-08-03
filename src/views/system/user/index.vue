@@ -28,30 +28,12 @@
           ref="tableRef"
           id="systemUser"
         >
-          <el-table-column label="用户编号" align="center" key="userId" prop="userId" />
-          <el-table-column
-            label="用户名称"
-            align="center"
-            key="userName"
-            prop="userName"
-            :show-overflow-tooltip="true"
-          />
-          <el-table-column
-            label="用户昵称"
-            align="center"
-            key="nickName"
-            prop="nickName"
-            :show-overflow-tooltip="true"
-          />
-          <el-table-column
-            label="部门"
-            align="center"
-            key="deptName"
-            prop="dept.deptName"
-            :show-overflow-tooltip="true"
-          />
-          <el-table-column label="手机号码" align="center" key="phonenumber" prop="phonenumber" width="120" />
-          <el-table-column label="状态" align="center" key="status">
+          <el-table-column label="用户编号" key="userId" prop="userId" />
+          <el-table-column label="用户名称" key="userName" prop="userName" :show-overflow-tooltip="true" />
+          <el-table-column label="用户昵称" key="nickName" prop="nickName" :show-overflow-tooltip="true" />
+          <el-table-column label="部门" key="deptName" prop="dept.deptName" :show-overflow-tooltip="true" />
+          <el-table-column label="手机号码" key="phonenumber" prop="phonenumber" width="120" />
+          <el-table-column label="状态" key="status">
             <template #default="{ row }">
               <el-switch
                 :modelValue="row.status"
@@ -61,12 +43,12 @@
               ></el-switch>
             </template>
           </el-table-column>
-          <el-table-column label="创建时间" align="center" prop="createTime" width="160">
+          <el-table-column label="创建时间" prop="createTime" width="160">
             <template #default="{ row }">
               <span>{{ parseTime(row.createTime) }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="操作" align="center" width="150" class-name="small-padding fixed-width">
+          <el-table-column label="操作" width="150" class-name="small-padding fixed-width">
             <template #default="{ row }">
               <el-tooltip :content="$t('common.edit')" placement="top" v-if="row.userId !== 1">
                 <el-button link type="primary" @click="handleEdit(row)" v-hasPermi="['system:user:edit']">
@@ -84,9 +66,11 @@
                 </el-button>
               </el-tooltip>
               <el-tooltip :content="$t('view.user.assignRole')" placement="top" v-if="row.userId !== 1">
-                <el-button link type="primary" @click="handleAuthRole(row)" v-hasPermi="['system:user:edit']">
-                  <i-ep-circle-check />
-                </el-button>
+                <RouterLink v-hasPermi="['system:user:edit']" :to="'/system/user/role?id=' + row.userId">
+                  <el-button link type="primary">
+                    <i-ep-circle-check />
+                  </el-button>
+                </RouterLink>
               </el-tooltip>
             </template>
           </el-table-column>
@@ -218,11 +202,6 @@ const handleResetPwd = row => {
   }).then(({ value }) => {
     return req.put('system/user/resetPwd', { userId: row.userId, password: value })
   })
-}
-
-const router = useRouter()
-const handleAuthRole = ({ userId }) => {
-  router.push('/system/user-auth/role/' + userId)
 }
 
 const handleImport = () => {}

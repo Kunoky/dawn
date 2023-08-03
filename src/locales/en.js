@@ -44,6 +44,7 @@ export default {
     clean: 'Clean',
     lock: 'Lock',
     unlock: 'Unlock',
+    back: 'Back',
   },
   tip: {
     delete: 'Data cannot be restored after deletion. Continue?',

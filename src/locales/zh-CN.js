@@ -44,6 +44,7 @@ export default {
     clean: '清空',
     lock: '锁定',
     unlock: '解锁',
+    back: '返回',
   },
   tip: {
     delete: '数据删除后无法恢复，确定继续？',
