@@ -115,3 +115,20 @@ export function sep2Hump(str, separator = '_') {
     return ''
   })
 }
+
+/**
+ * 获取由'.'分割的嵌套属性
+ * @param {Object} obj
+ * @param {String} key
+ * @returns {*}
+ */
+export function getNestProp(obj, key) {
+  const keys = key.split('.')
+  let v = obj
+  keys.some(i => {
+    v = v[i]
+    if (!v) return true
+    return false
+  })
+  return v
+}

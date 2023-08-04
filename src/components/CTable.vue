@@ -15,7 +15,7 @@
       </el-form-item>
     </el-form>
     <div class="c-table__main">
-      <div v-if="showToolbar" class="c-table__toolbar">
+      <div v-if="!hideToolbar" class="c-table__toolbar">
         <div class="c-table__title">
           <slot name="title">{{ title }}</slot>
         </div>
@@ -138,6 +138,21 @@
             :size="tableSize"
             @sort-change="handleSortChange"
           >
+            <el-table-column v-if="modelValue" width="40">
+              <template #header>
+                <el-checkbox
+                  :modelValue="isSelectAll"
+                  :indeterminate="isIndeterminate"
+                  @change="handleSelectAll"
+                ></el-checkbox>
+              </template>
+              <template #default="{ row }">
+                <el-checkbox
+                  :modelValue="modelValueKeys.includes(getKey(row))"
+                  @change="handleSelect(row, $event)"
+                ></el-checkbox>
+              </template>
+            </el-table-column>
             <FW :component="getColumns()"></FW>
             <template #append>
               <slot name="append"></slot>
@@ -158,6 +173,15 @@ import FW from './FW.jsx'
 import Draggable from 'vuedraggable'
 
 const props = defineProps({
+  // 选中数据, 添加modelValue即进入选择模式
+  modelValue: {
+    type: Array,
+  },
+  // modelValue默认返回row-key，设置后返回row
+  fullValue: {
+    type: Boolean,
+    default: false,
+  },
   // 分页容器设置
   pageConf: {
     type: Object,
@@ -190,14 +214,14 @@ const props = defineProps({
     default: 'small',
   },
   title: String, // 标题
-  // 显示toolbar
-  showToolbar: {
+  // 隐藏toolbar
+  hideToolbar: {
     type: Boolean,
-    default: true,
+    default: false,
   },
   id: String, // 组件id，提供时可以对form，columnSetting数据进行缓存
 })
-const emit = defineEmits(['query', 'reset'])
+const emit = defineEmits(['update:modelValue', 'query', 'reset'])
 
 const i18n = useI18n()
 const pageRef = ref()
@@ -384,6 +408,72 @@ const handleSave = () => {
   }
   ElMessage.success(i18n.t('tip.success'))
 }
+
+const attrs = useAttrs()
+const { getNestProp } = utils
+const rowKey = attrs.rowKey || attrs['row-key']
+if (props.modelValue && !rowKey) {
+  console.error('A "row-key" is required when "modelValue" is set!')
+}
+let getKey
+if (typeof rowKey === 'function') {
+  getKey = rowKey
+} else {
+  getKey = row => getNestProp(row, rowKey)
+}
+const allKeys = computed(() => {
+  return pageRef.value.data?.map(i => getKey(i)) || []
+})
+const modelValueKeys = computed(() => {
+  if (!props.modelValue) return []
+  if (props.fullValue) {
+    return props.modelValue.map(i => getKey(i))
+  }
+  return props.modelValue
+})
+const isIndeterminate = computed(() => {
+  let checkedCount = 0
+  allKeys.value.forEach(i => {
+    if (modelValueKeys.value.includes(i)) checkedCount++
+  })
+  return checkedCount > 0 && checkedCount < allKeys.value.length
+})
+const addValues = values => {
+  let list = []
+  if (props.fullValue) {
+    list = [...props.modelValue]
+    values.forEach(i => {
+      if (!modelValueKeys.value.includes(getKey(i))) {
+        list.push(i)
+      }
+    })
+  } else {
+    list = Array.from(new Set([...props.modelValue, ...values.map(i => getKey(i))]))
+  }
+  emit('update:modelValue', list)
+}
+const removeValues = values => {
+  const keys = values.map(i => getKey(i))
+  const list = props.modelValue.filter(i => !keys.includes(props.fullValue ? getKey(i) : i))
+  emit('update:modelValue', list)
+}
+const handleSelect = (row, checked) => {
+  if (checked) {
+    addValues([row])
+  } else {
+    removeValues([row])
+  }
+}
+const handleSelectAll = v => {
+  if (v) {
+    addValues(pageRef.value.data)
+  } else {
+    removeValues(pageRef.value.data)
+  }
+}
+
+const isSelectAll = computed(() => allKeys.value.length && allKeys.value.every(i => modelValueKeys.value.includes(i)))
+
 defineExpose({
   pageRef,
   tableRef,

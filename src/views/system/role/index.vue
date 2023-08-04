@@ -4,7 +4,6 @@
       :page-conf="{
         action: 'system/role/list',
       }"
-      :params="params"
       ref="tableRef"
       id="systemRole"
     >
@@ -45,7 +44,7 @@
             </el-button>
           </el-tooltip>
           <el-tooltip content="分配用户" placement="top" v-if="row.roleId !== 1">
-            <RouterLink :to="'/system/role-auth/user/' + row.roleId" v-hasPermi="['system:role:edit']">
+            <RouterLink :to="'/system/role/user?id=' + row.roleId" v-hasPermi="['system:role:edit']">
               <el-button link type="primary">
                 <i-ep-user />
               </el-button>

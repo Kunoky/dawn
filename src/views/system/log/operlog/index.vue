@@ -4,9 +4,10 @@
       :page-conf="{
         action: 'monitor/operlog/list',
       }"
+      v-model="selected"
+      row-key="operId"
       ref="tableRef"
       id="systemOperlog"
-      @selection-change="handleSelectionChange"
     >
       <el-table-column type="selection" width="50" />
       <el-table-column label="日志编号" prop="operId" />
@@ -111,9 +112,7 @@ const handleView = row => {
 }
 
 const selected = ref([])
-function handleSelectionChange(selection) {
-  selected.value = selection.map(item => item.operId)
-}
+
 const handleDel = () => {
   ElMessageBox.confirm(i18n.t('tip.delete'), i18n.t('common.warning'), {
     confirmButtonText: i18n.t('common.confirm'),

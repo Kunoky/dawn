@@ -4,11 +4,12 @@
       :page-conf="{
         action: 'monitor/logininfor/list',
       }"
+      v-model="selected"
+      row-key="infoId"
+      full-value
       ref="tableRef"
       id="systemlogininfor"
-      @selection-change="handleSelectionChange"
     >
-      <el-table-column type="selection" width="55" />
       <el-table-column label="访问编号" prop="infoId" />
       <el-table-column label="用户名称" prop="userName" :show-overflow-tooltip="true" sortable="custom" />
       <el-table-column label="地址" prop="ipaddr" :show-overflow-tooltip="true" />
@@ -81,9 +82,7 @@ const i18n = useI18n()
 const sys_common_status = useDict('sys_common_status')
 
 const selected = ref([])
-function handleSelectionChange(selection) {
-  selected.value = selection
-}
+
 const handleDel = () => {
   ElMessageBox.confirm(i18n.t('tip.delete'), i18n.t('common.warning'), {
     confirmButtonText: i18n.t('common.confirm'),
@@ -119,14 +118,14 @@ const handleClear = () => {
     })
 }
 const handleUnlock = () => {
-  const { username } = selected[0]
-  ElMessageBox.confirm(`确定解锁用户 ${username}？`, i18n.t('common.warning'), {
+  const { userName } = selected.value[0]
+  ElMessageBox.confirm(`确定解锁用户 ${userName}？`, i18n.t('common.warning'), {
     confirmButtonText: i18n.t('common.confirm'),
     cancelButtonText: i18n.t('common.cancel'),
     type: 'warning',
   })
     .then(() => {
-      return req.delete('monitor/logininfor/unlock/' + username)
+      return req.get('monitor/logininfor/unlock/' + userName)
     })
     .then(({ code }) => {
       if (code === 200) {
