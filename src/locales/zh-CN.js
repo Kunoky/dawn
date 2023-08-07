@@ -80,5 +80,8 @@ export default {
       resetPwd: '重置密码',
       assignRole: '分配角色',
     },
+    layout: {
+      userProfile: '个人中心',
+    },
   },
 }

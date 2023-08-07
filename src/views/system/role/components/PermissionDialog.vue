@@ -1,6 +1,6 @@
 <template>
   <el-dialog :model-value="modelValue" @close="handleClose" title="分配数据权限" width="60%" v-bind="$attrs">
-    <el-form :model="form" ref="formRef" label-width="120" :show-message="false" v-loading="dataLoading">
+    <el-form :model="form" ref="formRef" label-width="120" v-loading="dataLoading">
       <el-form-item label="角色名称">
         <el-input v-model="form.roleName" :disabled="true" />
       </el-form-item>

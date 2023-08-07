@@ -80,5 +80,8 @@ export default {
       resetPwd: 'Reset Password',
       assignRole: 'Assign Role',
     },
+    layout: {
+      userProfile: 'User Profile',
+    },
   },
 }

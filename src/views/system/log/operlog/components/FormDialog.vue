@@ -1,6 +1,6 @@
 <template>
   <el-dialog :model-value="modelValue" @close="handleClose" title="操作日志明细" width="60%" v-bind="$attrs">
-    <el-form label-width="100" :show-message="false">
+    <el-form label-width="100">
       <el-row>
         <el-col :span="12">
           <el-form-item label="操作模块：">{{ data.title }} / {{ sys_oper_type.kv[data.businessType] }}</el-form-item>

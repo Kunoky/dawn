@@ -1,6 +1,6 @@
 <template>
   <el-dialog :model-value="modelValue" @close="handleClose" :title="title" width="60%" v-bind="$attrs">
-    <el-form :model="form" ref="formRef" label-width="80" :show-message="false" :rules="rules">
+    <el-form :model="form" ref="formRef" label-width="80" :rules="rules">
       <el-form-item label="参数名称" prop="configName">
         <el-input v-model="form.configName" placeholder="请输入参数名称" />
       </el-form-item>

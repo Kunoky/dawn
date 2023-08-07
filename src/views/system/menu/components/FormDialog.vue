@@ -6,7 +6,7 @@
     width="60%"
     v-bind="$attrs"
   >
-    <el-form :model="form" ref="formRef" label-width="80" :show-message="false" :rules="rules">
+    <el-form :model="form" ref="formRef" label-width="80" :rules="rules">
       <el-row>
         <el-col :span="24">
           <el-form-item label="上级菜单" prop="parentId">

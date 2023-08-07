@@ -8,10 +8,12 @@ const userStore = useUserStore()
 const appStore = useAppStore()
 const tagsViewStore = useTagsViewStore()
 const route = useRoute()
+const router = useRouter()
+const i18n = useI18n()
 const appName = __APP_NAME__
 const active = ref('')
 const isCollapse = ref(false)
-const { langs, loading } = storeToRefs(appStore)
+const { lang, langs, loading } = storeToRefs(appStore)
 const { user, menuTree } = storeToRefs(userStore)
 watch(
   route,
@@ -25,11 +27,25 @@ watch(
   { immediate: true }
 )
 
-const handleCommand = e => {
-  appStore.setLang(e)
+const handleLangChange = v => {
+  appStore.setLang(v)
 }
+
+const userOptions = [
+  {
+    label: i18n.t('view.layout.userProfile'),
+    value: 'userProfile',
+  },
+  {
+    label: i18n.t('common.logout'),
+    value: 'logout',
+  },
+]
 const handleUserCommand = e => {
   switch (e) {
+    case 'userProfile':
+      router.push('/user/profile')
+      break
     case 'logout':
       userStore.logout()
       break
@@ -73,30 +89,24 @@ const setComponentName = (c, name) => {
               <i-ep-sunny v-if="isDark"></i-ep-sunny>
               <i-ep-moon v-else></i-ep-moon>
             </el-button>
-            <el-dropdown @command="handleCommand">
-              <span class="mgl-s" v-loading="loading.lang">
-                <span>{{ $t('lang') }}</span>
-                <i-ep-arrow-down />
-              </span>
-              <template #dropdown>
-                <el-dropdown-menu>
-                  <el-dropdown-item v-for="i in langs" :key="i.value" :command="i.value">
-                    {{ i.label }}
-                  </el-dropdown-item>
-                </el-dropdown-menu>
-              </template>
-            </el-dropdown>
-            <el-dropdown v-if="user" @command="handleUserCommand">
+            <CDropdown :modelValue="lang" @update:modelValue="handleLangChange" :options="langs">
+              <span v-loading="loading.lang" class="mgl-s">{{ $t('lang') }}</span>
+            </CDropdown>
+            <CDropdown v-if="user" @update:modelValue="handleUserCommand" :options="userOptions">
+              <span>{{ user?.nickName }}</span>
+            </CDropdown>
+            <!-- <el-dropdown v-if="user" @command="handleUserCommand">
               <span class="mgl-s">
-                <span>{{ user?.name }}</span>
+                <span>{{ user?.nickName }}</span>
                 <i-ep-arrow-down />
               </span>
               <template #dropdown>
                 <el-dropdown-menu>
                   <el-dropdown-item command="logout">{{ $t('common.logout') }}</el-dropdown-item>
+                  <el-dropdown-item command="logout">{{ $t('view.layout.userProfile') }}</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
-            </el-dropdown>
+            </el-dropdown> -->
             <router-link v-else to="/login" class="fs-5 cl-8 mgl-s">{{ $t('common.login') }}</router-link>
           </div>
         </div>

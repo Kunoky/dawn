@@ -18,7 +18,7 @@
 <script setup>
 defineEmits(['update:modelValue'])
 const props = defineProps({
-  // 下拉选项，支持对象数组和对象，对象数组结构为{label, value}
+  // 下拉选项，支持对象数组和对象，对象数组结构为{value: label}
   options: {
     type: [Array, Object],
   },
@@ -37,5 +37,8 @@ const commands = computed(() => {
 <style>
 .is-active {
   color: var(--primary-color);
+}
+.el-dropdown + .el-dropdown {
+  margin-left: var(--size-s);
 }
 </style>

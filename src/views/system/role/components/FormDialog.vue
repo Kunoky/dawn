@@ -1,6 +1,6 @@
 <template>
   <el-dialog :model-value="modelValue" @close="handleClose" :title="title" width="60%" v-bind="$attrs">
-    <el-form :model="form" ref="formRef" label-width="120" :show-message="false" :rules="rules" v-loading="dataLoading">
+    <el-form :model="form" ref="formRef" label-width="120" :rules="rules" v-loading="dataLoading">
       <el-form-item label="角色名称" prop="roleName">
         <el-input v-model="form.roleName" placeholder="请输入角色名称" />
       </el-form-item>

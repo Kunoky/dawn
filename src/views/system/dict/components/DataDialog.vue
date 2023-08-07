@@ -7,7 +7,7 @@
     v-bind="$attrs"
     :close-on-click-modal="false"
   >
-    <el-form :model="form" ref="formRef" label-width="80" :show-message="false" :rules="rules">
+    <el-form :model="form" ref="formRef" label-width="80" :rules="rules">
       <el-form-item label="字典类型">
         <el-input v-model="form.dictType" :disabled="true" />
       </el-form-item>

@@ -1,6 +1,6 @@
 <template>
   <el-dialog :model-value="modelValue" @close="handleClose" :title="title" width="60%" v-bind="$attrs">
-    <el-form :model="form" ref="formRef" label-width="80" :show-message="false" :rules="rules" v-loading="dataLoading">
+    <el-form :model="form" ref="formRef" label-width="80" :rules="rules" v-loading="dataLoading">
       <el-row>
         <el-col :span="12">
           <el-form-item label="用户昵称" prop="nickName">
