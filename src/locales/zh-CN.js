@@ -45,6 +45,8 @@ export default {
     lock: '锁定',
     unlock: '解锁',
     back: '返回',
+    execute: '执行',
+    log: '日志',
   },
   tip: {
     delete: '数据删除后无法恢复，确定继续？',
