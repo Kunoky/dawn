@@ -9,33 +9,25 @@
           </template>
           <ul>
             <li>
-              <span><div>属性</div></span>
-              <span><div>值</div></span>
+              <span>属性</span>
+              <span>值</span>
             </li>
 
             <li>
-              <span><div>核心数</div></span>
-              <span>
-                <div>{{ data.cpu.cpuNum }}</div>
-              </span>
+              <span>核心数</span>
+              <span>{{ data.cpu.cpuNum }}</span>
             </li>
             <li>
-              <span><div>用户使用率</div></span>
-              <span>
-                <div>{{ data.cpu.used }}%</div>
-              </span>
+              <span>用户使用率</span>
+              <span>{{ data.cpu.used }}%</span>
             </li>
             <li>
-              <span><div>系统使用率</div></span>
-              <span>
-                <div>{{ data.cpu.sys }}%</div>
-              </span>
+              <span>系统使用率</span>
+              <span>{{ data.cpu.sys }}%</span>
             </li>
             <li>
-              <span><div>当前空闲率</div></span>
-              <span>
-                <div>{{ data.cpu.free }}%</div>
-              </span>
+              <span>当前空闲率</span>
+              <span>{{ data.cpu.free }}%</span>
             </li>
           </ul>
         </el-card>
@@ -49,46 +41,30 @@
           </template>
           <ul>
             <li>
-              <span><div>属性</div></span>
-              <span><div>内存</div></span>
-              <span><div>JVM</div></span>
+              <span>属性</span>
+              <span>内存</span>
+              <span>JVM</span>
             </li>
 
             <li>
-              <span><div>总内存</div></span>
-              <span>
-                <div>{{ data.mem.total }}G</div>
-              </span>
-              <span>
-                <div>{{ data.jvm.total }}M</div>
-              </span>
+              <span>总内存</span>
+              <span>{{ data.mem.total }}G</span>
+              <span>{{ data.jvm.total }}M</span>
             </li>
             <li>
-              <span><div>已用内存</div></span>
-              <span>
-                <div>{{ data.mem.used }}G</div>
-              </span>
-              <span>
-                <div>{{ data.jvm.used }}M</div>
-              </span>
+              <span>已用内存</span>
+              <span>{{ data.mem.used }}G</span>
+              <span>{{ data.jvm.used }}M</span>
             </li>
             <li>
-              <span><div>剩余内存</div></span>
-              <span>
-                <div>{{ data.mem.free }}G</div>
-              </span>
-              <span>
-                <div>{{ data.jvm.free }}M</div>
-              </span>
+              <span>剩余内存</span>
+              <span>{{ data.mem.free }}G</span>
+              <span>{{ data.jvm.free }}M</span>
             </li>
             <li>
-              <span><div>使用率</div></span>
-              <span>
-                <div :class="{ 'cl-e': data.mem.usage > 80 }">{{ data.mem.usage }}%</div>
-              </span>
-              <span>
-                <div :class="{ 'cl-e': data.jvm.usage > 80 }">{{ data.jvm.usage }}%</div>
-              </span>
+              <span>使用率</span>
+              <span :class="{ 'cl-e': data.mem.usage > 80 }">{{ data.mem.usage }}%</span>
+              <span :class="{ 'cl-e': data.jvm.usage > 80 }">{{ data.jvm.usage }}%</span>
             </li>
           </ul>
         </el-card>
@@ -102,24 +78,16 @@
           </template>
           <ul>
             <li>
-              <span><div>服务器名称</div></span>
-              <span>
-                <div>{{ data.sys.computerName }}</div>
-              </span>
-              <span><div>操作系统</div></span>
-              <span>
-                <div>{{ data.sys.osName }}</div>
-              </span>
+              <span>服务器名称</span>
+              <span>{{ data.sys.computerName }}</span>
+              <span>操作系统</span>
+              <span>{{ data.sys.osName }}</span>
             </li>
             <li>
-              <span><div>服务器IP</div></span>
-              <span>
-                <div>{{ data.sys.computerIp }}</div>
-              </span>
-              <span><div>系统架构</div></span>
-              <span>
-                <div>{{ data.sys.osArch }}</div>
-              </span>
+              <span>服务器IP</span>
+              <span>{{ data.sys.computerIp }}</span>
+              <span>系统架构</span>
+              <span>{{ data.sys.osArch }}</span>
             </li>
           </ul>
         </el-card>
@@ -133,41 +101,33 @@
           </template>
           <ul>
             <li>
-              <span><div>Java名称</div></span>
-              <span>
-                <div>{{ data.jvm.name }}</div>
-              </span>
-              <span><div>Java版本</div></span>
-              <span>
-                <div>{{ data.jvm.version }}</div>
-              </span>
+              <span>Java名称</span>
+              <span>{{ data.jvm.name }}</span>
+              <span>Java版本</span>
+              <span>{{ data.jvm.version }}</span>
             </li>
             <li>
-              <span><div>启动时间</div></span>
-              <span>
-                <div>{{ data.jvm.startTime }}</div>
-              </span>
-              <span><div>运行时长</div></span>
-              <span>
-                <div>{{ data.jvm.runTime }}</div>
-              </span>
+              <span>启动时间</span>
+              <span>{{ data.jvm.startTime }}</span>
+              <span>运行时长</span>
+              <span>{{ data.jvm.runTime }}</span>
             </li>
             <li>
-              <span><div>安装路径</div></span>
+              <span>安装路径</span>
               <span style="flex: 3 3">
-                <div>{{ data.jvm.home }}</div>
+                {{ data.jvm.home }}
               </span>
             </li>
             <li>
-              <span><div>项目路径</div></span>
+              <span>项目路径</span>
               <span style="flex: 3 3">
-                <div>{{ data.sys.userDir }}</div>
+                {{ data.sys.userDir }}
               </span>
             </li>
             <li>
-              <span><div>运行参数</div></span>
+              <span>运行参数</span>
               <span style="flex: 3 3">
-                <div>{{ data.jvm.inputArgs }}</div>
+                {{ data.jvm.inputArgs }}
               </span>
             </li>
           </ul>
@@ -182,37 +142,23 @@
           </template>
           <ul>
             <li>
-              <span><div>盘符路径</div></span>
-              <span><div>文件系统</div></span>
-              <span><div>盘符类型</div></span>
-              <span><div>总大小</div></span>
-              <span><div>可用大小</div></span>
-              <span><div>已用大小</div></span>
-              <span><div>已用百分比</div></span>
+              <span>盘符路径</span>
+              <span>文件系统</span>
+              <span>盘符类型</span>
+              <span>总大小</span>
+              <span>可用大小</span>
+              <span>已用大小</span>
+              <span>已用百分比</span>
             </li>
 
             <li v-for="(sysFile, index) in data.sysFiles" :key="index">
-              <span>
-                <div>{{ sysFile.dirName }}</div>
-              </span>
-              <span>
-                <div>{{ sysFile.sysTypeName }}</div>
-              </span>
-              <span>
-                <div>{{ sysFile.typeName }}</div>
-              </span>
-              <span>
-                <div>{{ sysFile.total }}</div>
-              </span>
-              <span>
-                <div>{{ sysFile.free }}</div>
-              </span>
-              <span>
-                <div>{{ sysFile.used }}</div>
-              </span>
-              <span>
-                <div :class="{ 'cl-e': sysFile.usage > 80 }">{{ sysFile.usage }}%</div>
-              </span>
+              <span>{{ sysFile.dirName }}</span>
+              <span>{{ sysFile.sysTypeName }}</span>
+              <span>{{ sysFile.typeName }}</span>
+              <span>{{ sysFile.total }}</span>
+              <span>{{ sysFile.free }}</span>
+              <span>{{ sysFile.used }}</span>
+              <span :class="{ 'cl-e': sysFile.usage > 80 }">{{ sysFile.usage }}%</span>
             </li>
           </ul>
         </el-card>
@@ -221,7 +167,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup name="MonitorServer">
 const { data, loading } = useAsync(() => req.get('monitor/server').then(res => res.data), {
   manual: false,
 })
