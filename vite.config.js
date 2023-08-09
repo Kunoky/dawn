@@ -9,13 +9,15 @@ import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import Icons from 'unplugin-icons/vite'
 import IconsResolver from 'unplugin-icons/resolver'
 import purgecss from '@mojojoejo/vite-plugin-purgecss'
-import { VueRouterAutoImports } from 'unplugin-vue-router'
+import { VueRouterAutoImports, getPascalCaseRouteName } from 'unplugin-vue-router'
 import VueRouter from 'unplugin-vue-router/vite'
 
 const plugins = [
+  // https://www.npmjs.com/package/unplugin-vue-router
   VueRouter({
     routesFolder: 'src/views',
-    exclude: ['**/components/**', 'user/login.vue', 'NotFound.vue'],
+    exclude: ['**/components/**', 'user/login.vue'],
+    getRouteName: routeNode => getPascalCaseRouteName(routeNode),
   }),
   vue(),
   vueJsx(),

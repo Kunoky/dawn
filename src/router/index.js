@@ -31,34 +31,12 @@ export const dynamicRoutes = [
   // { path: 'path7', pName: 'layout', component: h('h1', 'path7') },
 ]
 
-const nameTransfer = routes => {
-  routes.forEach(i => {
-    if (i.name) {
-      i.name = utils.sep2Hump(i.name, '/')
-    }
-    if (i.children) {
-      nameTransfer(i.children)
-    }
-  })
-}
 const router = createRouter({
   history: import.meta.env.DEV
     ? createWebHashHistory(import.meta.env.VITE_BASE_URL)
     : createWebHistory(import.meta.env.VITE_BASE_URL),
   extendRoutes: routes => {
-    // routes.find((r) => r.name === '/')!.meta = {}
-    nameTransfer(routes)
-    baseRoutes[1].children = [
-      ...routes,
-      {
-        path: '/:pathMatch(.*)*',
-        name: '404',
-        meta: {
-          public: true,
-        },
-        component: () => import('@/views/NotFound.vue'),
-      },
-    ]
+    baseRoutes[1].children = routes
     return baseRoutes
   },
 })
