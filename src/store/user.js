@@ -90,7 +90,7 @@ export const useUserStore = defineStore('user', {
     },
     async listMenu() {
       const res = await service.listRoute()
-      this.menu = res.data
+      this.menu = res.data || []
     },
     transferRoute(routes, keyMenu = {}, pName = '') {
       routes.forEach(i => {
