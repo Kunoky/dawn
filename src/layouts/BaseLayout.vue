@@ -63,7 +63,11 @@ const setComponentName = (c, name) => {
 </script>
 <template>
   <el-container class="base-layout">
-    <el-aside :width="isCollapse ? '64px' : '200px'" class="base-layout_aside ht-100vh dp-f fd-c">
+    <el-aside
+      v-show="menuTree.length"
+      :width="isCollapse ? '64px' : '200px'"
+      class="base-layout_aside ht-100vh dp-f fd-c"
+    >
       <el-menu :default-active="active" :collapse="isCollapse" class="fx-1 base-layout_menu of-o">
         <menu-item-recursive v-for="i in menuTree" :key="i.id" :data="i" />
       </el-menu>
