@@ -85,7 +85,7 @@ pnpm format src
 
 <br />
 
-## 详情 🐳
+## 详情
 
 ### [1. Vite 的](https://cn.vitejs.dev/)
 
