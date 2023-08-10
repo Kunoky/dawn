@@ -73,6 +73,13 @@
 <script setup name="SystemDictData">
 import FormDialog from './components/DataDialog.vue'
 
+definePage({
+  meta: {
+    title: '字典数据',
+    permission: ['system:dict:list'],
+  },
+})
+
 const { parseTime } = utils
 
 const tableRef = ref()

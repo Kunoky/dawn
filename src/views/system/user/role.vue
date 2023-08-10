@@ -56,6 +56,12 @@
 </template>
 
 <script setup name="SystemUserRole">
+definePage({
+  meta: {
+    title: '分配角色',
+    permission: ['system:user:edit'],
+  },
+})
 const { parseTime } = utils
 
 const user = ref({})

@@ -84,6 +84,13 @@
 import { RouterLink } from 'vue-router'
 import LogDetailDialog from './components/LogDetailDialog.vue'
 
+definePage({
+  meta: {
+    title: '调度日志',
+    permission: ['monitor:job:list'],
+  },
+})
+
 const { parseTime } = utils
 const tableRef = ref()
 const refresh = () => tableRef.value.refresh()

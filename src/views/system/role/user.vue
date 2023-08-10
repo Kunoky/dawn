@@ -69,6 +69,13 @@
 <script setup name="SystemRoleUser">
 import UserDialog from './components/UserDialog.vue'
 
+definePage({
+  meta: {
+    title: '分配用户',
+    permission: ['system:role:edit'],
+  },
+})
+
 const { parseTime } = utils
 
 const tableRef = ref()

@@ -63,7 +63,8 @@ router.beforeEach(async (to, from) => {
     ...meta,
   }
   if (to.meta.public) return
-  const hasAuth = true // userStore.hasPermission(to.name)
+  const hasAuth = userStore.keyMenu[to.name] || userStore.hasPermission(to.meta.permission)
+  // const hasAuth = userStore.hasPermission(to.name)
   if (hasAuth) return
   if (hasToken) {
     if (from.name === 'Login') return '/'
@@ -84,13 +85,19 @@ router.afterEach(to => {
   clearTimeout(timer)
   timer = 0
   loadingInstance?.close()
+  const userStore = useUserStore()
   let i = to.matched.length - 1,
     item,
     title = __APP_NAME__
   for (; i > -1; i--) {
     item = to.matched[i]
-    if (item.meta.title) {
-      title += '-' + to.meta.title
+
+    let t = item.meta.title
+    if (!t && item.name) {
+      t = userStore.keyMenu[item.name]?.meta.title
+    }
+    if (t) {
+      title += '-' + t
       break
     }
   }

@@ -100,6 +100,13 @@
   </el-row>
 </template>
 <script setup name="UserProfile">
+definePage({
+  meta: {
+    title: '个人中心',
+    public: true,
+  },
+})
+
 const { data, loading } = useAsync(
   () => {
     return req.get('system/user/profile').then(res => {

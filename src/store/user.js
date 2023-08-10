@@ -3,6 +3,7 @@ import * as service from '@/services/user'
 import { setToken, getToken, removeToken } from '@/utils/auth'
 import router, { dynamicRoutes } from '@/router'
 
+// 选项式样例
 export const useUserStore = defineStore('user', {
   state() {
     const userStr = localStorage.getItem('user')
@@ -23,7 +24,8 @@ export const useUserStore = defineStore('user', {
   },
   getters: {
     permission() {
-      return this.user?.permission || {}
+      // return this.user?.permission || {}
+      return this.user?.permissions || []
     },
   },
   actions: {
@@ -78,10 +80,13 @@ export const useUserStore = defineStore('user', {
         })
       }
     },
-    hasPermission(name, num) {
-      if (!Object.hasOwnProperty.call(this.permission, name)) return false
-      if (num && !utils.hasBit(this.permission[name], num)) return false
-      return true
+    // hasPermission(name, num) {
+    //   if (!Object.hasOwnProperty.call(this.permission, name)) return false
+    //   if (num && !utils.hasBit(this.permission[name], num)) return false
+    //   return true
+    // },
+    hasPermission(permissions) {
+      return this.permission.some(i => i === '*:*:*' || permissions?.includes(i))
     },
     async listMenu() {
       const res = await service.listRoute()
@@ -108,7 +113,7 @@ export const useUserStore = defineStore('user', {
       // this.keyMenu = keyMenu
       // this.menuTree = tree[0]?.children
       if (this.menu) {
-        const keyMenu = this.transferRoute(this.menu, { Home: { name: 'Home', meta: { title: '首页', affix: true } } })
+        const keyMenu = this.transferRoute(this.menu)
         this.keyMenu = keyMenu
       }
       this.menuTree = this.menu
