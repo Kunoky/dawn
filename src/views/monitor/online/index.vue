@@ -21,7 +21,7 @@
       </el-table-column>
       <el-table-column label="操作" class-name="small-padding fixed-width">
         <template #default="{ row }">
-          <el-button link type="primary" @click="handleForceLogout(row)" v-hasPermi="['monitor:online:forceLogout']">
+          <el-button link type="info" @click="handleForceLogout(row)" v-hasPermi="['monitor:online:forceLogout']">
             强退
           </el-button>
         </template>

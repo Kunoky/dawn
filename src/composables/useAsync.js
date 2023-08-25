@@ -38,10 +38,12 @@ export function useAsync(service, options = {}) {
       const d = await service(...p)
       data.value = d
       onSuccess?.(d, p)
+      return d
     } catch (e) {
       console.error(e)
       error.value = e
       onError?.(data.value, p)
+      return Promise.reject(e)
     } finally {
       loading.value = false
       onFinally?.(p)

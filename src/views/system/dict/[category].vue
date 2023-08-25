@@ -2,26 +2,15 @@
   <div>
     <CTable
       :page-conf="{
-        action: 'system/dict/data/list',
+        action: listData,
       }"
-      :params="params"
       ref="tableRef"
       id="systemDictData"
     >
-      <el-table-column label="字典编码" prop="dictCode" />
-      <el-table-column label="字典标签" prop="dictLabel">
-        <template #default="{ row }">
-          <span v-if="row.listClass == '' || row.listClass == 'default'">{{ row.dictLabel }}</span>
-          <el-tag v-else :type="row.listClass == 'primary' ? '' : row.listClass">{{ row.dictLabel }}</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column label="字典键值" prop="dictValue" />
-      <el-table-column label="字典排序" prop="dictSort" />
-      <el-table-column label="状态" prop="status">
-        <template #default="{ row }">
-          <el-tag>{{ sys_normal_disable.kv[row.status] }}</el-tag>
-        </template>
-      </el-table-column>
+      <el-table-column label="字典编码" prop="dictId" />
+      <el-table-column label="字典标签" prop="label" />
+      <el-table-column label="字典键值" prop="value" />
+      <el-table-column label="字典排序" prop="orderNum" />
       <el-table-column label="备注" prop="remark" :show-overflow-tooltip="true" />
       <el-table-column label="创建时间" prop="createTime" width="180">
         <template #default="{ row }">
@@ -30,7 +19,7 @@
       </el-table-column>
       <el-table-column label="操作" width="180">
         <template #default="{ row }">
-          <el-button link type="primary" @click="handleEdit(row)" v-hasPermi="['system:dict:edit']">
+          <el-button link type="info" @click="handleEdit(row)" v-hasPermi="['system:dict:edit']">
             {{ $t('common.edit') }}
           </el-button>
           <el-button link type="danger" @click="handleDel(row)" v-hasPermi="['system:dict:remove']">
@@ -51,27 +40,17 @@
         </RouterLink>
       </template>
       <template #form="{ form }">
-        <el-form-item label="字典标签" prop="dictLabel">
-          <el-input v-model="form.dictLabel" placeholder="请输入字典标签" clearable />
-        </el-form-item>
-
-        <el-form-item label="状态" prop="status">
-          <el-select v-model="form.status" placeholder="字典状态" clearable>
-            <el-option v-for="i in sys_normal_disable.options" :key="i.value" :label="i.label" :value="i.value" />
-          </el-select>
+        <el-form-item label="字典标签" prop="label">
+          <el-input v-model="form.label" placeholder="请输入字典标签" clearable />
         </el-form-item>
       </template>
     </CTable>
-    <FormDialog
-      :data="current"
-      v-model="visible.form"
-      :type="params.dictType"
-      @success="handleFormSuccess"
-    ></FormDialog>
+    <FormDialog :data="current" v-model="visible.form" @success="handleFormSuccess"></FormDialog>
   </div>
 </template>
 <script setup name="SystemDictData">
 import FormDialog from './components/DataDialog.vue'
+import { source, init } from '@/utils/dict'
 
 definePage({
   meta: {
@@ -82,21 +61,45 @@ definePage({
 
 const { parseTime } = utils
 
-const tableRef = ref()
-const refresh = () => tableRef.value.refresh()
 const i18n = useI18n()
+const route = useRoute()
+
+const tableRef = ref()
+const refresh = async force => {
+  if (!source.value.length || force) {
+    await init()
+  }
+  setTimeout(() => {
+    tableRef.value.refresh()
+  }, 100)
+}
+refresh()
+
+const category = useDict('category')
+const dicts = computed(() =>
+  source.value
+    .filter(i => i.parentId === category.value.ko[route.params.category].dictId)
+    .sort((a, b) => b.dictId - a.dictId)
+)
+async function listData(params) {
+  let list = dicts.value.filter(i => {
+    if (params.label && !i.label.match(params.label)) return false
+    return true
+  })
+  const limit = params.pageNumber * params.pageSize
+  const records = list.slice(limit - params.pageSize, limit)
+  return {
+    data: {
+      records,
+      totalRow: records.length,
+    },
+  }
+}
 
 const current = ref(null)
 const visible = reactive({
   form: false,
 })
-
-const route = useRoute()
-const params = ref({
-  dictType: route.query.type,
-})
-
-const sys_normal_disable = useDict('sys_normal_disable')
 
 const handleAdd = () => {
   current.value = null
@@ -128,6 +131,6 @@ const handleDel = row => {
     })
 }
 const handleFormSuccess = () => {
-  refresh()
+  refresh(true)
 }
 </script>

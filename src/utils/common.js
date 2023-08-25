@@ -4,24 +4,24 @@
  * @returns {Array[Array, Object]} 返回根数组和id映射对象
  */
 export function arr2tree(arr, key = 'id', pKey = 'pId') {
-  const idObj = {},
+  const idNode = {},
     root = []
   arr.forEach(i => {
     i.children = undefined
-    if (idObj[i[key]]) {
-      Object.assign(idObj[i[key]], i)
+    if (idNode[i[key]]) {
+      Object.assign(idNode[i[key]], i)
     } else {
-      idObj[i[key]] = i
+      idNode[i[key]] = i
     }
-    if (i[pKey]) {
-      idObj[i[pKey]] ||= {}
-      idObj[i[pKey]].children ||= []
-      idObj[i[pKey]].children.push(idObj[i[key]])
+    if (i[pKey] && i[pKey] !== '0') {
+      idNode[i[pKey]] ||= {}
+      idNode[i[pKey]].children ||= []
+      idNode[i[pKey]].children.push(idNode[i[key]])
     } else {
-      root.push(idObj[i[key]])
+      root.push(idNode[i[key]])
     }
   })
-  return [root, idObj]
+  return [root, idNode]
 }
 
 /**
@@ -131,4 +131,33 @@ export function getNestProp(obj, key) {
     return false
   })
   return v
+}
+
+/**
+ * 判断元素是否与选择器匹配
+ * @param {*} element
+ * @param {*} selector
+ * @returns
+ */
+export function matchesSelector(element, selector) {
+  if (element.matchesSelector) {
+    return element.matchesSelector(selector)
+  } else if (element.webkitMatchesSelector) {
+    return element.webkitMatchesSelector(selector)
+  } else if (element.mozMatchesSelector) {
+    return element.mozMatchesSelector(selector)
+  } else if (element.msMatchesSelector) {
+    return element.msMatchesSelector(selector)
+  } else {
+    console.warn('matchesSelector is not support')
+    return false
+  }
+}
+
+export function getElNest(el, selector, finalEl = document.body) {
+  if (matchesSelector(el, selector)) {
+    return el
+  } else if (el !== finalEl && el.parentNode) {
+    return getElNest(el.parentNode, selector, finalEl)
+  }
 }

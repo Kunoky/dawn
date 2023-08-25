@@ -121,16 +121,16 @@ const handleClose = () => {
 const deptRef = ref()
 const deptTree = ref([])
 const getdept = () => {
-  req.get('system/role/deptTree/' + props.data.roleId).then(res => {
-    deptTree.value = res.data
-    if (props.data) {
-      deptTree.value = res.depts
-      // nextTick(() => {
-      deptRef.value.setCheckedKeys(res.checkedKeys)
-      // res.checkedKeys.forEach(i => deptRef.value.setChecked(i, true, false))
-      // })
-    }
-  })
+  // req.get('system/role/deptTree/' + props.data.roleId).then(res => {
+  //   deptTree.value = res.data
+  //   if (props.data) {
+  //     deptTree.value = res.depts
+  //     // nextTick(() => {
+  //     deptRef.value.setCheckedKeys(res.checkedKeys)
+  //     // res.checkedKeys.forEach(i => deptRef.value.setChecked(i, true, false))
+  //     // })
+  //   }
+  // })
 }
 function getdeptAllCheckedKeys() {
   // 目前被选中的菜单节点

@@ -72,11 +72,9 @@ service.interceptors.response.use(
     let msg = error.message
     if (error.response) {
       const { status, data } = error.response
-      const code = data?.code || status
-
-      msg = code + ' ' + i18n.global.t('httpCode.' + code)
+      msg = data?.msg || status + ' ' + i18n.global.t('httpCode.' + status)
       let store
-      switch (code) {
+      switch (status) {
         case 401:
           store = useUserStore()
           store.logout(true)

@@ -2,19 +2,14 @@
   <div>
     <CTable
       :page-conf="{
-        action: 'system/dict/type/list',
+        action: listData,
       }"
       ref="tableRef"
       id="systemDict"
     >
       <el-table-column label="字典编号" prop="dictId" />
-      <el-table-column label="字典名称" prop="dictName" :show-overflow-tooltip="true" />
-      <el-table-column label="字典类型" prop="dictType" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column label="状态" prop="status">
-        <template #default="{ row }">
-          <el-tag>{{ sys_normal_disable.kv[row.status] }}</el-tag>
-        </template>
-      </el-table-column>
+      <el-table-column label="字典名称" prop="label" :show-overflow-tooltip="true" />
+      <el-table-column label="字典类型" prop="category" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column label="备注" prop="remark" :show-overflow-tooltip="true" />
       <el-table-column label="创建时间" prop="createTime" width="180">
         <template #default="{ row }">
@@ -23,11 +18,11 @@
       </el-table-column>
       <el-table-column label="操作" width="180">
         <template #default="{ row }">
-          <el-button link type="primary" @click="handleEdit(row)" v-hasPermi="['system:dict:edit']">
+          <el-button link type="info" @click="handleEdit(row)" v-hasPermi="['system:dict:edit']">
             {{ $t('common.edit') }}
           </el-button>
-          <RouterLink :to="'/system/dict/data?type=' + row.dictType">
-            <el-button type="primary" link>{{ $t('common.config') }}</el-button>
+          <RouterLink :to="'/system/dict/' + row.category">
+            <el-button link type="info">{{ $t('common.config') }}</el-button>
           </RouterLink>
           <el-button link type="danger" @click="handleDel(row)" v-hasPermi="['system:dict:remove']">
             {{ $t('common.delete') }}
@@ -41,19 +36,11 @@
         </el-button>
       </template>
       <template #form="{ form }">
-        <el-form-item label="字典名称" prop="dictName">
-          <el-input v-model="form.dictName" placeholder="请输入字典名称" clearable />
+        <el-form-item label="字典名称" prop="label">
+          <el-input v-model="form.label" placeholder="请输入字典名称" clearable />
         </el-form-item>
-        <el-form-item label="字典类型" prop="dictType">
-          <el-input v-model="form.dictType" placeholder="请输入字典类型" clearable />
-        </el-form-item>
-        <el-form-item label="状态" prop="status">
-          <el-select v-model="form.status" placeholder="字典状态" clearable>
-            <el-option v-for="i in sys_normal_disable.options" :key="i.value" :label="i.label" :value="i.value" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="创建时间">
-          <RangePicker v-model="form.params" />
+        <el-form-item label="字典类型" prop="category">
+          <el-input v-model="form.category" placeholder="请输入字典类型" clearable />
         </el-form-item>
       </template>
     </CTable>
@@ -61,20 +48,43 @@
   </div>
 </template>
 <script setup name="SystemDict">
+import { onMounted } from 'vue'
 import FormDialog from './components/FormDialog.vue'
-
+import { source, init } from '@/utils/dict'
 const { parseTime } = utils
 
-const tableRef = ref()
-const refresh = () => tableRef.value.refresh()
 const i18n = useI18n()
+const tableRef = ref()
+const refresh = async force => {
+  if (!source.value.length || force) {
+    await init()
+  }
+  tableRef.value.refresh()
+}
+onMounted(refresh)
 
+const categories = computed(() =>
+  source.value.filter(i => !i.parentId || i.parentId === '0').sort((a, b) => b.dictId - a.dictId)
+)
+async function listData(params) {
+  let list = categories.value.filter(i => {
+    if (params.label && !i.label.match(params.label)) return false
+    if (params.category && !i.category.match(params.category)) return false
+    return true
+  })
+  const limit = params.pageNumber * params.pageSize
+  const records = list.slice(limit - params.pageSize, limit)
+  return {
+    data: {
+      records,
+      totalRow: records.length,
+    },
+  }
+}
 const current = ref(null)
 const visible = reactive({
   form: false,
 })
-
-const sys_normal_disable = useDict('sys_normal_disable')
 
 const handleAdd = () => {
   current.value = null
@@ -96,7 +106,7 @@ const handleDel = row => {
         ...row,
         deleting: true,
       }
-      return req.delete('system/dict/' + row.dictId)
+      return req.delete('/dict/' + row.dictId)
     })
     .then(({ code }) => {
       if (code === 200) {
@@ -106,6 +116,6 @@ const handleDel = row => {
     })
 }
 const handleFormSuccess = () => {
-  refresh()
+  refresh(true)
 }
 </script>

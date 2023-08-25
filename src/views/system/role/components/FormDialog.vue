@@ -15,12 +15,12 @@
         </template>
         <el-input v-model="form.roleKey" placeholder="请输入权限字符" />
       </el-form-item>
-      <el-form-item label="角色顺序" prop="roleSort">
-        <el-input-number v-model="form.roleSort" controls-position="right" :min="0" />
+      <el-form-item label="角色顺序" prop="orderNum">
+        <el-input-number v-model="form.orderNum" controls-position="right" :min="0" />
       </el-form-item>
       <el-form-item label="状态">
         <el-radio-group v-model="form.status">
-          <el-radio v-for="i in sys_normal_disable.options" :key="i.value" :label="i.value">{{ i.label }}</el-radio>
+          <el-radio v-for="i in status.options" :key="i.value" :label="i.value">{{ i.label }}</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="菜单权限">
@@ -75,14 +75,14 @@ const title = computed(() => (props.data ? '编辑角色' : '新增角色'))
 const rules = {
   roleName: [{ required: true, message: '角色名称不能为空', trigger: 'blur' }],
   roleKey: [{ required: true, message: '权限字符不能为空', trigger: 'blur' }],
-  roleSort: [{ required: true, message: '角色顺序不能为空', trigger: 'blur' }],
+  orderNum: [{ required: true, message: '角色顺序不能为空', trigger: 'blur' }],
 }
 
 const loading = ref(false)
 const formRef = ref()
 const form = ref({})
 
-const sys_normal_disable = useDict('sys_normal_disable')
+const status = useDict('status')
 
 watch(
   () => props.modelValue,
@@ -92,8 +92,8 @@ watch(
         roleId: undefined,
         roleName: '',
         roleKey: '',
-        roleSort: 0,
-        status: '0',
+        orderNum: 0,
+        status: 1,
         menuIds: [],
         deptIds: [],
         menuCheckStrictly: true,
@@ -111,12 +111,11 @@ watch(
   { immediate: true }
 )
 
-const { run: getData, loading: dataLoading } = useAsync(() => req.get('system/role/' + (props.data?.roleId || '')), {
+const { run: getData, loading: dataLoading } = useAsync(() => req.get('role/' + (props.data?.roleId || '')), {
   onSuccess(res) {
     for (let k in form.value) {
       form.value[k] = res.data[k]
     }
-    form.value.roleSort = +form.value.roleSort
     nextTick(() => {
       formRef.value.clearValidate()
     })
@@ -165,7 +164,7 @@ const handleConfirm = () => {
     if (valid) {
       loading.value = true
       form.value.menuIds = getMenuAllCheckedKeys()
-      req[form.value.menuId ? 'put' : 'post']('system/role', form.value)
+      req[form.value.menuId ? 'put' : 'post']('role', form.value)
         .then(({ code }) => {
           if (code === 200) {
             emit('success')

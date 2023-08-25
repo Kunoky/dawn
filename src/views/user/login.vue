@@ -1,24 +1,19 @@
-<script setup>
-import { useUserStore } from '@/store/user'
-import { storeToRefs } from 'pinia'
-import { reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
-
+<script setup name="UserLogin">
 const router = useRouter()
 const userStore = useUserStore()
 const { loading } = storeToRefs(userStore)
 const loginFormInstance = ref()
 const appName = __APP_NAME__
 const loginForm = reactive({
-  username: 'admin',
-  password: 'admin123',
-  uuid: '',
-  code: '',
+  loginName: 'admin',
+  password: 'Admin123456',
+  // uuid: '',
+  // code: '',
 })
 const loginRules = {
-  username: [{ required: true, trigger: 'blur', message: '请输入用户名称' }],
+  loginName: [{ required: true, trigger: 'blur', message: '请输入用户名称' }],
   password: [{ required: true, trigger: 'blur', message: '请输入登录密码' }],
-  code: [{ required: true, trigger: 'blur', message: '请输入验证码' }],
+  // code: [{ required: true, trigger: 'blur', message: '请输入验证码' }],
 }
 
 const handleLogin = () => {
@@ -29,26 +24,26 @@ const handleLogin = () => {
         router.push(router.currentRoute.value.query.redirect || '/')
       } else {
         // ElMessage.error(res.msg)
-        getCode()
+        // getCode()
       }
     }
   })
 }
 
-const captchaEnabled = ref(true)
-const { data: codeUrl, run: getCode } = useAsync(
-  () =>
-    req.get('/captchaImage').then(res => {
-      captchaEnabled.value = res.captchaEnabled === undefined ? true : res.captchaEnabled
-      if (captchaEnabled.value) {
-        loginForm.uuid = res.uuid
-        return 'data:image/gif;base64,' + res.img
-      }
-    }),
-  {
-    manual: false,
-  }
-)
+// const captchaEnabled = ref(true)
+// const { data: codeUrl, run: getCode } = useAsync(
+//   () =>
+//     req.get('/captchaImage').then(res => {
+//       captchaEnabled.value = res.captchaEnabled === undefined ? true : res.captchaEnabled
+//       if (captchaEnabled.value) {
+//         loginForm.uuid = res.uuid
+//         return 'data:image/gif;base64,' + res.img
+//       }
+//     }),
+//   {
+//     manual: false,
+//   }
+// )
 </script>
 <template>
   <section>
@@ -68,8 +63,8 @@ const { data: codeUrl, run: getCode } = useAsync(
         <div class="login-form">
           <h2>{{ appName }} 登录</h2>
           <el-form ref="loginFormInstance" :model="loginForm" :rules="loginRules" @keyup.enter="handleLogin">
-            <el-form-item prop="username">
-              <el-input v-model="loginForm.username" type="text" placeholder="用户名">
+            <el-form-item prop="loginName">
+              <el-input v-model="loginForm.loginName" type="text" placeholder="登录名">
                 <template #prefix><i-ep-user /></template>
               </el-input>
             </el-form-item>
@@ -78,12 +73,12 @@ const { data: codeUrl, run: getCode } = useAsync(
                 <template #prefix><i-ep-lock /></template>
               </el-input>
             </el-form-item>
-            <el-form-item prop="code" v-if="captchaEnabled">
+            <!-- <el-form-item prop="code" v-if="captchaEnabled">
               <el-input v-model="loginForm.code" auto-complete="off" placeholder="验证码" style="width: 63%">
-                <template #prefix><IconFont icon="anquanyinsi" /></template>
+                <template #prefix><CIcon icon="anquanyinsi" /></template>
               </el-input>
               <img :src="codeUrl" @click="getCode" class="code-img cs-p" />
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item style="width: 100%">
               <el-button class="submit" :loading="loading.login" size="default" @click.prevent="handleLogin">
                 登 录

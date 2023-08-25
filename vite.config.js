@@ -11,6 +11,7 @@ import IconsResolver from 'unplugin-icons/resolver'
 import purgecss from '@mojojoejo/vite-plugin-purgecss'
 import { VueRouterAutoImports, getPascalCaseRouteName } from 'unplugin-vue-router'
 import VueRouter from 'unplugin-vue-router/vite'
+import { viteMockServe } from 'vite-plugin-mock'
 
 const plugins = [
   // https://www.npmjs.com/package/unplugin-vue-router
@@ -73,6 +74,12 @@ const plugins = [
     ...visualizer(),
     apply: () => process.env.stats,
   },
+  {
+    ...viteMockServe({
+      mockPath: 'mock',
+    }),
+    apply: 'serve',
+  },
 ]
 
 // https://vitejs.dev/config/
@@ -83,13 +90,13 @@ export default defineConfig({
     host: '0.0.0.0',
     port: '8000',
     strictPort: true,
-    proxy: {
-      '^/api': {
-        target: 'http://vue.ruoyi.vip/prod-api',
-        changeOrigin: true,
-        rewrite: path => path.replace(/^\/api/, ''),
-      },
-    },
+    // proxy: {
+    //   '^/api': {
+    //     target: 'http://10.71.4.66:5006',
+    //     changeOrigin: true,
+    //     rewrite: path => path.replace(/^\/api/, ''),
+    //   },
+    // },
   },
   resolve: {
     alias: {
@@ -98,7 +105,7 @@ export default defineConfig({
     },
   },
   define: {
-    __APP_NAME__: '"破晓"', // 项目名
+    __APP_NAME__: '"GSS"', // 项目名
     __TOKEN_KEY__: '"satoken"', // token键名，localStorage
   },
   test: {

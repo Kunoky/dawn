@@ -1,10 +1,6 @@
 // import dark theme
 @use 'element-plus/theme-chalk/src/dark/css-vars.scss' as *;
 
-/* @import '@/assets/iconfont/iconfont.css'; */
-/* CDN 服务仅供平台体验和调试使用，平台不承诺服务的稳定性，企业客户需下载字体包自行发布使用并做好备份 */
-@import '//at.alicdn.com/t/c/font_3942014_4h85gbo1yhf.css';
-
 body {
   font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial,
     sans-serif;
@@ -31,24 +27,33 @@ h5,
 h6 {
   margin: 0;
 }
-.iconfont {
-  font-size: inherit;
-}
-/* iconfont symbol模式 */
-.icon {
-  width: 1em;
-  height: 1em;
-  vertical-align: -0.15em;
-  fill: currentColor;
-  overflow: hidden;
-}
 
 html {
   overflow: overlay;
-  --bgc: var(--gray-9);
 }
 
 .el-button + a,
 a + .el-button {
   margin-left: 12px;
+}
+
+.el-form-item .el-form-item__label {
+  align-items: center;
+}
+
+:root {
+  --primary-color: #e71316;
+  --bgc: var(--gray-9);
+}
+
+.bs-s {
+  box-shadow: 0 2px 8px var(--gray-3);
+}
+
+.bs-m {
+  box-shadow: 0 2px 16px var(--gray-5);
+}
+
+.bs-l {
+  box-shadow: 0 2px 24px var(--gray-6);
 }

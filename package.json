@@ -50,6 +50,7 @@
     "husky": "^8.0.3",
     "jsdom": "^21.1.0",
     "lint-staged": "^13.1.2",
+    "mockjs": "^1.1.0",
     "prettier": "2.8.4",
     "rollup-plugin-visualizer": "^5.9.0",
     "sass": "^1.58.1",
@@ -58,6 +59,7 @@
     "unplugin-vue-components": "^0.24.0",
     "unplugin-vue-router": "^0.6.4",
     "vite": "^4.1.0",
+    "vite-plugin-mock": "2.9.8",
     "vitest": "^0.28.5"
   },
   "lint-staged": {

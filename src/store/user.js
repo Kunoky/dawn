@@ -3,6 +3,7 @@ import * as service from '@/services/user'
 import { setToken, getToken, removeToken } from '@/utils/auth'
 import router, { dynamicRoutes } from '@/router'
 
+const menuCache = useStorage('menu', [])
 // 选项式样例
 export const useUserStore = defineStore('user', {
   state() {
@@ -17,20 +18,15 @@ export const useUserStore = defineStore('user', {
         login: false,
         get: false,
       },
-      menu: [],
+      menu: menuCache.value,
       menuTree: [],
+      idMenu: {},
       keyMenu: {},
+      permission: [],
     }
-  },
-  getters: {
-    permission() {
-      // return this.user?.permission || {}
-      return this.user?.permissions || []
-    },
   },
   actions: {
     async init() {
-      // if (!this.user) return
       if (!getToken()) return
       await Promise.all([this.getUser(), this.listMenu()])
       this.genMenu()
@@ -40,9 +36,7 @@ export const useUserStore = defineStore('user', {
         this.loading.login = true
         const res = await service.login(user)
         if (res.code === 200) {
-          // this.user = res.data
-          // localStorage.setItem('user', JSON.stringify(res.data))
-          setToken(res.token)
+          setToken(res.data.tokenValue)
           await this.init()
         }
         return res
@@ -53,16 +47,12 @@ export const useUserStore = defineStore('user', {
       }
     },
     async getUser() {
-      if (this.user?.permissions) return this.user
+      if (this.user?.userId) return this.user
       this.loading.get = true
-      const { user, roles, permissions, code } = await service.getUser()
+      const { data, code } = await service.getUser()
       this.loading.get = false
       if (code !== 200) return null
-      this.user = {
-        ...user,
-        permissions,
-        roles,
-      }
+      this.user = data
       localStorage.setItem('user', JSON.stringify(this.user))
       return this.user
     },
@@ -80,43 +70,47 @@ export const useUserStore = defineStore('user', {
         })
       }
     },
-    // hasPermission(name, num) {
-    //   if (!Object.hasOwnProperty.call(this.permission, name)) return false
-    //   if (num && !utils.hasBit(this.permission[name], num)) return false
-    //   return true
-    // },
     hasPermission(permissions) {
       return this.permission.some(i => i === '*:*:*' || permissions?.includes(i))
     },
     async listMenu() {
+      if (menuCache.value.length) return
       const res = await service.listRoute()
-      this.menu = res.data || []
-    },
-    transferRoute(routes, keyMenu = {}, pName = '') {
-      routes.forEach(i => {
-        i.name = pName + i.name
-        keyMenu[i.name] = i
-        if (i.children) {
-          this.transferRoute(i.children, keyMenu, i.name)
-        }
-      })
-      return keyMenu
+      this.menu = res.data
+      // menuCache.value = res.data
     },
     genMenu() {
-      // const keyMenu = {}
-      // const menu = this.menu.filter(i => {
-      //   keyMenu[i.key] = i
-      //   if (i.meta?.public || this.hasPermission(i.key)) return true
-      //   return false
-      // })
-      // const [tree] = utils.arr2tree(menu)
-      // this.keyMenu = keyMenu
-      // this.menuTree = tree[0]?.children
-      if (this.menu) {
-        const keyMenu = this.transferRoute(this.menu)
-        this.keyMenu = keyMenu
-      }
-      this.menuTree = this.menu
+      const perms = [],
+        menus = [],
+        keyMenu = {}
+      let menuItem = {}
+      this.menu.forEach(i => {
+        perms.push(i.path)
+        if (i.menuType !== 2) {
+          menuItem = {
+            id: i.menuId,
+            pId: i.parentId,
+            path: i.path,
+            name: i.routeName,
+            meta: {
+              title: i.menuName,
+              icon: i.icon,
+              isCache: i.isCache,
+              type: i.menuType,
+              visible: i.visible,
+            },
+          }
+          menus.push(menuItem)
+          if (i.menuType === 1) {
+            keyMenu[menuItem.name] = menuItem
+          }
+        }
+      })
+      const [tree, idNode] = utils.arr2tree(menus)
+      this.menuTree = tree
+      this.keyMenu = keyMenu
+      this.permission = perms
+      this.idMenu = idNode
     },
     addDynamicRoutes() {
       // TODO 如果需要，将此代码移至权限获取处，并完善动态添加路由

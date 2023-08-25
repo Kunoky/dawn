@@ -39,7 +39,7 @@
             <el-button link :aria-description="$t('component.CTable.size')">
               <template #icon>
                 <el-tooltip :content="$t('component.CTable.size')" placement="top">
-                  <IconFont icon="enlarge" />
+                  <CIcon icon="ant-design:column-height-outlined" />
                 </el-tooltip>
               </template>
             </el-button>
@@ -47,7 +47,7 @@
           <el-tooltip v-if="id" :content="$t('component.CTable.save')" placement="top">
             <el-button link @click="handleSave" :aria-description="$t('component.CTable.save')">
               <template #icon>
-                <IconFont icon="save" />
+                <CIcon icon="ant-design:save-outlined" />
               </template>
             </el-button>
           </el-tooltip>
@@ -92,7 +92,7 @@
                     <template #item="{ element }">
                       <li>
                         <span>
-                          <IconFont v-if="i.children.length > 1" icon="justify" class="handle" />
+                          <CIcon v-if="i.children.length > 1" icon="ant-design:bars-outlined" class="handle" />
                           <el-checkbox v-model="element.isShow">{{ element.label }}</el-checkbox>
                         </span>
                         <span class="right">
@@ -101,21 +101,30 @@
                             :content="$t('component.CTable.pinLeft')"
                             placement="top"
                           >
-                            <IconFont icon="to-top" @click="element.props.fixed = 'left'" />
+                            <CIcon
+                              icon="ant-design:vertical-align-top-outlined"
+                              @click="element.props.fixed = 'left'"
+                            />
                           </el-tooltip>
                           <el-tooltip
                             v-if="element.props.fixed"
                             :content="$t('component.CTable.unpin')"
                             placement="top"
                           >
-                            <IconFont icon="to-center" @click="element.props.fixed = false" />
+                            <CIcon
+                              icon="ant-design:vertical-align-middle-outlined"
+                              @click="element.props.fixed = false"
+                            />
                           </el-tooltip>
                           <el-tooltip
                             v-if="element.props.fixed !== 'right'"
                             :content="$t('component.CTable.pinRight')"
                             placement="top"
                           >
-                            <IconFont icon="to-bottom" @click="element.props.fixed = 'right'" />
+                            <CIcon
+                              icon="ant-design:vertical-align-bottom-outlined"
+                              @click="element.props.fixed = 'right'"
+                            />
                           </el-tooltip>
                         </span>
                       </li>
@@ -511,7 +520,6 @@ defineExpose({
     text-align: right;
     .el-button {
       .el-icon,
-      .iconfont,
       .icon {
         font-size: 16px;
       }

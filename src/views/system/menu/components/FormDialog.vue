@@ -6,7 +6,7 @@
     width="60%"
     v-bind="$attrs"
   >
-    <el-form :model="form" ref="formRef" label-width="80" :rules="rules">
+    <el-form :model="form" ref="formRef" label-width="100" :rules="rules">
       <el-row>
         <el-col :span="24">
           <el-form-item label="上级菜单" prop="parentId">
@@ -22,21 +22,26 @@
         <el-col :span="24">
           <el-form-item label="菜单类型" prop="menuType">
             <el-radio-group v-model="form.menuType">
-              <el-radio label="M">目录</el-radio>
-              <el-radio label="C">菜单</el-radio>
-              <el-radio label="F">按钮</el-radio>
+              <el-radio :label="1">标准</el-radio>
+              <el-radio :label="2">权限</el-radio>
+              <el-radio :label="3">外链</el-radio>
             </el-radio-group>
           </el-form-item>
         </el-col>
-        <el-col :span="24" v-if="form.menuType != 'F'">
+        <el-col :span="24" v-if="form.menuType !== 2">
           <el-form-item label="菜单图标" prop="icon">
-            <!-- <el-popover placement="bottom-start" width="460" trigger="click" @show="$refs['iconSelect'].reset()">
-              <IconSelect ref="iconSelect" @selected="selected" :active-icon="form.icon" />
-              <el-input slot="reference" v-model="form.icon" placeholder="点击选择图标" readonly>
-                <svg-icon v-if="form.icon" slot="prefix" :icon-class="form.icon" style="width: 25px" />
-                <i v-else slot="prefix" class="el-icon-search el-input__icon" />
-              </el-input>
-            </el-popover> -->
+            <el-input v-model="form.icon" placeholder="请输入图标名称如：ep:user">
+              <template #prepend>
+                <CIcon :icon="form.icon" />
+              </template>
+              <template #append>
+                <el-tooltip content="前往icon市场挑选心仪的图标，复制名称回来粘贴" placement="top">
+                  <a href="https://icones.netlify.app/" target="_blank">
+                    <el-button><i-ep-search /></el-button>
+                  </a>
+                </el-tooltip>
+              </template>
+            </el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -44,117 +49,78 @@
             <el-input v-model="form.menuName" placeholder="请输入菜单名称" />
           </el-form-item>
         </el-col>
+
+        <el-col :span="12">
+          <el-form-item prop="path">
+            <template #label>
+              <el-tooltip content="标准：路由地址如：/user, 权限：权限标识如：user:add，外链：外链地址" placement="top">
+                <i-ep-question-filled class="cl-w" />
+              </el-tooltip>
+              菜单标识
+            </template>
+            <el-input v-model="form.path" placeholder="请输入菜单标识" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12" v-if="form.menuType === 1">
+          <el-form-item prop="routeName">
+            <template #label>
+              <el-tooltip content="和route.name保持一致以便关联, 大驼峰如: User" placement="top">
+                <i-ep-question-filled class="cl-w" />
+              </el-tooltip>
+              路由名称
+            </template>
+            <el-input v-model="form.routeName" placeholder="请输入路由名称" />
+          </el-form-item>
+        </el-col>
         <el-col :span="12">
           <el-form-item label="显示排序" prop="orderNum">
             <el-input-number v-model="form.orderNum" controls-position="right" :min="0" />
           </el-form-item>
         </el-col>
-        <el-col :span="12" v-if="form.menuType != 'F'">
-          <el-form-item prop="isFrame">
-            <template #label>
-              <el-tooltip content="选择是外链则路由地址需要以`http(s)://`开头" placement="top">
-                <i class="el-icon-question"></i>
-              </el-tooltip>
-              是否外链
-            </template>
-            <el-radio-group v-model="form.isFrame">
-              <el-radio label="0">是</el-radio>
-              <el-radio label="1">否</el-radio>
-            </el-radio-group>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12" v-if="form.menuType != 'F'">
-          <el-form-item prop="path">
-            <template #label>
-              <el-tooltip
-                content="访问的路由地址，如：`user`，如外网地址需内链访问则以`http(s)://`开头"
-                placement="top"
-              >
-                <i class="el-icon-question"></i>
-              </el-tooltip>
-              路由地址
-            </template>
-            <el-input v-model="form.path" placeholder="请输入路由地址" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12" v-if="form.menuType == 'C'">
-          <el-form-item prop="component">
-            <template #label>
-              <el-tooltip content="访问的组件路径，如：`system/user/index`，默认在`views`目录下" placement="top">
-                <i class="el-icon-question"></i>
-              </el-tooltip>
-              组件路径
-            </template>
-            <el-input v-model="form.component" placeholder="请输入组件路径" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12" v-if="form.menuType != 'M'">
-          <el-form-item prop="perms">
-            <el-input v-model="form.perms" placeholder="请输入权限标识" maxlength="100" />
-            <template #label>
-              <el-tooltip
-                content="控制器中定义的权限字符，如：@PreAuthorize(`@ss.hasPermi('system:user:list')`)"
-                placement="top"
-              >
-                <i class="el-icon-question"></i>
-              </el-tooltip>
-              权限字符
-            </template>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12" v-if="form.menuType == 'C'">
-          <el-form-item prop="query">
-            <el-input v-model="form.query" placeholder="请输入路由参数" maxlength="255" />
-            <template #label>
-              <el-tooltip content='访问路由的默认传递参数，如：`{"id": 1, "name": "ry"}`' placement="top">
-                <i class="el-icon-question"></i>
-              </el-tooltip>
-              路由参数
-            </template>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12" v-if="form.menuType == 'C'">
+        <el-col :span="12" v-if="form.menuType === 1">
           <el-form-item prop="isCache">
             <template #label>
-              <el-tooltip content="选择是则会被`keep-alive`缓存，需要匹配组件的`name`和地址保持一致" placement="top">
-                <i class="el-icon-question"></i>
+              <el-tooltip content="选择是则会被`keep-alive`缓存，需要匹配组件的`name`和路由名称" placement="top">
+                <i-ep-question-filled class="cl-w" />
               </el-tooltip>
               是否缓存
             </template>
             <el-radio-group v-model="form.isCache">
-              <el-radio label="0">缓存</el-radio>
-              <el-radio label="1">不缓存</el-radio>
+              <el-radio v-for="i in bool.options" :label="i.value" :key="i.value">{{ i.label }}</el-radio>
             </el-radio-group>
           </el-form-item>
         </el-col>
-        <el-col :span="12" v-if="form.menuType != 'F'">
+        <el-col :span="12" v-if="form.menuType === 1">
           <el-form-item prop="visible">
             <template #label>
-              <el-tooltip content="选择隐藏则路由将不会出现在侧边栏，但仍然可以访问" placement="top">
-                <i class="el-icon-question"></i>
+              <el-tooltip content="选择否后菜单不显示，但仍然可以访问" placement="top">
+                <i-ep-question-filled class="cl-w" />
               </el-tooltip>
-              显示状态
+              是否显示
             </template>
             <el-radio-group v-model="form.visible">
-              <el-radio v-for="i in dict.options" :label="i.value" :key="i.value">
+              <el-radio v-for="i in bool.options" :label="i.value" :key="i.value">{{ i.label }}</el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item prop="status">
+            <template #label>
+              <el-tooltip content="是否启用该数据" placement="top">
+                <i-ep-question-filled class="cl-w" />
+              </el-tooltip>
+              状态
+            </template>
+            <el-radio-group v-model="form.status">
+              <el-radio v-for="i in status.options" :label="i.value" :key="i.value">
                 {{ i.label }}
               </el-radio>
             </el-radio-group>
           </el-form-item>
         </el-col>
-        <el-col :span="12" v-if="form.menuType != 'F'">
-          <el-form-item prop="status">
-            <template #label>
-              <el-tooltip content="选择停用则路由将不会出现在侧边栏，也不能被访问" placement="top">
-                <i class="el-icon-question"></i>
-              </el-tooltip>
-              菜单状态
-            </template>
-            <el-radio-group v-model="form.status">
-              <el-radio v-for="i in dict.options" :label="i.value" :key="i.value">
-                {{ i.label }}
-              </el-radio>
-            </el-radio-group>
+        <el-col :span="24">
+          <el-form-item label="备注">
+            <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -179,15 +145,16 @@ const props = defineProps({
 
 const rules = {
   menuName: [{ required: true, message: '菜单名称不能为空', trigger: 'blur' }],
-  orderNum: [{ required: true, message: '菜单顺序不能为空', trigger: 'blur' }],
-  path: [{ required: true, message: '路由地址不能为空', trigger: 'blur' }],
+  path: [{ required: true, message: '菜单标识不能为空', trigger: 'blur' }],
+  routeName: [{ required: true, message: '路由名称不能为空', trigger: 'blur' }],
 }
 
 const loading = ref(false)
 const formRef = ref()
 const form = ref({})
 
-const dict = useDict('sys_show_hide')
+const bool = useDict('bool')
+const status = useDict('status')
 
 watch(
   () => props.modelValue,
@@ -196,18 +163,15 @@ watch(
       form.value = {
         menuId: undefined,
         parentId: props.parentId,
-        menuType: 'M',
+        menuType: 1,
         icon: '',
         menuName: '',
         orderNum: 0,
-        isFrame: '0',
         path: '',
-        component: '',
-        perms: '',
-        query: '',
-        isCache: '',
-        visible: '0',
-        status: '0',
+        routeName: '',
+        isCache: 1,
+        visible: 1,
+        status: 1,
       }
       if (props.data) {
         for (let k in form.value) {
@@ -228,7 +192,7 @@ const handleConfirm = () => {
   formRef.value.validate(valid => {
     if (valid) {
       loading.value = true
-      req[form.value.menuId ? 'put' : 'post']('system/menu', form.value)
+      req[form.value.menuId ? 'put' : 'post']('menu', form.value)
         .then(({ code }) => {
           if (code === 200) {
             emit('success')

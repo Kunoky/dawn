@@ -63,7 +63,7 @@ router.beforeEach(async (to, from) => {
     ...meta,
   }
   if (to.meta.public) return
-  const hasAuth = userStore.keyMenu[to.name] || userStore.hasPermission(to.meta.permission)
+  const hasAuth = userStore.keyMenu[to.name] || userStore.hasPermission([to.path])
   // const hasAuth = userStore.hasPermission(to.name)
   if (hasAuth) return
   if (hasToken) {

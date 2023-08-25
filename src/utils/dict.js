@@ -1,97 +1,49 @@
-import { cloneDeep } from 'lodash-es'
+export const source = ref([])
 
-const source = ref([])
-const loading = {}
-// ,
-//   CACHE_KEY = 'dict_source'
+export const dict = ref({})
 
-async function fetchCategory(category) {
-  // if (Array.isArray(category)) {
-  //   category.forEach(i => {
-  //     loading[i] = true
-  //   })
-  // } else {
-  if (loading[category]) return []
-  loading[category] = true
-  // }
-
-  const { data: list } = await req.get('system/dict/data/type/' + category)
-  // if (Array.isArray(category)) {
-  //   category.forEach(i => {
-  //     loading[i] = false
-  //   })
-  // } else {
-  loading[category] = false
-  // }
-  if (!list) return []
-  source.value = [...source.value, ...list]
-  // localStorage.setItem(CACHE_KEY, JSON.stringify(source.value))
-  return list
-}
-function deleteCategory(category) {
-  source.value = source.value.filter(i => i.dictType !== category)
-}
-export async function updateCategory(category) {
-  deleteCategory(category)
-  return await fetchCategory(category)
-}
+const loading = ref(false)
 export async function init() {
-  //   let cache = localStorage.getItem(CACHE_KEY)
-  //   if (!cache) return
-  //   source.value = JSON.parse(cache)
-  //   const roots = source.value.filter(i => !i.pId)
-  //   const res = await listDict({ id: roots.map(i => i.id), pId: 0 })
-  //   const idNode = {}
-  //   res.list.forEach(i => {
-  //     idNode[i.id] = i
-  //   })
-  //   const updateQueue = []
-  //   roots.forEach(i => {
-  //     if (i.version !== idNode[i.id].version) {
-  //       updateQueue.push(i.dictType)
-  //     }
-  //   })
-  //   updateQueue.forEach(i => {
-  //     deleteCategory(i)
-  //   })
-  //   await fetchCategory(updateQueue)
+  if (loading.value) return
+  loading.value = true
+  const { data } = await req.get('dict')
+  loading.value = false
+  source.value = data
+  const dictMap = {}
+  data.forEach(i => {
+    if (!i.parentId || i.parentId === '0') {
+      i = {
+        ...i,
+        category: 'category',
+      }
+      // data必须id升序
+    } else if (dictMap.category.ko[i.category].valueType === 'number') {
+      i.value = +i.value
+    }
+    const map = (dictMap[i.category] ??= {
+      kv: {},
+      ko: {},
+      options: [],
+    })
+    map.kv[i.value] = i.label
+    map.ko[i.value] = i
+    map.options.push({ label: i.label, value: i.value })
+  })
+  dict.value = dictMap
 }
 export function useDict(category) {
-  const arr = ref([])
-  watch(
-    source,
-    () => {
-      arr.value = cloneDeep(source.value.filter(i => i.dictType === category))
-    },
-    { immediate: true }
-  )
-  if (!arr.value.length) {
-    fetchCategory(category)
+  if (!source.value.length) {
+    init()
   }
-  const dict = computed(() => {
-    const kv = {},
-      options = [],
-      ko = {}
-    arr.value.forEach(i => {
-      kv[i.dictValue] = i.dictLabel
-      ko[i.dictValue] = i
-      options.push({
-        key: i.dictValue,
-        label: i.dictLabel,
-        value: i.dictValue,
-      })
-    })
-    // const [tree, idNode] = utils.arr2tree(arr.value, 'dictValue')
-    // const leaves = tree[0]?.children || []
-    return {
-      // tree,
-      // idNode,
-      // leaves,
-      kv,
-      options,
-      ko,
-    }
+  const dictData = computed(() => {
+    return (
+      dict.value[category] || {
+        kv: {},
+        ko: {},
+        options: [],
+      }
+    )
   })
 
-  return dict
+  return dictData
 }

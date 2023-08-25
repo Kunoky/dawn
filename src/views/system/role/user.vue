@@ -26,7 +26,7 @@
       </el-table-column>
       <el-table-column label="操作">
         <template #default="{ row }">
-          <el-button link type="primary" @click="handleCancelAuth(row)" v-hasPermi="['system:role:remove']">
+          <el-button link type="info" @click="handleCancelAuth(row)" v-hasPermi="['system:role:remove']">
             取消授权
           </el-button>
         </template>

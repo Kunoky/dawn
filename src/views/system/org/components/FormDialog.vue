@@ -2,29 +2,35 @@
   <el-dialog
     :model-value="modelValue"
     @close="handleClose"
-    :title="title"
+    :title="(form.orgId ? '编辑' : '新增') + '组织'"
     width="60%"
     v-bind="$attrs"
-    :close-on-click-modal="false"
   >
     <el-form :model="form" ref="formRef" label-width="80" :rules="rules">
-      <el-form-item label="字典名称" prop="label">
-        <el-input v-model="form.label" placeholder="请输入字典名称" />
-      </el-form-item>
-      <el-form-item label="字典类型" prop="category">
-        <el-input v-model="form.category" placeholder="请输入字典类型" />
-      </el-form-item>
-      <el-form-item label="序号" prop="orderNum">
-        <el-input-number v-model="form.orderNum" :min="0" />
-      </el-form-item>
-      <el-form-item label="数据类型" prop="valueType">
-        <el-radio-group v-model="form.valueType">
-          <el-radio v-for="i in ['string', 'number']" :key="i" :label="i">{{ i }}</el-radio>
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item label="备注" prop="remark">
-        <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
-      </el-form-item>
+      <el-row>
+        <el-col :span="24">
+          <el-form-item label="上级组织" prop="parentId">
+            <el-tree-select
+              v-model="form.parentId"
+              :data="orgs"
+              :props="{ value: 'orgId', label: 'orgName', children: 'children' }"
+              value-key="orgId"
+              placeholder="选择上级组织"
+              check-strictly
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="组织名称" prop="orgName">
+            <el-input v-model="form.orgName" placeholder="请输入组织名称" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="组织代码" prop="orgCode">
+            <el-input v-model="form.orgName" placeholder="请输入组织代码" />
+          </el-form-item>
+        </el-col>
+      </el-row>
     </el-form>
     <template #footer>
       <span class="dialog-footer">
@@ -40,13 +46,13 @@ const emit = defineEmits(['update:modelValue', 'success'])
 const props = defineProps({
   data: Object,
   modelValue: Boolean,
+  orgs: Array,
+  parentId: Number,
 })
 
-const title = computed(() => (props.data ? '编辑' : '新增') + '字典类型')
-
 const rules = {
-  label: [{ required: true, message: '字典名称不能为空', trigger: 'blur' }],
-  category: [{ required: true, message: '字典类型不能为空', trigger: 'blur' }],
+  parentId: [{ required: true, message: '上级组织不能为空', trigger: 'blur' }],
+  orgName: [{ required: true, message: '组织名称不能为空', trigger: 'blur' }],
 }
 
 const loading = ref(false)
@@ -58,13 +64,14 @@ watch(
   v => {
     if (v) {
       form.value = {
-        dictId: null,
-        label: '',
-        value: '',
-        category: '',
+        orgId: undefined,
+        parentId: props.parentId,
+        orgName: '',
         orderNum: 0,
-        valueType: 'string',
-        remark: '',
+        leader: '',
+        phone: '',
+        email: '',
+        status: '0',
       }
       if (props.data) {
         for (let k in form.value) {
@@ -78,16 +85,14 @@ watch(
   },
   { immediate: true }
 )
-
 const handleClose = () => {
   emit('update:modelValue', false)
 }
 const handleConfirm = () => {
   formRef.value.validate(valid => {
     if (valid) {
-      form.value.value = form.value.category
       loading.value = true
-      req[form.value.dictId ? 'put' : 'post']('/dict', form.value)
+      req[form.value.orgId ? 'put' : 'post']('system/org', form.value)
         .then(({ code }) => {
           if (code === 200) {
             emit('success')

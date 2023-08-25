@@ -31,7 +31,7 @@
       </el-table-column>
       <el-table-column label="操作" width="180">
         <template #default="{ row }">
-          <el-button link type="primary" @click="handleDetail(row)" v-hasPermi="['monitor:job:query']">
+          <el-button link type="info" @click="handleDetail(row)" v-hasPermi="['monitor:job:query']">
             {{ $t('common.detail') }}
           </el-button>
         </template>

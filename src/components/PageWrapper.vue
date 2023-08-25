@@ -29,17 +29,17 @@ const props = defineProps({
   // 从action返回的对象中获取data的key值，缺省则是对象自身
   dataKey: {
     type: String,
-    default: 'rows',
+    default: 'data.records',
   },
   // 从action返回的对象中获取total的key值
   totalKey: {
     type: String,
-    default: 'total',
+    default: 'data.totalRow',
   },
   // 分页页码key值
   pageKey: {
     type: String,
-    default: 'pageNum',
+    default: 'pageNumber',
   },
   // 分页尺寸key值
   sizeKey: {
@@ -63,6 +63,8 @@ const props = defineProps({
   },
 })
 
+const { getNestProp } = utils
+
 const page = ref(1)
 const size = ref(props.defaultSize)
 const total = ref(0)
@@ -75,8 +77,8 @@ const { data, loading, run, error } = useAsync(
       [props.sizeKey]: size.value,
       ...props.params,
     }).then(res => {
-      total.value = res[props.totalKey] || 0
-      if (props.dataKey) return res[props.dataKey]
+      total.value = getNestProp(res, props.totalKey) || 0
+      if (props.dataKey) return getNestProp(res, props.dataKey)
       return res
     }),
   {

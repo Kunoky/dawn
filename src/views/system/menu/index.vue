@@ -3,36 +3,41 @@
     <CTable
       :page-conf="{
         action: listData,
-        hidePage: true,
+        hidePager: true,
         dataKey: 'data',
       }"
       ref="tableRef"
       id="systemMenu"
       row-key="menuId"
     >
-      <el-table-column prop="menuName" label="菜单名称" :show-overflow-tooltip="true" width="160"></el-table-column>
-      <el-table-column prop="icon" label="图标" align="center" width="100">
+      <el-table-column prop="menuName" label="菜单名称" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="path" label="菜单标识" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="menuType" label="类型" width="80">
         <template #default="{ row }">
-          <IconFont :icon-class="row.icon" />
+          {{ ['', '标准', '权限', '外链'][row.menuType] }}
+        </template>
+      </el-table-column>
+      <el-table-column prop="icon" label="图标" width="80">
+        <template #default="{ row }">
+          <CIcon :icon="row.icon" />
         </template>
       </el-table-column>
       <el-table-column prop="orderNum" label="排序" width="60"></el-table-column>
-      <el-table-column prop="perms" label="权限标识" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="component" label="组件路径" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="status" label="状态" width="80">
         <template #default="{ row }">
-          <el-tag>{{ disableDict.kv[row.status] }}</el-tag>
+          {{ status.kv[row.status] }}
         </template>
       </el-table-column>
-      <el-table-column label="创建时间" align="center" prop="createTime">
+      <el-table-column prop="remark" label="备注" show-overflow-tooltip></el-table-column>
+      <el-table-column label="创建时间" prop="createTime" width="180">
         <template #default="{ row }">
           <span>{{ parseTime(row.createTime) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column label="操作" width="180">
         <template #default="{ row }">
-          <el-button link type="primary" @click="handleEdit(row)" v-hasPermi="['system:menu:edit']">修改</el-button>
-          <el-button link type="primary" @click="handleAdd(row)" v-hasPermi="['system:menu:add']">新增</el-button>
+          <el-button link type="info" @click="handleEdit(row)" v-hasPermi="['system:menu:edit']">修改</el-button>
+          <el-button link type="info" @click="handleAdd(row)" v-hasPermi="['system:menu:add']">新增</el-button>
           <el-button link type="danger" @click="handleDel(row)" v-hasPermi="['system:menu:remove']">删除</el-button>
         </template>
       </el-table-column>
@@ -46,7 +51,7 @@
         </el-form-item>
         <el-form-item label="状态">
           <el-select v-model="form.status" placeholder="请选择菜单状态" clearable>
-            <el-option v-for="i in disableDict.options" v-bind="i" :key="i.key" />
+            <el-option v-for="i in status.options" v-bind="i" :key="i.key" />
           </el-select>
         </el-form-item>
       </template>
@@ -71,7 +76,7 @@ const i18n = useI18n()
 
 const allExpandKeys = ref([])
 const listData = params =>
-  req.get('/system/menu/list', { params }).then(res => {
+  req.get('/menu/list', { params }).then(res => {
     const [list, obj] = arr2tree(res.data, 'menuId', 'parentId')
     const keys = []
     Object.values(obj).forEach(i => {
@@ -93,7 +98,7 @@ const toggleExpand = () => {
   })
 }
 
-const disableDict = useDict('sys_normal_disable')
+const status = useDict('status')
 
 const parentId = ref(0)
 const current = ref(null)

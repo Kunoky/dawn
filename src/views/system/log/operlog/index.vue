@@ -43,7 +43,7 @@
       </el-table-column>
       <el-table-column label="操作" class-name="small-padding fixed-width">
         <template #default="{ row }">
-          <el-button link type="primary" @click="handleView(row, index)" v-hasPermi="['monitor:operlog:query']">
+          <el-button link type="info" @click="handleView(row, index)" v-hasPermi="['monitor:operlog:query']">
             {{ $t('common.detail') }}
           </el-button>
         </template>

@@ -28,20 +28,20 @@
       </el-table-column>
       <el-table-column label="操作" width="180">
         <template #default="{ row }">
-          <el-button link type="primary" @click="handleEdit(row)" v-hasPermi="['monitor:job:edit']">
+          <el-button link type="info" @click="handleEdit(row)" v-hasPermi="['monitor:job:edit']">
             {{ $t('common.edit') }}
           </el-button>
           <el-button link type="danger" @click="handleDel(row)" v-hasPermi="['monitor:job:remove']">
             {{ $t('common.delete') }}
           </el-button>
-          <el-button link type="primary" @click="handleExcute(row)" v-hasPermi="['monitor:job:changeStatus']">
+          <el-button link type="info" @click="handleExcute(row)" v-hasPermi="['monitor:job:changeStatus']">
             {{ $t('common.execute') }}
           </el-button>
-          <el-button link type="primary" @click="handleDetail(row)" v-hasPermi="['monitor:job:query']">
+          <el-button link type="info" @click="handleDetail(row)" v-hasPermi="['monitor:job:query']">
             {{ $t('common.detail') }}
           </el-button>
           <RouterLink :to="'/monitor/job/log?name=' + row.jobName" v-hasPermi="['monitor:job:query']">
-            <el-button link type="primary">
+            <el-button link type="info">
               {{ $t('common.log') }}
             </el-button>
           </RouterLink>

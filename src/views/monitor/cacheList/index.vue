@@ -26,7 +26,7 @@
         <el-table-column label="备注" prop="remark" :show-overflow-tooltip="true" />
         <el-table-column label="操作" width="60">
           <template #default="{ row }">
-            <el-button link type="primary" @click="handleClearCacheName(row)"><i-ep-delete /></el-button>
+            <el-button link type="info" @click="handleClearCacheName(row)"><i-ep-delete /></el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -50,7 +50,7 @@
         <el-table-column label="缓存键名" :show-overflow-tooltip="true" prop="key"></el-table-column>
         <el-table-column label="操作" width="60">
           <template #default="{ row }">
-            <el-button link type="primary" @click="handleClearKey(row)"><i-ep-delete /></el-button>
+            <el-button link type="info" @click="handleClearKey(row)"><i-ep-delete /></el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -60,7 +60,7 @@
         <div class="pt-r">
           <i-ep-document class="va-m mgr-s" />
           <span>缓存内容</span>
-          <el-button link type="primary" class="pt-a rt-0">
+          <el-button link type="info" class="pt-a rt-0">
             <i-ep-refresh @click="handleClearAll" />
             清理全部
           </el-button>

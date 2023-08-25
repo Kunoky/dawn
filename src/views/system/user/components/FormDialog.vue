@@ -3,15 +3,15 @@
     <el-form :model="form" ref="formRef" label-width="80" :rules="rules" v-loading="dataLoading">
       <el-row>
         <el-col :span="12">
-          <el-form-item label="用户昵称" prop="nickName">
-            <el-input v-model="form.nickName" placeholder="请输入用户昵称" maxlength="30" />
+          <el-form-item label="用户昵称" prop="userName">
+            <el-input v-model="form.userName" placeholder="请输入用户昵称" maxlength="30" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="归属部门" prop="deptId">
+          <el-form-item label="归属部门" prop="orgId">
             <el-tree-select
-              v-model="form.deptId"
-              :data="deptTree"
+              v-model="form.orgId"
+              :data="orgTree"
               :props="{ value: 'id', label: 'label', children: 'children' }"
               value-key="id"
               placeholder="请选择归属部门"
@@ -22,8 +22,8 @@
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="手机号码" prop="phonenumber">
-            <el-input v-model="form.phonenumber" placeholder="请输入手机号码" maxlength="11" />
+          <el-form-item label="手机号码" prop="phoneNumber">
+            <el-input v-model="form.phoneNumber" placeholder="请输入手机号码" maxlength="11" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -32,14 +32,14 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row>
+      <el-row v-if="form.userId == undefined">
         <el-col :span="12">
-          <el-form-item v-if="form.userId == undefined" label="用户名称" prop="userName">
-            <el-input v-model="form.userName" placeholder="请输入用户名称" maxlength="30" name="x" />
+          <el-form-item label="登录名称" prop="loginName">
+            <el-input v-model="form.loginName" placeholder="请输入登录名称" maxlength="30" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item v-if="form.userId == undefined" label="用户密码" prop="password">
+          <el-form-item label="用户密码" prop="password">
             <el-input
               v-model="form.password"
               placeholder="请输入用户密码"
@@ -54,14 +54,14 @@
         <el-col :span="12">
           <el-form-item label="用户性别">
             <el-select v-model="form.sex" placeholder="请选择">
-              <el-option v-for="i in sys_user_sex.options" :key="i.value" :label="i.label" :value="i.value"></el-option>
+              <el-option v-for="i in gender.options" :key="i.value" :label="i.label" :value="i.value"></el-option>
             </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="状态">
             <el-radio-group v-model="form.status">
-              <el-radio v-for="i in sys_normal_disable.options" :key="i.value" :label="i.value">
+              <el-radio v-for="i in status.options" :key="i.value" :label="i.value">
                 {{ i.label }}
               </el-radio>
             </el-radio-group>
@@ -118,31 +118,31 @@ const emit = defineEmits(['update:modelValue', 'success'])
 const props = defineProps({
   data: Object,
   modelValue: Boolean,
-  deptTree: Array,
+  orgTree: Array,
 })
 
 const title = computed(() => (props.data ? '编辑用户' : '新增用户'))
 
 const rules = {
-  userName: [
-    { required: true, message: '用户名称不能为空', trigger: 'blur' },
-    { min: 2, max: 20, message: '用户名称长度必须介于 2 和 20 之间', trigger: 'blur' },
+  loginName: [
+    { required: true, message: '登录名称不能为空', trigger: 'blur' },
+    { min: 2, max: 20, message: '登录名称长度必须介于 2 和 20 之间', trigger: 'blur' },
   ],
-  nickName: [{ required: true, message: '用户昵称不能为空', trigger: 'blur' }],
+  userName: [{ required: true, message: '用户名称不能为空', trigger: 'blur' }],
   password: [
     { required: true, message: '用户密码不能为空', trigger: 'blur' },
     { min: 5, max: 20, message: '用户密码长度必须介于 5 和 20 之间', trigger: 'blur' },
   ],
   email: [{ type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }],
-  phonenumber: [{ pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/, message: '请输入正确的手机号码', trigger: 'blur' }],
+  phoneNumber: [{ pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/, message: '请输入正确的手机号码', trigger: 'blur' }],
 }
 
 const loading = ref(false)
 const formRef = ref()
 const form = ref({})
 
-const sys_user_sex = useDict('sys_user_sex')
-const sys_normal_disable = useDict('sys_normal_disable')
+const gender = useDict('gender')
+const status = useDict('status')
 
 watch(
   () => props.modelValue,
@@ -155,36 +155,42 @@ watch(
 )
 const postOptions = ref([])
 const roleOptions = ref([])
-const { run: getUser, loading: dataLoading } = useAsync(() => req.get('system/user/' + (props.data?.userId || '')), {
-  onSuccess(res) {
-    postOptions.value = res.posts
-    roleOptions.value = res.roles
-    if (props.data) {
-      form.value = res.data
-      form.value.postIds = res.postIds
-      form.value.roleIds = res.roleIds
-      form.password = ''
-    } else {
-      form.value = {
-        userId: undefined,
-        deptId: undefined,
-        userName: '',
-        nickName: '',
-        password: '',
-        phonenumber: '',
-        email: '',
-        sex: '0',
-        status: '0',
-        remark: '',
-        postIds: [],
-        roleIds: [],
-      }
-    }
-    nextTick(() => {
-      formRef.value.clearValidate()
-    })
+const { run: getUser, loading: dataLoading } = useAsync(
+  async () => {
+    // return req.get('/user/' + (props.data?.userId || ''))
+    return {}
   },
-})
+  {
+    onSuccess(res) {
+      postOptions.value = res.posts
+      roleOptions.value = res.roles
+      if (props.data) {
+        form.value = res.data
+        form.value.postIds = res.postIds
+        form.value.roleIds = res.roleIds
+        form.password = ''
+      } else {
+        form.value = {
+          userId: undefined,
+          orgId: undefined,
+          loginName: '',
+          userName: '',
+          password: '',
+          phoneNumber: '',
+          email: '',
+          sex: 1,
+          status: 1,
+          remark: '',
+          postIds: [],
+          roleIds: [],
+        }
+      }
+      nextTick(() => {
+        formRef.value.clearValidate()
+      })
+    },
+  }
+)
 const handleClose = () => {
   emit('update:modelValue', false)
 }
@@ -192,7 +198,7 @@ const handleConfirm = () => {
   formRef.value.validate(valid => {
     if (valid) {
       loading.value = true
-      req[form.value.userId ? 'put' : 'post']('system/user', form.value)
+      req[form.value.userId ? 'put' : 'post']('user', form.value)
         .then(({ code }) => {
           if (code === 200) {
             emit('success')

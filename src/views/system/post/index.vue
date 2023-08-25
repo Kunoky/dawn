@@ -23,7 +23,7 @@
       </el-table-column>
       <el-table-column label="操作" width="180">
         <template #default="{ row }">
-          <el-button link type="primary" @click="handleEdit(row)" v-hasPermi="['system:post:edit']">
+          <el-button link type="info" @click="handleEdit(row)" v-hasPermi="['system:post:edit']">
             {{ $t('common.edit') }}
           </el-button>
           <el-button link type="danger" @click="handleDel(row)" v-hasPermi="['system:post:remove']">

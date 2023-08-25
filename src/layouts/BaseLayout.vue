@@ -14,19 +14,35 @@ const appName = __APP_NAME__
 const active = ref('')
 const isCollapse = ref(false)
 const { lang, langs, loading } = storeToRefs(appStore)
-const { user, menuTree } = storeToRefs(userStore)
+const { user, menuTree, idMenu, keyMenu } = storeToRefs(userStore)
+const breadcrumb = ref([])
 watch(
   route,
-  async () => {
+  async v => {
     await nextTick()
     const activeLink = document.querySelector('.el-menu .router-link-active')
     if (activeLink) {
       active.value = activeLink.dataset.id
     }
+    let menuPath = []
+    if (v.name) {
+      let menu = keyMenu.value[v.name]
+      if (menu) {
+        menuPath = getBreadcrumb(menu)
+      }
+    }
+    breadcrumb.value = menuPath
   },
   { immediate: true }
 )
 
+function getBreadcrumb(menu, menus = []) {
+  menus.unshift(menu)
+  if (menu.pId && menu.pId !== '0') {
+    getBreadcrumb(idMenu.value[menu.pId], menus)
+  }
+  return menus
+}
 const handleLangChange = v => {
   appStore.setLang(v)
 }
@@ -68,7 +84,14 @@ const setComponentName = (c, name) => {
       :width="isCollapse ? '64px' : '200px'"
       class="base-layout_aside ht-100vh dp-f fd-c"
     >
-      <el-menu :default-active="active" :collapse="isCollapse" class="fx-1 base-layout_menu of-o">
+      <div class="bgc-p fs-2 fw-b dp-f ai-c jc-c logo">
+        <img v-if="isCollapse" src="/logo-s.png" class="mgv-s" />
+        <template v-else>
+          <img src="/logo.png" class="mgr-m" />
+          <span>{{ appName }}</span>
+        </template>
+      </div>
+      <el-menu :default-active="active" :collapse="isCollapse" theme="dark" class="fx-1 base-layout_menu of-o">
         <menu-item-recursive v-for="i in menuTree" :key="i.id" :data="i" />
       </el-menu>
       <div class="bdt bdc-4 pd-s cs-p">
@@ -84,10 +107,9 @@ const setComponentName = (c, name) => {
     <el-container class="ht-100vh">
       <el-header class="base-layout_header">
         <div class="main base-layout_header dp-f jc-sb">
-          <div>
-            <span>{{ appName }}</span>
-          </div>
-
+          <el-breadcrumb>
+            <el-breadcrumb-item v-for="i in breadcrumb" :key="i.name">{{ i.meta.title }}</el-breadcrumb-item>
+          </el-breadcrumb>
           <div class="">
             <el-button link @click="toggle()" :aria-description="isDark ? $t('theme.light') : $t('theme.dark')">
               <i-ep-sunny v-if="isDark"></i-ep-sunny>
@@ -97,20 +119,8 @@ const setComponentName = (c, name) => {
               <span v-loading="loading.lang" class="mgl-s">{{ $t('lang') }}</span>
             </CDropdown>
             <CDropdown v-if="user" @update:modelValue="handleUserCommand" :options="userOptions">
-              <span>{{ user?.nickName }}</span>
+              <span>{{ user?.userName }}</span>
             </CDropdown>
-            <!-- <el-dropdown v-if="user" @command="handleUserCommand">
-              <span class="mgl-s">
-                <span>{{ user?.nickName }}</span>
-                <i-ep-arrow-down />
-              </span>
-              <template #dropdown>
-                <el-dropdown-menu>
-                  <el-dropdown-item command="logout">{{ $t('common.logout') }}</el-dropdown-item>
-                  <el-dropdown-item command="logout">{{ $t('view.layout.userProfile') }}</el-dropdown-item>
-                </el-dropdown-menu>
-              </template>
-            </el-dropdown> -->
             <router-link v-else to="/login" class="fs-5 cl-8 mgl-s">{{ $t('common.login') }}</router-link>
           </div>
         </div>
@@ -148,11 +158,21 @@ const setComponentName = (c, name) => {
         }
       }
     }
+    .el-breadcrumb {
+      line-height: unset;
+    }
   }
   &_aside {
     transition: width 0.3s;
     box-shadow: 2px 0 8px 0 rgb(29 35 41 / 5%);
     overflow: hidden;
+    .logo {
+      height: 60px;
+      color: #fff;
+      img {
+        height: 36px;
+      }
+    }
   }
   &_menu {
     border-right: none;

@@ -2,7 +2,7 @@
   <div>
     <CTable
       :page-conf="{
-        action: 'system/role/list',
+        action: 'role/list',
       }"
       ref="tableRef"
       id="systemRole"
@@ -10,42 +10,43 @@
       <el-table-column label="角色编号" prop="roleId" width="120" />
       <el-table-column label="角色名称" prop="roleName" :show-overflow-tooltip="true" width="150" />
       <el-table-column label="权限字符" prop="roleKey" :show-overflow-tooltip="true" width="150" />
-      <el-table-column label="显示顺序" prop="roleSort" width="100" />
-      <el-table-column label="状态" align="center" width="100">
+      <el-table-column label="显示顺序" prop="orderNum" width="100" />
+      <el-table-column label="状态" width="100">
         <template #default="{ row }">
           <el-switch
             v-model="row.status"
-            active-value="0"
-            inactive-value="1"
+            :active-value="1"
+            :inactive-value="0"
             @change="handleStatusChange(row)"
           ></el-switch>
         </template>
       </el-table-column>
-      <el-table-column label="创建时间" align="center" prop="createTime">
+      <el-table-column label="备注" prop="remark" />
+      <el-table-column label="创建时间" prop="createTime">
         <template #default="{ row }">
           <span>{{ parseTime(row.createTime) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column label="操作" class-name="small-padding fixed-width" width="180">
         <template #default="{ row }">
           <el-tooltip content="修改" placement="top" v-if="row.roleId !== 1">
-            <el-button link type="primary" @click="handleEdit(row)" v-hasPermi="['system:role:edit']">
+            <el-button link type="info" @click="handleEdit(row)" v-hasPermi="['system:role:edit']">
               <i-ep-edit />
             </el-button>
           </el-tooltip>
           <el-tooltip content="删除" placement="top" v-if="row.roleId !== 1">
-            <el-button link type="primary" @click="handleDel(row)" v-hasPermi="['system:role:remove']">
+            <el-button link type="info" @click="handleDel(row)" v-hasPermi="['system:role:remove']">
               <i-ep-delete />
             </el-button>
           </el-tooltip>
           <el-tooltip content="数据权限" placement="top" v-if="row.roleId !== 1">
-            <el-button link type="primary" @click="handleDataScope(row)" v-hasPermi="['system:role:edit']">
+            <el-button link type="info" @click="handleDataScope(row)" v-hasPermi="['system:role:edit']">
               <i-ep-circle-check />
             </el-button>
           </el-tooltip>
           <el-tooltip content="分配用户" placement="top" v-if="row.roleId !== 1">
             <RouterLink :to="'/system/role/user?id=' + row.roleId" v-hasPermi="['system:role:edit']">
-              <el-button link type="primary">
+              <el-button link type="info">
                 <i-ep-user />
               </el-button>
             </RouterLink>
@@ -67,7 +68,7 @@
         </el-form-item>
         <el-form-item label="状态" prop="status">
           <el-select v-model="form.status" placeholder="角色状态" clearable>
-            <el-option v-for="i in sys_normal_disable.options" :key="i.value" :label="i.label" :value="i.value" />
+            <el-option v-for="i in status.options" :key="i.value" :label="i.label" :value="i.value" />
           </el-select>
         </el-form-item>
         <el-form-item label="创建时间">
@@ -95,10 +96,10 @@ const visible = reactive({
   permission: false,
 })
 
-const sys_normal_disable = useDict('sys_normal_disable')
+const status = useDict('status')
 
 const deptTree = ref([])
-req.get('system/user/deptTree').then(res => (deptTree.value = res.data))
+// req.get('system/user/deptTree').then(res => (deptTree.value = res.data))
 
 const handleAdd = () => {
   current.value = null
