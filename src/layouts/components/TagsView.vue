@@ -16,7 +16,7 @@
     </div>
     <CLay v-model="menuVisible" :x="menuPosition.x" :y="menuPosition.y">
       <ul class="pdh-m pdv-s cl-8 lh-2 cs-p">
-        <li v-for="(i, index) in menus" :key="i" @click="handleMenuClick(index)">{{ i }}</li>
+        <li class="cl-p-h" v-for="(i, index) in menus" :key="i" @click="handleMenuClick(index)">{{ i }}</li>
       </ul>
     </CLay>
   </div>
