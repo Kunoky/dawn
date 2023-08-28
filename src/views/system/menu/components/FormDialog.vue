@@ -30,13 +30,18 @@
         </el-col>
         <el-col :span="24" v-if="form.menuType != 'F'">
           <el-form-item label="菜单图标" prop="icon">
-            <!-- <el-popover placement="bottom-start" width="460" trigger="click" @show="$refs['iconSelect'].reset()">
-              <IconSelect ref="iconSelect" @selected="selected" :active-icon="form.icon" />
-              <el-input slot="reference" v-model="form.icon" placeholder="点击选择图标" readonly>
-                <svg-icon v-if="form.icon" slot="prefix" :icon-class="form.icon" style="width: 25px" />
-                <i v-else slot="prefix" class="el-icon-search el-input__icon" />
-              </el-input>
-            </el-popover> -->
+            <el-input v-model="form.icon" placeholder="请输入图标名称如：ep:user">
+              <template #prepend>
+                <CIcon :icon="form.icon" />
+              </template>
+              <template #append>
+                <el-tooltip content="前往icon市场挑选心仪的图标，复制名称回来粘贴" placement="top">
+                  <a href="https://icones.netlify.app/" target="_blank">
+                    <el-button><i-ep-search /></el-button>
+                  </a>
+                </el-tooltip>
+              </template>
+            </el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">

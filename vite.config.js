@@ -98,7 +98,7 @@ export default defineConfig({
     },
   },
   define: {
-    __APP_NAME__: '"破晓"', // 项目名
+    __APP_NAME__: '"Dawn"', // 项目名
     __TOKEN_KEY__: '"satoken"', // token键名，localStorage
   },
   test: {

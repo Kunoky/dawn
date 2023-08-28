@@ -63,6 +63,8 @@ const props = defineProps({
   },
 })
 
+const { getNestProp } = utils
+
 const page = ref(1)
 const size = ref(props.defaultSize)
 const total = ref(0)
@@ -75,8 +77,8 @@ const { data, loading, run, error } = useAsync(
       [props.sizeKey]: size.value,
       ...props.params,
     }).then(res => {
-      total.value = res[props.totalKey] || 0
-      if (props.dataKey) return res[props.dataKey]
+      total.value = getNestProp(res, props.totalKey) || 0
+      if (props.dataKey) return getNestProp(res, props.dataKey)
       return res
     }),
   {
