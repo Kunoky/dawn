@@ -1,9 +1,13 @@
 <template>
-  <i v-show="icon" class="c-icon" :style="{ '--icon': `url(https://api.iconify.design/${icon}.svg)` }"></i>
+  <i v-show="icon" class="c-icon" :style="{ '--icon': `url(${source + icon}.svg)` }"></i>
 </template>
 <script setup>
 defineProps({
   //icon市场中的svg名称 https://icones.netlify.app/
+  source: {
+    type: String,
+    default: 'https://api.iconify.design/',
+  },
   icon: {
     type: String,
   },
