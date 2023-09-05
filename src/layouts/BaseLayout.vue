@@ -1,11 +1,11 @@
 <script setup>
-import { useAppStore } from '@/store/app'
+// import { useAppStore } from '@/store/app'
 import { useUserStore } from '@/store/user'
 import MenuItemRecursive from '@/components/MenuItemRecursive.vue'
 import TagsView from './components/TagsView.vue'
 
 const userStore = useUserStore()
-const appStore = useAppStore()
+// const appStore = useAppStore()
 const tagsViewStore = useTagsViewStore()
 const route = useRoute()
 const router = useRouter()
@@ -13,7 +13,7 @@ const i18n = useI18n()
 const appName = __APP_NAME__
 const active = ref('')
 const isCollapse = ref(false)
-const { lang, langs, loading } = storeToRefs(appStore)
+// const { lang, langs, loading } = storeToRefs(appStore)
 const { user, menuTree, idMenu, keyMenu } = storeToRefs(userStore)
 const breadcrumb = ref([])
 watch(
@@ -43,9 +43,9 @@ function getBreadcrumb(menu, menus = []) {
   }
   return menus
 }
-const handleLangChange = v => {
-  appStore.setLang(v)
-}
+// const handleLangChange = v => {
+//   appStore.setLang(v)
+// }
 
 const userOptions = [
   {
@@ -69,7 +69,7 @@ const handleUserCommand = e => {
   }
 }
 
-const { isDark, toggle } = useTheme()
+// const { isDark, toggle } = useTheme()
 
 // 懒加载组件外面裹了一层，导致keepAlive无法获取到name进行缓存
 const setComponentName = (c, name) => {
@@ -111,13 +111,13 @@ const setComponentName = (c, name) => {
             <el-breadcrumb-item v-for="i in breadcrumb" :key="i.name">{{ i.meta.title }}</el-breadcrumb-item>
           </el-breadcrumb>
           <div class="">
-            <el-button link @click="toggle()" :aria-description="isDark ? $t('theme.light') : $t('theme.dark')">
+            <!-- <el-button link @click="toggle()" :aria-description="isDark ? $t('theme.light') : $t('theme.dark')">
               <i-ep-sunny v-if="isDark"></i-ep-sunny>
               <i-ep-moon v-else></i-ep-moon>
             </el-button>
             <CDropdown :modelValue="lang" @update:modelValue="handleLangChange" :options="langs">
               <span v-loading="loading.lang" class="mgl-s">{{ $t('lang') }}</span>
-            </CDropdown>
+            </CDropdown> -->
             <CDropdown v-if="user" @update:modelValue="handleUserCommand" :options="userOptions">
               <span>{{ user?.userName }}</span>
             </CDropdown>
@@ -170,7 +170,7 @@ const setComponentName = (c, name) => {
       height: 60px;
       color: #fff;
       img {
-        height: 36px;
+        height: 22px;
       }
     }
   }

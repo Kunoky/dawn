@@ -50,6 +50,7 @@ export default {
   },
   tip: {
     delete: 'Data cannot be restored after deletion. Continue?',
+    determine: 'After confirming the application, it cannot be restored. Do you want to continue?',
     confirm: 'Do you want to do this?',
     success: 'Operated Succeed',
     fail: 'Operation Failed',
