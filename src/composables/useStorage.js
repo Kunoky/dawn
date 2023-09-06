@@ -1,14 +1,20 @@
+const map = new Map()
+
 export function useStorage(key, defaultValue, storage) {
   storage ||= localStorage
+  if (!map.has(storage)) {
+    map.set(storage, reactive({}))
+  }
+  const cache = map.get(storage)
   const str = storage.getItem(key)
-  const val = ref(str ? JSON.parse(str) : defaultValue)
+  cache[key] ??= str ? JSON.parse(str) : defaultValue
   const value = computed({
     get() {
-      return val.value
+      return cache[key]
     },
     set(v) {
       storage.setItem(key, JSON.stringify(v))
-      val.value = v
+      cache[key] = v
     },
   })
   return value
