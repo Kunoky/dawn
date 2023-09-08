@@ -2,7 +2,7 @@
   <el-dialog
     :model-value="modelValue"
     @close="handleClose"
-    title="生成报价"
+    title="详情"
     width="60%"
     v-bind="$attrs"
     :close-on-click-modal="false"
@@ -24,7 +24,7 @@
               {{ form.aaa }}
             </el-descriptions-item>
             <el-descriptions-item>
-              <template #label>仪器物料号</template>
+              <template #label>型号</template>
               {{ form.bbb }}
             </el-descriptions-item>
             <el-descriptions-item>
@@ -128,12 +128,8 @@
               <el-table-column prop="address" label="总价" />
             </el-table>
           </div>
-          <div style="margin-top: 20px">
+          <!-- <div style="margin-top: 20px">
             <el-form ref="formRef" :model="formData" label-width="80px">
-              <!-- <el-form-item>
-                <el-switch v-model="formData.switchVal" active-text="修改折扣率" inactive-text="修改最终价格"
-                  @change="handelShowSwitch" />
-              </el-form-item> -->
               <el-form-item
                 label="最终价格"
                 prop="totalVal"
@@ -155,10 +151,9 @@
                 >
                   <template #append>%</template>
                 </el-input>
-                <!-- <el-button @click="handelEditDiscount">计算最终价格</el-button> -->
               </el-form-item>
             </el-form>
-          </div>
+          </div> -->
         </el-collapse-item>
         <el-collapse-item title="流转信息" name="4">
           <el-timeline>
@@ -175,6 +170,56 @@
               </el-card>
             </el-timeline-item>
           </el-timeline>
+        </el-collapse-item>
+        <el-collapse-item title="报价信息" name="5">
+          <el-descriptions class="margin-top" :column="3" border size="small">
+            <el-descriptions-item>
+              <template #label>发票抬头</template>
+              xxxxxxxxxxxxxxxx
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>收件人</template>
+              李四
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>联系电话</template>
+              15998765436
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>开户行</template>
+              建设银行浦东xx支行
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>开户行账号</template>
+              8887 7777 8990 9999 999
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>税号</template>
+              88888888
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>注册地址及电话</template>
+              0000000000
+            </el-descriptions-item>
+          </el-descriptions>
+        </el-collapse-item>
+        <el-collapse-item title="附件信息" name="6">
+          <span>报价确认单附件</span>
+          <el-table
+            size="small"
+            :data="annexData"
+            style="width: 100%; margin-top: 10px; margin-bottom: 20px"
+            max-height="220"
+            :header-cell-style="{ background: '#f5f7fa' }"
+          >
+            <el-table-column prop="name" label="文件名称" />
+            <el-table-column prop="dateTime" label="上传时间" />
+            <el-table-column label="操作" class-name="small-padding fixed-width" width="100">
+              <template #default="{ row }">
+                <el-button type="primary" link @click="handleDownloadFile(row)">下载</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
         </el-collapse-item>
       </el-collapse>
     </div>
@@ -224,6 +269,10 @@ const tableData = [
     sss: '2',
     address: '34534',
   },
+]
+const annexData = [
+  { name: '文件1', id: 1, dateTime: '2023-08-23' },
+  { name: '香香', id: 2, dateTime: '2023-08-01' },
 ]
 const loading = ref(false)
 const form = ref({})
@@ -344,21 +393,21 @@ const getSummaries = param => {
 //     formData.value.totalVal = totalData.value.toFixed(2)
 //   }
 // }
-const handelEditTotal = () => {
-  if (formData.value.totalVal !== '' || formData.value.totalVa !== undefined) {
-    let data = ref(null)
-    data.value = (formData.value.totalVal / zong.value) * 100
-    formData.value.discount = Math.floor(data.value)
-  }
-}
-const validateRate = (rule, value, callback) => {
-  // console.log(value, zong.value)
-  if (value === '') {
-    callback(new Error('最终价格不能为空'))
-  } else if (value > zong.value) {
-    callback(new Error('最终价格不能超过合计总价'))
-  }
-}
+// const handelEditTotal = () => {
+//   if (formData.value.totalVal !== '' || formData.value.totalVa !== undefined) {
+//     let data = ref(null)
+//     data.value = (formData.value.totalVal / zong.value) * 100
+//     formData.value.discount = Math.floor(data.value)
+//   }
+// }
+// const validateRate = (rule, value, callback) => {
+//   // console.log(value, zong.value)
+//   if (value === '') {
+//     callback(new Error('最终价格不能为空'))
+//   } else if (value > zong.value) {
+//     callback(new Error('最终价格不能超过合计总价'))
+//   }
+// }
 </script>
 <style scoped>
 .demo-collapse >>> .el-collapse-item__header {

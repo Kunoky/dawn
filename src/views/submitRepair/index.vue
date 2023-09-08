@@ -16,27 +16,33 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="仪器物料号" prop="bbb">
-            <el-select v-model="form.bbb" placeholder="请输入仪器物料号" style="width: 100%" clearable>
+          <el-form-item label="型号" prop="bbb">
+            <el-select v-model="form.bbb" placeholder="请选择型号" class="mgr-l" style="width: 87%" clearable>
               <el-option label="A" value="shanghai" />
               <el-option label="B" value="beijing" />
             </el-select>
+            <el-button type="info">查询</el-button>
           </el-form-item>
         </el-col>
+
         <el-col :span="12">
           <el-form-item label="仪器SAP Equip编号" prop="ccc">
             <el-input disabled v-model="form.ccc" placeholder="自动填入" clearable />
           </el-form-item>
         </el-col>
         <el-col :span="12">
+          <el-form-item label="关联编号" prop="ccc">
+            <el-input v-model="form.ccc" placeholder="请输入关联编号" clearable />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="保修期" prop="ooo" class="date-box">
+            <el-date-picker v-model="form.ooo" type="date" placeholder="请选择保修期" style="width: 100%" clearabl />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
           <el-form-item label="维修类型" prop="ddd">
-            <el-select v-model="form.ddd" placeholder="请选择维修类型" style="width: 100%" clearable>
-              <el-option label="SM01" value="SM01" />
-              <el-option label="SM02" value="SM02" />
-              <el-option label="SM03" value="SM03" />
-              <el-option label="SM04" value="SM04" />
-              <el-option label="SM05" value="SM05" />
-            </el-select>
+            <el-cascader v-model="form.ddd" :options="options" filterable clearable style="width: 100%" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -46,20 +52,26 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="客户单位名称" prop="fff">
+            <!-- <el-input v-model="form.fff" placeholder="请输入客户单位名称" clearable /> -->
             <el-select v-model="form.fff" placeholder="请输入客户单位名称" style="width: 100%" clearable>
               <el-option label="A" value="shanghai" />
               <el-option label="B" value="beijing" />
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="12">
+        <!-- <el-col :span="12">
           <el-form-item label="客户编号" prop="ggg">
             <el-input disabled v-model="form.ggg" placeholder="请输入客户编号" clearable />
           </el-form-item>
-        </el-col>
+        </el-col> -->
         <el-col :span="12">
           <el-form-item label="客户联系人" prop="hhh">
             <el-input v-model="form.hhh" placeholder="请输入客户联系人" clearable />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="客户联系人拼音" prop="xxx">
+            <el-input v-model="form.xxx" placeholder="请输入客户联系人拼音" clearable />
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -100,7 +112,9 @@
           <el-form-item label="报修来源" prop="mmm">
             <el-select v-model="form.mmm" placeholder="请输入报修来源" style="width: 100%" clearable>
               <el-option label="FSE" value="fse" />
-              <el-option label="其他" value="qt" />
+              <el-option label="TAC" value="TAC" />
+              <el-option label="FAS" value="FAS" />
+              <el-option label="扫码" value="sm" />
             </el-select>
           </el-form-item>
         </el-col>
@@ -115,9 +129,14 @@
             />
           </el-form-item>
         </el-col>
+        <!-- <el-col :span="12">
+          <el-form-item label="关联ID">
+            <el-input v-model="form.rrr" placeholder="自动填入" clearable />
+          </el-form-item>
+        </el-col> -->
         <el-col :span="12">
-          <el-form-item label="保修期" prop="ooo" class="date-box">
-            <el-date-picker v-model="form.ooo" type="date" placeholder="请选择保修期" style="width: 100%" clearabl />
+          <el-form-item label="所属区域" prop="vvv">
+            <el-input v-model="form.vvv" placeholder="请输入所属区域" clearable />
           </el-form-item>
         </el-col>
         <el-col :span="24">
@@ -125,10 +144,32 @@
             <el-input type="textarea" v-model="form.lll" placeholder="请输入报修内容" clearable />
           </el-form-item>
         </el-col>
-        <el-form-item>
-          <!-- <el-button @click="handleClose">{{ $t('common.cancel') }}</el-button> -->
-          <el-button type="primary" @click="handleConfirm" :loading="loading">{{ $t('common.confirm') }}</el-button>
-        </el-form-item>
+        <el-col :span="12">
+          <el-form-item label="上传附件" prop="lll">
+            <el-upload
+              style="width: 100%"
+              class="upload-demo"
+              drag
+              action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
+              multiple
+            >
+              <i-ep-UploadFilled class="fs-1" />
+              <div class="el-upload__text">
+                将文件拖到此处
+                <em>或点击上传</em>
+              </div>
+              <template #tip>
+                <div class="el-upload__tip">只能上传PDF, 单个文件 ≤5MB</div>
+              </template>
+            </el-upload>
+          </el-form-item>
+        </el-col>
+        <el-col :span="24">
+          <el-form-item>
+            <!-- <el-button @click="handleClose">{{ $t('common.cancel') }}</el-button> -->
+            <el-button type="primary" @click="handleConfirm" :loading="loading">{{ $t('common.confirm') }}</el-button>
+          </el-form-item>
+        </el-col>
       </el-row>
     </el-form>
   </div>
@@ -138,7 +179,7 @@
 const rules = {
   TaskID: [{ required: true, message: '维修任务号不能为空', trigger: 'blur' }],
   aaa: [{ required: true, message: '仪器序列号不能为空', trigger: 'blur' }],
-  bbb: [{ required: true, message: '仪器物料号不能为空', trigger: 'blur' }],
+  bbb: [{ required: true, message: '型号不能为空', trigger: 'blur' }],
   ccc: [{ required: true, message: '仪器SAP Equip编号不能为空', trigger: 'blur' }],
   ddd: [{ required: true, message: '维修类型不能为空', trigger: 'change' }],
   eee: [{ required: true, message: '仪器地址不能为空', trigger: 'blur' }],
@@ -149,14 +190,77 @@ const rules = {
   jjj: [{ required: true, message: '客户联系人邮箱不能为空', trigger: 'blur' }],
   // kkk: [{ required: true, message: '代理商不能为空', trigger: 'blur' }],
   lll: [{ required: true, message: '报修内容不能为空', trigger: 'blur' }],
-  // mmm: [{ required: true, message: '报修来源不能为空', trigger: 'blur' }],
+  mmm: [{ required: true, message: '报修来源不能为空', trigger: 'blur' }],
   nnn: [{ required: true, message: '报修时间不能为空', trigger: 'blur' }],
   // ooo: [{ required: true, message: '保修期不能为空', trigger: 'blur' }],
   ppp: [{ required: true, message: 'FSE工程师名称不能为空', trigger: 'blur' }],
   // qqq: [{ required: true, message: 'FSE work cente不能为空', trigger: 'blur' }],
   // rrr: [{ required: true, message: 'FSE storage location不能为空', trigger: 'blur' }],
 }
-
+const options = [
+  {
+    value: 'SM01',
+    label: 'SM01',
+  },
+  {
+    value: 'SM02',
+    label: 'SM02',
+  },
+  {
+    value: 'SM03',
+    label: 'SM03',
+    children: [
+      {
+        value: 'xxx',
+        label: '111',
+      },
+      {
+        value: 'xxx',
+        label: '222',
+      },
+      {
+        value: 'xxx',
+        label: '333',
+      },
+      {
+        value: 'xxx',
+        label: '444',
+      },
+    ],
+  },
+  {
+    value: 'SM04',
+    label: 'SM04',
+    children: [
+      {
+        value: 'xxx',
+        label: '111',
+      },
+      {
+        value: 'xxx',
+        label: '222',
+      },
+    ],
+  },
+  {
+    value: 'SM05',
+    label: 'SM05',
+    children: [
+      {
+        value: 'xxx',
+        label: '111',
+      },
+      {
+        value: 'xxx',
+        label: '222',
+      },
+      {
+        value: 'xxx',
+        label: '333',
+      },
+    ],
+  },
+]
 const formRef = ref()
 const form = ref({
   TaskID: '',

@@ -1,5 +1,9 @@
 <template>
-  <div>欢迎登录！</div>
+  <div>
+    欢迎登录！
+    <!-- <CI/>
+<CI/> -->
+  </div>
 </template>
 <script setup>
 definePage({

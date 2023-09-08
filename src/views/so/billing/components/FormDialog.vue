@@ -33,7 +33,7 @@ const props = defineProps({
 const rules = {
   TaskID: [{ required: true, message: 'Billing号不能为空', trigger: 'blur' }],
   // aaa: [{ required: true, message: '仪器序列号不能为空', trigger: 'blur' }],
-  // bbb: [{ required: true, message: '仪器物料号不能为空', trigger: 'blur' }],
+  // bbb: [{ required: true, message: '型号不能为空', trigger: 'blur' }],
   // ccc: [{ required: true, message: '仪器SAP Equip编号不能为空', trigger: 'blur' }],
   // ddd: [{ required: true, message: '维修类型不能为空', trigger: 'change' }],
   // eee: [{ required: true, message: '仪器地址不能为空', trigger: 'blur' }],

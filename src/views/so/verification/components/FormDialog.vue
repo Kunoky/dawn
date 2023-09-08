@@ -24,7 +24,7 @@
               {{ form.aaa }}
             </el-descriptions-item>
             <el-descriptions-item>
-              <template #label>仪器物料号</template>
+              <template #label>型号</template>
               {{ form.bbb }}
             </el-descriptions-item>
             <el-descriptions-item>

@@ -10,7 +10,7 @@
       <el-table-column label="SO NO" prop="so" width="120" />
       <el-table-column label="维修任务号" prop="TaskID" width="120" />
       <el-table-column label="仪器序列号" prop="aaa" :show-overflow-tooltip="true" width="100" />
-      <el-table-column label="仪器物料号" prop="bbb" :show-overflow-tooltip="true" width="100" />
+      <el-table-column label="型号" prop="bbb" :show-overflow-tooltip="true" width="100" />
       <el-table-column label="仪器SAP Equip编号" prop="ccc" width="128" />
       <el-table-column label="维修类型" prop="ddd" width="100" />
       <el-table-column label="仪器地址" prop="eee" width="100" />
@@ -33,10 +33,12 @@
         </template>
       </el-table-column>
       <!-- <el-table-column label="审批结果" prop="uuu" width="140" /> -->
-      <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="160">
+      <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="220">
         <template #default="{ row }">
-          <el-button type="info" link @click="handleDeatil(row)">生成报价</el-button>
+          <el-button type="info" link @click="handleDeatil(row)">详情</el-button>
+          <el-button type="info" link @click="handleQuotation(row)">报价</el-button>
           <el-button type="primary" link @click="handleExamine(row)">发起流程</el-button>
+          <el-button type="danger" link @click="handleClose(row)">退回</el-button>
         </template>
       </el-table-column>
       <!-- <template #actions>
@@ -53,13 +55,7 @@
           <el-input v-model="form.TaskID" placeholder="请输入仪器序列号" clearable />
         </el-form-item>
         <el-form-item label="维修类型" prop="ddd">
-          <el-select v-model="form.ddd" placeholder="请选择维修类型" clearable>
-            <el-option label="SM01" value="SM01" />
-            <el-option label="SM02" value="SM02" />
-            <el-option label="SM03" value="SM03" />
-            <el-option label="SM04" value="SM04" />
-            <el-option label="SM05" value="SM05" />
-          </el-select>
+          <el-cascader v-model="form.ddd" :options="options" filterable clearable />
         </el-form-item>
         <el-form-item label="客户联系人" prop="hhh">
           <el-input v-model="form.hhh" placeholder="请输入客户联系人" clearable />
@@ -99,16 +95,96 @@
       </template>
     </CTable>
     <Details :data="current" v-model="visible.detail" @success="handleFormSuccess"></Details>
+
+    <Quotation :data="currentQuotation" v-model="quotation.visible" @success="handleQuotationSuccess"></Quotation>
+
+    <el-dialog title="退回" width="30%" v-model="detailVisible" :close-on-click-modal="false">
+      <el-form :model="formDetails" ref="formRefDetails" label-width="80" :rules="rules">
+        <el-form-item label="退回原因" prop="details">
+          <el-input type="textarea" v-model="formDetails.details" placeholder="请输入退回原因" clearable />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="handleCloseDetail">{{ $t('common.cancel') }}</el-button>
+          <el-button type="primary" @click="handleConfirm">{{ $t('common.confirm') }}</el-button>
+        </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script setup>
 import Details from './components/details.vue'
+import Quotation from './components/quotation.vue'
 
 const tableRef = ref()
 const refresh = () => tableRef.value.refresh()
 const i18n = useI18n()
-
+const options = [
+  {
+    value: 'SM01',
+    label: 'SM01',
+  },
+  {
+    value: 'SM02',
+    label: 'SM02',
+  },
+  {
+    value: 'SM03',
+    label: 'SM03',
+    children: [
+      {
+        value: 'xxx',
+        label: '111',
+      },
+      {
+        value: 'xxx',
+        label: '222',
+      },
+      {
+        value: 'xxx',
+        label: '333',
+      },
+      {
+        value: 'xxx',
+        label: '444',
+      },
+    ],
+  },
+  {
+    value: 'SM04',
+    label: 'SM04',
+    children: [
+      {
+        value: 'xxx',
+        label: '111',
+      },
+      {
+        value: 'xxx',
+        label: '222',
+      },
+    ],
+  },
+  {
+    value: 'SM05',
+    label: 'SM05',
+    children: [
+      {
+        value: 'xxx',
+        label: '111',
+      },
+      {
+        value: 'xxx',
+        label: '222',
+      },
+      {
+        value: 'xxx',
+        label: '333',
+      },
+    ],
+  },
+]
 const current = ref(null)
 const visible = reactive({
   form: false,
@@ -140,6 +216,56 @@ const handleExamine = () => {
   // })
 }
 const handleFormSuccess = () => {
+  refresh()
+}
+
+const detailVisible = ref(false)
+const formRefDetails = ref(null)
+const formDetails = ref({
+  details: '',
+})
+const rules = {
+  details: [{ required: true, message: '退回原因不能为空', trigger: 'blur' }],
+}
+const handleClose = () => {
+  detailVisible.value = true
+}
+const handleCloseDetail = () => {
+  detailVisible.value = false
+  nextTick(() => {
+    formRefDetails.value.clearValidate()
+  })
+}
+const handleConfirm = () => {
+  formRefDetails.value.validate(valid => {
+    if (valid) {
+      // form.value.value = form.value.category
+      // loading.value = true
+      // req[form.value.dictId ? 'put' : 'post']('/dict', form.value)
+      //   .then(({ code }) => {
+      //     if (code === 200) {
+      //       emit('success')
+      //       emit('update:modelValue', false)
+      //     }
+      //   })
+      //   .finally(() => {
+      //     loading.value = false
+      //   })
+    }
+  })
+}
+
+const currentQuotation = ref(null)
+const quotation = reactive({
+  permission: false,
+  visible: false,
+})
+
+const handleQuotation = row => {
+  currentQuotation.value = row
+  quotation.visible = true
+}
+const handleQuotationSuccess = () => {
   refresh()
 }
 </script>

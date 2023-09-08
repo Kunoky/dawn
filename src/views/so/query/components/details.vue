@@ -6,6 +6,7 @@
     width="60%"
     v-bind="$attrs"
     :close-on-click-modal="false"
+    class="query-detail-dialog"
   >
     <div class="demo-collapse">
       <el-collapse v-model="activeNames">
@@ -24,7 +25,7 @@
               {{ form.aaa }}
             </el-descriptions-item>
             <el-descriptions-item>
-              <template #label>仪器物料号</template>
+              <template #label>型号</template>
               {{ form.bbb }}
             </el-descriptions-item>
             <el-descriptions-item>
@@ -130,21 +131,40 @@
           </div>
         </el-collapse-item>
         <el-collapse-item title="报价信息" name="3">
-          <el-table
-            size="small"
-            :data="tableData1"
-            style="width: 100%; margin-bottom: 20px"
-            max-height="190"
-            :header-cell-style="{ background: '#f5f7fa' }"
-          >
-            <el-table-column type="index" label="序号" />
-            <el-table-column prop="aaa" label="配件总价" />
-            <el-table-column prop="bbb" label="最终价格" />
-            <el-table-column prop="ccc" label="折扣率" />
-            <el-table-column prop="ddd" label="报价人" />
-            <el-table-column prop="eee" label="报价时间" />
-            <el-table-column prop="fff" label="审批状态" />
-          </el-table>
+          <div>
+            <div style="margin-bottom: 10px">报价日期： 2023-08-08 12:19:30</div>
+            <el-table
+              size="small"
+              :data="tableData1"
+              style="width: 100%; margin-bottom: 20px"
+              max-height="190"
+              :header-cell-style="{ background: '#f5f7fa' }"
+            >
+              <el-table-column type="index" label="序号" />
+              <el-table-column prop="aaa" label="配件总价" />
+              <el-table-column prop="bbb" label="最终价格" />
+              <el-table-column prop="ccc" label="折扣率" />
+              <el-table-column prop="ddd" label="报价人" />
+              <el-table-column prop="eee" label="报价时间" />
+              <el-table-column prop="fff" label="审批状态" />
+            </el-table>
+            <div style="margin-bottom: 10px">报价日期： 2023-08-28 12:19:30</div>
+            <el-table
+              size="small"
+              :data="tableData1"
+              style="width: 100%; margin-bottom: 20px"
+              max-height="190"
+              :header-cell-style="{ background: '#f5f7fa' }"
+            >
+              <el-table-column type="index" label="序号" />
+              <el-table-column prop="aaa" label="配件总价" />
+              <el-table-column prop="bbb" label="最终价格" />
+              <el-table-column prop="ccc" label="折扣率" />
+              <el-table-column prop="ddd" label="报价人" />
+              <el-table-column prop="eee" label="报价时间" />
+              <el-table-column prop="fff" label="审批状态" />
+            </el-table>
+          </div>
         </el-collapse-item>
         <el-collapse-item title="流转信息" name="4">
           <el-timeline>
@@ -260,6 +280,22 @@
             </el-table-column>
           </el-table>
           <span>补充审批材料</span>
+          <el-table
+            size="small"
+            :data="annexData"
+            style="width: 100%; margin-top: 10px"
+            max-height="220"
+            :header-cell-style="{ background: '#f5f7fa' }"
+          >
+            <el-table-column prop="name" label="文件名称" />
+            <el-table-column prop="dateTime" label="上传时间" />
+            <el-table-column label="操作" class-name="small-padding fixed-width" width="100">
+              <template #default="{ row }">
+                <el-button type="primary" link @click="handleDownloadFile(row)">下载</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+          <span>报价确认单附件</span>
           <el-table
             size="small"
             :data="annexData"
@@ -412,11 +448,17 @@ const handleClose = () => {
 //     }
 //   })
 // }
-const handleDownloadFile = () => {}
+// const mitter = useMitt()
+// const handleDownloadFile = () => {
+//   mitter.emit('query-refresh')
+// }
 </script>
-<style scoped>
-.demo-collapse >>> .el-collapse-item__header {
+<style>
+.demo-collapse > .el-collapse-item__header {
   font-size: 14px;
   font-weight: bold;
 }
+/* .query-detail-dialog .el-dialog__body {
+  padding: 0;
+} */
 </style>
