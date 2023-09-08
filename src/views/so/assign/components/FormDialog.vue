@@ -84,7 +84,7 @@
             <el-input v-model="form.kkk" placeholder="请输入代理商" clearable />
           </el-form-item>
         </el-col>
-        <el-col :span="12">
+        <!-- <el-col :span="12">
           <el-form-item label="FSE工程师名称" prop="ppp">
             <el-input v-model="form.ppp" placeholder="请输入FSE工程师名称">
               <template #append>
@@ -102,7 +102,7 @@
           <el-form-item label="FSE storage location" prop="rrr">
             <el-input v-model="form.rrr" disabled placeholder="自动填入" clearable />
           </el-form-item>
-        </el-col>
+        </el-col> -->
         <el-col :span="12">
           <el-form-item label="报修来源" prop="mmm">
             <el-select v-model="form.mmm" placeholder="请输入报修来源" style="width: 100%" clearable>

@@ -50,7 +50,7 @@ export default {
   },
   tip: {
     delete: '数据删除后无法恢复，确定继续？',
-    determine: '确定申请后无法恢复，是否继续？',
+    determine: '确定申请后无法修改，是否继续？',
     confirm: '确定执行该操作？',
     success: '操作成功',
     fail: '操作失败',
