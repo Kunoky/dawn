@@ -85,23 +85,23 @@ const plugins = [
     ...visualizer(),
     apply: () => process.env.stats,
   },
+  // {
+  //   ...viteMockServe({
+  //     mockPath: 'mock',
+  //   }),
+  //   apply: 'server',
+  // },
   {
     ...viteMockServe({
       mockPath: 'mock',
-      ...(process.env.mock
-        ? {
-            prodEnabled: true,
-            localEnabled: true,
-            injectCode: `
+      prodEnabled: true,
+      localEnabled: true,
+      injectCode: `
           import { setupProdMockServer } from './mockProdServer';
           setupProdMockServer();
         `,
-          }
-        : {}),
     }),
-    apply(config, { command }) {
-      return command === 'serve' || process.env.mock
-    },
+    // apply: 'build',
   },
 ]
 // https://vitejs.dev/config/
