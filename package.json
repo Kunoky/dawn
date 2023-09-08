@@ -8,6 +8,7 @@
     "dev": "vite",
     "build": "vite build",
     "build:stats": " cross-env STATS=true vite build",
+    "build:mock": " cross-env MOCK=true vite build",
     "format": "prettier --write",
     "lint": "eslint",
     "preview": "vite preview",

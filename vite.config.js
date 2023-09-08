@@ -67,7 +67,18 @@ const plugins = [
     autoInstall: true,
   }),
   {
-    ...purgecss(),
+    // # Using the default output directory: "dist/"
+    // vite build
+    // purgecss --css 'dist/**/*.css' --content 'dist/**/*.!(css)'
+    //
+    // 该插件实际是针对编译后的dist目录进行加工，所以针对项目文件和目录的配置无法起到预期效果
+    ...purgecss({
+      // css: ['oocss/src/index.css'],
+      // skippedContentGlobs: ['node_modules/**'],
+      safelist: {
+        standard: [/^var-/, /^el-/, /^is-/],
+      },
+    }),
     apply: 'build',
   },
   {
@@ -77,11 +88,22 @@ const plugins = [
   {
     ...viteMockServe({
       mockPath: 'mock',
+      ...(process.env.mock
+        ? {
+            prodEnabled: true,
+            localEnabled: true,
+            injectCode: `
+          import { setupProdMockServer } from './mockProdServer';
+          setupProdMockServer();
+        `,
+          }
+        : {}),
     }),
-    apply: 'serve',
+    apply(config, { command }) {
+      return command === 'serve' || process.env.mock
+    },
   },
 ]
-
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins,
