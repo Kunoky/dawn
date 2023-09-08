@@ -140,11 +140,13 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="" prop="www">
-            <el-radio-group v-model="form.www">
-              <el-radio :label="1">非CRC</el-radio>
-              <el-radio :label="2">CRC</el-radio>
-            </el-radio-group>
-            <!-- <el-input disabled v-model="form.vvv" placeholder="自动填充" clearable /> -->
+            <el-switch
+              v-model="form.www"
+              class="ml-2"
+              style="--el-switch-on-color: #ff4949"
+              active-text="CRC"
+              inactive-text="非CRC"
+            />
           </el-form-item>
         </el-col>
         <el-col :span="24">
@@ -188,7 +190,7 @@ const rules = {
   TaskID: [{ required: true, message: '维修任务号不能为空', trigger: 'blur' }],
   aaa: [{ required: true, message: '仪器序列号不能为空', trigger: 'blur' }],
   bbb: [{ required: true, message: '型号不能为空', trigger: 'blur' }],
-  ccc: [{ required: true, message: '仪器SAP Equip编号不能为空', trigger: 'blur' }],
+  // ccc: [{ required: true, message: '仪器SAP Equip编号不能为空', trigger: 'blur' }],
   ddd: [{ required: true, message: '维修类型不能为空', trigger: 'change' }],
   eee: [{ required: true, message: '仪器地址不能为空', trigger: 'blur' }],
   fff: [{ required: true, message: '客户单位名称不能为空', trigger: 'blur' }],
@@ -291,7 +293,7 @@ const form = ref({
   qqq: '',
   rrr: '',
   vvv: '',
-  www: 1,
+  www: false,
 })
 const loading = ref(false)
 

@@ -172,6 +172,36 @@
           </el-timeline>
         </el-collapse-item>
         <el-collapse-item title="报价信息" name="5">
+          <el-table
+            size="small"
+            :data="tableData"
+            style="width: 100%; margin-bottom: 20px"
+            max-height="190"
+            :header-cell-style="{ background: '#f5f7fa' }"
+            show-summary
+            :summary-method="getSummaries"
+          >
+            <el-table-column prop="date" label="配件/Labor料号" />
+            <el-table-column prop="name" label="单位" />
+            <el-table-column prop="aaa" label="含税价格" />
+            <el-table-column prop="sss" label="配件/Labor数量" />
+            <el-table-column prop="address" label="总价" />
+          </el-table>
+          <el-table
+            size="small"
+            :data="tableData1"
+            style="width: 100%; margin-bottom: 20px"
+            max-height="190"
+            :header-cell-style="{ background: '#f5f7fa' }"
+          >
+            <el-table-column type="index" label="序号" />
+            <el-table-column prop="aaa" label="配件总价" />
+            <el-table-column prop="bbb" label="最终价格" />
+            <el-table-column prop="ccc" label="折扣率" />
+            <el-table-column prop="ddd" label="报价人" />
+            <el-table-column prop="eee" label="报价时间" />
+            <el-table-column prop="fff" label="审批状态" />
+          </el-table>
           <el-descriptions class="margin-top" :column="3" border size="small">
             <el-descriptions-item>
               <template #label>发票抬头</template>
@@ -240,6 +270,24 @@ const props = defineProps({
 })
 
 const activeNames = ref(['2'])
+const tableData1 = [
+  {
+    aaa: '50856.00',
+    bbb: '41369.60',
+    ccc: '80%',
+    ddd: 'xxx',
+    eee: '2023-08-22 09:11:23',
+    fff: '已通过',
+  },
+  // {
+  //   aaa: '101712.00',
+  //   bbb: '81369.60',
+  //   ccc: '80%',
+  //   ddd: 'xxx',
+  //   eee: '2023-08-24 09:11:23',
+  //   fff: '已通过',
+  // },
+]
 const tableData = [
   {
     date: '1',

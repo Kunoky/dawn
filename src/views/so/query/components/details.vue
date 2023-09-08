@@ -131,8 +131,23 @@
           </div>
         </el-collapse-item>
         <el-collapse-item title="报价信息" name="3">
+          <div style="margin-bottom: 10px">报价日期： 2023-08-08 12:19:30</div>
+          <el-table
+            size="small"
+            :data="tableData"
+            style="width: 100%; margin-bottom: 20px"
+            max-height="190"
+            :header-cell-style="{ background: '#f5f7fa' }"
+            show-summary
+            :summary-method="getSummaries"
+          >
+            <el-table-column prop="date" label="配件/Labor料号" />
+            <el-table-column prop="name" label="单位" />
+            <el-table-column prop="aaa" label="含税价格" />
+            <el-table-column prop="sss" label="配件/Labor数量" />
+            <el-table-column prop="address" label="总价" />
+          </el-table>
           <div>
-            <div style="margin-bottom: 10px">报价日期： 2023-08-08 12:19:30</div>
             <el-table
               size="small"
               :data="tableData1"
@@ -148,14 +163,9 @@
               <el-table-column prop="eee" label="报价时间" />
               <el-table-column prop="fff" label="审批状态" />
             </el-table>
-            <div style="margin-bottom: 10px">报价日期： 2023-08-28 12:19:30</div>
-            <el-table
-              size="small"
-              :data="tableData1"
-              style="width: 100%; margin-bottom: 20px"
-              max-height="190"
-              :header-cell-style="{ background: '#f5f7fa' }"
-            >
+            <!-- <div style="margin-bottom: 10px">报价日期： 2023-08-28 12:19:30</div>
+            <el-table size="small" :data="tableData1" style="width: 100%; margin-bottom: 20px" max-height="190"
+              :header-cell-style="{ background: '#f5f7fa' }">
               <el-table-column type="index" label="序号" />
               <el-table-column prop="aaa" label="配件总价" />
               <el-table-column prop="bbb" label="最终价格" />
@@ -163,7 +173,7 @@
               <el-table-column prop="ddd" label="报价人" />
               <el-table-column prop="eee" label="报价时间" />
               <el-table-column prop="fff" label="审批状态" />
-            </el-table>
+            </el-table> -->
           </div>
         </el-collapse-item>
         <el-collapse-item title="流转信息" name="4">
@@ -362,14 +372,14 @@ const tableData = [
   },
 ]
 const tableData1 = [
-  {
-    aaa: '50856.00',
-    bbb: '41369.60',
-    ccc: '80%',
-    ddd: 'xxx',
-    eee: '2023-08-22 09:11:23',
-    fff: '已通过',
-  },
+  // {
+  //   aaa: '50856.00',
+  //   bbb: '41369.60',
+  //   ccc: '80%',
+  //   ddd: 'xxx',
+  //   eee: '2023-08-22 09:11:23',
+  //   fff: '已通过',
+  // },
   {
     aaa: '101712.00',
     bbb: '81369.60',
@@ -458,6 +468,7 @@ const handleClose = () => {
   font-size: 14px;
   font-weight: bold;
 }
+
 /* .query-detail-dialog .el-dialog__body {
   padding: 0;
 } */
