@@ -17,11 +17,10 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="型号" prop="bbb">
-            <el-select v-model="form.bbb" placeholder="请选择型号" class="mgr-l" style="width: 87%" clearable>
-              <el-option label="A" value="shanghai" />
+            <el-select v-model="form.bbb" placeholder="请选择型号" class="mgr-m" style="width: 86%" clearable>
               <el-option label="B" value="beijing" />
             </el-select>
-            <el-button type="info">查询</el-button>
+            <el-button style="width: 10%" type="primary">查询</el-button>
           </el-form-item>
         </el-col>
 
@@ -136,7 +135,16 @@
         </el-col> -->
         <el-col :span="12">
           <el-form-item label="所属区域" prop="vvv">
-            <el-input v-model="form.vvv" placeholder="请输入所属区域" clearable />
+            <el-input disabled v-model="form.vvv" placeholder="自动填充" clearable />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="" prop="www">
+            <el-radio-group v-model="form.www">
+              <el-radio :label="1">非CRC</el-radio>
+              <el-radio :label="2">CRC</el-radio>
+            </el-radio-group>
+            <!-- <el-input disabled v-model="form.vvv" placeholder="自动填充" clearable /> -->
           </el-form-item>
         </el-col>
         <el-col :span="24">
@@ -282,6 +290,8 @@ const form = ref({
   ppp: '',
   qqq: '',
   rrr: '',
+  vvv: '',
+  www: 1,
 })
 const loading = ref(false)
 

@@ -55,8 +55,8 @@
               prop="totalVal"
               :rules="[{ required: true, validator: validateRate, trigger: 'blur' }]"
             >
-              <el-input style="width: 74%" class="mgr-s" v-model="formData.totalVal" placeholder="请输入最终价格" />
-              <el-button @click="handelEditTotal">计算折扣率</el-button>
+              <el-input style="width: 73%" class="mgr-s" v-model="formData.totalVal" placeholder="请输入最终价格" />
+              <el-button style="width: 24%" @click="handelEditTotal">计算折扣率</el-button>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -72,37 +72,37 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="发票抬头" prop="aaa">
-              <el-input v-model="formData.aaa" placeholder="请输入发票抬头" />
+              <el-input v-model="formData.aaa" placeholder="请输入发票抬头" clearable />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="收件人" prop="bbb">
-              <el-input v-model="formData.bbb" placeholder="请输入收件人" />
+              <el-input v-model="formData.bbb" placeholder="请输入收件人" clearable />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="联系电话" prop="ccc">
-              <el-input v-model="formData.ccc" placeholder="请输入联系电话" />
+              <el-input v-model="formData.ccc" placeholder="请输入联系电话" clearable />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="开户行" prop="ddd">
-              <el-input v-model="formData.ddd" placeholder="请输入开户行" />
+              <el-input v-model="formData.ddd" placeholder="请输入开户行" clearable />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="开户行账号" prop="eee">
-              <el-input v-model="formData.eee" placeholder="请输入开户行账号" />
+              <el-input v-model="formData.eee" placeholder="请输入开户行账号" clearable />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="税号" prop="fff">
-              <el-input v-model="formData.fff" placeholder="请输入税号" />
+              <el-input v-model="formData.fff" placeholder="请输入税号" clearable />
             </el-form-item>
           </el-col>
           <el-col :span="24">
             <el-form-item label="注册地址及电话" prop="ggg">
-              <el-input v-model="formData.ggg" placeholder="请输入注册地址及电话" />
+              <el-input v-model="formData.ggg" placeholder="请输入注册地址及电话" clearable />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -118,7 +118,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="remark" prop="iii">
-              <el-input type="textarea" v-model="formData.iii" placeholder="请输入Pending具体" />
+              <el-input type="textarea" v-model="formData.iii" placeholder="请输入Pending具体" clearable />
             </el-form-item>
           </el-col>
         </el-row>

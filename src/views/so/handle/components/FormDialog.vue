@@ -10,7 +10,7 @@
     <div class="demo-collapse">
       <el-collapse v-model="activeNames">
         <el-collapse-item title="基础信息" name="1">
-          <el-descriptions class="margin-top" :column="3" border size="small">
+          <el-descriptions :column="3" border size="small">
             <el-descriptions-item>
               <template #label>维修任务号</template>
               {{ form.TaskID }}

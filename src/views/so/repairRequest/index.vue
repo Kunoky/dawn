@@ -17,7 +17,7 @@
       <el-table-column label="创建时间" prop="nnn" width="100" />
       <el-table-column label="未关闭so数量" prop="TaskID" width="100">
         <template #default="{ row }">
-          <el-button type="success" link @click="handleNum(row)">{{ row.TaskID }}</el-button>
+          <span class="cs-p fw-b" style="color: #1890ff" @click="handleNum(row)">{{ row.TaskID }}</span>
         </template>
       </el-table-column>
       <el-table-column label="客户单位名称" prop="fff" width="100" />
@@ -89,7 +89,7 @@
     </CTable>
     <FormDialog :data="current" v-model="visible.form" @success="handleFormSuccess"></FormDialog>
 
-    <el-dialog title="手工关闭" width="30%" v-model="detailVisible" :close-on-click-modal="false">
+    <el-dialog title="关闭" width="30%" v-model="detailVisible" :close-on-click-modal="false">
       <el-form :model="formDetails" ref="formRefDetails" label-width="80" :rules="rules">
         <el-form-item label="SO" prop="so">
           <el-input v-model="formDetails.so" placeholder="请输入SO" clearable />
@@ -287,7 +287,7 @@ const visibleSo = ref(false)
 const tableData = [
   {
     aaa: 'xxxxx',
-    bbb: '状态',
+    bbb: '待创建',
     ccc: 'SM02',
     ddd: '李四',
     eee: '2023-08-22 10:20:23',
@@ -298,7 +298,7 @@ const tableData = [
   },
   {
     aaa: 'xxxxx',
-    bbb: '状态',
+    bbb: '待维修',
     ccc: 'SM02',
     ddd: '李四',
     eee: '2023-08-22 10:20:23',

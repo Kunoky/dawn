@@ -453,8 +453,8 @@ const handleClose = () => {
 //   mitter.emit('query-refresh')
 // }
 </script>
-<style>
-.demo-collapse > .el-collapse-item__header {
+<style scoped>
+.demo-collapse :deep(.el-collapse-item__header) {
   font-size: 14px;
   font-weight: bold;
 }
