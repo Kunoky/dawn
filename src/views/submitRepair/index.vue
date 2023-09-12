@@ -16,7 +16,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="型号" prop="bbb">
+          <el-form-item label="型号" prop="bbb" class="form_flex">
             <el-select v-model="form.bbb" placeholder="请选择型号" class="mgr-m" style="width: 86%" clearable>
               <el-option label="B" value="beijing" />
             </el-select>
@@ -29,11 +29,11 @@
             <el-input disabled v-model="form.ccc" placeholder="自动填入" clearable />
           </el-form-item>
         </el-col>
-        <el-col :span="12">
+        <!-- <el-col :span="12">
           <el-form-item label="关联编号" prop="ccc">
             <el-input v-model="form.ccc" placeholder="请输入关联编号" clearable />
           </el-form-item>
-        </el-col>
+        </el-col> -->
         <el-col :span="12">
           <el-form-item label="保修期" prop="ooo" class="date-box">
             <el-date-picker v-model="form.ooo" type="date" placeholder="请选择保修期" style="width: 100%" clearabl />
@@ -58,6 +58,11 @@
             </el-select>
           </el-form-item>
         </el-col>
+        <el-col :span="12">
+          <el-form-item label="客户锁信息" prop="yyy">
+            <el-input disabled v-model="form.yyy" placeholder="自动填入" clearable />
+          </el-form-item>
+        </el-col>
         <!-- <el-col :span="12">
           <el-form-item label="客户编号" prop="ggg">
             <el-input disabled v-model="form.ggg" placeholder="请输入客户编号" clearable />
@@ -69,10 +74,16 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="客户联系人拼音" prop="xxx">
-            <el-input v-model="form.xxx" placeholder="请输入客户联系人拼音" clearable />
+          <el-form-item label="客户联系人拼音" prop="xxx" class="form_flex">
+            <el-input style="width: 48%" v-model="form.xxx" placeholder="请输入客户联系人拼音(姓)" clearable />
+            <el-input style="width: 50%" v-model="form.zzz" placeholder="请输入客户联系人拼音(名)" clearable />
           </el-form-item>
         </el-col>
+        <!-- <el-col :span="12">
+          <el-form-item label="客户联系人拼音(名)" prop="zzz">
+            <el-input v-model="form.zzz" placeholder="请输入客户联系人拼音(名)" clearable />
+          </el-form-item>
+        </el-col> -->
         <el-col :span="12">
           <el-form-item label="客户联系人电话" prop="iii">
             <el-input v-model="form.iii" placeholder="请输入客户联系人电话" clearable />
@@ -90,7 +101,7 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="FSE工程师名称" prop="ppp">
-            <el-input v-model="form.pp" placeholder="请输入FSE工程师名称">
+            <el-input v-model="form.ppp" placeholder="请输入FSE工程师名称">
               <template #append>
                 <el-button><i-ep-Search /></el-button>
               </template>
@@ -118,6 +129,11 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
+          <el-form-item label="关联来源编号" prop="ccc">
+            <el-input v-model="form.ccc" placeholder="请输入关联编号" clearable />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
           <el-form-item label="报修时间" prop="nnn" class="date-box">
             <el-date-picker
               v-model="form.nnn"
@@ -133,19 +149,19 @@
             <el-input v-model="form.rrr" placeholder="自动填入" clearable />
           </el-form-item>
         </el-col> -->
-        <el-col :span="12">
+        <!-- <el-col :span="12">
           <el-form-item label="所属区域" prop="vvv">
             <el-input disabled v-model="form.vvv" placeholder="自动填充" clearable />
           </el-form-item>
-        </el-col>
+        </el-col> -->
         <el-col :span="12">
-          <el-form-item label="" prop="www">
+          <el-form-item label="是否CRC" prop="www">
             <el-switch
               v-model="form.www"
               class="ml-2"
               style="--el-switch-on-color: #ff4949"
-              active-text="CRC"
-              inactive-text="非CRC"
+              active-text="是"
+              inactive-text="否"
             />
           </el-form-item>
         </el-col>
@@ -169,7 +185,7 @@
                 <em>或点击上传</em>
               </div>
               <template #tip>
-                <div class="el-upload__tip">只能上传PDF, 单个文件 ≤5MB</div>
+                <div class="el-upload__tip">只能上传PDF, 单个文件 ≤10MB</div>
               </template>
             </el-upload>
           </el-form-item>
@@ -204,8 +220,8 @@ const rules = {
   nnn: [{ required: true, message: '报修时间不能为空', trigger: 'blur' }],
   // ooo: [{ required: true, message: '保修期不能为空', trigger: 'blur' }],
   ppp: [{ required: true, message: 'FSE工程师名称不能为空', trigger: 'blur' }],
-  // qqq: [{ required: true, message: 'FSE work cente不能为空', trigger: 'blur' }],
-  // rrr: [{ required: true, message: 'FSE storage location不能为空', trigger: 'blur' }],
+  xxx: [{ required: true, message: '客户联系人拼音不能为空', trigger: 'blur' }],
+  // zzz: [{ required: true, message: '客户联系人拼音(名)不能为空', trigger: 'blur' }],
 }
 const options = [
   {
@@ -293,6 +309,8 @@ const form = ref({
   qqq: '',
   rrr: '',
   vvv: '',
+  xxx: '',
+  zzz: '',
   www: false,
 })
 const loading = ref(false)
@@ -324,7 +342,12 @@ const handleConfirm = () => {
   padding: 20px 30px;
 }
 
-.date-box /deep/ .el-input__wrapper {
+.date-box :deep(.el-input__wrapper) {
   width: 97%;
+}
+.form_flex :deep(.el-form-item__content) {
+  display: flex;
+  flex-flow: inherit;
+  justify-content: space-between;
 }
 </style>

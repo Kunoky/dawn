@@ -44,12 +44,20 @@
               {{ form.ggg }}
             </el-descriptions-item>
             <el-descriptions-item>
+              <template #label>客户锁信息</template>
+              TC锁
+            </el-descriptions-item>
+            <el-descriptions-item>
               <template #label>仪器地址</template>
               {{ form.eee }}
             </el-descriptions-item>
             <el-descriptions-item>
               <template #label>客户联系人</template>
               {{ form.hhh }}
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>客户联系人拼音</template>
+              {{ form.xxx }} {{ form.zzz }}
             </el-descriptions-item>
             <el-descriptions-item>
               <template #label>客户联系人电话</template>
@@ -190,7 +198,7 @@
           <el-table
             size="small"
             :data="tableData1"
-            style="width: 100%; margin-bottom: 20px"
+            style="width: 100%; margin-bottom: 10px"
             max-height="190"
             :header-cell-style="{ background: '#f5f7fa' }"
           >
@@ -202,6 +210,7 @@
             <el-table-column prop="eee" label="报价时间" />
             <el-table-column prop="fff" label="审批状态" />
           </el-table>
+          <p class="p">发票信息：</p>
           <el-descriptions class="margin-top" :column="3" border size="small">
             <el-descriptions-item>
               <template #label>发票抬头</template>
@@ -232,8 +241,31 @@
               0000000000
             </el-descriptions-item>
           </el-descriptions>
+          <p class="p">沟通记录：</p>
+          <el-table
+            size="small"
+            :data="recordData"
+            style="width: 100%; margin-bottom: 10px"
+            :header-cell-style="{ background: '#f5f7fa' }"
+          >
+            <el-table-column prop="aaa" label="沟通人" />
+            <el-table-column prop="bbb" label="时间" />
+            <el-table-column prop="ccc" label="结果" />
+          </el-table>
         </el-collapse-item>
-        <el-collapse-item title="附件信息" name="6">
+        <!-- <el-collapse-item title="沟通记录信息" name="6">
+          <el-table
+            size="small"
+            :data="recordData"
+            style="width: 100%; margin-top: 10px; margin-bottom: 20px"
+            :header-cell-style="{ background: '#f5f7fa' }"
+          >
+            <el-table-column prop="aaa" label="沟通人" />
+            <el-table-column prop="bbb" label="时间" />
+            <el-table-column prop="ccc" label="结果" />
+          </el-table>
+        </el-collapse-item> -->
+        <el-collapse-item title="附件信息" name="7">
           <span>报价确认单附件</span>
           <el-table
             size="small"
@@ -321,6 +353,10 @@ const tableData = [
 const annexData = [
   { name: '文件1', id: 1, dateTime: '2023-08-23' },
   { name: '香香', id: 2, dateTime: '2023-08-01' },
+]
+const recordData = [
+  { aaa: '张三', bbb: '2023-09-03', ccc: 'xxxxxxxxxxxxxxxxxx' },
+  { aaa: '李四', bbb: '2023-08-23', ccc: 'xxxxxxxxxxxxxxxxxx' },
 ]
 const loading = ref(false)
 const form = ref({})
@@ -458,8 +494,11 @@ const getSummaries = param => {
 // }
 </script>
 <style scoped>
-.demo-collapse >>> .el-collapse-item__header {
+.demo-collapse :deep(.el-collapse-item__header) {
   font-size: 14px;
   font-weight: bold;
+}
+.p {
+  margin: 20px 0 0;
 }
 </style>

@@ -54,9 +54,10 @@
               label="最终价格"
               prop="totalVal"
               :rules="[{ required: true, validator: validateRate, trigger: 'blur' }]"
+              class="form_flex"
             >
-              <el-input style="width: 73%" class="mgr-s" v-model="formData.totalVal" placeholder="请输入最终价格" />
-              <el-button style="width: 24%" @click="handelEditTotal">计算折扣率</el-button>
+              <el-input class="mgr-s" v-model="formData.totalVal" placeholder="请输入最终价格" />
+              <el-button style="padding: 0 2px" @click="handelEditTotal">计算折扣率</el-button>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -139,7 +140,7 @@
                   <em>或点击上传</em>
                 </div>
                 <template #tip>
-                  <div class="el-upload__tip">只能上传PDF, 单个文件 ≤5MB</div>
+                  <div class="el-upload__tip">只能上传PDF, 单个文件 ≤10MB</div>
                 </template>
               </el-upload>
             </el-form-item>
@@ -317,4 +318,10 @@ const handleCellLeave = row => {
 }
 </script>
 
-<style></style>
+<style scoped>
+.form_flex :deep(.el-form-item__content) {
+  display: flex;
+  flex-flow: inherit;
+  justify-content: space-between;
+}
+</style>

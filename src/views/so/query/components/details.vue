@@ -45,12 +45,20 @@
               {{ form.ggg }}
             </el-descriptions-item>
             <el-descriptions-item>
+              <template #label>客户锁信息</template>
+              TC锁
+            </el-descriptions-item>
+            <el-descriptions-item>
               <template #label>仪器地址</template>
               {{ form.eee }}
             </el-descriptions-item>
             <el-descriptions-item>
               <template #label>客户联系人</template>
               {{ form.hhh }}
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>客户联系人拼音</template>
+              {{ form.xxx }} {{ form.zzz }}
             </el-descriptions-item>
             <el-descriptions-item>
               <template #label>客户联系人电话</template>

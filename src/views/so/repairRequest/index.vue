@@ -28,7 +28,7 @@
       <el-table-column label="代理商" prop="kkk" width="100" />
       <el-table-column label="报修内容" prop="lll" width="100" :show-overflow-tooltip="true" />
       <el-table-column label="报修来源" prop="mmm" width="100" />
-      <el-table-column label="报修时间" prop="nnn1" width="100" />
+      <el-table-column label="报修时间" prop="yyy" width="100" />
       <el-table-column label="保修期" prop="ooo" width="100" />
       <el-table-column label="FSE工程师名称" prop="ppp" width="100" />
       <el-table-column label="FSE work center" prop="qqq" width="115" />

@@ -207,6 +207,19 @@ const menus = [
     status: 1,
   },
   {
+    menuId: 15,
+    parentId: 0,
+    menuType: 1,
+    icon: 'ep:lock',
+    menuName: '客户锁管理',
+    orderNum: 0,
+    path: '/customerLock',
+    routeName: 'CustomerLock',
+    isCache: 1,
+    visible: 1,
+    status: 1,
+  },
+  {
     menuId: 20,
     parentId: 0,
     menuType: 1,
@@ -485,7 +498,9 @@ const so = [
     billingNo: 'bn11111111',
     vvv: '上海',
     www: 'xxx',
-    xxx: 'lisi',
+    xxx: 'li',
+    zzz: 'si',
+    yyy: '2023-01-22',
   },
   {
     id: 2,
@@ -497,7 +512,7 @@ const so = [
     eee: '仓库',
     fff: 'xxxxxxxxxxxx',
     ggg: '2345',
-    hhh: '香香',
+    hhh: '王香香',
     iii: '15994254389',
     jjj: '456753@qq.com',
     kkk: 'xxx',
@@ -515,7 +530,9 @@ const so = [
     billingNo: 'bn22222222',
     vvv: '上海',
     www: 'xxx',
-    xxx: 'xiangxiang',
+    xxx: 'wang',
+    zzz: 'xiangxiang',
+    yyy: '2023-01-22',
   },
   {
     id: 3,
@@ -527,7 +544,7 @@ const so = [
     eee: '仓库',
     fff: 'xxxxxxxxxxxx',
     ggg: '457',
-    hhh: '静静',
+    hhh: '赵静静',
     iii: '13876549233',
     jjj: '7893125@qq.com',
     kkk: 'xxx',
@@ -545,7 +562,9 @@ const so = [
     billingNo: 'bn33333333',
     vvv: '上海',
     www: 'xxx',
-    xxx: 'jingjing',
+    xxx: 'zhao',
+    zzz: 'jingjing',
+    yyy: '2023-01-22',
   },
 ]
 const inventory = [
@@ -604,6 +623,48 @@ const inventory = [
     jjj: '2020-07-13',
     kkk: 'SF2343456576976',
     lll: '是',
+  },
+]
+const customerLock = [
+  {
+    aaa: '4039428',
+    bbb: ['TC锁'],
+    ccc: 'GRAYSE_D50',
+    ddd: '2006-09-03',
+    eee: '3',
+    fff: '中山医科大学',
+    ggg: '三所基础研究所四室',
+    hhh: '何蕴韶',
+    iii: '第四军医大科技楼0719房',
+    jjj: '广州',
+    kkk: '',
+    lll: '',
+    mmm: '执信南路132号',
+    nnn: '510089',
+    ooo: '1396483101100500',
+    ppp: '41',
+    qqq: '190',
+    rrr: '020-87656115',
+  },
+  {
+    aaa: '4039476',
+    bbb: ['财务锁'],
+    ccc: 'GRAYSE_D50',
+    ddd: '2023-09-03',
+    eee: '3',
+    fff: '广州市血液中心',
+    ggg: '器官配型中心',
+    hhh: '陈洪涛',
+    iii: '药学院6楼',
+    jjj: '广州',
+    kkk: '',
+    lll: '',
+    mmm: '市中区西二环路腊山路8号',
+    nnn: '751004',
+    ooo: '5211000076420530',
+    ppp: '85',
+    qqq: '120',
+    rrr: '0531-89908855',
   },
 ]
 export default [
@@ -751,6 +812,13 @@ export default [
     method: 'get',
     response: () => {
       return resPage(inventory)
+    },
+  },
+  {
+    url: '/api/getCustomerLock/list',
+    method: 'get',
+    response: () => {
+      return resPage(customerLock)
     },
   },
 ]

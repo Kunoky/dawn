@@ -33,9 +33,10 @@
         </template>
       </el-table-column> -->
       <!-- <el-table-column label="审批结果" prop="uuu" width="140" /> -->
-      <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="80">
+      <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="110">
         <template #default="{ row }">
-          <el-button type="primary" link @click="handleDeatil(row)">Billing</el-button>
+          <el-button type="info" link @click="handleDeatil(row)">详情</el-button>
+          <el-button type="primary" link @click="handleClose(row)">Billing</el-button>
           <!-- <el-button type="primary" link @click="handleExamine(row)">
             审批
           </el-button> -->
@@ -89,6 +90,20 @@
       </template>
     </CTable>
     <FormDialog :data="current" v-model="visible.formDialog" @success="handleFormSuccess"></FormDialog>
+
+    <el-dialog title="添加Billing号" width="30%" v-model="detailVisible" :close-on-click-modal="false">
+      <el-form :model="formDetails" ref="formRefDetails" label-width="80" :rules="rules">
+        <el-form-item label="Billing号" prop="TaskID">
+          <el-input v-model="formDetails.TaskID" placeholder="请输入Billing号" clearable />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="handleCloseDetail">取消</el-button>
+          <el-button type="primary" @click="handleConfirm">确定</el-button>
+        </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -176,5 +191,42 @@ const handleDeatil = row => {
 }
 const handleFormSuccess = () => {
   refresh()
+}
+
+// 添加Billing号
+const detailVisible = ref(false)
+const formRefDetails = ref(null)
+const formDetails = ref({
+  TaskID: '',
+})
+const rules = {
+  TaskID: [{ required: true, message: 'Billing号不能为空', trigger: 'blur' }],
+}
+const handleClose = () => {
+  detailVisible.value = true
+}
+const handleCloseDetail = () => {
+  detailVisible.value = false
+  nextTick(() => {
+    formRefDetails.value.clearValidate()
+  })
+}
+const handleConfirm = () => {
+  formRefDetails.value.validate(valid => {
+    if (valid) {
+      // form.value.value = form.value.category
+      // loading.value = true
+      // req[form.value.dictId ? 'put' : 'post']('/dict', form.value)
+      //   .then(({ code }) => {
+      //     if (code === 200) {
+      //       emit('success')
+      //       emit('update:modelValue', false)
+      //     }
+      //   })
+      //   .finally(() => {
+      //     loading.value = false
+      //   })
+    }
+  })
 }
 </script>

@@ -54,6 +54,11 @@
             </el-select>
           </el-form-item>
         </el-col>
+        <el-col :span="12">
+          <el-form-item label="客户锁信息" prop="yyy">
+            <el-input disabled v-model="form.yyy" placeholder="自动填入" clearable />
+          </el-form-item>
+        </el-col>
         <!-- <el-col :span="12">
           <el-form-item label="客户编号" prop="ggg">
             <el-input disabled v-model="form.ggg" placeholder="请输入客户编号" clearable />
@@ -65,10 +70,16 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="客户联系人拼音" prop="xxx">
-            <el-input v-model="form.xxx" placeholder="请输入客户联系人拼音" clearable />
+          <el-form-item label="客户联系人拼音" prop="xxx" class="form_flex">
+            <el-input style="width: 48%" v-model="form.xxx" placeholder="请输入客户联系人拼音(姓)" clearable />
+            <el-input style="width: 50%" v-model="form.zzz" placeholder="请输入客户联系人拼音(名)" clearable />
           </el-form-item>
         </el-col>
+        <!-- <el-col :span="12">
+          <el-form-item label="客户联系人拼音(名)" prop="zzz">
+            <el-input v-model="form.zzz" placeholder="请输入客户联系人拼音(名)" clearable />
+          </el-form-item>
+        </el-col> -->
         <el-col :span="12">
           <el-form-item label="客户联系人电话" prop="iii">
             <el-input v-model="form.iii" placeholder="请输入客户联系人电话" clearable />
@@ -128,7 +139,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="关联ID">
+          <el-form-item label="关联来源编号">
             <el-input v-model="form.rrr" placeholder="自动填入" clearable />
           </el-form-item>
         </el-col>
@@ -173,6 +184,7 @@ const rules = {
   // ggg: [{ required: true, message: '客户编号不能为空', trigger: 'blur' }],
   hhh: [{ required: true, message: '客户联系人不能为空', trigger: 'blur' }],
   xxx: [{ required: true, message: '客户联系人拼音不能为空', trigger: 'blur' }],
+  // zzz: [{ required: true, message: '客户联系人拼音(名)不能为空', trigger: 'blur' }],
   iii: [{ required: true, message: '客户联系人电话不能为空', trigger: 'blur' }],
   jjj: [{ required: true, message: '客户联系人邮箱不能为空', trigger: 'blur' }],
   // kkk: [{ required: true, message: '代理商不能为空', trigger: 'blur' }],
@@ -279,6 +291,7 @@ watch(
         rrr: '',
         vvv: '',
         xxx: '',
+        zzz: '',
         // label: '',
         // value: '',
         // category: '',
@@ -322,7 +335,11 @@ const handleConfirm = () => {
 }
 </script>
 <style scoped>
-.date-box /deep/ .el-input__wrapper {
+.date-box :deep(.el-input__wrapper) {
   width: 95%;
+}
+.form_flex :deep(.el-form-item__content) {
+  display: flex;
+  justify-content: space-between;
 }
 </style>

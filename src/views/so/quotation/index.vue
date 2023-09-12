@@ -38,6 +38,7 @@
           <el-button type="info" link @click="handleDeatil(row)">详情</el-button>
           <el-button type="info" link @click="handleQuotation(row)">报价</el-button>
           <el-button type="primary" link @click="handleExamine(row)">发起流程</el-button>
+          <el-button type="danger" link @click="handleAddRecord(row)">添加沟通记录</el-button>
           <el-button type="danger" link @click="handleClose(row)">退回</el-button>
         </template>
       </el-table-column>
@@ -108,6 +109,26 @@
         <span class="dialog-footer">
           <el-button @click="handleCloseDetail">{{ $t('common.cancel') }}</el-button>
           <el-button type="primary" @click="handleConfirm">{{ $t('common.confirm') }}</el-button>
+        </span>
+      </template>
+    </el-dialog>
+
+    <el-dialog title="添加沟通记录" width="30%" v-model="addRecordVisible" :close-on-click-modal="false">
+      <el-form :model="addForm" ref="addRefForm" label-width="80" :rules="AddRules">
+        <el-form-item label="沟通人" prop="aaa">
+          <el-input v-model="addForm.aaa" placeholder="请输入沟通人" clearable />
+        </el-form-item>
+        <el-form-item label="时间" prop="bbb" class="form_picker">
+          <el-date-picker v-model="addForm.bbb" type="datetime" placeholder="请选择时间" style="width: 100%" />
+        </el-form-item>
+        <el-form-item label="结果" prop="ccc">
+          <el-input type="textarea" v-model="addForm.ccc" placeholder="请输入结果" clearable />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="handleCloseAddRecord">{{ $t('common.cancel') }}</el-button>
+          <el-button type="primary" @click="handleConfirmAddRecord">{{ $t('common.confirm') }}</el-button>
         </span>
       </template>
     </el-dialog>
@@ -268,4 +289,49 @@ const handleQuotation = row => {
 const handleQuotationSuccess = () => {
   refresh()
 }
+
+const addRecordVisible = ref(false)
+const addRefForm = ref(null)
+const addForm = ref({
+  aaa: '',
+  bbb: '',
+  ccc: '',
+})
+const AddRules = {
+  aaa: [{ required: true, message: '沟通人不能为空', trigger: 'blur' }],
+  bbb: [{ required: true, message: '时间不能为空', trigger: 'blur' }],
+  ccc: [{ required: true, message: '结果不能为空', trigger: 'blur' }],
+}
+const handleAddRecord = () => {
+  addRecordVisible.value = true
+}
+const handleCloseAddRecord = () => {
+  addRecordVisible.value = false
+  nextTick(() => {
+    addRefForm.value.clearValidate()
+  })
+}
+const handleConfirmAddRecord = () => {
+  addRefForm.value.validate(valid => {
+    if (valid) {
+      // form.value.value = form.value.category
+      // loading.value = true
+      // req[form.value.dictId ? 'put' : 'post']('/dict', form.value)
+      //   .then(({ code }) => {
+      //     if (code === 200) {
+      //       emit('success')
+      //       emit('update:modelValue', false)
+      //     }
+      //   })
+      //   .finally(() => {
+      //     loading.value = false
+      //   })
+    }
+  })
+}
 </script>
+<style scoped>
+.form_picker :deep(.el-input__wrapper) {
+  width: 95%;
+}
+</style>
