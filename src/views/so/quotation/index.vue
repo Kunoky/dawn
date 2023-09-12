@@ -53,7 +53,10 @@
           <el-input v-model="form.so" placeholder="请输入SO NO" clearable />
         </el-form-item>
         <el-form-item label="仪器序列号" prop="TaskID">
-          <el-input v-model="form.TaskID" placeholder="请输入仪器序列号" clearable />
+          <el-select v-model="form.aaa" placeholder="请输入仪器序列号" style="width: 100%" clearable>
+            <el-option label="A" value="shanghai" />
+            <el-option label="B" value="beijing" />
+          </el-select>
         </el-form-item>
         <el-form-item label="维修类型" prop="ddd">
           <el-cascader v-model="form.ddd" :options="options" filterable clearable />
