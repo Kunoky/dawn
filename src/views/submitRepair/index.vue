@@ -18,9 +18,10 @@
         <el-col :span="12">
           <el-form-item label="型号" prop="bbb" class="form_flex">
             <el-select v-model="form.bbb" placeholder="请选择型号" class="mgr-m" style="width: 86%" clearable>
+              <el-option label="A" value="shanghai" />
               <el-option label="B" value="beijing" />
             </el-select>
-            <el-button style="width: 10%" type="primary">查询</el-button>
+            <el-button style="width: 10%" type="primary" @click="handleNum(row)">查询</el-button>
           </el-form-item>
         </el-col>
 
@@ -198,6 +199,32 @@
         </el-col>
       </el-row>
     </el-form>
+
+    <el-dialog title="未关闭SO数量" width="50%" v-model="visibleSo" :close-on-click-modal="false">
+      <el-table
+        size="small"
+        :data="tableData"
+        style="width: 100%; margin-bottom: 20px"
+        max-height="190"
+        :header-cell-style="{ background: '#f5f7fa' }"
+      >
+        <el-table-column prop="aaa" label="客户名称" />
+        <el-table-column prop="bbb" label="状态" />
+        <el-table-column prop="ccc" label="维修类型" />
+        <el-table-column prop="ddd" label="创建人" />
+        <el-table-column prop="eee" label="创建人时间" width="130" />
+        <el-table-column prop="fff" label="报修时间" width="130" />
+        <el-table-column prop="ggg" label="FSE工程师名称" width="120" />
+        <el-table-column prop="hhh" label="FSE work center" width="150" />
+        <el-table-column prop="iii" label="FSE storage location" width="150" />
+      </el-table>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="handleCloseSo">{{ $t('common.cancel') }}</el-button>
+          <!-- <el-button type="primary" @click="handleConfirm">{{ $t('common.confirm') }}</el-button> -->
+        </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -334,6 +361,39 @@ const handleConfirm = () => {
       //   })
     }
   })
+}
+
+// 查询
+const visibleSo = ref(false)
+const tableData = [
+  {
+    aaa: 'xxxxx',
+    bbb: '待创建',
+    ccc: 'SM02',
+    ddd: '李四',
+    eee: '2023-08-22 10:20:23',
+    fff: '2023-08-25 15:24:23',
+    ggg: '一号工程师',
+    hhh: '详情',
+    iii: 'xxxxxx',
+  },
+  {
+    aaa: 'xxxxx',
+    bbb: '待维修',
+    ccc: 'SM02',
+    ddd: '李四',
+    eee: '2023-08-22 10:20:23',
+    fff: '2023-08-25 15:24:23',
+    ggg: '一号工程师',
+    hhh: '详情',
+    iii: 'xxxxxx',
+  },
+]
+const handleNum = () => {
+  visibleSo.value = true
+}
+const handleCloseSo = () => {
+  visibleSo.value = false
 }
 </script>
 <style scoped>

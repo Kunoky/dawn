@@ -15,9 +15,9 @@
       <el-table-column label="仪器地址" prop="eee" width="100" />
       <el-table-column label="创建人" prop="www" width="100" />
       <el-table-column label="创建时间" prop="nnn" width="100" />
-      <el-table-column label="未关闭so数量" prop="TaskID" width="100">
+      <el-table-column label="未关闭so数量" width="100">
         <template #default="{ row }">
-          <span class="cs-p fw-b" style="color: #1890ff" @click="handleNum(row)">{{ row.TaskID }}</span>
+          <span class="cs-p fw-b" style="color: #1890ff" @click="handleNum(row)">{{ row.ttt }}</span>
         </template>
       </el-table-column>
       <el-table-column label="客户单位名称" prop="fff" width="100" />
@@ -94,7 +94,7 @@
 
     <el-dialog title="关闭" width="30%" v-model="detailVisible" :close-on-click-modal="false">
       <el-form :model="formDetails" ref="formRefDetails" label-width="80" :rules="rules">
-        <el-form-item label="SO" prop="so">
+        <el-form-item label="SO NO" prop="so">
           <el-input v-model="formDetails.so" placeholder="请输入SO" clearable />
         </el-form-item>
         <el-form-item label="关闭原因" prop="details">
@@ -255,7 +255,7 @@ const formDetails = ref({
   details: '',
 })
 const rules = {
-  so: [{ required: true, message: 'so不能为空', trigger: 'blur' }],
+  // so: [{ required: true, message: 'so不能为空', trigger: 'blur' }],
   details: [{ required: true, message: '关闭原因不能为空', trigger: 'blur' }],
 }
 const handleClose = () => {

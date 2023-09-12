@@ -23,12 +23,12 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="型号" prop="bbb" class="form_flex">
-            <el-select v-model="form.bbb" placeholder="请选择型号" style="width: 83%" clearable>
+          <el-form-item label="型号" prop="bbb">
+            <el-select v-model="form.bbb" placeholder="请选择型号" style="width: 100%" clearable>
               <el-option label="A" value="shanghai" />
               <el-option label="B" value="beijing" />
             </el-select>
-            <el-button style="width: 12%" type="primary">查询</el-button>
+            <!-- <el-button style="width: 12%" type="primary">查询</el-button> -->
           </el-form-item>
         </el-col>
         <el-col :span="12">

@@ -128,19 +128,19 @@ const menus = [
     visible: 1,
     status: 1,
   },
-  {
-    menuId: 9,
-    parentId: 5,
-    menuType: 1,
-    // icon: 'ep:message-box',
-    menuName: '待核验SO',
-    orderNum: 0,
-    path: '/so/verification',
-    routeName: 'SoVerification',
-    isCache: 1,
-    visible: 1,
-    status: 1,
-  },
+  // {
+  //   menuId: 9,
+  //   parentId: 5,
+  //   menuType: 1,
+  //   // icon: 'ep:message-box',
+  //   menuName: '待核验SO',
+  //   orderNum: 0,
+  //   path: '/so/verification',
+  //   routeName: 'SoVerification',
+  //   isCache: 1,
+  //   visible: 1,
+  //   status: 1,
+  // },
   {
     menuId: 10,
     parentId: 5,
@@ -581,6 +581,7 @@ const inventory = [
     jjj: '2020-08-28',
     kkk: 'SF2343585746785',
     lll: '是',
+    mmm: 'xxx',
   },
   {
     aaa: '222',
@@ -595,6 +596,7 @@ const inventory = [
     jjj: '2020-08-22',
     kkk: 'SF2343545466888',
     lll: '否',
+    mmm: 'xxx',
   },
   {
     aaa: '333',
@@ -609,6 +611,7 @@ const inventory = [
     jjj: '2020-05-3',
     kkk: 'SF2343585792236',
     lll: '是',
+    mmm: 'xxx',
   },
   {
     aaa: '444',
@@ -623,6 +626,7 @@ const inventory = [
     jjj: '2020-07-13',
     kkk: 'SF2343456576976',
     lll: '是',
+    mmm: 'xxx',
   },
 ]
 const customerLock = [

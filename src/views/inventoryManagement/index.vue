@@ -5,6 +5,8 @@
       <el-table-column label="移库凭证号" prop="ccc" :show-overflow-tooltip="true" />
       <el-table-column label="快递单号" prop="kkk" />
       <el-table-column label="是否有异常" prop="lll" />
+      <el-table-column label="创建人" prop="mmm" />
+      <el-table-column label="创建时间" prop="jjj" />
       <!-- <el-table-column label="Storage location" prop="ddd" />
       <el-table-column label="配件料号" prop="eee" />
       <el-table-column label="数量" prop="fff" />
@@ -35,12 +37,12 @@
         <el-form-item label="移库凭证号" prop="ccc">
           <el-input v-model="form.ccc" placeholder="请输入移库凭证号" clearable />
         </el-form-item>
-        <el-form-item label="批次号" prop="iii">
+        <!-- <el-form-item label="批次号" prop="iii">
           <el-input v-model="form.iii" placeholder="请输入批次号" clearable />
-        </el-form-item>
-        <el-form-item label="配件料号" prop="eee">
+        </el-form-item> -->
+        <!-- <el-form-item label="配件料号" prop="eee">
           <el-input v-model="form.eee" placeholder="请输入配件料号" clearable />
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="时间" prop="jjj">
           <range-picker v-model="form.jjj" />
         </el-form-item>
@@ -58,9 +60,8 @@
 
 <script setup>
 import { reactive } from 'vue'
-// import FormDialog from './components/FormDialog.vue'
 import FormDialog from './components/FormDialog.vue'
-
+const i18n = useI18n()
 const tableRef = ref()
 const refresh = () => tableRef.value.refresh()
 
@@ -86,28 +87,26 @@ const handleDeatil = row => {
 //   visible.form = true
 // }
 
-// const handleDel = row => {
-//   ElMessageBox.confirm(i18n.t('tip.determine'), i18n.t('common.warning'), {
-//     confirmButtonText: i18n.t('common.confirm'),
-//     cancelButtonText: i18n.t('common.cancel'),
-//     type: 'warning',
-//   })
-//     .then(() => {
-//       // current.value = {
-//       //   ...row,
-//       //   deleting: true,
-//       // }
-//       // return req.delete('system/user/' + row.userId)
-//     })
-//   // .then(({ code }) => {
-//   // if (code === 200) {
-//   //   ElMessage.success(i18n.t('tip.success'))
-//   //   refresh()
-//   // }
-//   // })
-// }
+const handleDel = () => {
+  ElMessageBox.confirm(i18n.t('tip.delete'), i18n.t('common.warning'), {
+    confirmButtonText: i18n.t('common.confirm'),
+    cancelButtonText: i18n.t('common.cancel'),
+    type: 'warning',
+  }).then(() => {
+    // current.value = {
+    //   ...row,
+    //   deleting: true,
+    // }
+    // return req.delete('system/user/' + row.userId)
+  })
+  // .then(({ code }) => {
+  // if (code === 200) {
+  //   ElMessage.success(i18n.t('tip.success'))
+  //   refresh()
+  // }
+  // })
+}
 const handleFormSuccess = () => {
   refresh()
 }
-const handleDel = () => {}
 </script>
