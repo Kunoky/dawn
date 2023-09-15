@@ -37,7 +37,7 @@ const plugins = [
       VueRouterAutoImports,
       'vue-i18n',
       'pinia',
-      // '@vueuse/core',
+      '@vueuse/core',
       {
         '@/utils/common': [['*', 'utils']],
       },
@@ -111,7 +111,7 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: '8000',
-    strictPort: true,
+    // strictPort: true,
     // proxy: {
     //   '^/api': {
     //     target: 'http://10.71.4.66:5006',
