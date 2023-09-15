@@ -12,7 +12,16 @@ import purgecss from '@mojojoejo/vite-plugin-purgecss'
 import { VueRouterAutoImports, getPascalCaseRouteName } from 'unplugin-vue-router'
 import VueRouter from 'unplugin-vue-router/vite'
 import { viteMockServe } from 'vite-plugin-mock'
+import fs from 'fs'
 
+const optimizeDepsIncludes = ['vuedraggable', 'lodash-es']
+fs.readdirSync('node_modules/element-plus/es/components').forEach(dirname => {
+  fs.access(`node_modules/element-plus/es/components/${dirname}/style/index.mjs`, e => {
+    if (!e) {
+      optimizeDepsIncludes.push(`element-plus/es/components/${dirname}/style/index`)
+    }
+  })
+})
 const plugins = [
   // https://www.npmjs.com/package/unplugin-vue-router
   VueRouter({
@@ -119,6 +128,9 @@ export default defineConfig({
     //     rewrite: path => path.replace(/^\/api/, ''),
     //   },
     // },
+  },
+  optimizeDeps: {
+    include: optimizeDepsIncludes,
   },
   resolve: {
     alias: {
