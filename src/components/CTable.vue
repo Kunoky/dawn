@@ -51,7 +51,7 @@
               </template>
             </el-button>
           </el-tooltip>
-          <el-popover trigger="click" width="200px" popper-class="c-table__setting">
+          <el-popover trigger="click" width="240" popper-class="c-table__setting">
             <template #reference>
               <el-button link :aria-description="$t('component.CTable.setting')">
                 <template #icon>
@@ -91,7 +91,7 @@
                   >
                     <template #item="{ element }">
                       <li>
-                        <span>
+                        <span class="left">
                           <CIcon v-if="i.children.length > 1" icon="ant-design:bars-outlined" class="handle" />
                           <el-checkbox v-model="element.isShow">{{ element.label }}</el-checkbox>
                         </span>
@@ -560,6 +560,11 @@ defineExpose({
         margin-left: 2px;
         cursor: grab;
       }
+      .left {
+        flex: 1 1;
+        display: flex;
+        align-items: center;
+      }
       .right {
         color: var(--primary-color);
         cursor: pointer;
@@ -571,9 +576,14 @@ defineExpose({
       }
       .el-checkbox {
         margin-left: 16px;
+        flex: 1 1;
       }
       .el-checkbox__input.is-checked + .el-checkbox__label {
         color: var(--gray-9);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: 0;
+        flex: 1 1;
       }
       &:hover {
         background-color: #1890ff22;
