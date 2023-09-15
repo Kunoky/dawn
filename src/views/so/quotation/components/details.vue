@@ -236,9 +236,13 @@
               <template #label>税号</template>
               88888888
             </el-descriptions-item>
-            <el-descriptions-item>
+            <el-descriptions-item :span="3">
               <template #label>注册地址及电话</template>
               0000000000
+            </el-descriptions-item>
+            <el-descriptions-item :span="3">
+              <template #label>特殊要求</template>
+              xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
             </el-descriptions-item>
           </el-descriptions>
           <p class="p">沟通记录：</p>
@@ -253,18 +257,6 @@
             <el-table-column prop="ccc" label="结果" />
           </el-table>
         </el-collapse-item>
-        <!-- <el-collapse-item title="沟通记录信息" name="6">
-          <el-table
-            size="small"
-            :data="recordData"
-            style="width: 100%; margin-top: 10px; margin-bottom: 20px"
-            :header-cell-style="{ background: '#f5f7fa' }"
-          >
-            <el-table-column prop="aaa" label="沟通人" />
-            <el-table-column prop="bbb" label="时间" />
-            <el-table-column prop="ccc" label="结果" />
-          </el-table>
-        </el-collapse-item> -->
         <el-collapse-item title="附件信息" name="7">
           <span>报价确认单附件</span>
           <el-table

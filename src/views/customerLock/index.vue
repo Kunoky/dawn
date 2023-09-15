@@ -5,7 +5,7 @@
         action: 'getCustomerLock/list',
       }"
       ref="tableRef"
-      id="systemRole"
+      id="customerLock"
     >
       <el-table-column label="客户编码" prop="aaa" width="100" />
       <el-table-column label="客户锁信息" prop="bbb" width="100" />

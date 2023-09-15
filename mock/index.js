@@ -501,6 +501,7 @@ const so = [
     xxx: 'li',
     zzz: 'si',
     yyy: '2023-01-22',
+    state: '',
   },
   {
     id: 2,
@@ -533,6 +534,7 @@ const so = [
     xxx: 'wang',
     zzz: 'xiangxiang',
     yyy: '2023-01-22',
+    state: '创建中',
   },
   {
     id: 3,
@@ -565,6 +567,7 @@ const so = [
     xxx: 'zhao',
     zzz: 'jingjing',
     yyy: '2023-01-22',
+    state: '创建失败',
   },
 ]
 const inventory = [

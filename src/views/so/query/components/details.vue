@@ -183,6 +183,52 @@
               <el-table-column prop="fff" label="审批状态" />
             </el-table> -->
           </div>
+          <p class="p">发票信息：</p>
+          <el-descriptions class="margin-top" :column="3" border size="small">
+            <el-descriptions-item>
+              <template #label>发票抬头</template>
+              xxxxxxxxxxxxxxxx
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>收件人</template>
+              李四
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>联系电话</template>
+              15998765436
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>开户行</template>
+              建设银行浦东xx支行
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>开户行账号</template>
+              8887 7777 8990 9999 999
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>税号</template>
+              88888888
+            </el-descriptions-item>
+            <el-descriptions-item :span="3">
+              <template #label>注册地址及电话</template>
+              0000000000
+            </el-descriptions-item>
+            <el-descriptions-item :span="3">
+              <template #label>特殊要求</template>
+              xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+            </el-descriptions-item>
+          </el-descriptions>
+          <p class="p">沟通记录：</p>
+          <el-table
+            size="small"
+            :data="recordData"
+            style="width: 100%; margin-bottom: 10px"
+            :header-cell-style="{ background: '#f5f7fa' }"
+          >
+            <el-table-column prop="aaa" label="沟通人" />
+            <el-table-column prop="bbb" label="时间" />
+            <el-table-column prop="ccc" label="结果" />
+          </el-table>
         </el-collapse-item>
         <el-collapse-item title="流转信息" name="4">
           <el-timeline>
@@ -401,6 +447,10 @@ const annexData = [
   { name: '文件1', id: 1, dateTime: '2023-08-23' },
   { name: '香香', id: 2, dateTime: '2023-08-01' },
 ]
+const recordData = [
+  { aaa: '张三', bbb: '2023-09-03', ccc: 'xxxxxxxxxxxxxxxxxx' },
+  { aaa: '李四', bbb: '2023-08-23', ccc: 'xxxxxxxxxxxxxxxxxx' },
+]
 // const loading = ref(false)
 const form = ref({})
 watch(
@@ -480,4 +530,7 @@ const handleClose = () => {
 /* .query-detail-dialog .el-dialog__body {
   padding: 0;
 } */
+.p {
+  margin: 20px 0 0;
+}
 </style>

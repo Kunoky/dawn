@@ -5,7 +5,7 @@
         action: 'so/getSoList',
       }"
       ref="tableRef"
-      id="systemRole"
+      id="transfer"
     >
       <el-table-column label="SO NO" prop="so" width="130" />
       <el-table-column label="维修任务号" prop="TaskID" width="120" />
@@ -110,8 +110,8 @@
       </el-descriptions>
       <template #footer>
         <span class="dialog-footer">
-          <el-button @click="handleCloseDetail">{{ $t('common.cancel') }}</el-button>
-          <el-button type="primary" @click="handleConfirm">{{ '已完成SAP更新' }}</el-button>
+          <el-button @click="handleCloseTransfer">{{ $t('common.cancel') }}</el-button>
+          <el-button type="primary" @click="handleConfirm">已完成SAP更新</el-button>
         </span>
       </template>
     </el-dialog>
@@ -200,6 +200,10 @@ const record = ref({
   storageLocationNew: '李四的storageLocation',
   reason: '有事情，不能去了',
 })
+const handleCloseTransfer = () => {
+  transferVisible.value = false
+}
+
 const rules = {
   details: [{ required: true, message: '拒绝原因不能为空', trigger: 'blur' }],
 }
