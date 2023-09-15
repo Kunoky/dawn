@@ -1,6 +1,6 @@
 <template>
   <div>
-    <CTable :page-conf="{ action: 'inventory/getInventoryList' }" ref="tableRef" id="systemRole">
+    <CTable :page-conf="{ action: 'inventory/getInventoryList' }" ref="tableRef" id="inventoryManagement">
       <el-table-column label="SO订单编号" prop="bbb" />
       <el-table-column label="移库凭证号" prop="ccc" :show-overflow-tooltip="true" />
       <el-table-column label="快递单号" prop="kkk" />

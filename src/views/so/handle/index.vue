@@ -5,7 +5,7 @@
         action: 'so/getSoList',
       }"
       ref="tableRef"
-      id="systemRole"
+      id="handle"
     >
       <el-table-column label="SO NO" prop="so" width="120" />
       <el-table-column label="维修任务号" prop="TaskID" width="120" />

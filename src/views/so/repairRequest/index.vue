@@ -5,7 +5,7 @@
         action: 'so/getSoList',
       }"
       ref="tableRef"
-      id="systemRole"
+      id="repairRequest"
     >
       <!-- <el-table-column label="维修任务号" prop="TaskID" width="120" /> -->
       <el-table-column label="仪器序列号" prop="aaa" :show-overflow-tooltip="true" width="100" />
@@ -18,6 +18,17 @@
       <el-table-column label="未关闭so数量" width="100">
         <template #default="{ row }">
           <span class="cs-p fw-b" style="color: #1890ff" @click="handleNum(row)">{{ row.ttt }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="状态" prop="state" width="100">
+        <template #default="{ row }">
+          <span
+            class="cs-p fw-b"
+            :style="row.state === '创建失败' ? 'color: #e71316' : 'color: #909399'"
+            @click="handleState(row)"
+          >
+            {{ row.state }}
+          </span>
         </template>
       </el-table-column>
       <el-table-column label="客户单位名称" prop="fff" width="100" />
@@ -35,10 +46,12 @@
       <el-table-column label="FSE storage location" prop="rrr" width="140" />
       <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="270">
         <template #default="{ row }">
-          <el-button type="info" link @click="handleEdit(row)">完善信息</el-button>
-          <el-button type="danger" link @click="handleDel(row)">RPA创建SO</el-button>
-          <el-button type="danger" link @click="handleBack(row)">退回</el-button>
-          <el-button type="danger" link @click="handleClose(row)">关闭</el-button>
+          <div v-if="row.state !== '创建中'">
+            <el-button type="info" link @click="handleEdit(row)">完善信息</el-button>
+            <el-button type="danger" link @click="handleDel(row)">RPA创建SO</el-button>
+            <el-button type="danger" link @click="handleBack(row)">退回</el-button>
+            <el-button type="danger" link @click="handleClose(row)">关闭</el-button>
+          </div>
         </template>
       </el-table-column>
       <template #actions>
@@ -57,6 +70,13 @@
         <el-form-item label="维修类型" prop="ddd">
           <el-cascader v-model="form.ddd" :options="options" filterable clearable />
         </el-form-item>
+        <el-form-item label="状态" prop="state">
+          <el-select v-model="form.state" placeholder="请选择状态" clearable>
+            <el-option label="全部" value="" />
+            <el-option label="创建中" value="创建中" />
+            <el-option label="创建失败" value="创建失败" />
+          </el-select>
+        </el-form-item>
         <el-form-item label="客户联系人" prop="hhh">
           <el-input v-model="form.hhh" placeholder="请输入客户联系人" clearable />
         </el-form-item>
@@ -64,7 +84,7 @@
           <el-input v-model="form.iii" placeholder="请输入客户联系人电话" clearable />
         </el-form-item>
         <el-form-item label="报修来源" prop="mmm">
-          <el-select v-model="form.mmm" placeholder="请输入报修来源" clearable>
+          <el-select v-model="form.mmm" placeholder="请选择报修来源" clearable>
             <el-option label="FSE" value="fse" />
             <el-option label="其他" value="qt" />
           </el-select>
@@ -145,6 +165,21 @@
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="handleCloseSo">{{ $t('common.cancel') }}</el-button>
+          <!-- <el-button type="primary" @click="handleConfirm">{{ $t('common.confirm') }}</el-button> -->
+        </span>
+      </template>
+    </el-dialog>
+
+    <el-dialog title="失败原因" width="30%" v-model="visibleState" :close-on-click-modal="false">
+      <el-descriptions class="margin-top" :column="1" border size="small">
+        <el-descriptions-item>
+          <template #label>失败原因</template>
+          {{ record.state }}
+        </el-descriptions-item>
+      </el-descriptions>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="handleCloseState">{{ $t('common.cancel') }}</el-button>
           <!-- <el-button type="primary" @click="handleConfirm">{{ $t('common.confirm') }}</el-button> -->
         </span>
       </template>
@@ -367,5 +402,17 @@ const handleNum = () => {
 }
 const handleCloseSo = () => {
   visibleSo.value = false
+}
+
+// 状态
+const visibleState = ref(false)
+const record = ref({
+  state: 'xxxxxxxxxxxxxxxxxxxxxxxxxxx',
+})
+const handleState = () => {
+  visibleState.value = true
+}
+const handleCloseState = () => {
+  visibleState.value = false
 }
 </script>

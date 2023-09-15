@@ -5,7 +5,7 @@
         action: 'so/getSoList',
       }"
       ref="tableRef"
-      id="systemRole"
+      id="assign"
     >
       <!-- <el-table-column label="维修任务号" prop="TaskID" width="120" /> -->
       <el-table-column label="SO NO" prop="so" :show-overflow-tooltip="true" width="100" />
@@ -36,7 +36,7 @@
       <el-table-column label="FSE storage location" prop="rrr" width="140" />
       <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="180">
         <template #default="{ row }">
-          <el-button type="info" link @click="handleEdit(row)">完善信息</el-button>
+          <el-button type="info" link @click="handleEdit(row)">详情</el-button>
           <el-button type="danger" link @click="handleAssign(row)">指派FSE</el-button>
           <!-- <el-button type="danger" link @click="handleClose(row)">关闭</el-button> -->
         </template>

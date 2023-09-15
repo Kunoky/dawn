@@ -2,18 +2,13 @@
   <el-dialog
     :model-value="modelValue"
     @close="handleClose"
-    title="完善信息"
+    title="详情"
     width="60%"
     v-bind="$attrs"
     :close-on-click-modal="false"
   >
-    <el-form :model="form" ref="formRef" label-width="155" :rules="rules">
+    <!-- <el-form :model="form" ref="formRef" label-width="155" :rules="rules">
       <el-row>
-        <!-- <el-col :span="12">
-          <el-form-item label="维修任务号" prop="TaskID">
-            <el-input disabled v-model="form.TaskID" placeholder="请输入维修任务号" clearable />
-          </el-form-item>
-        </el-col> -->
         <el-col :span="12">
           <el-form-item label="仪器序列号" prop="aaa">
             <el-select v-model="form.aaa" placeholder="请输入仪器序列号" style="width: 100%" clearable>
@@ -28,7 +23,6 @@
               <el-option label="A" value="shanghai" />
               <el-option label="B" value="beijing" />
             </el-select>
-            <!-- <el-button style="width: 12%" type="primary">查询</el-button> -->
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -48,18 +42,12 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="客户单位名称" prop="fff">
-            <!-- <el-input v-model="form.fff" placeholder="请输入客户单位名称" clearable /> -->
             <el-select v-model="form.fff" placeholder="请输入客户单位名称" style="width: 100%" clearable>
               <el-option label="A" value="shanghai" />
               <el-option label="B" value="beijing" />
             </el-select>
           </el-form-item>
         </el-col>
-        <!-- <el-col :span="12">
-          <el-form-item label="客户编号" prop="ggg">
-            <el-input disabled v-model="form.ggg" placeholder="请输入客户编号" clearable />
-          </el-form-item>
-        </el-col> -->
         <el-col :span="12">
           <el-form-item label="客户联系人" prop="hhh">
             <el-input v-model="form.hhh" placeholder="请输入客户联系人" clearable />
@@ -71,10 +59,6 @@
             <el-input style="width: 50%" v-model="form.zzz" placeholder="请输入客户联系人拼音(名)" clearable />
           </el-form-item>
         </el-col>
-        <!-- <el-col :span="12">
-          <el-form-item label="客户联系人拼音(名)" prop="zzz">
-          </el-form-item>
-        </el-col> -->
         <el-col :span="12">
           <el-form-item label="客户联系人电话" prop="iii">
             <el-input v-model="form.iii" placeholder="请输入客户联系人电话" clearable />
@@ -90,25 +74,6 @@
             <el-input v-model="form.kkk" placeholder="请输入代理商" clearable />
           </el-form-item>
         </el-col>
-        <!-- <el-col :span="12">
-          <el-form-item label="FSE工程师名称" prop="ppp">
-            <el-input v-model="form.ppp" placeholder="请输入FSE工程师名称">
-              <template #append>
-                <el-button><i-ep-Search /></el-button>
-              </template>
-            </el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="FSE work center" prop="qqq">
-            <el-input v-model="form.qqq" disabled placeholder="自动填入" clearable />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="FSE storage location" prop="rrr">
-            <el-input v-model="form.rrr" disabled placeholder="自动填入" clearable />
-          </el-form-item>
-        </el-col> -->
         <el-col :span="12">
           <el-form-item label="报修来源" prop="mmm">
             <el-select v-model="form.mmm" placeholder="请输入报修来源" style="width: 100%" clearable>
@@ -149,11 +114,101 @@
           </el-form-item>
         </el-col>
       </el-row>
-    </el-form>
+    </el-form> -->
+    <el-descriptions class="margin-top" :column="3" border size="small">
+      <el-descriptions-item>
+        <template #label>维修任务号</template>
+        {{ form.TaskID }}
+      </el-descriptions-item>
+      <el-descriptions-item>
+        <template #label>SO NO</template>
+        {{ form.so }}
+      </el-descriptions-item>
+      <el-descriptions-item>
+        <template #label>仪器序列号</template>
+        {{ form.aaa }}
+      </el-descriptions-item>
+      <el-descriptions-item>
+        <template #label>型号</template>
+        {{ form.bbb }}
+      </el-descriptions-item>
+      <el-descriptions-item>
+        <template #label>仪器SAP Equip编号</template>
+        {{ form.ccc }}
+      </el-descriptions-item>
+      <el-descriptions-item>
+        <template #label>维修类型</template>
+        {{ form.ddd }}
+      </el-descriptions-item>
+      <el-descriptions-item>
+        <template #label>客户单位名称</template>
+        {{ form.fff }}
+      </el-descriptions-item>
+      <el-descriptions-item>
+        <template #label>客户编号</template>
+        {{ form.ggg }}
+      </el-descriptions-item>
+      <el-descriptions-item>
+        <template #label>客户锁信息</template>
+        TC锁
+      </el-descriptions-item>
+      <el-descriptions-item>
+        <template #label>仪器地址</template>
+        {{ form.eee }}
+      </el-descriptions-item>
+      <el-descriptions-item>
+        <template #label>客户联系人</template>
+        {{ form.hhh }}
+      </el-descriptions-item>
+      <el-descriptions-item>
+        <template #label>客户联系人拼音</template>
+        {{ form.xxx }} {{ form.zzz }}
+      </el-descriptions-item>
+      <el-descriptions-item>
+        <template #label>客户联系人电话</template>
+        {{ form.iii }}
+      </el-descriptions-item>
+      <el-descriptions-item>
+        <template #label>客户联系人邮箱</template>
+        {{ form.jjj }}
+      </el-descriptions-item>
+      <!-- <el-descriptions-item>
+              <template #label>FSE工程师名称</template>
+              {{ form.ppp }}
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>FSE work center</template>
+              {{ form.qqq }}
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>FSE storage location</template>
+              {{ form.rrr }}
+            </el-descriptions-item> -->
+      <el-descriptions-item>
+        <template #label>代理商</template>
+        {{ form.kkk }}
+      </el-descriptions-item>
+      <el-descriptions-item>
+        <template #label>报修来源</template>
+        {{ form.mmm }}
+      </el-descriptions-item>
+      <el-descriptions-item>
+        <template #label>报修时间</template>
+        {{ form.nnn }}
+      </el-descriptions-item>
+      <el-descriptions-item>
+        <template #label>保修期</template>
+        {{ form.ooo }}
+      </el-descriptions-item>
+      <el-descriptions-item>
+        <template #label>报修内容</template>
+        {{ form.lll }}
+      </el-descriptions-item>
+    </el-descriptions>
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="handleClose">{{ $t('common.cancel') }}</el-button>
-        <el-button type="primary" @click="handleConfirm" :loading="loading">{{ $t('common.confirm') }}</el-button>
+        <!-- <el-button type="primary" @click="handleConfirm" :loading="loading">{{ $t('common.confirm') }}</el-button> -->
       </span>
     </template>
   </el-dialog>
@@ -168,96 +223,96 @@ const props = defineProps({
 
 // const title = computed(() => (props.data ? '完善信息' : '新建维修申请'))
 
-const rules = {
-  TaskID: [{ required: true, message: '维修任务号不能为空', trigger: 'blur' }],
-  aaa: [{ required: true, message: '仪器序列号不能为空', trigger: 'blur' }],
-  bbb: [{ required: true, message: '型号不能为空', trigger: 'blur' }],
-  ccc: [{ required: true, message: '仪器SAP Equip编号不能为空', trigger: 'blur' }],
-  ddd: [{ required: true, message: '维修类型不能为空', trigger: 'change' }],
-  eee: [{ required: true, message: '仪器地址不能为空', trigger: 'blur' }],
-  fff: [{ required: true, message: '客户单位名称不能为空', trigger: 'blur' }],
-  // ggg: [{ required: true, message: '客户编号不能为空', trigger: 'blur' }],
-  hhh: [{ required: true, message: '客户联系人不能为空', trigger: 'blur' }],
-  xxx: [{ required: true, message: '客户联系人拼音不能为空', trigger: 'blur' }],
-  // zzz: [{ required: true, message: '客户联系人拼音(名)不能为空', trigger: 'blur' }],
-  iii: [{ required: true, message: '客户联系人电话不能为空', trigger: 'blur' }],
-  jjj: [{ required: true, message: '客户联系人邮箱不能为空', trigger: 'blur' }],
-  // kkk: [{ required: true, message: '代理商不能为空', trigger: 'blur' }],
-  lll: [{ required: true, message: '报修内容不能为空', trigger: 'blur' }],
-  // mmm: [{ required: true, message: '报修来源不能为空', trigger: 'blur' }],
-  nnn: [{ required: true, message: '报修时间不能为空', trigger: 'blur' }],
-  // ooo: [{ required: true, message: '保修期不能为空', trigger: 'blur' }],
-  ppp: [{ required: true, message: 'FSE工程师名称不能为空', trigger: 'blur' }],
-  // qqq: [{ required: true, message: 'FSE work cente不能为空', trigger: 'blur' }],
-  // rrr: [{ required: true, message: 'FSE storage location不能为空', trigger: 'blur' }],
-  vvv: [{ required: true, message: '所属区域不能为空', trigger: 'blur' }],
-}
-const options = [
-  {
-    value: 'SM01',
-    label: 'SM01',
-  },
-  {
-    value: 'SM02',
-    label: 'SM02',
-  },
-  {
-    value: 'SM03',
-    label: 'SM03',
-    children: [
-      {
-        value: 'xxx',
-        label: '111',
-      },
-      {
-        value: 'xxx',
-        label: '222',
-      },
-      {
-        value: 'xxx',
-        label: '333',
-      },
-      {
-        value: 'xxx',
-        label: '444',
-      },
-    ],
-  },
-  {
-    value: 'SM04',
-    label: 'SM04',
-    children: [
-      {
-        value: 'xxx',
-        label: '111',
-      },
-      {
-        value: 'xxx',
-        label: '222',
-      },
-    ],
-  },
-  {
-    value: 'SM05',
-    label: 'SM05',
-    children: [
-      {
-        value: 'xxx',
-        label: '111',
-      },
-      {
-        value: 'xxx',
-        label: '222',
-      },
-      {
-        value: 'xxx',
-        label: '333',
-      },
-    ],
-  },
-]
-const loading = ref(false)
-const formRef = ref()
+// const rules = {
+//   TaskID: [{ required: true, message: '维修任务号不能为空', trigger: 'blur' }],
+//   aaa: [{ required: true, message: '仪器序列号不能为空', trigger: 'blur' }],
+//   bbb: [{ required: true, message: '型号不能为空', trigger: 'blur' }],
+//   ccc: [{ required: true, message: '仪器SAP Equip编号不能为空', trigger: 'blur' }],
+//   ddd: [{ required: true, message: '维修类型不能为空', trigger: 'change' }],
+//   eee: [{ required: true, message: '仪器地址不能为空', trigger: 'blur' }],
+//   fff: [{ required: true, message: '客户单位名称不能为空', trigger: 'blur' }],
+//   // ggg: [{ required: true, message: '客户编号不能为空', trigger: 'blur' }],
+//   hhh: [{ required: true, message: '客户联系人不能为空', trigger: 'blur' }],
+//   xxx: [{ required: true, message: '客户联系人拼音不能为空', trigger: 'blur' }],
+//   // zzz: [{ required: true, message: '客户联系人拼音(名)不能为空', trigger: 'blur' }],
+//   iii: [{ required: true, message: '客户联系人电话不能为空', trigger: 'blur' }],
+//   jjj: [{ required: true, message: '客户联系人邮箱不能为空', trigger: 'blur' }],
+//   // kkk: [{ required: true, message: '代理商不能为空', trigger: 'blur' }],
+//   lll: [{ required: true, message: '报修内容不能为空', trigger: 'blur' }],
+//   // mmm: [{ required: true, message: '报修来源不能为空', trigger: 'blur' }],
+//   nnn: [{ required: true, message: '报修时间不能为空', trigger: 'blur' }],
+//   // ooo: [{ required: true, message: '保修期不能为空', trigger: 'blur' }],
+//   ppp: [{ required: true, message: 'FSE工程师名称不能为空', trigger: 'blur' }],
+//   // qqq: [{ required: true, message: 'FSE work cente不能为空', trigger: 'blur' }],
+//   // rrr: [{ required: true, message: 'FSE storage location不能为空', trigger: 'blur' }],
+//   vvv: [{ required: true, message: '所属区域不能为空', trigger: 'blur' }],
+// }
+// const options = [
+//   {
+//     value: 'SM01',
+//     label: 'SM01',
+//   },
+//   {
+//     value: 'SM02',
+//     label: 'SM02',
+//   },
+//   {
+//     value: 'SM03',
+//     label: 'SM03',
+//     children: [
+//       {
+//         value: 'xxx',
+//         label: '111',
+//       },
+//       {
+//         value: 'xxx',
+//         label: '222',
+//       },
+//       {
+//         value: 'xxx',
+//         label: '333',
+//       },
+//       {
+//         value: 'xxx',
+//         label: '444',
+//       },
+//     ],
+//   },
+//   {
+//     value: 'SM04',
+//     label: 'SM04',
+//     children: [
+//       {
+//         value: 'xxx',
+//         label: '111',
+//       },
+//       {
+//         value: 'xxx',
+//         label: '222',
+//       },
+//     ],
+//   },
+//   {
+//     value: 'SM05',
+//     label: 'SM05',
+//     children: [
+//       {
+//         value: 'xxx',
+//         label: '111',
+//       },
+//       {
+//         value: 'xxx',
+//         label: '222',
+//       },
+//       {
+//         value: 'xxx',
+//         label: '333',
+//       },
+//     ],
+//   },
+// ]
+// const loading = ref(false)
+// const formRef = ref()
 const form = ref({})
 
 watch(
@@ -287,6 +342,7 @@ watch(
         vvv: '',
         xxx: '',
         zzz: '',
+        so: '',
         // label: '',
         // value: '',
         // category: '',
@@ -299,9 +355,9 @@ watch(
           form.value[k] = props.data[k]
         }
       }
-      nextTick(() => {
-        formRef.value.clearValidate()
-      })
+      // nextTick(() => {
+      //   formRef.value.clearValidate()
+      // })
     }
   },
   { immediate: true }
@@ -310,26 +366,26 @@ watch(
 const handleClose = () => {
   emit('update:modelValue', false)
 }
-const handleConfirm = () => {
-  formRef.value.validate(valid => {
-    if (valid) {
-      // form.value.value = form.value.category
-      // loading.value = true
-      // req[form.value.dictId ? 'put' : 'post']('/dict', form.value)
-      //   .then(({ code }) => {
-      //     if (code === 200) {
-      //       emit('success')
-      //       emit('update:modelValue', false)
-      //     }
-      //   })
-      //   .finally(() => {
-      //     loading.value = false
-      //   })
-    }
-  })
-}
+// const handleConfirm = () => {
+//   formRef.value.validate(valid => {
+//     if (valid) {
+//       // form.value.value = form.value.category
+//       // loading.value = true
+//       // req[form.value.dictId ? 'put' : 'post']('/dict', form.value)
+//       //   .then(({ code }) => {
+//       //     if (code === 200) {
+//       //       emit('success')
+//       //       emit('update:modelValue', false)
+//       //     }
+//       //   })
+//       //   .finally(() => {
+//       //     loading.value = false
+//       //   })
+//     }
+//   })
+// }
 </script>
-<style scoped>
+<!-- <style scoped>
 .date-box :deep(.el-input__wrapper) {
   width: 95%;
 }
@@ -337,4 +393,4 @@ const handleConfirm = () => {
   display: flex;
   justify-content: space-between;
 }
-</style>
+</style> -->
