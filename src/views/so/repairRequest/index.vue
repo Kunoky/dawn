@@ -33,10 +33,11 @@
       <el-table-column label="FSE工程师名称" prop="ppp" width="100" />
       <el-table-column label="FSE work center" prop="qqq" width="115" />
       <el-table-column label="FSE storage location" prop="rrr" width="140" />
-      <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="230">
+      <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="270">
         <template #default="{ row }">
           <el-button type="info" link @click="handleEdit(row)">完善信息</el-button>
           <el-button type="danger" link @click="handleDel(row)">RPA创建SO</el-button>
+          <el-button type="danger" link @click="handleBack(row)">退回</el-button>
           <el-button type="danger" link @click="handleClose(row)">关闭</el-button>
         </template>
       </el-table-column>
@@ -105,6 +106,20 @@
         <span class="dialog-footer">
           <el-button @click="handleCloseDetail">{{ $t('common.cancel') }}</el-button>
           <el-button type="primary" @click="handleConfirm">{{ $t('common.confirm') }}</el-button>
+        </span>
+      </template>
+    </el-dialog>
+
+    <el-dialog title="退回" width="30%" v-model="backVisible" :close-on-click-modal="false">
+      <el-form :model="formBack" ref="formRefBack" label-width="80" :rules="backRules">
+        <el-form-item label="退回原因" prop="details">
+          <el-input type="textarea" v-model="formDetails.details" placeholder="请输入退回原因" clearable />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="handleCloseBack">{{ $t('common.cancel') }}</el-button>
+          <el-button type="primary" @click="handleBackConfirm">{{ $t('common.confirm') }}</el-button>
         </span>
       </template>
     </el-dialog>
@@ -249,14 +264,23 @@ const handleFormSuccess = () => {
 }
 
 const detailVisible = ref(false)
+const backVisible = ref(false)
 const formRefDetails = ref(null)
+const formRefBack = ref(null)
 const formDetails = ref({
   so: '',
+  details: '',
+})
+const formBack = ref({
   details: '',
 })
 const rules = {
   // so: [{ required: true, message: 'so不能为空', trigger: 'blur' }],
   details: [{ required: true, message: '关闭原因不能为空', trigger: 'blur' }],
+}
+const backRules = {
+  // so: [{ required: true, message: 'so不能为空', trigger: 'blur' }],
+  details: [{ required: true, message: '退回原因不能为空', trigger: 'blur' }],
 }
 const handleClose = () => {
   detailVisible.value = true
@@ -269,6 +293,33 @@ const handleCloseDetail = () => {
 }
 const handleConfirm = () => {
   formRefDetails.value.validate(valid => {
+    if (valid) {
+      // form.value.value = form.value.category
+      // loading.value = true
+      // req[form.value.dictId ? 'put' : 'post']('/dict', form.value)
+      //   .then(({ code }) => {
+      //     if (code === 200) {
+      //       emit('success')
+      //       emit('update:modelValue', false)
+      //     }
+      //   })
+      //   .finally(() => {
+      //     loading.value = false
+      //   })
+    }
+  })
+}
+const handleBack = () => {
+  backVisible.value = true
+}
+const handleCloseBack = () => {
+  backVisible.value = false
+  nextTick(() => {
+    formRefBack.value.clearValidate()
+  })
+}
+const handleBackConfirm = () => {
+  formRefBack.value.validate(valid => {
     if (valid) {
       // form.value.value = form.value.category
       // loading.value = true
