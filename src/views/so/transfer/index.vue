@@ -30,7 +30,7 @@
       <el-table-column label="转移原因" prop="sss" width="140" :show-overflow-tooltip="true" />
       <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="100">
         <template #default="{ row }">
-          <el-button type="primary" link @click="handleEdit(row)">转移</el-button>
+          <el-button type="primary" link @click="handleTransfer(row)">转移</el-button>
           <el-button type="primary" link @click="handleClose(row)">拒绝</el-button>
           <!-- <el-button type="danger" link @click="handleDel(row)">
               确定申请
@@ -77,6 +77,45 @@
     </CTable>
     <FormDialog :data="current" v-model="visible.form" @success="handleFormSuccess"></FormDialog>
 
+    <el-dialog title="转移" width="30%" v-model="transferVisible" :close-on-click-modal="false">
+      <el-descriptions class="margin-top" :column="1" border size="small">
+        <el-descriptions-item>
+          <template #label>原FSE</template>
+          {{ record.fse }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>原FSE work center</template>
+          {{ record.workCenter }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>原FSE storage location</template>
+          {{ record.storageLocation }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>转移后FSE</template>
+          {{ record.fseNew }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>转移后FSE work center</template>
+          {{ record.workCenterNew }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>转移后FSE storage location</template>
+          {{ record.storageLocationNew }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>转移原因</template>
+          {{ record.reason }}
+        </el-descriptions-item>
+      </el-descriptions>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="handleCloseDetail">{{ $t('common.cancel') }}</el-button>
+          <el-button type="primary" @click="handleConfirm">{{ '已完成SAP更新' }}</el-button>
+        </span>
+      </template>
+    </el-dialog>
+
     <el-dialog title="拒绝" width="30%" v-model="detailVisible" :close-on-click-modal="false">
       <el-form :model="formDetails" ref="formRefDetails" label-width="80" :rules="rules">
         <el-form-item label="拒绝原因" prop="details">
@@ -112,10 +151,10 @@ const visible = reactive({
 //   visible.form = true
 // }
 
-const handleEdit = row => {
-  current.value = row
-  visible.form = true
-}
+// const handleEdit = row => {
+//   current.value = row
+//   visible.form = true
+// }
 
 //   const handleDel = row => {
 //     ElMessageBox.confirm(i18n.t('tip.determine'), i18n.t('common.warning'), {
@@ -145,6 +184,21 @@ const detailVisible = ref(false)
 const formRefDetails = ref(null)
 const formDetails = ref({
   details: '',
+})
+
+const transferVisible = ref(false)
+
+const handleTransfer = () => {
+  transferVisible.value = true
+}
+const record = ref({
+  fse: '张三',
+  workCenter: '张三的workCenter',
+  storageLocation: '张三的storageLocation',
+  fseNew: '李四',
+  workCenterNew: '李四的workCenter',
+  storageLocationNew: '李四的storageLocation',
+  reason: '有事情，不能去了',
 })
 const rules = {
   details: [{ required: true, message: '拒绝原因不能为空', trigger: 'blur' }],
