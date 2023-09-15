@@ -37,7 +37,7 @@ const plugins = [
       VueRouterAutoImports,
       'vue-i18n',
       'pinia',
-      // '@vueuse/core',
+      '@vueuse/core',
       {
         '@/utils/common': [['*', 'utils']],
       },

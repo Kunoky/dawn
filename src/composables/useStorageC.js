@@ -1,6 +1,6 @@
 const map = new Map()
 
-export function useStorage(key, defaultValue, storage) {
+export function useStorageC(key, defaultValue, storage) {
   storage ||= localStorage
   if (!map.has(storage)) {
     map.set(storage, reactive({}))
