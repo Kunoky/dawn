@@ -12,16 +12,8 @@ import purgecss from '@mojojoejo/vite-plugin-purgecss'
 import { VueRouterAutoImports, getPascalCaseRouteName } from 'unplugin-vue-router'
 import VueRouter from 'unplugin-vue-router/vite'
 import { viteMockServe } from 'vite-plugin-mock'
-import fs from 'fs'
+import DepsCache from './plugin/optimizeDepsCache'
 
-const optimizeDepsIncludes = ['vuedraggable', 'lodash-es']
-fs.readdirSync('node_modules/element-plus/es/components').forEach(dirname => {
-  fs.access(`node_modules/element-plus/es/components/${dirname}/style/index.mjs`, e => {
-    if (!e) {
-      optimizeDepsIncludes.push(`element-plus/es/components/${dirname}/style/index`)
-    }
-  })
-})
 const plugins = [
   // https://www.npmjs.com/package/unplugin-vue-router
   VueRouter({
@@ -31,6 +23,7 @@ const plugins = [
   }),
   vue(),
   vueJsx(),
+  DepsCache(),
   AutoImport({
     resolvers: [
       ElementPlusResolver({
@@ -55,6 +48,9 @@ const plugins = [
       },
       {
         '@/utils/request': [['default', 'req']],
+      },
+      {
+        dayjs: [['default', 'dayjs']],
       },
     ],
     dirs: ['./src/composables', './src/store'],
@@ -94,12 +90,12 @@ const plugins = [
     ...visualizer(),
     apply: () => process.env.stats,
   },
-  // {
-  //   ...viteMockServe({
-  //     mockPath: 'mock',
-  //   }),
-  //   apply: 'server',
-  // },
+  {
+    ...viteMockServe({
+      mockPath: 'mock',
+    }),
+    apply: 'serve',
+  },
   {
     ...viteMockServe({
       mockPath: 'mock',
@@ -110,7 +106,7 @@ const plugins = [
           setupProdMockServer();
         `,
     }),
-    // apply: 'build',
+    apply: 'build',
   },
 ]
 // https://vitejs.dev/config/
@@ -128,9 +124,6 @@ export default defineConfig({
     //     rewrite: path => path.replace(/^\/api/, ''),
     //   },
     // },
-  },
-  optimizeDeps: {
-    include: optimizeDepsIncludes,
   },
   resolve: {
     alias: {
