@@ -1,6 +1,30 @@
 <template>
   <el-dialog :model-value="modelValue" @close="handleClose" :title="title" width="60%" v-bind="$attrs">
-    <el-form :model="form" ref="formRef" label-width="80" :rules="rules" v-loading="dataLoading">
+    <el-form :model="form" ref="formRef" label-width="120" :rules="rules" v-loading="dataLoading">
+      <h4 class="mgb-m">FSE信息</h4>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="姓名" prop="fseName">
+            <el-input v-model="form.fseName" placeholder="请输入FSE姓名" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="ID" prop="fseId">
+            <el-input v-model="form.fseId" placeholder="请输入FSE ID" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="Work Center" prop="fseWorkCenter">
+            <el-input v-model="form.fseWorkCenter" placeholder="请输入FSE work center" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="Storage Location" prop="fseStorageLocation">
+            <el-input v-model="form.fseStorageLocation" placeholder="请输入FSE Storage Location" />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <h4 class="mgb-m">基础信息</h4>
       <el-row>
         <el-col :span="12">
           <el-form-item label="用户昵称" prop="userName">
@@ -8,19 +32,17 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="归属部门" prop="orgId">
+          <el-form-item label="组织" prop="orgId">
             <el-tree-select
               v-model="form.orgId"
               :data="orgTree"
               :props="{ value: 'id', label: 'label', children: 'children' }"
               value-key="id"
-              placeholder="请选择归属部门"
+              placeholder="请选择组织"
               check-strictly
             />
           </el-form-item>
         </el-col>
-      </el-row>
-      <el-row>
         <el-col :span="12">
           <el-form-item label="手机号码" prop="phoneNumber">
             <el-input v-model="form.phoneNumber" placeholder="请输入手机号码" maxlength="11" />
@@ -70,28 +92,9 @@
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="岗位">
-            <el-select v-model="form.postIds" multiple placeholder="请选择">
-              <el-option
-                v-for="i in postOptions"
-                :key="i.postId"
-                :label="i.postName"
-                :value="i.postId"
-                :disabled="i.status == 1"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
           <el-form-item label="角色">
             <el-select v-model="form.roleIds" multiple placeholder="请选择">
-              <el-option
-                v-for="i in roleOptions"
-                :key="i.roleId"
-                :label="i.roleName"
-                :value="i.roleId"
-                :disabled="i.status == 1"
-              ></el-option>
+              <el-option v-for="i in roleOptions" :key="i.roleId" :label="i.roleName" :value="i.roleId"></el-option>
             </el-select>
           </el-form-item>
         </el-col>
@@ -148,43 +151,40 @@ watch(
   () => props.modelValue,
   v => {
     if (v) {
-      getUser()
+      form.value = {
+        fseName: '',
+        fseId: '',
+        fseWorkCenter: '',
+        fseStorageLocation: '',
+        userId: undefined,
+        orgId: undefined,
+        loginName: '',
+        userName: '',
+        password: '',
+        phoneNumber: '',
+        email: '',
+        sex: 1,
+        status: 1,
+        remark: '',
+        roleIds: [],
+      }
+      nextTick(() => {
+        formRef.value.clearValidate()
+      })
+      props.data?.userId && getUser()
     }
   },
   { immediate: true }
 )
-const postOptions = ref([])
-const roleOptions = ref([])
+const { data: roleOptions } = useAsync(() => req('role/all').then(res => res.data), { manual: false })
 const { run: getUser, loading: dataLoading } = useAsync(
   async () => {
-    // return req.get('/user/' + (props.data?.userId || ''))
-    return {}
+    return req.get('user/' + props.data.userId)
   },
   {
     onSuccess(res) {
-      postOptions.value = res.posts
-      roleOptions.value = res.roles
-      if (props.data) {
-        form.value = res.data
-        form.value.postIds = res.postIds
-        form.value.roleIds = res.roleIds
-        form.password = ''
-      } else {
-        form.value = {
-          userId: undefined,
-          orgId: undefined,
-          loginName: '',
-          userName: '',
-          password: '',
-          phoneNumber: '',
-          email: '',
-          sex: 1,
-          status: 1,
-          remark: '',
-          postIds: [],
-          roleIds: [],
-        }
-      }
+      form.value = res.data
+      form.password = ''
       nextTick(() => {
         formRef.value.clearValidate()
       })

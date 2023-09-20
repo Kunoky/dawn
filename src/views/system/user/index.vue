@@ -31,46 +31,39 @@
           <el-table-column label="用户编号" key="userId" prop="userId" />
           <el-table-column label="用户名称" key="userName" prop="userName" :show-overflow-tooltip="true" />
           <el-table-column label="登录名称" key="loginName" prop="loginName" :show-overflow-tooltip="true" />
-          <el-table-column label="部门" key="orgName" prop="orgName" :show-overflow-tooltip="true" />
+          <el-table-column label="组织" key="orgName" prop="orgName" :show-overflow-tooltip="true" />
           <el-table-column label="手机号码" key="phoneNumber" prop="phoneNumber" width="120" />
           <el-table-column label="状态" key="status">
             <template #default="{ row }">
               <el-switch
-                :modelValue="row.status"
+                v-model="row.status"
                 :active-value="1"
                 :inactive-value="0"
                 @click="handleStatusChange(row)"
               ></el-switch>
             </template>
           </el-table-column>
-          <el-table-column label="创建时间" prop="createTime" width="160">
+          <el-table-column label="创建时间" prop="createTime" width="140">
             <template #default="{ row }">
               <span>{{ parseTime(row.createTime) }}</span>
             </template>
           </el-table-column>
           <el-table-column label="操作" width="150" class-name="small-padding fixed-width">
             <template #default="{ row }">
-              <el-tooltip :content="$t('common.edit')" placement="top" v-if="row.userId !== 1">
+              <el-tooltip :content="$t('common.edit')" placement="top">
                 <el-button link type="info" @click="handleEdit(row)" v-hasPermi="['system:user:edit']">
                   <i-ep-edit />
                 </el-button>
               </el-tooltip>
-              <el-tooltip :content="$t('common.delete')" placement="top" v-if="row.userId !== 1">
+              <el-tooltip :content="$t('common.delete')" placement="top" v-if="!row.isSuperAdmin">
                 <el-button link type="info" @click="handleDel(row)" v-hasPermi="['system:user:remove']">
                   <i-ep-delete />
                 </el-button>
               </el-tooltip>
-              <el-tooltip :content="$t('view.user.resetPwd')" placement="top" v-if="row.userId !== 1">
+              <el-tooltip :content="$t('view.user.resetPwd')" placement="top">
                 <el-button link type="info" @click="handleResetPwd(row)" v-hasPermi="['system:user:resetPwd']">
                   <i-ep-key />
                 </el-button>
-              </el-tooltip>
-              <el-tooltip :content="$t('view.user.assignRole')" placement="top" v-if="row.userId !== 1">
-                <RouterLink v-hasPermi="['system:user:edit']" :to="'/system/user/role?id=' + row.userId">
-                  <el-button link type="info">
-                    <i-ep-circle-check />
-                  </el-button>
-                </RouterLink>
               </el-tooltip>
             </template>
           </el-table-column>
@@ -91,9 +84,6 @@
               <el-select v-model="form.status" placeholder="用户状态" clearable>
                 <el-option v-for="i in status.options" :key="i.value" :label="i.label" :value="i.value" />
               </el-select>
-            </el-form-item>
-            <el-form-item label="创建时间">
-              <range-picker v-model="form.params" />
             </el-form-item>
           </template>
         </CTable>
@@ -120,12 +110,12 @@ const visible = reactive({
 const status = useDict('status')
 
 const orgTree = ref([])
-req.get('/user/getSysOrganizationList').then(res => {
+req.get('/organization/list').then(res => {
   res.data.forEach(i => {
     i.id = i.orgId
     i.label = i.orgName
   })
-  const [tree] = arr2tree(res.data, 'id', 'parentId')
+  const [tree] = arr2tree(res.data, 'orgId', 'parentId')
   orgTree.value = tree
 })
 
@@ -149,11 +139,10 @@ const handleDel = row => {
         ...row,
         deleting: true,
       }
-      return req.delete('system/user/' + row.userId)
+      return req.delete('user/deleteOne/' + row.userId)
     })
     .then(({ code }) => {
       if (code === 200) {
-        ElMessage.success(i18n.t('tip.success'))
         refresh()
       }
     })
@@ -175,7 +164,12 @@ const params = reactive({
   orgId: undefined,
 })
 function handleNodeClick(data) {
-  params.orgId = data.id
+  if (params.orgId === data.id) {
+    params.orgId = null
+    orgTreeRef.value.setCurrentKey(null)
+  } else {
+    params.orgId = data.id
+  }
 }
 
 const handleStatusChange = row => {
@@ -188,7 +182,7 @@ const handleStatusChange = row => {
       ...row,
       deleting: true,
     }
-    return req.put('system/user/changeStatus', { userId: row.userId, status: row.status })
+    return req.put('user/status', { userId: row.userId, status: row.status }).finally(refresh)
   })
 }
 const handleResetPwd = row => {
@@ -199,7 +193,7 @@ const handleResetPwd = row => {
     inputPattern: /^.{5,20}$/,
     inputErrorMessage: '用户密码长度必须介于 5 和 20 之间',
   }).then(({ value }) => {
-    return req.put('system/user/resetPwd', { userId: row.userId, password: value })
+    return req.put('user/resetPassword', { userId: row.userId, password: value })
   })
 }
 </script>

@@ -177,6 +177,7 @@ watch(
         for (let k in form.value) {
           form.value[k] = props.data[k]
         }
+        form.value.parentId &&= +form.value.parentId
       }
       nextTick(() => {
         formRef.value.clearValidate()

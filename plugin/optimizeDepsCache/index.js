@@ -3,27 +3,29 @@ import fse from 'fs-extra'
 import chokidar from 'chokidar'
 var cacheDir = './node_modules/.vite'
 var metadataPath = `${cacheDir}/deps/_metadata.json`
-function VitePluginDepsCache({ delay = 2e3, field = 'vite-deps-cache' } = {}) {
-  let pkgJson
+function VitePluginDepsCache({ delay = 2e3, file = './.vite-deps-cache.json' } = {}) {
+  let cache = []
   let server
   async function handleDeps() {
     if (!existsSync(metadataPath)) return
     const metadataJson = await fse.readJSON(metadataPath, 'utf-8')
-    pkgJson[field] = Array.from(new Set([...(pkgJson[field] || []), ...Object.keys(metadataJson.optimized || {})]))
+    cache = Array.from(new Set([...cache, ...Object.keys(metadataJson.optimized || {})]))
+    cache.sort()
     setTimeout(() => {
-      if (server) server.watcher.unwatch('./package.json')
-      fse.writeJSON('./package.json', pkgJson, { spaces: 2 })
-      if (server) server.watcher.add('./package.json')
+      if (server) server.watcher.unwatch(file)
+      fse.writeJSON(file, cache, { spaces: 2 })
+      if (server) server.watcher.add(file)
     }, delay)
   }
   return {
     name: 'vite-plugin-deps-cache',
     apply: 'serve',
     async config(config) {
-      pkgJson = await fse.readJSON('./package.json', 'utf-8')
+      if (!existsSync(file)) return
+      cache = await fse.readJSON(file, 'utf-8')
       config.optimizeDeps = {
         ...config.optimizeDeps,
-        include: [...(config?.optimizeDeps?.include || []), ...(pkgJson[field] || [])],
+        include: [...(config?.optimizeDeps?.include || []), ...cache],
       }
     },
     configResolved(config) {

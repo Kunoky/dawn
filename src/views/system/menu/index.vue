@@ -146,11 +146,10 @@ const handleDel = row => {
         ...row,
         deleting: true,
       }
-      return req.delete('system/menu/' + row.menuId)
+      return req.delete('menu/' + row.menuId)
     })
     .then(({ code }) => {
       if (code === 200) {
-        ElMessage.success(i18n.t('tip.success'))
         refresh()
       }
     })

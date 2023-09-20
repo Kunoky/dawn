@@ -3,7 +3,7 @@
     <CTable
       :page-conf="{
         action: listData,
-        hidePage: true,
+        hidePager: true,
         dataKey: 'data',
       }"
       ref="tableRef"
@@ -130,7 +130,7 @@ const handleDel = row => {
         ...row,
         deleting: true,
       }
-      return req.delete('system/org/' + row.orgId)
+      return req.delete('organization/' + row.orgId)
     })
     .then(({ code }) => {
       if (code === 200) {

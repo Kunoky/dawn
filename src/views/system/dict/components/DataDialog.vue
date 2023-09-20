@@ -17,6 +17,20 @@
       <el-form-item label="序号" prop="orderNum">
         <el-input-number v-model="form.orderNum" :min="0" />
       </el-form-item>
+      <el-form-item label="状态" prop="status">
+        <el-radio-group v-model="form.status">
+          <el-radio
+            v-for="i in [
+              { label: '启用', value: 1 },
+              { label: '禁用', value: 0 },
+            ]"
+            :key="i.value"
+            :label="i.value"
+          >
+            {{ i.label }}
+          </el-radio>
+        </el-radio-group>
+      </el-form-item>
       <el-form-item label="备注" prop="remark">
         <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
       </el-form-item>
@@ -49,20 +63,21 @@ const formRef = ref()
 const form = ref({})
 
 const route = useRoute()
-const category = useDict('category')
+const type = useDict('type')
 watch(
   () => props.modelValue,
   v => {
     if (v) {
-      const dict = category.value.ko[route.params.category]
+      const dict = type.value.ko[route.params.type]
 
       form.value = {
-        dictId: null,
-        parentId: dict.dictId,
+        id: null,
+        pid: dict.id,
         label: '',
         value: '',
-        category: dict.category,
+        type: dict.value,
         orderNum: 0,
+        status: 1,
         remark: '',
       }
       if (props.data) {
@@ -85,7 +100,7 @@ const handleConfirm = () => {
   formRef.value.validate(valid => {
     if (valid) {
       loading.value = true
-      req[form.value.dictId ? 'put' : 'post']('/dict', form.value)
+      req[form.value.id ? 'put' : 'post']('/dict', form.value)
         .then(({ code }) => {
           if (code === 200) {
             emit('success')

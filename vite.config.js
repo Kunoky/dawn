@@ -11,7 +11,7 @@ import IconsResolver from 'unplugin-icons/resolver'
 import purgecss from '@mojojoejo/vite-plugin-purgecss'
 import { VueRouterAutoImports, getPascalCaseRouteName } from 'unplugin-vue-router'
 import VueRouter from 'unplugin-vue-router/vite'
-import { viteMockServe } from 'vite-plugin-mock'
+// import { viteMockServe } from 'vite-plugin-mock'
 import DepsCache from './plugin/optimizeDepsCache'
 
 const plugins = [
@@ -90,24 +90,24 @@ const plugins = [
     ...visualizer(),
     apply: () => process.env.stats,
   },
-  {
-    ...viteMockServe({
-      mockPath: 'mock',
-    }),
-    apply: 'serve',
-  },
-  {
-    ...viteMockServe({
-      mockPath: 'mock',
-      prodEnabled: true,
-      localEnabled: true,
-      injectCode: `
-          import { setupProdMockServer } from './mockProdServer';
-          setupProdMockServer();
-        `,
-    }),
-    apply: 'build',
-  },
+  // {
+  //   ...viteMockServe({
+  //     mockPath: 'mock',
+  //   }),
+  //   apply: 'serve',
+  // },
+  // {
+  //   ...viteMockServe({
+  //     mockPath: 'mock',
+  //     prodEnabled: true,
+  //     localEnabled: true,
+  //     injectCode: `
+  //         import { setupProdMockServer } from './mockProdServer';
+  //         setupProdMockServer();
+  //       `,
+  //   }),
+  //   apply: 'build',
+  // },
 ]
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -117,13 +117,14 @@ export default defineConfig({
     host: '0.0.0.0',
     port: '8000',
     // strictPort: true,
-    // proxy: {
-    //   '^/api': {
-    //     target: 'http://10.71.4.66:5006',
-    //     changeOrigin: true,
-    //     rewrite: path => path.replace(/^\/api/, ''),
-    //   },
-    // },
+    proxy: {
+      '^/api': {
+        // target: 'http://10.71.4.66:5006',
+        target: 'http://10.71.15.61:8080',
+        changeOrigin: true,
+        rewrite: path => path.replace(/^\/api/, ''),
+      },
+    },
   },
   resolve: {
     alias: {

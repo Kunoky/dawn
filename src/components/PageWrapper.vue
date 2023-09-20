@@ -39,7 +39,7 @@ const props = defineProps({
   // 分页页码key值
   pageKey: {
     type: String,
-    default: 'pageNumber',
+    default: 'pageNum',
   },
   // 分页尺寸key值
   sizeKey: {

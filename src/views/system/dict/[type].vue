@@ -7,7 +7,7 @@
       ref="tableRef"
       id="systemDictData"
     >
-      <el-table-column label="字典编码" prop="dictId" />
+      <el-table-column label="字典编码" prop="id" />
       <el-table-column label="字典标签" prop="label" />
       <el-table-column label="字典键值" prop="value" />
       <el-table-column label="字典排序" prop="orderNum" />
@@ -75,18 +75,14 @@ const refresh = async force => {
 }
 refresh()
 
-const category = useDict('category')
-const dicts = computed(() =>
-  source.value
-    .filter(i => i.parentId === category.value.ko[route.params.category].dictId)
-    .sort((a, b) => b.dictId - a.dictId)
-)
+const type = useDict('type')
+const dicts = computed(() => source.value.filter(i => i.pid === type.value.ko[route.params.type].id))
 async function listData(params) {
   let list = dicts.value.filter(i => {
     if (params.label && !i.label.match(params.label)) return false
     return true
   })
-  const limit = params.pageNumber * params.pageSize
+  const limit = params.pageNum * params.pageSize
   const records = list.slice(limit - params.pageSize, limit)
   return {
     data: {
@@ -121,12 +117,11 @@ const handleDel = row => {
         ...row,
         deleting: true,
       }
-      return req.delete('system/dict/' + row.dictId)
+      return req.delete('system/dict/' + row.id)
     })
     .then(({ code }) => {
       if (code === 200) {
-        ElMessage.success(i18n.t('tip.success'))
-        refresh()
+        refresh(true)
       }
     })
 }
