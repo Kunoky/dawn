@@ -505,7 +505,7 @@ defineExpose({
     }
     .btns {
       float: right;
-      margin: 0;
+      margin-right: 0;
     }
   }
   &__toolbar {

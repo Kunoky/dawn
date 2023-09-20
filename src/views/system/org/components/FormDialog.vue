@@ -27,7 +27,7 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="组织代码" prop="orgCode">
-            <el-input v-model="form.orgName" placeholder="请输入组织代码" />
+            <el-input v-model="form.orgCode" placeholder="请输入组织代码" />
           </el-form-item>
         </el-col>
       </el-row>
@@ -53,6 +53,7 @@ const props = defineProps({
 const rules = {
   parentId: [{ required: true, message: '上级组织不能为空', trigger: 'blur' }],
   orgName: [{ required: true, message: '组织名称不能为空', trigger: 'blur' }],
+  // orgCode: [{ required: true, message: '组织代码不能为空', trigger: 'blur' }],
 }
 
 const loading = ref(false)
@@ -64,19 +65,21 @@ watch(
   v => {
     if (v) {
       form.value = {
-        orgId: undefined,
+        orgId: null,
         parentId: props.parentId,
         orgName: '',
-        orderNum: 0,
-        leader: '',
-        phone: '',
-        email: '',
-        status: '0',
+        orgCode: '',
+        // orderNum: 0,
+        // leader: '',
+        // phone: '',
+        // email: '',
+        // status: '0',
       }
       if (props.data) {
         for (let k in form.value) {
           form.value[k] = props.data[k]
         }
+        form.value.parentId &&= +form.value.parentId
       }
       nextTick(() => {
         formRef.value.clearValidate()
@@ -92,7 +95,7 @@ const handleConfirm = () => {
   formRef.value.validate(valid => {
     if (valid) {
       loading.value = true
-      req[form.value.orgId ? 'put' : 'post']('system/org', form.value)
+      req[form.value.orgId ? 'put' : 'post']('organization', form.value)
         .then(({ code }) => {
           if (code === 200) {
             emit('success')

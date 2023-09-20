@@ -119,7 +119,7 @@ const setComponentName = (c, name) => {
               <span v-loading="loading.lang" class="mgl-s">{{ $t('lang') }}</span>
             </CDropdown> -->
             <CDropdown v-if="user" @update:modelValue="handleUserCommand" :options="userOptions">
-              <span>{{ user?.userName }}</span>
+              <span class="cs-p">{{ user?.userName }}</span>
             </CDropdown>
             <router-link v-else to="/login" class="fs-5 cl-8 mgl-s">{{ $t('common.login') }}</router-link>
           </div>

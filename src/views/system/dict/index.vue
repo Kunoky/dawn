@@ -7,9 +7,15 @@
       ref="tableRef"
       id="systemDict"
     >
-      <el-table-column label="字典编号" prop="dictId" />
-      <el-table-column label="字典名称" prop="label" :show-overflow-tooltip="true" />
-      <el-table-column label="字典类型" prop="category" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column label="字典编号" prop="id" />
+      <el-table-column label="字典名称" prop="label" />
+      <el-table-column label="字典类型" prop="type" />
+      <el-table-column label="排序" prop="orderNum" />
+      <el-table-column label="状态" prop="status">
+        <template #default="{ row }">
+          <span>{{ ['禁用', '启用'][row.status] }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="备注" prop="remark" :show-overflow-tooltip="true" />
       <el-table-column label="创建时间" prop="createTime" width="180">
         <template #default="{ row }">
@@ -21,7 +27,7 @@
           <el-button link type="info" @click="handleEdit(row)" v-hasPermi="['system:dict:edit']">
             {{ $t('common.edit') }}
           </el-button>
-          <RouterLink :to="'/system/dict/' + row.category">
+          <RouterLink :to="'/system/dict/' + row.type">
             <el-button link type="info">{{ $t('common.config') }}</el-button>
           </RouterLink>
           <el-button link type="danger" @click="handleDel(row)" v-hasPermi="['system:dict:remove']">
@@ -39,8 +45,8 @@
         <el-form-item label="字典名称" prop="label">
           <el-input v-model="form.label" placeholder="请输入字典名称" clearable />
         </el-form-item>
-        <el-form-item label="字典类型" prop="category">
-          <el-input v-model="form.category" placeholder="请输入字典类型" clearable />
+        <el-form-item label="字典类型" prop="type">
+          <el-input v-model="form.type" placeholder="请输入字典类型" clearable />
         </el-form-item>
       </template>
     </CTable>
@@ -63,16 +69,14 @@ const refresh = async force => {
 }
 onMounted(refresh)
 
-const categories = computed(() =>
-  source.value.filter(i => !i.parentId || i.parentId === '0').sort((a, b) => b.dictId - a.dictId)
-)
+const categories = computed(() => source.value.filter(i => !i.pid || i.pid === '0'))
 async function listData(params) {
   let list = categories.value.filter(i => {
     if (params.label && !i.label.match(params.label)) return false
-    if (params.category && !i.category.match(params.category)) return false
+    if (params.type && !i.type.match(params.type)) return false
     return true
   })
-  const limit = params.pageNumber * params.pageSize
+  const limit = params.pageNum * params.pageSize
   const records = list.slice(limit - params.pageSize, limit)
   return {
     data: {
@@ -106,12 +110,11 @@ const handleDel = row => {
         ...row,
         deleting: true,
       }
-      return req.delete('/dict/' + row.dictId)
+      return req.delete('/dict/' + row.id)
     })
     .then(({ code }) => {
       if (code === 200) {
-        ElMessage.success(i18n.t('tip.success'))
-        refresh()
+        refresh(true)
       }
     })
 }

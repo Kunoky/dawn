@@ -15,8 +15,8 @@
         </template>
         <el-input v-model="form.roleKey" placeholder="请输入权限字符" />
       </el-form-item>
-      <el-form-item label="角色顺序" prop="orderNum">
-        <el-input-number v-model="form.orderNum" controls-position="right" :min="0" />
+      <el-form-item label="角色顺序" prop="roleSort">
+        <el-input-number v-model="form.roleSort" controls-position="right" :min="0" />
       </el-form-item>
       <el-form-item label="状态">
         <el-radio-group v-model="form.status">
@@ -26,33 +26,19 @@
       <el-form-item label="菜单权限">
         <el-checkbox @change="handleCheckedTreeExpand">展开/折叠</el-checkbox>
         <el-checkbox @change="handleCheckedTreeNodeAll">全选/全不选</el-checkbox>
-        <el-checkbox v-model="form.menuCheckStrictly">父子联动</el-checkbox>
-        <!-- <el-tree-select
-          class="wd-100"
-          v-model="form.menuIds" 
-          multiple
-          show-checkbox
-          :data="menuTree"
-          node-key="id"
-          collapse-tags
-          :check-strictly="!form.menuCheckStrictly"
-          empty-text="加载中，请稍候"
-          :props="{ label: 'label', children: 'children' }"
-        /> -->
         <el-tree
           class="wd-100 bd"
           :data="menuTree"
           show-checkbox
           ref="menuRef"
-          node-key="id"
-          :check-strictly="!form.menuCheckStrictly"
+          node-key="menuId"
           empty-text="加载中，请稍候"
-          :props="{ label: 'label', children: 'children' }"
+          :props="{ label: 'menuName', children: 'children' }"
         ></el-tree>
       </el-form-item>
-      <el-form-item label="备注">
+      <!-- <el-form-item label="备注">
         <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"></el-input>
-      </el-form-item>
+      </el-form-item> -->
     </el-form>
     <template #footer>
       <span class="dialog-footer">
@@ -75,7 +61,7 @@ const title = computed(() => (props.data ? '编辑角色' : '新增角色'))
 const rules = {
   roleName: [{ required: true, message: '角色名称不能为空', trigger: 'blur' }],
   roleKey: [{ required: true, message: '权限字符不能为空', trigger: 'blur' }],
-  orderNum: [{ required: true, message: '角色顺序不能为空', trigger: 'blur' }],
+  roleSort: [{ required: true, message: '角色顺序不能为空', trigger: 'blur' }],
 }
 
 const loading = ref(false)
@@ -92,13 +78,10 @@ watch(
         roleId: undefined,
         roleName: '',
         roleKey: '',
-        orderNum: 0,
+        roleSort: 0,
         status: 1,
         menuIds: [],
-        deptIds: [],
-        menuCheckStrictly: true,
-        deptCheckStrictly: true,
-        remark: '',
+        // remark: '',
       }
 
       props.data && getData()
@@ -110,12 +93,13 @@ watch(
   },
   { immediate: true }
 )
-
+let checkedKeys = []
 const { run: getData, loading: dataLoading } = useAsync(() => req.get('role/' + (props.data?.roleId || '')), {
   onSuccess(res) {
     for (let k in form.value) {
       form.value[k] = res.data[k]
     }
+    checkedKeys = res.data.menuIds
     nextTick(() => {
       formRef.value.clearValidate()
     })
@@ -128,14 +112,22 @@ const handleClose = () => {
 
 const menuRef = ref()
 const menuTree = ref([])
+let menus = []
 const getMenu = () => {
-  const url = props.data ? 'system/menu/roleMenuTreeselect/' + props.data.roleId : 'system/menu/treeselect'
-  req.get(url).then(res => {
-    menuTree.value = res.data
+  req.get('menu/list').then(res => {
+    menus = res.data
+    const [list] = utils.arr2tree(res.data, 'menuId', 'parentId')
+    menuTree.value = list.filter(i => i.status)
     if (props.data) {
-      menuTree.value = res.menus
+      // menuTree.value = res.menus
       nextTick(() => {
-        res.checkedKeys.forEach(i => menuRef.value.setChecked(i, true, false))
+        // res.checkedKeys.forEach(i => menuRef.value.setChecked(i, true, false))
+        let timer = setInterval(() => {
+          if (!dataLoading.value) {
+            checkedKeys.forEach(i => menuRef.value.setChecked(i, true, false))
+            clearInterval(timer)
+          }
+        }, 50)
       })
     }
   })
@@ -152,23 +144,23 @@ function getMenuAllCheckedKeys() {
 function handleCheckedTreeExpand(value) {
   let treeList = menuTree.value
   for (let i = 0; i < treeList.length; i++) {
-    menuRef.value.store.nodesMap[treeList[i].id].expanded = value
+    menuRef.value.store.nodesMap[treeList[i].menuId].expanded = value
   }
 }
 /** 树权限（全选/全不选） */
 function handleCheckedTreeNodeAll(value) {
-  menuRef.value.setCheckedNodes(value ? menuTree.value : [])
+  menuRef.value.setCheckedNodes(value ? menus : [])
 }
 const handleConfirm = () => {
   formRef.value.validate(valid => {
     if (valid) {
       loading.value = true
       form.value.menuIds = getMenuAllCheckedKeys()
-      req[form.value.menuId ? 'put' : 'post']('role', form.value)
+      req[form.value.roleId ? 'put' : 'post']('role', form.value)
         .then(({ code }) => {
           if (code === 200) {
-            emit('success')
             emit('update:modelValue', false)
+            emit('success')
           }
         })
         .finally(() => {

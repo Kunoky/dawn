@@ -17,7 +17,7 @@ function resPage(data) {
 const menus = [
   {
     menuId: 0,
-    parentId: 0,
+    pid: 0,
     menuType: 2,
     menuName: '超级管理员',
     orderNum: 0,
@@ -26,7 +26,7 @@ const menus = [
   },
   {
     menuId: 1,
-    parentId: 0,
+    pid: 0,
     menuType: 1,
     icon: 'ep:house',
     menuName: '首页',
@@ -39,7 +39,7 @@ const menus = [
   },
   {
     menuId: 2,
-    parentId: 0,
+    pid: 0,
     menuType: 1,
     icon: 'iconoir:submit-document',
     menuName: '提交维修申请',
@@ -52,7 +52,7 @@ const menus = [
   },
   {
     menuId: 3,
-    parentId: 0,
+    pid: 0,
     menuType: 1,
     icon: 'mingcute:inventory-line',
     menuName: '移库单管理',
@@ -65,7 +65,7 @@ const menus = [
   },
   // {
   //   menuId: 4,
-  //   parentId: 3,
+  //   pid: 3,
   //   menuType: 1,
   //   // icon: 'icon-park-outline:repair',
   //   menuName: '移库单',
@@ -78,7 +78,7 @@ const menus = [
   // },
   {
     menuId: 5,
-    parentId: 0,
+    pid: 0,
     menuType: 1,
     icon: 'ep:message-box',
     menuName: 'SO管理',
@@ -91,7 +91,7 @@ const menus = [
   },
   {
     menuId: 6,
-    parentId: 5,
+    pid: 5,
     menuType: 1,
     // icon: 'ep:message-box',
     menuName: '待创建SO',
@@ -104,7 +104,7 @@ const menus = [
   },
   {
     menuId: 7,
-    parentId: 5,
+    pid: 5,
     menuType: 1,
     // icon: 'ep:message-box',
     menuName: '查询SO',
@@ -117,7 +117,7 @@ const menus = [
   },
   {
     menuId: 8,
-    parentId: 5,
+    pid: 5,
     menuType: 1,
     // icon: 'ep:message-box',
     menuName: '待处理SO',
@@ -130,7 +130,7 @@ const menus = [
   },
   // {
   //   menuId: 9,
-  //   parentId: 5,
+  //   pid: 5,
   //   menuType: 1,
   //   // icon: 'ep:message-box',
   //   menuName: '待核验SO',
@@ -143,7 +143,7 @@ const menus = [
   // },
   {
     menuId: 10,
-    parentId: 5,
+    pid: 5,
     menuType: 1,
     // icon: 'ep:message-box',
     menuName: '待报价SO',
@@ -156,7 +156,7 @@ const menus = [
   },
   {
     menuId: 11,
-    parentId: 5,
+    pid: 5,
     menuType: 1,
     // icon: 'ep:message-box',
     menuName: '待转移SO',
@@ -169,7 +169,7 @@ const menus = [
   },
   {
     menuId: 12,
-    parentId: 5,
+    pid: 5,
     menuType: 1,
     // icon: 'ep:message-box',
     menuName: '待Billing SO',
@@ -182,7 +182,7 @@ const menus = [
   },
   {
     menuId: 13,
-    parentId: 5,
+    pid: 5,
     menuType: 1,
     // icon: 'ep:message-box',
     menuName: '待发货SO',
@@ -195,7 +195,7 @@ const menus = [
   },
   {
     menuId: 14,
-    parentId: 5,
+    pid: 5,
     menuType: 1,
     // icon: 'ep:message-box',
     menuName: '待指派SO',
@@ -208,7 +208,7 @@ const menus = [
   },
   {
     menuId: 15,
-    parentId: 0,
+    pid: 0,
     menuType: 1,
     icon: 'ep:lock',
     menuName: '客户锁管理',
@@ -221,7 +221,7 @@ const menus = [
   },
   {
     menuId: 20,
-    parentId: 0,
+    pid: 0,
     menuType: 1,
     icon: 'ep:setting',
     menuName: '系统管理',
@@ -234,7 +234,7 @@ const menus = [
   },
   {
     menuId: 21,
-    parentId: 20,
+    pid: 20,
     menuType: 1,
     icon: 'ep:set-up',
     menuName: '菜单管理',
@@ -247,7 +247,7 @@ const menus = [
   },
   {
     menuId: 22,
-    parentId: 20,
+    pid: 20,
     menuType: 1,
     icon: 'ant-design:crown-outlined',
     menuName: '角色管理',
@@ -260,7 +260,7 @@ const menus = [
   },
   {
     menuId: 23,
-    parentId: 20,
+    pid: 20,
     menuType: 1,
     icon: 'ep:user',
     menuName: '用户管理',
@@ -273,7 +273,7 @@ const menus = [
   },
   {
     menuId: 24,
-    parentId: 20,
+    pid: 20,
     menuType: 1,
     icon: 'ant-design:apartment-outlined',
     menuName: '组织管理',
@@ -286,7 +286,7 @@ const menus = [
   },
   {
     menuId: 25,
-    parentId: 20,
+    pid: 20,
     menuType: 1,
     icon: 'ant-design:profile-outlined',
     menuName: '字典管理',
@@ -337,7 +337,7 @@ const orgs = [
     orgId: '1',
     orgCode: '10001',
     orgName: '赛默飞世尔科技公司',
-    parentId: '0',
+    pid: '0',
     picturePath: '/file\\picture\\1.png',
     delFlag: false,
   },
@@ -349,7 +349,7 @@ const orgs = [
     orgId: '2',
     orgCode: '10002',
     orgName: '公司总部',
-    parentId: '1',
+    pid: '1',
     picturePath: '/file\\picture\\1.png',
     delFlag: false,
   },
@@ -361,91 +361,91 @@ const orgs = [
     orgId: '3',
     orgCode: '10003',
     orgName: '战略发展部',
-    parentId: '1',
+    pid: '1',
     picturePath: '/file\\picture\\1.png',
     delFlag: false,
   },
 ]
 const dicts = [
   {
-    dictId: 1,
-    parentId: 0,
-    category: 'gender',
+    id: 1,
+    pid: 0,
+    type: 'gender',
     value: 'gender',
     label: '性别',
     orderNum: 1,
     remark: '性别',
-    valueType: 'number',
+    valueType: 1,
   },
   {
-    dictId: 2,
-    parentId: 1,
-    category: 'gender',
+    id: 2,
+    pid: 1,
+    type: 'gender',
     value: 0,
     label: '女',
     orderNum: 1,
     remark: '',
   },
   {
-    dictId: 3,
-    parentId: 1,
-    category: 'gender',
+    id: 3,
+    pid: 1,
+    type: 'gender',
     value: 1,
     label: '男',
     orderNum: 2,
     remark: '',
   },
   {
-    dictId: 4,
-    parentId: 0,
-    category: 'status',
+    id: 4,
+    pid: 0,
+    type: 'status',
     value: 'status',
     label: '状态',
     orderNum: 2,
     remark: '状态',
-    valueType: 'number',
+    valueType: 1,
   },
   {
-    dictId: 5,
-    parentId: 4,
-    category: 'status',
+    id: 5,
+    pid: 4,
+    type: 'status',
     value: 1,
     label: '启用',
     orderNum: 1,
     remark: '',
   },
   {
-    dictId: 6,
-    parentId: 4,
-    category: 'status',
+    id: 6,
+    pid: 4,
+    type: 'status',
     value: 0,
     label: '停用',
     orderNum: 2,
     remark: '',
   },
   {
-    dictId: 7,
-    parentId: 0,
-    category: 'bool',
+    id: 7,
+    pid: 0,
+    type: 'bool',
     value: 'bool',
     label: '是否',
     orderNum: 3,
     remark: '是否',
-    valueType: 'number',
+    valueType: 1,
   },
   {
-    dictId: 8,
-    parentId: 7,
-    category: 'bool',
+    id: 8,
+    pid: 7,
+    type: 'bool',
     value: 1,
     label: '是',
     orderNum: 1,
     remark: '',
   },
   {
-    dictId: 9,
-    parentId: 7,
-    category: 'bool',
+    id: 9,
+    pid: 7,
+    type: 'bool',
     value: 0,
     label: '否',
     orderNum: 2,
@@ -768,7 +768,7 @@ export default [
     method: 'post',
     response: req => {
       const data = req.body
-      data.dictId = dicts.length + 1
+      data.id = dicts.length + 1
       dicts.push(data)
       return resData(data)
     },
@@ -778,17 +778,17 @@ export default [
     method: 'put',
     response: req => {
       const data = req.body
-      const dict = dicts.find(i => i.dictId === data.dictId)
+      const dict = dicts.find(i => i.id === data.id)
       Object.assign(dict, data)
       return resData(dict)
     },
   },
   {
-    url: '/api/dict/{dictId}',
+    url: '/api/dict/{id}',
     method: 'delete',
     response: req => {
-      const data = req.params.dictId
-      const idx = dicts.findIndex(i => i.dictId === data)
+      const data = req.params.id
+      const idx = dicts.findIndex(i => i.id === data)
       dicts.splice(idx, 1)
       return resData()
     },

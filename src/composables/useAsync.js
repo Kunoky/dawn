@@ -54,7 +54,7 @@ export function useAsync(service, options = {}) {
     run = debounce(_run, delay)
   }
   const refresh = () => {
-    run(...params.value)
+    return run(...params.value)
   }
   if (!manual) {
     if (source) {

@@ -11,15 +11,38 @@
       <el-form-item label="字典名称" prop="label">
         <el-input v-model="form.label" placeholder="请输入字典名称" />
       </el-form-item>
-      <el-form-item label="字典类型" prop="category">
-        <el-input v-model="form.category" placeholder="请输入字典类型" />
+      <el-form-item label="字典类型" prop="type">
+        <el-input v-model="form.type" placeholder="请输入字典类型" />
       </el-form-item>
       <el-form-item label="序号" prop="orderNum">
         <el-input-number v-model="form.orderNum" :min="0" />
       </el-form-item>
       <el-form-item label="数据类型" prop="valueType">
         <el-radio-group v-model="form.valueType">
-          <el-radio v-for="i in ['string', 'number']" :key="i" :label="i">{{ i }}</el-radio>
+          <el-radio
+            v-for="i in [
+              { label: 'string', value: 2 },
+              { label: 'number', value: 1 },
+            ]"
+            :key="i.value"
+            :label="i.value"
+          >
+            {{ i.label }}
+          </el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="状态" prop="status">
+        <el-radio-group v-model="form.valueType">
+          <el-radio
+            v-for="i in [
+              { label: '启用', value: 1 },
+              { label: '禁用', value: 0 },
+            ]"
+            :key="i.value"
+            :label="i.value"
+          >
+            {{ i.label }}
+          </el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="备注" prop="remark">
@@ -46,7 +69,7 @@ const title = computed(() => (props.data ? '编辑' : '新增') + '字典类型'
 
 const rules = {
   label: [{ required: true, message: '字典名称不能为空', trigger: 'blur' }],
-  category: [{ required: true, message: '字典类型不能为空', trigger: 'blur' }],
+  type: [{ required: true, message: '字典类型不能为空', trigger: 'blur' }],
 }
 
 const loading = ref(false)
@@ -58,12 +81,13 @@ watch(
   v => {
     if (v) {
       form.value = {
-        dictId: null,
+        id: null,
         label: '',
         value: '',
-        category: '',
+        type: '',
+        status: 1,
         orderNum: 0,
-        valueType: 'string',
+        valueType: 2,
         remark: '',
       }
       if (props.data) {
@@ -85,9 +109,9 @@ const handleClose = () => {
 const handleConfirm = () => {
   formRef.value.validate(valid => {
     if (valid) {
-      form.value.value = form.value.category
+      form.value.value = form.value.type
       loading.value = true
-      req[form.value.dictId ? 'put' : 'post']('/dict', form.value)
+      req[form.value.id ? 'put' : 'post']('/dict', form.value)
         .then(({ code }) => {
           if (code === 200) {
             emit('success')

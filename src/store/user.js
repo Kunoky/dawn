@@ -46,8 +46,8 @@ export const useUserStore = defineStore('user', {
         this.loading.login = false
       }
     },
-    async getUser() {
-      if (this.user?.userId) return this.user
+    async getUser(force) {
+      if (!force && this.user?.userId) return this.user
       this.loading.get = true
       const { data, code } = await service.getUser()
       this.loading.get = false
@@ -77,7 +77,7 @@ export const useUserStore = defineStore('user', {
       if (menuCache.value.length) return
       const res = await service.listRoute()
       this.menu = res.data
-      // menuCache.value = res.data
+      menuCache.value = res.data
     },
     genMenu() {
       const perms = [],
@@ -100,7 +100,7 @@ export const useUserStore = defineStore('user', {
               visible: i.visible,
             },
           }
-          menus.push(menuItem)
+          i.status && menus.push(menuItem)
           if (i.menuType === 1) {
             keyMenu[menuItem.name] = menuItem
           }
