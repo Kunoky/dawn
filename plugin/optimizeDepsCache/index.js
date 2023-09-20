@@ -3,6 +3,13 @@ import fse from 'fs-extra'
 import chokidar from 'chokidar'
 var cacheDir = './node_modules/.vite'
 var metadataPath = `${cacheDir}/deps/_metadata.json`
+
+function exists(path) {
+  if (existsSync('./node_modules/' + path) || existsSync('./node_modules/' + path.slice(0, path.lastIndexOf('/')))) {
+    return true
+  }
+  return false
+}
 function VitePluginDepsCache({ delay = 2e3, file = './.vite-deps-cache.json' } = {}) {
   let cache = []
   let server
@@ -10,6 +17,7 @@ function VitePluginDepsCache({ delay = 2e3, file = './.vite-deps-cache.json' } =
     if (!existsSync(metadataPath)) return
     const metadataJson = await fse.readJSON(metadataPath, 'utf-8')
     cache = Array.from(new Set([...cache, ...Object.keys(metadataJson.optimized || {})]))
+    cache = cache.filter(i => exists(i))
     cache.sort()
     setTimeout(() => {
       if (server) server.watcher.unwatch(file)
@@ -23,6 +31,7 @@ function VitePluginDepsCache({ delay = 2e3, file = './.vite-deps-cache.json' } =
     async config(config) {
       if (!existsSync(file)) return
       cache = await fse.readJSON(file, 'utf-8')
+      cache = cache.filter(i => exists(i))
       config.optimizeDeps = {
         ...config.optimizeDeps,
         include: [...(config?.optimizeDeps?.include || []), ...cache],
