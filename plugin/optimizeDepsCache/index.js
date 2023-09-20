@@ -9,7 +9,7 @@ function VitePluginDepsCache({ delay = 2e3, field = 'vite-deps-cache' } = {}) {
   async function handleDeps() {
     if (!existsSync(metadataPath)) return
     const metadataJson = await fse.readJSON(metadataPath, 'utf-8')
-    pkgJson[field] = Array.from(new Set([...pkgJson[field], ...Object.keys(metadataJson.optimized || {})]))
+    pkgJson[field] = Array.from(new Set([...(pkgJson[field] || []), ...Object.keys(metadataJson.optimized || {})]))
     setTimeout(() => {
       if (server) server.watcher.unwatch('./package.json')
       fse.writeJSON('./package.json', pkgJson, { spaces: 2 })
@@ -23,7 +23,7 @@ function VitePluginDepsCache({ delay = 2e3, field = 'vite-deps-cache' } = {}) {
       pkgJson = await fse.readJSON('./package.json', 'utf-8')
       config.optimizeDeps = {
         ...config.optimizeDeps,
-        include: [...(config?.optimizeDeps?.include || []), ...pkgJson[field]],
+        include: [...(config?.optimizeDeps?.include || []), ...(pkgJson[field] || [])],
       }
     },
     configResolved(config) {

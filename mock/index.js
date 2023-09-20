@@ -220,6 +220,19 @@ const menus = [
     status: 1,
   },
   {
+    menuId: 16,
+    parentId: 5,
+    menuType: 1,
+    // icon: 'ep:lock',
+    menuName: '变更信息',
+    orderNum: 0,
+    path: '/so/changeInformation',
+    routeName: 'SoChangeInformation',
+    isCache: 1,
+    visible: 1,
+    status: 1,
+  },
+  {
     menuId: 20,
     parentId: 0,
     menuType: 1,
@@ -674,6 +687,24 @@ const customerLock = [
     rrr: '0531-89908855',
   },
 ]
+const changeInformation = [
+  {
+    aaa: '1000000001',
+    bbb: '张三',
+    ccc: '李四',
+    ddd: '2023-09-11',
+    eee: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+    fff: '1',
+  },
+  {
+    aaa: '1000000002',
+    bbb: '小小',
+    ccc: '香香',
+    ddd: '2023-08-21',
+    eee: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+    fff: '1',
+  },
+]
 export default [
   {
     url: '/api/mock/get',
@@ -826,6 +857,13 @@ export default [
     method: 'get',
     response: () => {
       return resPage(customerLock)
+    },
+  },
+  {
+    url: '/api/so/getChangeInformationList',
+    method: 'get',
+    response: () => {
+      return resPage(changeInformation)
     },
   },
 ]
