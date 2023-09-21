@@ -161,3 +161,14 @@ export function getElNest(el, selector, finalEl = document.body) {
     return getElNest(el.parentNode, selector, finalEl)
   }
 }
+
+export function obj2params(obj) {
+  let param = ''
+  if (obj) {
+    Object.entries(obj).forEach(([k, v]) => {
+      param &&= param + '&'
+      param += k + '=' + v
+    })
+  }
+  return param
+}

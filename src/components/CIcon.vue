@@ -24,5 +24,7 @@ defineProps({
   color: inherit;
   width: 1.2em;
   height: 1.2em;
+  position: relative;
+  top: 10%;
 }
 </style>

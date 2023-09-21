@@ -37,5 +37,6 @@ defineProps({
 .el-sub-menu .c-icon {
   margin-right: var(--size-s);
   flex-shrink: 0;
+  top: 0;
 }
 </style>
