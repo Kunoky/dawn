@@ -2,51 +2,67 @@
   <div>
     <CTable
       :page-conf="{
-        action: 'so/getSoList',
+        action: 'api/request/toBeCreatedList',
       }"
       ref="tableRef"
       id="repairRequest"
     >
       <!-- <el-table-column label="维修任务号" prop="TaskID" width="120" /> -->
-      <el-table-column label="仪器序列号" prop="aaa" :show-overflow-tooltip="true" width="100" />
-      <el-table-column label="型号" prop="bbb" :show-overflow-tooltip="true" width="100" />
-      <el-table-column label="仪器SAP Equip编号" prop="ccc" width="128" />
-      <el-table-column label="维修类型" prop="ddd" width="100" />
-      <el-table-column label="仪器地址" prop="eee" width="100" />
-      <el-table-column label="创建人" prop="www" width="100" />
-      <el-table-column label="创建时间" prop="nnn" width="100" />
+      <el-table-column label="仪器序列号" prop="serialNo" width="100" />
+      <el-table-column label="型号" prop="modelNo" width="100" />
+      <el-table-column label="仪器SAP Equip编号" prop="eqId" width="128" />
+      <el-table-column label="维修类型" width="100">
+        <template #default="{ row }">{{ row.orderType }} / {{ row.subType }}</template>
+      </el-table-column>
+      <el-table-column label="仪器地址" prop="equipAddress" width="130" />
+      <el-table-column label="创建人" prop="createBy" width="100" />
+      <el-table-column label="创建时间" prop="updateTime" width="100" />
       <el-table-column label="未关闭so数量" width="100">
         <template #default="{ row }">
           <span class="cs-p fw-b" style="color: #1890ff" @click="handleNum(row)">{{ row.ttt }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="状态" prop="state" width="100">
+      <el-table-column label="状态" prop="status" width="100">
         <template #default="{ row }">
           <span
+            v-if="getStatus(row.status) === '创建失败'"
             class="cs-p fw-b"
-            :style="row.state === '创建失败' ? 'color: #e71316' : 'color: #909399'"
+            style="color: #e71316"
             @click="handleState(row)"
           >
-            {{ row.state }}
+            {{ getStatus(row.status) }}
           </span>
+          <span class="cs-p fw-b" style="color: #909399">{{ getStatus(row.status) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="客户单位名称" prop="fff" width="100" />
-      <el-table-column label="客户编号" prop="ggg" width="100" />
-      <el-table-column label="客户联系人" prop="hhh" width="100" />
-      <el-table-column label="客户联系人电话" prop="iii" width="120" />
-      <el-table-column label="客户联系人邮箱" prop="jjj" width="130" />
-      <el-table-column label="代理商" prop="kkk" width="100" />
-      <el-table-column label="报修内容" prop="lll" width="100" :show-overflow-tooltip="true" />
-      <el-table-column label="报修来源" prop="mmm" width="100" />
-      <el-table-column label="报修时间" prop="yyy" width="100" />
-      <el-table-column label="保修期" prop="ooo" width="100" />
+      <el-table-column label="客户单位名称" prop="custDesc" width="120" />
+      <el-table-column label="客户编号" prop="customerId" width="100" />
+      <el-table-column label="客户联系人" width="100">
+        <template #default="{ row }">
+          <span>{{ row.contact?.name }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="客户联系人电话" width="120">
+        <template #default="{ row }">
+          <span>{{ row.contact?.mobile }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="客户联系人邮箱" width="130">
+        <template #default="{ row }">
+          <span>{{ row.contact?.email }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="代理商" prop="vendor" width="100" />
+      <el-table-column label="报修内容" prop="content" width="120" :show-overflow-tooltip="true" />
+      <el-table-column label="报修来源" prop="source" width="100" />
+      <el-table-column label="报修时间" prop="repairTime" width="130" />
+      <el-table-column label="保修期" prop="warrantyTime" width="130" />
       <el-table-column label="FSE工程师名称" prop="ppp" width="100" />
       <el-table-column label="FSE work center" prop="qqq" width="115" />
       <el-table-column label="FSE storage location" prop="rrr" width="140" />
       <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="270">
         <template #default="{ row }">
-          <div v-if="row.state !== '创建中'">
+          <div v-if="getStatus(row.status) !== '创建中'">
             <el-button type="info" link @click="handleEdit(row)">完善信息</el-button>
             <el-button type="danger" link @click="handleDel(row)">RPA创建SO</el-button>
             <el-button type="danger" link @click="handleBack(row)">退回</el-button>
@@ -61,30 +77,30 @@
         </el-button> -->
       </template>
       <template #form="{ form }">
-        <el-form-item label="仪器序列号" prop="TaskID">
-          <el-select v-model="form.aaa" placeholder="请输入仪器序列号" style="width: 100%" clearable>
+        <el-form-item label="仪器序列号" prop="serialNo">
+          <el-select v-model="form.serialNo" placeholder="请输入仪器序列号" style="width: 100%" clearable>
             <el-option label="A" value="shanghai" />
             <el-option label="B" value="beijing" />
           </el-select>
         </el-form-item>
-        <el-form-item label="维修类型" prop="ddd">
-          <el-cascader v-model="form.ddd" :options="options" filterable clearable />
+        <el-form-item label="维修类型" prop="orderType">
+          <el-cascader v-model="form.orderType" :options="options" filterable clearable />
         </el-form-item>
-        <el-form-item label="状态" prop="state">
-          <el-select v-model="form.state" placeholder="请选择状态" clearable>
+        <el-form-item label="状态" prop="status">
+          <el-select v-model="form.status" placeholder="请选择状态" clearable>
             <el-option label="全部" value="" />
             <el-option label="创建中" value="创建中" />
             <el-option label="创建失败" value="创建失败" />
           </el-select>
         </el-form-item>
-        <el-form-item label="客户联系人" prop="hhh">
-          <el-input v-model="form.hhh" placeholder="请输入客户联系人" clearable />
+        <el-form-item label="客户联系人" prop="name">
+          <el-input v-model="form.name" placeholder="请输入客户联系人" clearable />
         </el-form-item>
-        <el-form-item label="客户联系人电话" prop="iii">
-          <el-input v-model="form.iii" placeholder="请输入客户联系人电话" clearable />
+        <el-form-item label="客户联系人电话" prop="mobile">
+          <el-input v-model="form.mobile" placeholder="请输入客户联系人电话" clearable />
         </el-form-item>
-        <el-form-item label="报修来源" prop="mmm">
-          <el-select v-model="form.mmm" placeholder="请选择报修来源" clearable>
+        <el-form-item label="报修来源" prop="source">
+          <el-select v-model="form.source" placeholder="请选择报修来源" clearable>
             <el-option label="FSE" value="fse" />
             <el-option label="其他" value="qt" />
           </el-select>
@@ -115,11 +131,11 @@
 
     <el-dialog title="关闭" width="30%" v-model="detailVisible" :close-on-click-modal="false">
       <el-form :model="formDetails" ref="formRefDetails" label-width="80" :rules="rules">
-        <el-form-item label="SO NO" prop="so">
-          <el-input v-model="formDetails.so" placeholder="请输入SO" clearable />
+        <el-form-item label="SO NO" prop="soNo">
+          <el-input v-model="formDetails.soNo" placeholder="请输入SO" clearable />
         </el-form-item>
-        <el-form-item label="关闭原因" prop="details">
-          <el-input type="textarea" v-model="formDetails.details" placeholder="请输入关闭原因" clearable />
+        <el-form-item label="关闭原因" prop="reason">
+          <el-input type="textarea" v-model="formDetails.reason" placeholder="请输入关闭原因" clearable />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -132,8 +148,8 @@
 
     <el-dialog title="退回" width="30%" v-model="backVisible" :close-on-click-modal="false">
       <el-form :model="formBack" ref="formRefBack" label-width="80" :rules="backRules">
-        <el-form-item label="退回原因" prop="details">
-          <el-input type="textarea" v-model="formDetails.details" placeholder="请输入退回原因" clearable />
+        <el-form-item label="退回原因" prop="reason">
+          <el-input type="textarea" v-model="formBack.reason" placeholder="请输入退回原因" clearable />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -188,6 +204,7 @@
 </template>
 
 <script setup>
+import { ref } from 'vue'
 import FormDialog from './components/FormDialog.vue'
 
 const tableRef = ref()
@@ -298,57 +315,24 @@ const handleFormSuccess = () => {
   refresh()
 }
 
-const detailVisible = ref(false)
+// 退回
 const backVisible = ref(false)
-const formRefDetails = ref(null)
 const formRefBack = ref(null)
-const formDetails = ref({
-  so: '',
-  details: '',
-})
 const formBack = ref({
-  details: '',
+  reason: '',
+  id: '',
 })
-const rules = {
-  // so: [{ required: true, message: 'so不能为空', trigger: 'blur' }],
-  details: [{ required: true, message: '关闭原因不能为空', trigger: 'blur' }],
-}
 const backRules = {
-  // so: [{ required: true, message: 'so不能为空', trigger: 'blur' }],
-  details: [{ required: true, message: '退回原因不能为空', trigger: 'blur' }],
+  reason: [{ required: true, message: '退回原因不能为空', trigger: 'blur' }],
 }
-const handleClose = () => {
-  detailVisible.value = true
-}
-const handleCloseDetail = () => {
-  detailVisible.value = false
-  nextTick(() => {
-    formRefDetails.value.clearValidate()
-  })
-}
-const handleConfirm = () => {
-  formRefDetails.value.validate(valid => {
-    if (valid) {
-      // form.value.value = form.value.category
-      // loading.value = true
-      // req[form.value.dictId ? 'put' : 'post']('/dict', form.value)
-      //   .then(({ code }) => {
-      //     if (code === 200) {
-      //       emit('success')
-      //       emit('update:modelValue', false)
-      //     }
-      //   })
-      //   .finally(() => {
-      //     loading.value = false
-      //   })
-    }
-  })
-}
-const handleBack = () => {
+const handleBack = row => {
+  formBack.value.id = row.id
   backVisible.value = true
 }
+
 const handleCloseBack = () => {
   backVisible.value = false
+  formBack.value.reason = ''
   nextTick(() => {
     formRefBack.value.clearValidate()
   })
@@ -356,22 +340,55 @@ const handleCloseBack = () => {
 const handleBackConfirm = () => {
   formRefBack.value.validate(valid => {
     if (valid) {
-      // form.value.value = form.value.category
-      // loading.value = true
-      // req[form.value.dictId ? 'put' : 'post']('/dict', form.value)
-      //   .then(({ code }) => {
-      //     if (code === 200) {
-      //       emit('success')
-      //       emit('update:modelValue', false)
-      //     }
-      //   })
-      //   .finally(() => {
-      //     loading.value = false
-      //   })
+      // console.log(formBack.value)
+      req.put('/api/request/rollback', formBack.value).then(({ code }) => {
+        if (code === 200) {
+          ElMessage.success('退回成功')
+        }
+        backVisible.value = false
+      })
     }
   })
 }
 
+// 关闭
+const formRefDetails = ref(null)
+const detailVisible = ref(false)
+const formDetails = ref({
+  soNo: '',
+  reason: '',
+  id: '',
+})
+const rules = {
+  reason: [{ required: true, message: '关闭原因不能为空', trigger: 'blur' }],
+}
+const handleClose = row => {
+  formDetails.value.id = row.id
+  detailVisible.value = true
+}
+const handleCloseDetail = () => {
+  detailVisible.value = false
+  formDetails.value.soNo = ''
+  formDetails.value.reason = ''
+  nextTick(() => {
+    formRefDetails.value.clearValidate()
+  })
+}
+const handleConfirm = () => {
+  formRefDetails.value.validate(valid => {
+    if (valid) {
+      // console.log(formDetails.value)
+      req.put('/api/request/close', formDetails.value).then(({ code }) => {
+        if (code === 200) {
+          ElMessage.success('关闭成功')
+        }
+        backVisible.value = false
+      })
+    }
+  })
+}
+
+// so数量
 const visibleSo = ref(false)
 const tableData = [
   {
@@ -404,12 +421,30 @@ const handleCloseSo = () => {
   visibleSo.value = false
 }
 
-// 状态
+// 状态字典
+const dddddd = [
+  { label: '保存草稿', value: 0 },
+  { label: '已提交', value: 1 },
+  { label: '已退回', value: 2 },
+  { label: '创建中', value: 3 },
+  { label: '创建成功', value: 5 },
+  { label: '创建失败', value: 6 },
+  { label: '已关闭', value: 7 },
+]
+const getStatus = val => {
+  let name = dddddd.find(o => o.value === val).label
+  return name
+}
+
+// 状态失败原因
 const visibleState = ref(false)
 const record = ref({
   state: 'xxxxxxxxxxxxxxxxxxxxxxxxxxx',
 })
-const handleState = () => {
+
+const handleState = row => {
+  // console.log(row)
+  record.value.state = row.backReason
   visibleState.value = true
 }
 const handleCloseState = () => {

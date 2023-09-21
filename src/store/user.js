@@ -77,7 +77,7 @@ export const useUserStore = defineStore('user', {
       if (menuCache.value.length) return
       const res = await service.listRoute()
       this.menu = res.data
-      menuCache.value = res.data
+      // menuCache.value = res.data
     },
     genMenu() {
       const perms = [],
