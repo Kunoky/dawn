@@ -9,22 +9,17 @@
   >
     <el-form :model="form" ref="formRef" label-width="155" :rules="rules">
       <el-row>
-        <!-- <el-col :span="12">
-          <el-form-item label="维修任务号" prop="TaskID">
-            <el-input disabled v-model="form.TaskID" placeholder="请输入维修任务号" clearable />
-          </el-form-item>
-        </el-col> -->
         <el-col :span="12">
-          <el-form-item label="仪器序列号" prop="aaa">
-            <el-select v-model="form.aaa" placeholder="请输入仪器序列号" style="width: 100%" clearable>
+          <el-form-item label="仪器序列号" prop="serialNo">
+            <el-select v-model="form.serialNo" placeholder="请输入仪器序列号" style="width: 100%" clearable>
               <el-option label="A" value="shanghai" />
               <el-option label="B" value="beijing" />
             </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="型号" prop="bbb">
-            <el-select v-model="form.bbb" placeholder="请选择型号" style="width: 100%" clearable>
+          <el-form-item label="型号" prop="modelNo">
+            <el-select v-model="form.modelNo" placeholder="请选择型号" style="width: 100%" clearable>
               <el-option label="A" value="shanghai" />
               <el-option label="B" value="beijing" />
             </el-select>
@@ -32,24 +27,41 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="仪器SAP Equip编号" prop="ccc">
-            <el-input v-model="form.ccc" disabled placeholder="自动填入" clearable />
+          <el-form-item label="仪器SAP Equip编号" prop="eqId">
+            <el-input v-model="form.eqId" disabled placeholder="自动填入" clearable />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="维修类型" prop="ddd">
-            <el-cascader v-model="form.ddd" :options="options" filterable clearable style="width: 100%" />
+          <el-form-item label="保修期" prop="warrantyTime" class="date-box">
+            <el-date-picker
+              v-model="form.warrantyTime"
+              type="date"
+              placeholder="请选择保修期"
+              style="width: 100%"
+              clearabl
+            />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="仪器地址" prop="eee">
-            <el-input v-model="form.eee" placeholder="请输入仪器地址" clearable />
+          <el-form-item label="维修类型" prop="dataOptions">
+            <el-cascader
+              v-model="form.dataOptions"
+              :options="options"
+              filterable
+              clearable
+              style="width: 100%"
+              @change="changeOptions"
+            />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="客户单位名称" prop="fff">
-            <!-- <el-input v-model="form.fff" placeholder="请输入客户单位名称" clearable /> -->
-            <el-select v-model="form.fff" placeholder="请输入客户单位名称" style="width: 100%" clearable>
+          <el-form-item label="仪器地址" prop="equipAddress">
+            <el-input v-model="form.equipAddress" placeholder="请输入仪器地址" clearable />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="客户单位名称" prop="custDesc">
+            <el-select v-model="form.custDesc" placeholder="请输入客户单位名称" style="width: 100%" clearable>
               <el-option label="A" value="shanghai" />
               <el-option label="B" value="beijing" />
             </el-select>
@@ -66,14 +78,18 @@
           </el-form-item>
         </el-col> -->
         <el-col :span="12">
-          <el-form-item label="客户联系人" prop="hhh">
-            <el-input v-model="form.hhh" placeholder="请输入客户联系人" clearable />
+          <el-form-item label="客户联系人" prop="contact.name">
+            <el-input v-model="form.contact.name" placeholder="请输入客户联系人" clearable />
           </el-form-item>
         </el-col>
-        <el-col :span="12">
-          <el-form-item label="客户联系人拼音" prop="xxx" class="form_flex">
-            <el-input style="width: 48%" v-model="form.xxx" placeholder="请输入客户联系人拼音(姓)" clearable />
-            <el-input style="width: 50%" v-model="form.zzz" placeholder="请输入客户联系人拼音(名)" clearable />
+        <el-col :span="6">
+          <el-form-item label="客户联系人拼音" prop="contact.lastName" class="form_flex">
+            <el-input v-model="form.contact.lastName" placeholder="请输入客户联系人拼音(姓)" clearable />
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item prop="contact.firstName" class="item">
+            <el-input v-model="form.contact.firstName" placeholder="请输入客户联系人拼音(名)" clearable />
           </el-form-item>
         </el-col>
         <!-- <el-col :span="12">
@@ -82,23 +98,23 @@
           </el-form-item>
         </el-col> -->
         <el-col :span="12">
-          <el-form-item label="客户联系人电话" prop="iii">
-            <el-input v-model="form.iii" placeholder="请输入客户联系人电话" clearable />
+          <el-form-item label="客户联系人电话" prop="contact.mobile">
+            <el-input v-model="form.contact.mobile" placeholder="请输入客户联系人电话" clearable />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="客户联系人邮箱" prop="jjj">
-            <el-input v-model="form.jjj" placeholder="请输入客户联系人邮箱" clearable />
+          <el-form-item label="客户联系人邮箱" prop="contact.email">
+            <el-input v-model="form.contact.email" placeholder="请输入客户联系人邮箱" clearable />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="代理商" prop="kkk">
-            <el-input v-model="form.kkk" placeholder="请输入代理商" clearable />
+          <el-form-item label="代理商" prop="vendor">
+            <el-input v-model="form.vendor" placeholder="请输入代理商" clearable />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="FSE工程师名称" prop="ppp">
-            <el-input v-model="form.ppp" placeholder="请输入FSE工程师名称">
+          <el-form-item label="FSE工程师名称" prop="engineerId">
+            <el-input v-model="form.engineerId" placeholder="请输入FSE工程师名称">
               <template #append>
                 <el-button><i-ep-Search /></el-button>
               </template>
@@ -116,17 +132,17 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="报修来源" prop="mmm">
-            <el-select v-model="form.mmm" placeholder="请输入报修来源" style="width: 100%" clearable>
+          <el-form-item label="报修来源" prop="source">
+            <el-select v-model="form.source" placeholder="请输入报修来源" style="width: 100%" clearable>
               <el-option label="FSE" value="fse" />
               <el-option label="其他" value="qt" />
             </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="报修时间" prop="nnn" class="date-box">
+          <el-form-item label="报修时间" prop="repairTime" class="date-box">
             <el-date-picker
-              v-model="form.nnn"
+              v-model="form.repairTime"
               style="width: 100%"
               type="datetime"
               placeholder="请选择报修时间"
@@ -134,24 +150,20 @@
             />
           </el-form-item>
         </el-col>
+
         <el-col :span="12">
-          <el-form-item label="保修期" prop="ooo" class="date-box">
-            <el-date-picker v-model="form.ooo" type="date" placeholder="请选择保修期" style="width: 100%" clearabl />
+          <el-form-item label="关联来源编号" prop="relationSourceNo">
+            <el-input v-model="form.relationSourceNo" placeholder="自动填入" clearable />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="关联来源编号">
-            <el-input v-model="form.rrr" placeholder="自动填入" clearable />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="所属区域" prop="vvv">
-            <el-input v-model="form.vvv" placeholder="请输入所属区域" clearable />
+          <el-form-item label="所属区域" prop="area">
+            <el-input v-model="form.area" placeholder="请输入所属区域" clearable />
           </el-form-item>
         </el-col>
         <el-col :span="24">
-          <el-form-item label="报修内容" prop="lll">
-            <el-input type="textarea" v-model="form.lll" placeholder="请输入报修内容" clearable />
+          <el-form-item label="报修内容" prop="content">
+            <el-input type="textarea" v-model="form.content" placeholder="请输入报修内容" clearable />
           </el-form-item>
         </el-col>
       </el-row>
@@ -175,28 +187,27 @@ const props = defineProps({
 // const title = computed(() => (props.data ? '完善信息' : '新建维修申请'))
 
 const rules = {
-  TaskID: [{ required: true, message: '维修任务号不能为空', trigger: 'blur' }],
-  aaa: [{ required: true, message: '仪器序列号不能为空', trigger: 'blur' }],
-  bbb: [{ required: true, message: '型号不能为空', trigger: 'blur' }],
-  ccc: [{ required: true, message: '仪器SAP Equip编号不能为空', trigger: 'blur' }],
-  ddd: [{ required: true, message: '维修类型不能为空', trigger: 'change' }],
-  eee: [{ required: true, message: '仪器地址不能为空', trigger: 'blur' }],
-  fff: [{ required: true, message: '客户单位名称不能为空', trigger: 'blur' }],
+  serialNo: [{ required: true, message: '仪器序列号不能为空', trigger: 'blur' }],
+  modelNo: [{ required: true, message: '型号不能为空', trigger: 'blur' }],
+  eqId: [{ required: true, message: '仪器SAP Equip编号不能为空', trigger: 'blur' }],
+  dataOptions: [{ required: true, message: '维修类型不能为空', trigger: 'change' }],
+  equipAddress: [{ required: true, message: '仪器地址不能为空', trigger: 'blur' }],
+  custDesc: [{ required: true, message: '客户单位名称不能为空', trigger: 'blur' }],
   // ggg: [{ required: true, message: '客户编号不能为空', trigger: 'blur' }],
-  hhh: [{ required: true, message: '客户联系人不能为空', trigger: 'blur' }],
-  xxx: [{ required: true, message: '客户联系人拼音不能为空', trigger: 'blur' }],
-  // zzz: [{ required: true, message: '客户联系人拼音(名)不能为空', trigger: 'blur' }],
-  iii: [{ required: true, message: '客户联系人电话不能为空', trigger: 'blur' }],
-  jjj: [{ required: true, message: '客户联系人邮箱不能为空', trigger: 'blur' }],
-  // kkk: [{ required: true, message: '代理商不能为空', trigger: 'blur' }],
-  lll: [{ required: true, message: '报修内容不能为空', trigger: 'blur' }],
-  // mmm: [{ required: true, message: '报修来源不能为空', trigger: 'blur' }],
-  nnn: [{ required: true, message: '报修时间不能为空', trigger: 'blur' }],
-  // ooo: [{ required: true, message: '保修期不能为空', trigger: 'blur' }],
-  ppp: [{ required: true, message: 'FSE工程师名称不能为空', trigger: 'blur' }],
+  'contact.name': [{ required: true, message: '客户联系人不能为空', trigger: 'blur' }],
+  'contact.lastName': [{ required: true, message: '客户联系人拼音(姓)不能为空', trigger: 'blur' }],
+  'contact.firstName': [{ required: true, message: '客户联系人拼音(名)不能为空', trigger: 'blur' }],
+  'contact.mobile': [{ required: true, message: '客户联系人电话不能为空', trigger: 'blur' }],
+  'contact.email': [{ required: true, message: '客户联系人邮箱不能为空', trigger: 'blur' }],
+  // vendor: [{ required: true, message: '代理商不能为空', trigger: 'blur' }],
+  content: [{ required: true, message: '报修内容不能为空', trigger: 'blur' }],
+  // source: [{ required: true, message: '报修来源不能为空', trigger: 'blur' }],
+  repairTime: [{ required: true, message: '报修时间不能为空', trigger: 'blur' }],
+  // warrantyTime: [{ required: true, message: '保修期不能为空', trigger: 'blur' }],
+  engineerId: [{ required: true, message: 'FSE工程师名称不能为空', trigger: 'blur' }],
   // qqq: [{ required: true, message: 'FSE work cente不能为空', trigger: 'blur' }],
   // rrr: [{ required: true, message: 'FSE storage location不能为空', trigger: 'blur' }],
-  vvv: [{ required: true, message: '所属区域不能为空', trigger: 'blur' }],
+  area: [{ required: true, message: '所属区域不能为空', trigger: 'blur' }],
 }
 const options = [
   {
@@ -271,34 +282,30 @@ watch(
   v => {
     if (v) {
       form.value = {
-        TaskID: '',
-        aaa: '',
-        bbb: '',
-        ccc: '',
-        ddd: [],
-        eee: '',
-        fff: '',
-        ggg: '',
-        hhh: '',
-        iii: '',
-        jjj: '',
-        kkk: '',
-        lll: '',
-        mmm: '',
-        nnn: '',
-        ooo: '',
-        ppp: '',
-        qqq: '',
+        serialNo: '',
+        modelNo: '',
+        eqId: '',
+        dataOptions: '',
+        equipAddress: '',
+        custDesc: '',
+        contact: {
+          name: '',
+          lastName: '',
+          firstName: '',
+          mobile: '',
+          email: '',
+        },
+        vendor: '',
+        content: '',
+        source: '',
+        repairTime: '',
+        warrantyTime: '',
+        engineerId: '',
+        relationSourceNo: '',
         rrr: '',
-        vvv: '',
-        xxx: '',
-        zzz: '',
-        // label: '',
-        // value: '',
-        // category: '',
-        // orderNum: 0,
-        // valueType: 'string',
-        // remark: '',
+        qqq: '',
+        yyy: '',
+        area: '',
       }
       if (props.data) {
         for (let k in form.value) {
@@ -319,26 +326,41 @@ const handleClose = () => {
 const handleConfirm = () => {
   formRef.value.validate(valid => {
     if (valid) {
-      // form.value.value = form.value.category
-      // loading.value = true
-      // req[form.value.dictId ? 'put' : 'post']('/dict', form.value)
-      //   .then(({ code }) => {
-      //     if (code === 200) {
-      //       emit('success')
-      //       emit('update:modelValue', false)
-      //     }
-      //   })
-      //   .finally(() => {
-      //     loading.value = false
-      //   })
+      loading.value = true
+      req
+        .put('/api/request', form.value)
+        .then(({ code }) => {
+          if (code === 200) {
+            emit('success')
+            emit('update:modelValue', false)
+          }
+        })
+        .finally(() => {
+          loading.value = false
+        })
     }
   })
+}
+
+const changeOptions = val => {
+  // console.log(val, '1111')
+  if (!val) {
+    form.value.orderType = ''
+    form.value.subType = ''
+  } else if (val.length === 1) {
+    form.value.orderType = val[0]
+    form.value.subType = ''
+  } else {
+    form.value.orderType = val[0]
+    form.value.subType = val[1]
+  }
 }
 </script>
 <style scoped>
 .date-box :deep(.el-input__wrapper) {
   width: 95%;
 }
+
 .form_flex :deep(.el-form-item__content) {
   display: flex;
   justify-content: space-between;
