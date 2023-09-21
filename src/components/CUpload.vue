@@ -1,6 +1,5 @@
 <template>
   <el-upload
-    v-model:file-list="fileList"
     ref="upload"
     :action="url + obj2params(params)"
     :headers="headers"
@@ -9,6 +8,7 @@
     :on-preview="handlePreview"
     :before-upload="beforeUpload"
     v-bind="$attrs"
+    v-model:file-list="fileList"
   >
     <template #trigger>
       <slot name="trigger">
@@ -57,14 +57,12 @@ const fileList = ref([])
 watch(
   fileList,
   v => {
-    const ids = []
     v.forEach(i => {
       if (i.status === 'success') {
-        const { id } = i.response.data
-        ids.push(id)
+        Object.assign(i, i.response.data)
       }
     })
-    emit('update:modelValue', ids)
+    emit('update:modelValue', v)
   },
   { deep: true }
 )
@@ -79,7 +77,7 @@ function handleError(e) {
 }
 
 const handlePreview = file => {
-  window.open(import.meta.env.VITE_SERVER_PATH + file.response?.data.path)
+  window.open(import.meta.env.VITE_SERVER_PATH + file.path)
 }
 
 function beforeUpload(file) {
@@ -91,6 +89,5 @@ function beforeUpload(file) {
 }
 defineExpose({
   upload,
-  fileList,
 })
 </script>
