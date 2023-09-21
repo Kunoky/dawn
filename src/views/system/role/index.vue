@@ -35,7 +35,7 @@
             </el-button>
           </el-tooltip>
           <el-tooltip content="删除" placement="top" v-if="!row.isSuperAdmin">
-            <el-button link type="info" @click="handleDel(row)" v-hasPermi="['system:role:remove']">
+            <el-button link type="info" @click="handleDel(row)" v-hasPermi="['system:role:del']">
               <i-ep-delete />
             </el-button>
           </el-tooltip>

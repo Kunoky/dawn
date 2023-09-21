@@ -7,7 +7,7 @@ export function arr2tree(arr, key = 'id', pKey = 'pId') {
   const idNode = {},
     root = []
   arr.forEach(i => {
-    i.children = undefined
+    // i.children = undefined
     if (idNode[i[key]]) {
       Object.assign(idNode[i[key]], i)
     } else {

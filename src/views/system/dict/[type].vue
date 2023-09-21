@@ -22,7 +22,7 @@
           <el-button link type="info" @click="handleEdit(row)" v-hasPermi="['system:dict:edit']">
             {{ $t('common.edit') }}
           </el-button>
-          <el-button link type="danger" @click="handleDel(row)" v-hasPermi="['system:dict:remove']">
+          <el-button link type="danger" @click="handleDel(row)" v-hasPermi="['system:dict:del']">
             {{ $t('common.delete') }}
           </el-button>
         </template>
@@ -48,7 +48,7 @@
     <FormDialog :data="current" v-model="visible.form" @success="handleFormSuccess"></FormDialog>
   </div>
 </template>
-<script setup name="SystemDictData">
+<script setup name="SystemDictType">
 import FormDialog from './components/DataDialog.vue'
 import { source, init } from '@/utils/dict'
 

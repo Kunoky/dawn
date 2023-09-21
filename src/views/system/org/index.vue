@@ -26,7 +26,7 @@
             link
             type="danger"
             @click="handleDel(row)"
-            v-hasPermi="['system:org:remove']"
+            v-hasPermi="['system:org:del']"
           >
             删除
           </el-button>
@@ -84,7 +84,7 @@ const toggleExpand = () => {
   })
 }
 
-const parentId = ref(0)
+const parentId = ref('0')
 const current = ref(null)
 const visible = reactive({
   form: false,
@@ -96,8 +96,8 @@ const genorgTree = () => {
   if (orgTree.value.length) return
   let tree = [
     {
-      orgId: 0,
-      orgName: '主类目',
+      orgId: '0',
+      orgName: '根组织',
       children: [],
     },
   ]
@@ -109,7 +109,7 @@ const genorgTree = () => {
 
 const handleAdd = row => {
   genorgTree()
-  parentId.value = row?.orgId || 0
+  parentId.value = row?.orgId || '0'
   current.value = null
   visible.form = true
 }

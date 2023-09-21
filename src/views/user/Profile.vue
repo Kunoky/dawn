@@ -108,13 +108,13 @@ definePage({
 })
 
 const userStore = useUserStore()
-const user = toRef(userStore.user)
+const { user } = storeToRefs(userStore)
 
 const tab = ref('1')
 
 const baseRef = ref()
 const baseForm = reactive({
-  userId: user.value.userId,
+  userId: user.userId,
   userName: '',
   phoneNumber: '',
   email: '',
@@ -177,7 +177,7 @@ const pwdRules = ref({
 })
 const { run: editPwd, loading: pwdLoading } = useAsync(() => {
   const { oldPassword, password } = pwdForm
-  return req.put('user/updatePassword', { userId: user.value.userId, oldPassword, password })
+  return req.put('user/updatePassword', { userId: user.userId, oldPassword, password })
 })
 const submitPwd = () => {
   pwdRef.value.validate(valid => {

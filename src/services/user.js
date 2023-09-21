@@ -6,7 +6,7 @@ export const login = async user => req.post('/auth/login', user)
 
 export const getUser = async () => req.get('/user')
 
-export const listRoute = async () => req.get('/menu/list')
+export const listRoute = async () => req.get('/menu/userMenuList')
 
 export async function addUser(data) {
   data.version = 1

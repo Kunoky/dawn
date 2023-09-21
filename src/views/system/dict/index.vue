@@ -27,10 +27,10 @@
           <el-button link type="info" @click="handleEdit(row)" v-hasPermi="['system:dict:edit']">
             {{ $t('common.edit') }}
           </el-button>
-          <RouterLink :to="'/system/dict/' + row.type">
+          <RouterLink v-hasPermi="['/system/dict/:type']" :to="'/system/dict/' + row.type">
             <el-button link type="info">{{ $t('common.config') }}</el-button>
           </RouterLink>
-          <el-button link type="danger" @click="handleDel(row)" v-hasPermi="['system:dict:remove']">
+          <el-button link type="danger" @click="handleDel(row)" v-hasPermi="['system:dict:del']">
             {{ $t('common.delete') }}
           </el-button>
         </template>
