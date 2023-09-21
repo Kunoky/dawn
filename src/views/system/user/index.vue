@@ -56,7 +56,7 @@
                 </el-button>
               </el-tooltip>
               <el-tooltip :content="$t('common.delete')" placement="top" v-if="!row.isSuperAdmin">
-                <el-button link type="info" @click="handleDel(row)" v-hasPermi="['system:user:remove']">
+                <el-button link type="info" @click="handleDel(row)" v-hasPermi="['system:user:del']">
                   <i-ep-delete />
                 </el-button>
               </el-tooltip>

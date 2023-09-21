@@ -4,16 +4,12 @@ import { setToken, getToken, removeToken } from '@/utils/auth'
 import router, { dynamicRoutes } from '@/router'
 
 const menuCache = useStorage('menu', [])
+const userCache = useStorage('user', {})
 // 选项式样例
 export const useUserStore = defineStore('user', {
   state() {
-    const userStr = localStorage.getItem('user')
-    let user = null
-    if (userStr) {
-      user = JSON.parse(userStr)
-    }
     return {
-      user: user,
+      user: userCache.value,
       loading: {
         login: false,
         get: false,
@@ -53,14 +49,14 @@ export const useUserStore = defineStore('user', {
       this.loading.get = false
       if (code !== 200) return null
       this.user = data
-      localStorage.setItem('user', JSON.stringify(this.user))
+      userCache.value = data
       return this.user
     },
     logout(go2login) {
       removeToken()
-      localStorage.removeItem('user')
-      localStorage.removeItem('menu')
-      this.user = null
+      userCache.value = null
+      menuCache.value = []
+      this.user = {}
       this.menuTree = []
       const route = router.currentRoute
       if (go2login || !route.value.meta?.public) {
@@ -100,7 +96,7 @@ export const useUserStore = defineStore('user', {
               visible: i.visible,
             },
           }
-          i.status && menus.push(menuItem)
+          i.status && i.visible && menus.push(menuItem)
           if (i.menuType === 1) {
             keyMenu[menuItem.name] = menuItem
           }
@@ -109,7 +105,8 @@ export const useUserStore = defineStore('user', {
       const [tree, idNode] = utils.arr2tree(menus)
       this.menuTree = tree
       this.keyMenu = keyMenu
-      this.permission = perms
+      this.permission = this.user.permissions
+      // this.permission = [...this.user.permissions, ...perms]
       this.idMenu = idNode
     },
     addDynamicRoutes() {

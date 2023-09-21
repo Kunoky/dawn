@@ -140,12 +140,21 @@ const props = defineProps({
   data: Object,
   modelValue: Boolean,
   menus: Array,
-  parentId: Number,
+  parentId: String,
 })
 
 const rules = {
   menuName: [{ required: true, message: '菜单名称不能为空', trigger: 'blur' }],
-  path: [{ required: true, message: '菜单标识不能为空', trigger: 'blur' }],
+  path: [
+    { required: true, message: '菜单标识不能为空', trigger: 'blur' },
+    {
+      trigger: 'blur',
+      validator: (_, v, cb) => {
+        if (v === '*:*:*') return cb(new Error('非法数据'))
+        cb()
+      },
+    },
+  ],
   routeName: [{ required: true, message: '路由名称不能为空', trigger: 'blur' }],
 }
 
@@ -177,7 +186,6 @@ watch(
         for (let k in form.value) {
           form.value[k] = props.data[k]
         }
-        form.value.parentId &&= +form.value.parentId
       }
       nextTick(() => {
         formRef.value.clearValidate()

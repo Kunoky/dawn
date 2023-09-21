@@ -7,7 +7,7 @@ export function arr2tree(arr, key = 'id', pKey = 'pId') {
   const idNode = {},
     root = []
   arr.forEach(i => {
-    i.children = undefined
+    // i.children = undefined
     if (idNode[i[key]]) {
       Object.assign(idNode[i[key]], i)
     } else {
@@ -160,4 +160,15 @@ export function getElNest(el, selector, finalEl = document.body) {
   } else if (el !== finalEl && el.parentNode) {
     return getElNest(el.parentNode, selector, finalEl)
   }
+}
+
+export function obj2params(obj) {
+  let param = ''
+  if (obj) {
+    Object.entries(obj).forEach(([k, v]) => {
+      param &&= param + '&'
+      param += k + '=' + v
+    })
+  }
+  return param
 }

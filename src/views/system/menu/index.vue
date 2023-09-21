@@ -29,7 +29,7 @@
         </template>
       </el-table-column>
       <el-table-column prop="remark" label="备注" show-overflow-tooltip></el-table-column>
-      <el-table-column label="创建时间" prop="createTime" width="180">
+      <el-table-column label="创建时间" prop="createTime" width="140">
         <template #default="{ row }">
           <span>{{ parseTime(row.createTime) }}</span>
         </template>
@@ -38,7 +38,7 @@
         <template #default="{ row }">
           <el-button link type="info" @click="handleEdit(row)" v-hasPermi="['system:menu:edit']">修改</el-button>
           <el-button link type="info" @click="handleAdd(row)" v-hasPermi="['system:menu:add']">新增</el-button>
-          <el-button link type="danger" @click="handleDel(row)" v-hasPermi="['system:menu:remove']">删除</el-button>
+          <el-button link type="danger" @click="handleDel(row)" v-hasPermi="['system:menu:del']">删除</el-button>
         </template>
       </el-table-column>
       <template #actions>
@@ -100,7 +100,7 @@ const toggleExpand = () => {
 
 const status = useDict('status')
 
-const parentId = ref(0)
+const parentId = ref('0')
 const current = ref(null)
 const visible = reactive({
   form: false,
@@ -112,8 +112,8 @@ const genMenuTree = () => {
   if (menuTree.value.length) return
   let tree = [
     {
-      menuId: 0,
-      menuName: '主类目',
+      menuId: '0',
+      menuName: '根目录',
       children: [],
     },
   ]
@@ -125,7 +125,7 @@ const genMenuTree = () => {
 
 const handleAdd = row => {
   genMenuTree()
-  parentId.value = row?.menuId || 0
+  parentId.value = row?.menuId || '0'
   current.value = null
   visible.form = true
 }
