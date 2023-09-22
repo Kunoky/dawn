@@ -85,7 +85,7 @@ const handlePreview = file => {
 }
 
 function beforeUpload(file) {
-  if (!utils.mimeTypeMatch(file.type, props.accept)) {
+  if (props.accept && !utils.mimeTypeMatch(file.type, props.accept)) {
     ElMessage.error('无效的文件类型!')
     return false
   }
