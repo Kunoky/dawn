@@ -67,7 +67,7 @@ export const useUserStore = defineStore('user', {
       }
     },
     hasPermission(permissions) {
-      return this.permission.some(i => i === '*:*:*' || permissions?.includes(i))
+      return this.permission.some(i => permissions?.some(j => utils.wildMatch(j, i)))
     },
     async listMenu() {
       if (menuCache.value.length) return
