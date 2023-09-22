@@ -7,6 +7,8 @@
     :on-error="handleError"
     :on-preview="handlePreview"
     :before-upload="beforeUpload"
+    :on-remove="handleRemove"
+    :accept="accept"
     v-bind="$attrs"
     v-model:file-list="fileList"
   >
@@ -30,9 +32,8 @@
 </template>
 <script setup>
 import { getToken } from '@/utils/auth'
-import { watch } from 'vue'
 
-defineProps({
+const props = defineProps({
   params: {
     type: Object,
     required: true,
@@ -40,6 +41,9 @@ defineProps({
   modelValue: {
     type: Array,
     default: () => [],
+  },
+  accept: {
+    type: String,
   },
 })
 
@@ -81,11 +85,19 @@ const handlePreview = file => {
 }
 
 function beforeUpload(file) {
+  if (!utils.mimeTypeMatch(file.type, props.accept)) {
+    ElMessage.error('无效的文件类型!')
+    return false
+  }
   if (file.size > 20 * 1024 * 1024) {
     ElMessage.error('附件最大20MB!')
     return false
   }
   return true
+}
+
+function handleRemove(file) {
+  file.id && req.delete('attachment/' + file.id)
 }
 defineExpose({
   upload,

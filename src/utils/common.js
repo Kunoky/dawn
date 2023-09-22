@@ -172,3 +172,23 @@ export function obj2params(obj) {
   }
   return param
 }
+
+/**
+ * 通配符匹配
+ * @param {String} str
+ * @param {String} pattern
+ * @returns
+ */
+export function wildMatch(str, pattern) {
+  return str.match(new RegExp('^' + pattern.replace('*', '.*').replace('?', '.') + '$'))
+}
+
+/**
+ * input accept熟悉匹配
+ * @param {String} type
+ * @param {String} types
+ * @returns {Boolean}
+ */
+export function mimeTypeMatch(type, types) {
+  return types.split(/,\s*/).some(i => wildMatch(type, i))
+}
