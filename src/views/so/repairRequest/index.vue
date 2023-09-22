@@ -2,7 +2,7 @@
   <div>
     <CTable
       :page-conf="{
-        action: 'api/request/toBeCreatedList',
+        action: 'request/toBeCreatedList',
       }"
       ref="tableRef"
       id="repairRequest"
@@ -341,7 +341,7 @@ const handleBackConfirm = () => {
   formRefBack.value.validate(valid => {
     if (valid) {
       // console.log(formBack.value)
-      req.put('/api/request/rollback', formBack.value).then(({ code }) => {
+      req.put('/request/rollback', formBack.value).then(({ code }) => {
         if (code === 200) {
           ElMessage.success('退回成功')
         }
@@ -378,7 +378,7 @@ const handleConfirm = () => {
   formRefDetails.value.validate(valid => {
     if (valid) {
       // console.log(formDetails.value)
-      req.put('/api/request/close', formDetails.value).then(({ code }) => {
+      req.put('/request/close', formDetails.value).then(({ code }) => {
         if (code === 200) {
           ElMessage.success('关闭成功')
         }

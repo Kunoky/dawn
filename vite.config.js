@@ -123,7 +123,7 @@ export default defineConfig({
         // target: 'http://10.71.15.61:8080',
         target: 'http://10.71.9.27:8090',
         changeOrigin: true,
-        rewrite: path => path.replace(/^\/api/, ''),
+        rewrite: path => path.replace(/^\/api/, '/api'),
       },
     },
   },

@@ -26,7 +26,7 @@
       <slot name="file"></slot>
     </template>
     <template #tip>
-      <slot name="tip"><div class="el-upload__tip">不超过20MB</div></slot>
+      <slot name="tip"><div class="el-upload__tip">只能上传图片与PDF，文件大小不超过10MB</div></slot>
     </template>
   </el-upload>
 </template>
@@ -86,11 +86,11 @@ const handlePreview = file => {
 
 function beforeUpload(file) {
   if (props.accept && !utils.mimeTypeMatch(file.type, props.accept)) {
-    ElMessage.error('无效的文件类型!')
+    ElMessage.error('上传文件格式错误!')
     return false
   }
-  if (file.size > 20 * 1024 * 1024) {
-    ElMessage.error('附件最大20MB!')
+  if (file.size > 10 * 1024 * 1024) {
+    ElMessage.error('文件最大10MB!')
     return false
   }
   return true
