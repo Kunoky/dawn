@@ -250,7 +250,7 @@ let cachedData = {
 }
 const CACHE_KEY = 'c-table__' + props.id
 if (props.id) {
-  cachedData = useStorage(CACHE_KEY, cachedData.value)
+  cachedData = useStorageC(CACHE_KEY, cachedData.value)
 }
 const defaultSize = ref(cachedData.value.defaultSize)
 
