@@ -36,6 +36,7 @@
           <el-table-column label="状态" key="status">
             <template #default="{ row }">
               <el-switch
+                v-if="!row.isSuperAdmin"
                 v-model="row.status"
                 :active-value="1"
                 :inactive-value="0"
@@ -50,21 +51,23 @@
           </el-table-column>
           <el-table-column label="操作" width="150" class-name="small-padding fixed-width">
             <template #default="{ row }">
-              <el-tooltip :content="$t('common.edit')" placement="top">
-                <el-button link type="info" @click="handleEdit(row)" v-hasPermi="['system:user:edit']">
-                  <i-ep-edit />
-                </el-button>
-              </el-tooltip>
-              <el-tooltip :content="$t('common.delete')" placement="top" v-if="!row.isSuperAdmin">
-                <el-button link type="info" @click="handleDel(row)" v-hasPermi="['system:user:del']">
-                  <i-ep-delete />
-                </el-button>
-              </el-tooltip>
-              <el-tooltip :content="$t('view.user.resetPwd')" placement="top">
-                <el-button link type="info" @click="handleResetPwd(row)" v-hasPermi="['system:user:resetPwd']">
-                  <i-ep-key />
-                </el-button>
-              </el-tooltip>
+              <template v-if="!row.isSuperAdmin">
+                <el-tooltip :content="$t('common.edit')" placement="top">
+                  <el-button link type="info" @click="handleEdit(row)" v-hasPermi="['system:user:edit']">
+                    <i-ep-edit />
+                  </el-button>
+                </el-tooltip>
+                <el-tooltip :content="$t('common.delete')" placement="top">
+                  <el-button link type="info" @click="handleDel(row)" v-hasPermi="['system:user:del']">
+                    <i-ep-delete />
+                  </el-button>
+                </el-tooltip>
+                <el-tooltip :content="$t('view.user.resetPwd')" placement="top">
+                  <el-button link type="info" @click="handleResetPwd(row)" v-hasPermi="['system:user:resetPwd']">
+                    <i-ep-key />
+                  </el-button>
+                </el-tooltip>
+              </template>
             </template>
           </el-table-column>
           <template #actions>

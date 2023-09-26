@@ -3,8 +3,8 @@ import * as service from '@/services/user'
 import { setToken, getToken, removeToken } from '@/utils/auth'
 import router, { dynamicRoutes } from '@/router'
 
-const menuCache = useStorage('menu', [])
-const userCache = useStorage('user', {})
+const menuCache = useStorageC('menu', [])
+const userCache = useStorageC('user', {})
 // 选项式样例
 export const useUserStore = defineStore('user', {
   state() {

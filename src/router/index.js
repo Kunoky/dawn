@@ -68,12 +68,12 @@ router.beforeEach(async (to, from) => {
   if (hasAuth) return
   if (hasToken) {
     if (from.name === 'Login') return '/'
-    ElMessage({
-      message: '权限不足',
-      type: 'error',
-      duration: 5 * 1000,
-    })
-    return false
+    // ElMessage({
+    //   message: '权限不足',
+    //   type: 'error',
+    //   duration: 5 * 1000,
+    // })
+    return '/401'
   }
   return {
     path: '/login',

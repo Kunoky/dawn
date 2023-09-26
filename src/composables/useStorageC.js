@@ -7,7 +7,12 @@ export function useStorageC(key, defaultValue, storage) {
   }
   const cache = map.get(storage)
   const str = storage.getItem(key)
-  cache[key] ??= str ? JSON.parse(str) : defaultValue
+  if (!Object.hasOwn(cache, key)) {
+    if (str) {
+      cache[key] = JSON.parse(str)
+    }
+    cache[key] ??= defaultValue
+  }
   const value = computed({
     get() {
       return cache[key]
