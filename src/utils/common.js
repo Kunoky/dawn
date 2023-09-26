@@ -8,6 +8,7 @@ export function arr2tree(arr, key = 'id', pKey = 'pId') {
     root = []
   arr.forEach(i => {
     // i.children = undefined
+    delete i.children
     if (idNode[i[key]]) {
       Object.assign(idNode[i[key]], i)
     } else {

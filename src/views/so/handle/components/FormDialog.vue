@@ -242,7 +242,7 @@
             size="small"
             :data="annexData"
             style="width: 100%; margin-top: 10px; margin-bottom: 20px"
-            max-height="220"
+            max-height="120"
             :header-cell-style="{ background: '#f5f7fa' }"
           >
             <el-table-column prop="name" label="文件名称" />
@@ -258,7 +258,7 @@
             size="small"
             :data="annexData"
             style="width: 100%; margin-top: 10px; margin-bottom: 20px"
-            max-height="220"
+            max-height="120"
             :header-cell-style="{ background: '#f5f7fa' }"
           >
             <el-table-column prop="name" label="文件名称" />
@@ -273,8 +273,24 @@
           <el-table
             size="small"
             :data="annexData"
+            style="width: 100%; margin-top: 10px; margin-bottom: 20px"
+            max-height="120"
+            :header-cell-style="{ background: '#f5f7fa' }"
+          >
+            <el-table-column prop="name" label="文件名称" />
+            <el-table-column prop="dateTime" label="上传时间" />
+            <el-table-column label="操作" class-name="small-padding fixed-width" width="100">
+              <template #default="{ row }">
+                <el-button type="primary" link @click="handleDownloadFile(row)">下载</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+          <span>报价确认单附件</span>
+          <el-table
+            size="small"
+            :data="annexData"
             style="width: 100%; margin-top: 10px"
-            max-height="220"
+            max-height="120"
             :header-cell-style="{ background: '#f5f7fa' }"
           >
             <el-table-column prop="name" label="文件名称" />

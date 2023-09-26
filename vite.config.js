@@ -90,6 +90,8 @@ const plugins = [
     ...visualizer(),
     apply: () => process.env.stats,
   },
+
+  // ------------------
   // {
   //   ...viteMockServe({
   //     mockPath: 'mock',
@@ -108,6 +110,7 @@ const plugins = [
   //   }),
   //   apply: 'build',
   // },
+  // ---------------------
 ]
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -116,11 +119,11 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: '8000',
-    // strictPort: true,
+    strictPort: true,
     proxy: {
       '^/api': {
         // target: 'http://10.71.4.66:5006',
-        // target: 'http://10.71.15.61:8080',
+        // target: 'http://10.71.15.61:8090',
         target: 'http://10.71.9.27:8090',
         changeOrigin: true,
         rewrite: path => path.replace(/^\/api/, '/api'),

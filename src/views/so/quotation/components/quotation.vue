@@ -7,6 +7,7 @@
     v-bind="$attrs"
     :close-on-click-modal="false"
   >
+    <el-button class="mt-4" type="primary" style="margin-bottom: 10px" @click="onAddItem">新增配件</el-button>
     <el-table
       :data="tableData"
       @cell-mouse-enter="handleCellEnter"
@@ -25,8 +26,18 @@
           <div v-else class="txt">{{ scope.row.name }}</div>
         </template>
       </el-table-column> -->
-      <el-table-column prop="date" label="配件/Labor料号" />
-      <el-table-column prop="name" label="单位" />
+      <el-table-column prop="date" label="配件/Labor料号">
+        <template #default="{ row }">
+          <el-input v-if="row.isEdit" v-model="row.date" placeholder="请输入"></el-input>
+          <div v-else class="txt">{{ row.date }}</div>
+        </template>
+      </el-table-column>
+      <el-table-column prop="name" label="单位">
+        <template #default="{ row }">
+          <el-input v-if="row.isEdit" v-model="row.name" placeholder="请输入"></el-input>
+          <div v-else class="txt">{{ row.name }}</div>
+        </template>
+      </el-table-column>
       <el-table-column prop="aaa" label="含税价格">
         <template #default="{ row }">
           <el-input v-if="row.isEdit" v-model="row.aaa" placeholder="请输入"></el-input>
@@ -39,7 +50,18 @@
           <div v-else class="txt">{{ row.sss }}</div>
         </template>
       </el-table-column>
+      <el-table-column prop="zzz" label="折扣率">
+        <template #default="{ row }">
+          <el-input v-if="row.isEdit" v-model="formData.discount" placeholder="请输入"></el-input>
+          <div v-else class="txt">{{ formData.discount }}</div>
+        </template>
+      </el-table-column>
       <el-table-column prop="address" label="总价" />
+      <el-table-column fixed="right" label="操作" width="120">
+        <template #default="scope">
+          <el-button link type="primary" size="small" @click.prevent="deleteRow(scope.$index)">删除</el-button>
+        </template>
+      </el-table-column>
     </el-table>
 
     <div style="margin-top: 20px">
@@ -61,11 +83,11 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="折扣率" prop="discount">
-              <el-input disabled v-model="formData.discount" placeholder="请输入折扣">
+            <el-form-item label="折扣率" prop="discount" class="form_flex">
+              <el-input class="mgr-s" v-model="formData.discount" placeholder="请输入折扣">
                 <template #append>%</template>
               </el-input>
-              <!-- <el-button @click="handelEditDiscount">计算最终价格</el-button> -->
+              <el-button style="padding: 0 2px" @click="handelEditDiscount">计算最终价格</el-button>
             </el-form-item>
           </el-col>
           <el-col :span="24">
@@ -165,12 +187,13 @@ const props = defineProps({
 })
 
 const activeNames = ref(['2'])
-const tableData = [
+const tableData = ref([
   {
     date: '1',
     name: 'xxx',
     aaa: '92',
     sss: '2',
+    zzz: 80,
     address: '322',
   },
   {
@@ -178,6 +201,7 @@ const tableData = [
     name: 'xxx',
     aaa: '67',
     sss: '2',
+    zzz: 80,
     address: '13676',
   },
   {
@@ -185,6 +209,7 @@ const tableData = [
     name: 'xxx',
     aaa: '45',
     sss: '2',
+    zzz: 80,
     address: '2324',
   },
   {
@@ -192,9 +217,24 @@ const tableData = [
     name: 'xxx',
     aaa: '24',
     sss: '2',
+    zzz: 80,
     address: '34534',
   },
-]
+])
+const onAddItem = () => {
+  // now.setDate(now.getDate() + 1)
+  tableData.value.push({
+    date: '',
+    name: '',
+    aaa: '',
+    sss: '',
+    zzz: null,
+    address: '',
+  })
+}
+const deleteRow = index => {
+  tableData.value.splice(index, 1)
+}
 const loading = ref(false)
 const form = ref({})
 watch(
@@ -214,6 +254,7 @@ const handleClose = () => {
 }
 const formRef = ref()
 const handleConfirm = () => {
+  // console.log(tableData.value);
   // formRef.value.validate(valid => {
   //   if (valid) {
   //   }
@@ -292,13 +333,13 @@ const getSummaries = param => {
 //   })
 // }
 // 修改折扣
-// const handelEditDiscount = () => {
-//   if (formData.value.discoun != undefined || formData.value.discoun != '') {
-//     let totalData = ref(null)
-//     totalData.value = (formData.value.discount * zong.value) / 100
-//     formData.value.totalVal = totalData.value.toFixed(2)
-//   }
-// }
+const handelEditDiscount = () => {
+  if (formData.value.discoun !== undefined || formData.value.discoun !== '') {
+    let totalData = ref(null)
+    totalData.value = (formData.value.discount * zong.value) / 100
+    formData.value.totalVal = totalData.value.toFixed(2)
+  }
+}
 const handelEditTotal = () => {
   if (formData.value.totalVal !== '' || formData.value.totalVa !== undefined) {
     let data = ref(null)

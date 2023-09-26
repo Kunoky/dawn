@@ -47,37 +47,14 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="保修期" prop="warrantyTime" class="date-box">
-            <el-date-picker
-              v-model="form.warrantyTime"
-              type="date"
-              placeholder="请选择保修期"
-              style="width: 100%"
-              clearabl
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="维修类型" prop="dataOptions">
-            <el-cascader
-              v-model="form.dataOptions"
-              :options="options"
-              filterable
-              clearable
-              style="width: 100%"
-              @change="changeOptions"
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
           <el-form-item label="仪器地址" prop="equipAddress">
             <el-input v-model="form.equipAddress" placeholder="请输入仪器地址" clearable />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="客户单位名称" prop="contact.customerId">
+          <el-form-item label="客户单位名称" prop="custDesc">
             <el-select
-              v-model="form2.custDesc"
+              v-model="form.custDesc"
               placeholder="请输入客户单位名称"
               filterable
               remote
@@ -93,7 +70,7 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="客户锁信息" prop="blockFlag">
-            <el-input disabled v-model="form2.blockFlag" placeholder="自动填入" clearable />
+            <el-input disabled v-model="form.blockFlag" placeholder="自动填入" clearable />
           </el-form-item>
         </el-col>
         <!-- <el-col :span="12">
@@ -102,18 +79,18 @@
           </el-form-item>
         </el-col> -->
         <el-col :span="12">
-          <el-form-item label="客户联系人" prop="contact.name">
-            <el-input v-model="form.contact.name" placeholder="请输入客户联系人" clearable />
+          <el-form-item label="客户联系人" prop="name">
+            <el-input v-model="form.name" placeholder="请输入客户联系人" clearable />
           </el-form-item>
         </el-col>
-        <el-col :span="6">
-          <el-form-item label="客户联系人拼音" prop="contact.lastName" class="form_flex">
-            <el-input v-model="form.contact.lastName" placeholder="请输入客户联系人拼音(姓)" clearable />
+        <el-col :span="7">
+          <el-form-item label="客户联系人拼音" prop="lastName" class="form_flex">
+            <el-input v-model="form.lastName" placeholder="请输入客户联系人拼音(姓)" clearable />
           </el-form-item>
         </el-col>
-        <el-col :span="6">
-          <el-form-item prop="contact.firstName" class="item">
-            <el-input v-model="form.contact.firstName" placeholder="请输入客户联系人拼音(名)" clearable />
+        <el-col :span="5">
+          <el-form-item prop="firstName" class="item">
+            <el-input v-model="form.firstName" placeholder="请输入客户联系人拼音(名)" clearable />
           </el-form-item>
         </el-col>
         <!-- <el-col :span="12">
@@ -122,13 +99,41 @@
           </el-form-item>
         </el-col> -->
         <el-col :span="12">
-          <el-form-item label="客户联系人电话" prop="contact.mobile">
-            <el-input v-model="form.contact.mobile" placeholder="请输入客户联系人电话" clearable />
+          <el-form-item label="客户联系人电话" prop="mobile">
+            <el-input v-model="form.mobile" placeholder="请输入客户联系人电话" clearable />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="客户联系人邮箱" prop="contact.email">
-            <el-input v-model="form.contact.email" placeholder="请输入客户联系人邮箱" clearable />
+          <el-form-item label="客户联系人邮箱" prop="email">
+            <el-input v-model="form.email" placeholder="请输入客户联系人邮箱" clearable />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="保修期" prop="warrantyTime" class="date-box">
+            <el-date-picker
+              v-model="form.warrantyTime"
+              type="date"
+              value-format="YYYY-MM-DD"
+              placeholder="请选择保修期"
+              style="width: 100%"
+              clearabl
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="维修类型" prop="dataOptions">
+            <el-cascader
+              v-model="form.dataOptions"
+              :options="props.options"
+              filterable
+              clearable
+              style="width: 100%"
+              @change="changeOptions"
+              :props="{
+                label: 'name',
+                value: 'id',
+              }"
+            />
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -137,22 +142,40 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="FSE工程师名称" prop="engineerId">
-            <el-input v-model="form.engineerId" placeholder="请输入FSE工程师名称">
+          <el-form-item label="FSE工程师名称" prop="engineerName">
+            <!-- <el-input v-model="form.engineerId" placeholder="请输入FSE工程师名称">
               <template #append>
                 <el-button @click="searchFSE"><i-ep-Search /></el-button>
               </template>
-            </el-input>
+            </el-input> -->
+            <el-select
+              v-model="form.engineerName"
+              placeholder="请输入FSE工程师名称"
+              filterable
+              remote
+              reserve-keyword
+              :remote-method="remoteMethodEngineerName"
+              :loading="engineerNameLoading"
+              @change="changeEngineerName"
+              style="width: 100%"
+            >
+              <el-option
+                v-for="item in engineerNameOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="FSE work center" prop="center">
-            <el-input v-model="form2.center" disabled placeholder="自动填入" clearable />
+          <el-form-item label="FSE work center" prop="fseWorkCenter">
+            <el-input v-model="form.fseWorkCenter" disabled placeholder="自动填入" clearable />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="FSE storage location" prop="location">
-            <el-input v-model="form2.location" disabled placeholder="自动填入" clearable />
+          <el-form-item label="FSE storage location" prop="fseStorageLocation">
+            <el-input v-model="form.fseStorageLocation" disabled placeholder="自动填入" clearable />
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -173,6 +196,7 @@
             <el-date-picker
               v-model="form.repairTime"
               style="width: 100%"
+              value-format="YYYY-MM-DD hh:ss:mm"
               type="datetime"
               placeholder="请选择报修时间"
               clearable
@@ -181,7 +205,7 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="所属区域" prop="area">
-            <el-input v-model="form.area" placeholder="请输入所属区域" clearable />
+            <el-input v-model="form.area" disabled placeholder="自动填入" clearable />
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -268,6 +292,7 @@ const emit = defineEmits(['update:modelValue', 'success'])
 const props = defineProps({
   data: Object,
   modelValue: Boolean,
+  options: Array,
 })
 
 const title = computed(() => (props.data ? '完善信息' : '新建维修申请'))
@@ -278,96 +303,41 @@ const rules = {
   // eqId: [{ required: true, message: '仪器SAP Equip编号不能为空', trigger: 'blur' }],
   dataOptions: [{ required: true, message: '维修类型不能为空', trigger: 'change' }],
   equipAddress: [{ required: true, message: '仪器地址不能为空', trigger: 'blur' }],
-  'contact.customerId': [{ required: true, message: '客户单位名称不能为空', trigger: 'change' }],
+  custDesc: [{ required: true, message: '客户单位名称不能为空', trigger: 'change' }],
   // ggg: [{ required: true, message: '客户编号不能为空', trigger: 'blur' }],
-  'contact.name': [{ required: true, message: '客户联系人不能为空', trigger: 'blur' }],
-  'contact.lastName': [{ required: true, message: '客户联系人拼音(姓)不能为空', trigger: 'blur' }],
-  'contact.firstName': [{ required: true, message: '客户联系人拼音(名)不能为空', trigger: 'blur' }],
-  'contact.mobile': [{ required: true, message: '客户联系人电话不能为空', trigger: 'blur' }],
-  'contact.email': [{ required: true, message: '客户联系人邮箱不能为空', trigger: 'blur' }],
+  name: [{ required: true, message: '客户联系人不能为空', trigger: 'blur' }],
+  lastName: [{ required: true, message: '客户联系人拼音(姓)不能为空', trigger: 'blur' }],
+  firstName: [{ required: true, message: '客户联系人拼音(名)不能为空', trigger: 'blur' }],
+  mobile: [{ required: true, message: '客户联系人电话不能为空', trigger: 'blur' }],
+  email: [{ required: true, message: '客户联系人邮箱不能为空', trigger: 'blur' }],
   // vendor: [{ required: true, message: '代理商不能为空', trigger: 'blur' }],
   content: [{ required: true, message: '报修内容不能为空', trigger: 'blur' }],
   // source: [{ required: true, message: '报修来源不能为空', trigger: 'blur' }],
   repairTime: [{ required: true, message: '报修时间不能为空', trigger: 'blur' }],
   // warrantyTime: [{ required: true, message: '保修期不能为空', trigger: 'blur' }],
-  engineerId: [{ required: true, message: 'FSE工程师名称不能为空', trigger: 'blur' }],
+  engineerName: [{ required: true, message: 'FSE工程师名称不能为空', trigger: 'blur' }],
   // center: [{ required: true, message: 'FSE work cente不能为空', trigger: 'blur' }],
   // location: [{ required: true, message: 'FSE storage location不能为空', trigger: 'blur' }],
-  area: [{ required: true, message: '所属区域不能为空', trigger: 'blur' }],
+  // area: [{ required: true, message: '所属区域不能为空', trigger: 'blur' }],
 }
-const options = [
-  {
-    value: 'SM01',
-    label: 'SM01',
-  },
-  {
-    value: 'SM02',
-    label: 'SM02',
-  },
-  {
-    value: 'SM03',
-    label: 'SM03',
-    children: [
-      {
-        value: 'xxx',
-        label: '111',
-      },
-      {
-        value: 'xxx',
-        label: '222',
-      },
-      {
-        value: 'xxx',
-        label: '333',
-      },
-      {
-        value: 'xxx',
-        label: '444',
-      },
-    ],
-  },
-  {
-    value: 'SM04',
-    label: 'SM04',
-    children: [
-      {
-        value: 'xxx',
-        label: '111',
-      },
-      {
-        value: 'xxx',
-        label: '222',
-      },
-    ],
-  },
-  {
-    value: 'SM05',
-    label: 'SM05',
-    children: [
-      {
-        value: 'xxx',
-        label: '111',
-      },
-      {
-        value: 'xxx',
-        label: '222',
-      },
-      {
-        value: 'xxx',
-        label: '333',
-      },
-    ],
-  },
-]
+// onMounted(() => {
+//   getMaintenanceType()
+// })
+// const options = ref([])
+// const getMaintenanceType = async () => {
+//   return req.get('/data/maintenanceType').then(res => {
+//     const [tree] = utils.arr2tree(res.data,'id',  'pid')
+//     options.value = tree
+//   })
+// }
 const loading = ref(false)
 const formRef = ref()
 const form = ref({})
-const form2 = ref({
-  custDesc: '',
-  location: '',
-  center: '',
-  blockFlag: '',
-})
+// const form2 = ref({
+//   // custDesc: '',
+//   location: '',
+//   center: '',
+// })
 watch(
   () => props.modelValue,
   v => {
@@ -379,26 +349,30 @@ watch(
         eqId: '',
         dataOptions: '',
         equipAddress: '',
-        contact: {
-          customerId: '',
-          name: '',
-          lastName: '',
-          firstName: '',
-          mobile: '',
-          email: '',
-        },
+        custDesc: '',
+        customerId: '',
+        blockFlag: '',
+        name: '',
+        lastName: '',
+        firstName: '',
+        mobile: '',
+        email: '',
         vendor: '',
         content: '',
         source: '',
         repairTime: '',
         warrantyTime: '',
+        engineerName: '',
         engineerId: '',
+        fseWorkCenter: '',
+        fseStorageLocation: '',
         relationSourceNo: '',
         isCrc: false,
         area: '',
         orderType: '', // 维修类型
         subType: '', //维修子类型
         isConsistentSap: true,
+        attaIds: '',
       }
       if (props.data) {
         for (let k in form.value) {
@@ -449,15 +423,17 @@ const changeSeriaNo = val => {
   form.value.modelNo = val.typbz
   form.value.eqId = val.matnr
   staging.value.aaa = val.customer.companyName1
-  staging.value.bbb = val.customer.companyName1
-  form2.value.custDesc = val.customer.companyName1
-  form.value.contact.customerId = val.customer.kunnr
-  form.value.contact.name = val.customer.name3
-  form2.value.blockFlag = val.customer.blockFlag !== null ? val.customer.blockFlag : '无'
-  form.value.contact.lastName = val.customer.lastName
-  form.value.contact.firstName = val.customer.namev
-  form.value.contact.mobile = val.customer.tel
-  form.value.contact.email = val.customer.smtpAddr
+  staging.value.bbb = val.customer.city1 + val.customer.city2 + val.customer.street
+  form.value.custDesc = val.customer.companyName1
+  form.value.customerId = val.customer.kunnr
+  form.value.name = val.customer.name3
+  form.value.blockFlag = val.customer.blockFlag !== null ? val.customer.blockFlag : '无'
+  form.value.lastName = val.customer.lastName
+  form.value.firstName = val.customer.namev
+  form.value.mobile = val.customer.tel
+  form.value.email = val.customer.smtpAddr
+  form.value.area = val.customer.regio //区域
+  form.value.equipAddress = val.customer.city1 + val.customer.city2 + val.customer.street //仪器地址
 }
 
 // 客户单位名称
@@ -487,41 +463,49 @@ const remoteMethodCustDesc = query => {
   }
 }
 const changeCustDesc = val => {
-  form.value.serialNo = val.sernr
-  form2.value.blockFlag = val.blockFlag !== null ? val.blockFlag : '无'
-  form.value.contact.name = val.name3
-  form.value.contact.customerId = val.kunnr
-  form.value.contact.lastName = val.lastName
-  form.value.contact.firstName = val.namev
-  form.value.contact.mobile = val.tel
-  form.value.contact.email = val.smtpAddr
+  // form.value.serialNo = val.sernr
+  form.value.blockFlag = val.blockFlag !== null ? val.blockFlag : '无'
+  form.value.name = val.name3
+  form.value.customerId = val.kunnr
+  form.value.lastName = val.lastName
+  form.value.firstName = val.namev
+  form.value.mobile = val.tel
+  form.value.email = val.smtpAddr
+  form.value.area = val.customer.regio //区域
+  form.value.equipAddress = val.customer.city1 + val.custome.street //仪器地址
 }
 
-// 取消
-const handleClose = () => {
-  emit('update:modelValue', false)
-}
-const handleConfirm = () => {
-  formRef.value.validate(valid => {
-    if (valid) {
-      // if (staging.value.aaa !== form2.value.custDesc) {
-      //   form.value.isConsistentSap = false
-      // } else {
-      //   form.value.isConsistentSap = true
-      // }
-      loading.value = true
-      req[form.value.id ? 'put' : 'post']('/request', form.value)
-        .then(({ code }) => {
-          if (code === 200) {
-            emit('success')
-            emit('update:modelValue', false)
-          }
-        })
-        .finally(() => {
-          loading.value = false
-        })
-    }
+// FSE工程师名称
+const engineerNameLoading = ref(false)
+const engineerNameList = ref([])
+const engineerNameOptions = ref([])
+async function getEngineerName(v) {
+  return req.get('/user/fse', { params: { fseName: v } }).then(res => {
+    engineerNameList.value = res.data.map(item => {
+      return { value: item, label: `${item.fseName}` }
+    })
   })
+}
+const remoteMethodEngineerName = query => {
+  if (query) {
+    engineerNameLoading.value = true
+    getEngineerName(query).then(() => {
+      engineerNameLoading.value = false
+      engineerNameOptions.value = engineerNameList.value.filter(item => {
+        return item.label.toLowerCase().includes(query.toLowerCase())
+      })
+    })
+    // setTimeout(() => {
+    // }, 200)
+  } else {
+    engineerNameOptions.value = []
+  }
+}
+const changeEngineerName = val => {
+  form.value.engineerId = val.fseId
+  form.value.engineerName = val.fseName
+  form.value.fseWorkCenter = val.fseWorkCenter
+  form.value.fseStorageLocation = val.fseStorageLocation
 }
 
 const changeOptions = val => {
@@ -574,8 +558,41 @@ const list = ref([])
 const params = {
   type: 1,
 }
-
-const searchFSE = () => {}
+// 取消
+const handleClose = () => {
+  emit('update:modelValue', false)
+}
+const handleConfirm = () => {
+  formRef.value.validate(valid => {
+    // console.log(form.value);
+    if (valid) {
+      delete form.value.blockFlag
+      delete form.value.fseWorkCenter
+      delete form.value.fseStorageLocation
+      delete form.value.dataOptions
+      delete form.value.area
+      delete form.value.engineerName
+      form.value.attaIds = list.value.map(item => item.id)
+      if (staging.value.aaa !== form.value.custDesc || staging.value.bbb !== form.value.equipAddress) {
+        form.value.isConsistentSap = false
+      } else {
+        form.value.isConsistentSap = true
+      }
+      // console.log(form.value);
+      loading.value = true
+      req[form.value.id ? 'put' : 'post']('/request', form.value)
+        .then(({ code }) => {
+          if (code === 200) {
+            emit('success')
+            emit('update:modelValue', false)
+          }
+        })
+        .finally(() => {
+          loading.value = false
+        })
+    }
+  })
+}
 </script>
 <style scoped>
 .date-box :deep(.el-input__wrapper) {

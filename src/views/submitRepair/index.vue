@@ -2,7 +2,7 @@
   <div>
     <CTable
       :page-conf="{
-        action: '/request/toBeCreatedList',
+        action: '/request/myList',
       }"
       ref="tableRef"
       id="repairRequest"
@@ -24,34 +24,22 @@
       </el-table-column> -->
       <el-table-column label="状态" prop="status" width="100">
         <template #default="{ row }">
-          <span
-            v-if="getStatus(row.status) === '创建失败'"
+          <!-- <span
+            v-if="getStatus(row.status) === '已提交'"
             class="cs-p fw-b"
             style="color: #e71316"
             @click="handleState(row)"
           >
             {{ getStatus(row.status) }}
-          </span>
+          </span> -->
           <span class="cs-p fw-b" style="color: #909399">{{ getStatus(row.status) }}</span>
         </template>
       </el-table-column>
       <el-table-column label="客户单位名称" prop="custDesc" width="120" />
       <el-table-column label="客户编号" prop="customerId" width="100" />
-      <el-table-column label="客户联系人" width="100">
-        <template #default="{ row }">
-          <span>{{ row.contact?.name }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="客户联系人电话" width="120">
-        <template #default="{ row }">
-          <span>{{ row.contact?.mobile }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="客户联系人邮箱" width="130">
-        <template #default="{ row }">
-          <span>{{ row.contact?.email }}</span>
-        </template>
-      </el-table-column>
+      <el-table-column label="客户联系人" prop="name" width="100" />
+      <el-table-column label="客户联系人电话" prop="mobile" width="120" />
+      <el-table-column label="客户联系人邮箱" prop="email" width="130" />
       <el-table-column label="代理商" prop="vendor" width="100" />
       <el-table-column label="报修内容" prop="content" width="120" :show-overflow-tooltip="true" />
       <el-table-column label="报修来源" prop="source" width="100" />
@@ -81,7 +69,17 @@
           </el-select>
         </el-form-item>
         <el-form-item label="维修类型" prop="orderType">
-          <el-cascader v-model="form.orderType" :options="options" filterable clearable />
+          <el-cascader
+            v-model="orderType"
+            :options="options"
+            filterable
+            clearable
+            @change="changeOptions"
+            :props="{
+              label: 'name',
+              value: 'id',
+            }"
+          />
         </el-form-item>
         <el-form-item label="状态" prop="status">
           <el-select v-model="form.status" placeholder="请选择状态" clearable>
@@ -124,7 +122,7 @@
         </el-form-item>
       </template>
     </CTable>
-    <FormDialog :data="current" v-model="visible.form" @success="handleFormSuccess"></FormDialog>
+    <FormDialog :data="current" v-model="visible.form" :options="options" @success="handleFormSuccess"></FormDialog>
 
     <el-dialog title="关闭" width="30%" v-model="detailVisible" :close-on-click-modal="false">
       <el-form :model="formDetails" ref="formRefDetails" label-width="80" :rules="rules">
@@ -206,70 +204,27 @@ import FormDialog from './components/FormDialog.vue'
 const tableRef = ref()
 const refresh = () => tableRef.value.refresh()
 // const i18n = useI18n()
-const options = [
-  {
-    value: 'SM01',
-    label: 'SM01',
-  },
-  {
-    value: 'SM02',
-    label: 'SM02',
-  },
-  {
-    value: 'SM03',
-    label: 'SM03',
-    children: [
-      {
-        value: 'xxx',
-        label: '111',
-      },
-      {
-        value: 'xxx',
-        label: '222',
-      },
-      {
-        value: 'xxx',
-        label: '333',
-      },
-      {
-        value: 'xxx',
-        label: '444',
-      },
-    ],
-  },
-  {
-    value: 'SM04',
-    label: 'SM04',
-    children: [
-      {
-        value: 'xxx',
-        label: '111',
-      },
-      {
-        value: 'xxx',
-        label: '222',
-      },
-    ],
-  },
-  {
-    value: 'SM05',
-    label: 'SM05',
-    children: [
-      {
-        value: 'xxx',
-        label: '111',
-      },
-      {
-        value: 'xxx',
-        label: '222',
-      },
-      {
-        value: 'xxx',
-        label: '333',
-      },
-    ],
-  },
-]
+onMounted(() => {
+  getMaintenanceType()
+})
+const options = ref([])
+const getMaintenanceType = async () => {
+  return req.get('/data/maintenanceType').then(res => {
+    const [tree] = utils.arr2tree(res.data, 'id', 'pid')
+    options.value = tree
+  })
+}
+const orderType = ref([])
+const changeOptions = val => {
+  // console.log(val);
+  if (!val) {
+    tableRef.value.form.orderType = ''
+    tableRef.value.form.subType = ''
+  } else {
+    tableRef.value.form.orderType = val[0]
+    tableRef.value.form.subType = val[1]
+  }
+}
 const current = ref(null)
 const visible = reactive({
   form: false,
@@ -436,11 +391,11 @@ const record = ref({
   state: 'xxxxxxxxxxxxxxxxxxxxxxxxxxx',
 })
 
-const handleState = row => {
-  record.value.state = row.backReason
-  visibleState.value = true
-}
-const handleCloseState = () => {
-  visibleState.value = false
-}
+// const handleState = row => {
+//   record.value.state = row.backReason
+//   visibleState.value = true
+// }
+// const handleCloseState = () => {
+//   visibleState.value = false
+// }
 </script>

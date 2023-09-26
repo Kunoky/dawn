@@ -17,7 +17,7 @@ function resPage(data) {
 const menus = [
   {
     menuId: 0,
-    pid: 0,
+    parentId: 0,
     menuType: 2,
     menuName: '超级管理员',
     orderNum: 0,
@@ -26,7 +26,7 @@ const menus = [
   },
   {
     menuId: 1,
-    pid: 0,
+    parentId: 0,
     menuType: 1,
     icon: 'ep:house',
     menuName: '首页',
@@ -39,7 +39,7 @@ const menus = [
   },
   {
     menuId: 2,
-    pid: 0,
+    parentId: 0,
     menuType: 1,
     icon: 'iconoir:submit-document',
     menuName: '提交维修申请',
@@ -52,7 +52,7 @@ const menus = [
   },
   {
     menuId: 3,
-    pid: 0,
+    parentId: 0,
     menuType: 1,
     icon: 'mingcute:inventory-line',
     menuName: '移库单管理',
@@ -65,7 +65,7 @@ const menus = [
   },
   // {
   //   menuId: 4,
-  //   pid: 3,
+  //   parentId: 3,
   //   menuType: 1,
   //   // icon: 'icon-park-outline:repair',
   //   menuName: '移库单',
@@ -78,7 +78,7 @@ const menus = [
   // },
   {
     menuId: 5,
-    pid: 0,
+    parentId: 0,
     menuType: 1,
     icon: 'ep:message-box',
     menuName: 'SO管理',
@@ -91,7 +91,7 @@ const menus = [
   },
   {
     menuId: 6,
-    pid: 5,
+    parentId: 5,
     menuType: 1,
     // icon: 'ep:message-box',
     menuName: '待创建SO',
@@ -104,7 +104,7 @@ const menus = [
   },
   {
     menuId: 7,
-    pid: 5,
+    parentId: 5,
     menuType: 1,
     // icon: 'ep:message-box',
     menuName: '查询SO',
@@ -117,10 +117,10 @@ const menus = [
   },
   {
     menuId: 8,
-    pid: 5,
+    parentId: 5,
     menuType: 1,
     // icon: 'ep:message-box',
-    menuName: '待处理SO',
+    menuName: 'Lock失败记录 ',
     orderNum: 0,
     path: '/so/handle',
     routeName: 'SoHandle',
@@ -130,7 +130,7 @@ const menus = [
   },
   // {
   //   menuId: 9,
-  //   pid: 5,
+  //   parentId: 5,
   //   menuType: 1,
   //   // icon: 'ep:message-box',
   //   menuName: '待核验SO',
@@ -143,7 +143,7 @@ const menus = [
   // },
   {
     menuId: 10,
-    pid: 5,
+    parentId: 5,
     menuType: 1,
     // icon: 'ep:message-box',
     menuName: '待报价SO',
@@ -156,7 +156,7 @@ const menus = [
   },
   {
     menuId: 11,
-    pid: 5,
+    parentId: 5,
     menuType: 1,
     // icon: 'ep:message-box',
     menuName: '待转移SO',
@@ -169,7 +169,7 @@ const menus = [
   },
   {
     menuId: 12,
-    pid: 5,
+    parentId: 5,
     menuType: 1,
     // icon: 'ep:message-box',
     menuName: '待Billing SO',
@@ -182,7 +182,7 @@ const menus = [
   },
   {
     menuId: 13,
-    pid: 5,
+    parentId: 5,
     menuType: 1,
     // icon: 'ep:message-box',
     menuName: '待发货SO',
@@ -195,7 +195,7 @@ const menus = [
   },
   {
     menuId: 14,
-    pid: 5,
+    parentId: 5,
     menuType: 1,
     // icon: 'ep:message-box',
     menuName: '待指派SO',
@@ -208,19 +208,6 @@ const menus = [
   },
   {
     menuId: 15,
-    pid: 0,
-    menuType: 1,
-    icon: 'ep:lock',
-    menuName: '客户锁管理',
-    orderNum: 0,
-    path: '/customerLock',
-    routeName: 'CustomerLock',
-    isCache: 1,
-    visible: 1,
-    status: 1,
-  },
-  {
-    menuId: 16,
     parentId: 5,
     menuType: 1,
     // icon: 'ep:lock',
@@ -233,8 +220,34 @@ const menus = [
     status: 1,
   },
   {
+    menuId: 16,
+    parentId: 0,
+    menuType: 1,
+    icon: 'ep:lock',
+    menuName: '客户锁管理',
+    orderNum: 0,
+    path: '/customerLock',
+    routeName: 'CustomerLock',
+    isCache: 1,
+    visible: 1,
+    status: 1,
+  },
+  {
+    menuId: 17,
+    parentId: 0,
+    menuType: 1,
+    icon: 'eos-icons:packages-outlined',
+    menuName: 'BOM管理',
+    orderNum: 0,
+    path: '/bomManage',
+    routeName: 'BomManage',
+    isCache: 1,
+    visible: 1,
+    status: 1,
+  },
+  {
     menuId: 20,
-    pid: 0,
+    parentId: 0,
     menuType: 1,
     icon: 'ep:setting',
     menuName: '系统管理',
@@ -247,7 +260,7 @@ const menus = [
   },
   {
     menuId: 21,
-    pid: 20,
+    parentId: 20,
     menuType: 1,
     icon: 'ep:set-up',
     menuName: '菜单管理',
@@ -260,7 +273,7 @@ const menus = [
   },
   {
     menuId: 22,
-    pid: 20,
+    parentId: 20,
     menuType: 1,
     icon: 'ant-design:crown-outlined',
     menuName: '角色管理',
@@ -273,7 +286,7 @@ const menus = [
   },
   {
     menuId: 23,
-    pid: 20,
+    parentId: 20,
     menuType: 1,
     icon: 'ep:user',
     menuName: '用户管理',
@@ -286,7 +299,7 @@ const menus = [
   },
   {
     menuId: 24,
-    pid: 20,
+    parentId: 20,
     menuType: 1,
     icon: 'ant-design:apartment-outlined',
     menuName: '组织管理',
@@ -299,7 +312,7 @@ const menus = [
   },
   {
     menuId: 25,
-    pid: 20,
+    parentId: 20,
     menuType: 1,
     icon: 'ant-design:profile-outlined',
     menuName: '字典管理',
@@ -705,6 +718,11 @@ const changeInformation = [
     fff: '1',
   },
 ]
+const bomManage = [
+  { aaa: '套餐一', bbb: 'xxxx', ccc: 'xxxxxxxxxxxxx', ddd: '20' },
+  { aaa: '套餐二', bbb: 'xxxx', ccc: 'xxxxxxxxxxxxx', ddd: '230' },
+  { aaa: '套餐三', bbb: 'xxxx', ccc: 'xxxxxxxxxxxxx', ddd: '210' },
+]
 export default [
   {
     url: '/api/mock/get',
@@ -761,6 +779,13 @@ export default [
   },
   {
     url: '/api/menu/list',
+    method: 'get',
+    response: () => {
+      return resData(menus)
+    },
+  },
+  {
+    url: '/api/menu/userMenuList',
     method: 'get',
     response: () => {
       return resData(menus)
@@ -864,6 +889,13 @@ export default [
     method: 'get',
     response: () => {
       return resPage(changeInformation)
+    },
+  },
+  {
+    url: '/api/getBomManage/list',
+    method: 'get',
+    response: () => {
+      return resPage(bomManage)
     },
   },
 ]
