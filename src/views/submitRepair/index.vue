@@ -16,7 +16,7 @@
       </el-table-column>
       <el-table-column label="仪器地址" prop="equipAddress" width="130" />
       <el-table-column label="创建人" prop="createBy" width="100" />
-      <el-table-column label="创建时间" prop="updateTime" width="100" />
+      <el-table-column label="创建时间" prop="updateTime" width="140" />
       <!-- <el-table-column label="未关闭so数量" width="100">
         <template #default="{ row }">
           <span class="cs-p fw-b" style="color: #1890ff" @click="handleNum(row)">{{ row.ttt }}</span>
@@ -24,15 +24,31 @@
       </el-table-column> -->
       <el-table-column label="状态" prop="status" width="100">
         <template #default="{ row }">
-          <!-- <span
-            v-if="getStatus(row.status) === '已提交'"
-            class="cs-p fw-b"
-            style="color: #e71316"
-            @click="handleState(row)"
+          <el-popover
+            v-if="row.status === 2"
+            placement="top-start"
+            title="退回原因"
+            :width="200"
+            trigger="hover"
+            :content="row.backReason"
           >
-            {{ getStatus(row.status) }}
-          </span> -->
-          <span class="cs-p fw-b" style="color: #909399">{{ getStatus(row.status) }}</span>
+            <template #reference>
+              <span class="cs-p fw-b" style="color: #e71316">{{ request_status.kv[row.status] }}</span>
+            </template>
+          </el-popover>
+          <el-popover
+            v-else-if="row.status === 6"
+            placement="top-start"
+            title="关闭原因"
+            :width="200"
+            trigger="hover"
+            :content="row.closeReason"
+          >
+            <template #reference>
+              <span class="cs-p fw-b" style="color: #e71316">{{ request_status.kv[row.status] }}</span>
+            </template>
+          </el-popover>
+          <span v-else class="cs-p fw-b" style="color: #909399">{{ request_status.kv[row.status] }}</span>
         </template>
       </el-table-column>
       <el-table-column label="客户单位名称" prop="custDesc" width="120" />
@@ -42,15 +58,20 @@
       <el-table-column label="客户联系人邮箱" prop="email" width="130" />
       <el-table-column label="代理商" prop="vendor" width="100" />
       <el-table-column label="报修内容" prop="content" width="120" :show-overflow-tooltip="true" />
-      <el-table-column label="报修来源" prop="source" width="100" />
-      <el-table-column label="报修时间" prop="repairTime" width="130" />
+      <el-table-column label="报修来源" prop="source" width="100">
+        <template #default="{ row }">
+          <span>{{ repairSource.kv[row.source] }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="报修时间" prop="repairTime" width="140" />
       <el-table-column label="保修期" prop="warrantyTime" width="130" />
-      <el-table-column label="FSE工程师名称" prop="ppp" width="100" />
+      <!-- <el-table-column label="FSE工程师ID" prop="engineerId" width="130" /> -->
+      <!-- <el-table-column label="FSE工程师名称" prop="ppp" width="100" />
       <el-table-column label="FSE work center" prop="qqq" width="115" />
-      <el-table-column label="FSE storage location" prop="rrr" width="140" />
+      <el-table-column label="FSE storage location" prop="rrr" width="140" /> -->
       <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="80">
         <template #default="{ row }">
-          <div v-if="getStatus(row.status) == '已退回'">
+          <div v-if="row.status === 2">
             <el-button type="info" link @click="handleEdit(row)">修改</el-button>
           </div>
         </template>
@@ -63,10 +84,16 @@
       </template>
       <template #form="{ form }">
         <el-form-item label="仪器序列号" prop="serialNo">
-          <el-select v-model="form.serialNo" placeholder="请输入仪器序列号" style="width: 100%" clearable>
+          <el-input v-model="form.serialNo" placeholder="请输入仪器序列号" clearable />
+
+          <!-- <el-select v-model="form.serialNo" placeholder="请输入仪器序列号" style="width: 100%" clearable>
             <el-option label="A" value="shanghai" />
             <el-option label="B" value="beijing" />
-          </el-select>
+          </el-select> -->
+          <!-- <el-select v-model="form.serialNo" placeholder="请输入仪器序列号" filterable remote reserve-keyword
+            :remote-method="remoteMethod" :loading="selectlLoading" style="width: 100%">
+            <el-option v-for="item in serialNoOptions" :key="item.value" :label="item.label" :value="item.value" />
+          </el-select> -->
         </el-form-item>
         <el-form-item label="维修类型" prop="orderType">
           <el-cascader
@@ -83,9 +110,12 @@
         </el-form-item>
         <el-form-item label="状态" prop="status">
           <el-select v-model="form.status" placeholder="请选择状态" clearable>
-            <el-option label="全部" value="" />
-            <el-option label="创建中" value="创建中" />
-            <el-option label="创建失败" value="创建失败" />
+            <el-option
+              v-for="(item, index) in request_status.options"
+              :key="index"
+              :label="item.label"
+              :value="item.value"
+            />
           </el-select>
         </el-form-item>
         <el-form-item label="客户联系人" prop="name">
@@ -96,8 +126,12 @@
         </el-form-item>
         <el-form-item label="报修来源" prop="source">
           <el-select v-model="form.source" placeholder="请选择报修来源" clearable>
-            <el-option label="FSE" value="fse" />
-            <el-option label="其他" value="qt" />
+            <el-option
+              v-for="(item, index) in repairSource.options"
+              :key="index"
+              :label="item.label"
+              :value="item.value"
+            />
           </el-select>
         </el-form-item>
         <!-- <el-form-item label="客户单位名称" prop="fff">
@@ -124,7 +158,7 @@
     </CTable>
     <FormDialog :data="current" v-model="visible.form" :options="options" @success="handleFormSuccess"></FormDialog>
 
-    <el-dialog title="关闭" width="30%" v-model="detailVisible" :close-on-click-modal="false">
+    <!-- <el-dialog title="关闭" width="30%" v-model="detailVisible" :close-on-click-modal="false">
       <el-form :model="formDetails" ref="formRefDetails" label-width="80" :rules="rules">
         <el-form-item label="SO NO" prop="soNo">
           <el-input v-model="formDetails.soNo" placeholder="请输入SO" clearable />
@@ -153,7 +187,7 @@
           <el-button type="primary" @click="handleBackConfirm">{{ $t('common.confirm') }}</el-button>
         </span>
       </template>
-    </el-dialog>
+    </el-dialog> -->
 
     <!--<el-dialog title="未关闭SO数量" width="50%" v-model="visibleSo" :close-on-click-modal="false">
        <el-table
@@ -180,7 +214,7 @@
       </template>
     </el-dialog> -->
 
-    <el-dialog title="失败原因" width="30%" v-model="visibleState" :close-on-click-modal="false">
+    <!-- <el-dialog title="失败原因" width="30%" v-model="visibleState" :close-on-click-modal="false">
       <el-descriptions class="margin-top" :column="1" border size="small">
         <el-descriptions-item>
           <template #label>失败原因</template>
@@ -190,10 +224,9 @@
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="handleCloseState">{{ $t('common.cancel') }}</el-button>
-          <!-- <el-button type="primary" @click="handleConfirm">{{ $t('common.confirm') }}</el-button> -->
         </span>
       </template>
-    </el-dialog>
+    </el-dialog> -->
   </div>
 </template>
 
@@ -267,75 +300,75 @@ const handleFormSuccess = () => {
 }
 
 // 退回
-const backVisible = ref(false)
-const formRefBack = ref(null)
-const formBack = ref({
-  reason: '',
-  id: '',
-})
-const backRules = {
-  reason: [{ required: true, message: '退回原因不能为空', trigger: 'blur' }],
-}
-// const handleBack = row => {
-//   formBack.value.id = row.id
-//   backVisible.value = true
+// const backVisible = ref(false)
+// const formRefBack = ref(null)
+// const formBack = ref({
+//   reason: '',
+//   id: '',
+// })
+// const backRules = {
+//   reason: [{ required: true, message: '退回原因不能为空', trigger: 'blur' }],
 // }
+// // const handleBack = row => {
+// //   formBack.value.id = row.id
+// //   backVisible.value = true
+// // }
 
-const handleCloseBack = () => {
-  backVisible.value = false
-  formBack.value.reason = ''
-  nextTick(() => {
-    formRefBack.value.clearValidate()
-  })
-}
-const handleBackConfirm = () => {
-  formRefBack.value.validate(valid => {
-    if (valid) {
-      req.put('/request/rollback', formBack.value).then(({ code }) => {
-        if (code === 200) {
-          ElMessage.success('退回成功')
-        }
-        backVisible.value = false
-      })
-    }
-  })
-}
+// const handleCloseBack = () => {
+//   backVisible.value = false
+//   formBack.value.reason = ''
+//   nextTick(() => {
+//     formRefBack.value.clearValidate()
+//   })
+// }
+// const handleBackConfirm = () => {
+//   formRefBack.value.validate(valid => {
+//     if (valid) {
+//       req.put('/request/rollback', formBack.value).then(({ code }) => {
+//         if (code === 200) {
+//           ElMessage.success('退回成功')
+//         }
+//         backVisible.value = false
+//       })
+//     }
+//   })
+// }
 
 // 关闭
-const formRefDetails = ref(null)
-const detailVisible = ref(false)
-const formDetails = ref({
-  soNo: '',
-  reason: '',
-  id: '',
-})
-const rules = {
-  reason: [{ required: true, message: '关闭原因不能为空', trigger: 'blur' }],
-}
-// const handleClose = row => {
-//   formDetails.value.id = row.id
-//   detailVisible.value = true
+// const formRefDetails = ref(null)
+// const detailVisible = ref(false)
+// const formDetails = ref({
+//   soNo: '',
+//   reason: '',
+//   id: '',
+// })
+// const rules = {
+//   reason: [{ required: true, message: '关闭原因不能为空', trigger: 'blur' }],
 // }
-const handleCloseDetail = () => {
-  detailVisible.value = false
-  formDetails.value.soNo = ''
-  formDetails.value.reason = ''
-  nextTick(() => {
-    formRefDetails.value.clearValidate()
-  })
-}
-const handleConfirm = () => {
-  formRefDetails.value.validate(valid => {
-    if (valid) {
-      req.put('/request/close', formDetails.value).then(({ code }) => {
-        if (code === 200) {
-          ElMessage.success('关闭成功')
-        }
-        backVisible.value = false
-      })
-    }
-  })
-}
+// // const handleClose = row => {
+// //   formDetails.value.id = row.id
+// //   detailVisible.value = true
+// // }
+// const handleCloseDetail = () => {
+//   detailVisible.value = false
+//   formDetails.value.soNo = ''
+//   formDetails.value.reason = ''
+//   nextTick(() => {
+//     formRefDetails.value.clearValidate()
+//   })
+// }
+// const handleConfirm = () => {
+//   formRefDetails.value.validate(valid => {
+//     if (valid) {
+//       req.put('/request/close', formDetails.value).then(({ code }) => {
+//         if (code === 200) {
+//           ElMessage.success('关闭成功')
+//         }
+//         backVisible.value = false
+//       })
+//     }
+//   })
+// }
 
 // so数量
 // const visibleSo = ref(false)
@@ -371,25 +404,29 @@ const handleConfirm = () => {
 // }
 
 // 状态字典
-const dddddd = [
-  { label: '保存草稿', value: 0 },
-  { label: '已提交', value: 1 },
-  { label: '已退回', value: 2 },
-  { label: '创建中', value: 3 },
-  { label: '创建成功', value: 5 },
-  { label: '创建失败', value: 6 },
-  { label: '已关闭', value: 7 },
-]
-const getStatus = val => {
-  let name = dddddd.find(o => o.value === val).label
-  return name
-}
+const request_status = useDict('request_status')
+// 报修来源
+const repairSource = useDict('repairSource')
+
+// const dddddd = [
+//   { label: '保存草稿', value: 0 },
+//   { label: '已提交', value: 1 },
+//   { label: '已退回', value: 2 },
+//   { label: '创建中', value: 3 },
+//   { label: '创建成功', value: 5 },
+//   { label: '创建失败', value: 4 },
+//   { label: '已关闭', value: 6 },
+// ]
+// const getStatus = val => {
+//   let name = dddddd.find(o => o.value === val).label
+//   return name
+// }
 
 // 状态失败原因
-const visibleState = ref(false)
-const record = ref({
-  state: 'xxxxxxxxxxxxxxxxxxxxxxxxxxx',
-})
+// const visibleState = ref(false)
+// const record = ref({
+//   state: 'xxxxxxxxxxxxxxxxxxxxxxxxxxx',
+// })
 
 // const handleState = row => {
 //   record.value.state = row.backReason
@@ -397,5 +434,32 @@ const record = ref({
 // }
 // const handleCloseState = () => {
 //   visibleState.value = false
+// }
+// 查询仪器序列号
+// const selectlLoading = ref(false)
+// const serialNoList = ref([])
+// const serialNoOptions = ref([])
+// function getEquipment(s) {
+//   return req.get('/data/equipment', { params: { serialNo: s } }).then(res => {
+//     serialNoList.value = res.data.map(item => {
+//       return { value: item.sernr, label: `${item.sernr}` }
+//     })
+//   })
+// }
+// const remoteMethod = query => {
+//   if (query) {
+//     selectlLoading.value = true
+//     getEquipment(query).then(() => {
+//       selectlLoading.value = false
+//       serialNoOptions.value = serialNoList.value.filter(item => {
+//         return item.label.toLowerCase().includes(query.toLowerCase())
+//       })
+//     })
+//     // setTimeout(() => {
+//     //   console.log(111);
+//     // }, 2000)
+//   } else {
+//     serialNoOptions.value = []
+//   }
 // }
 </script>

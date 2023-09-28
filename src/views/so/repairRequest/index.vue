@@ -24,15 +24,19 @@
       </el-table-column>
       <el-table-column label="状态" prop="status" width="100">
         <template #default="{ row }">
-          <span
-            v-if="getStatus(row.status) === '创建失败'"
-            class="cs-p fw-b"
-            style="color: #e71316"
-            @click="handleState(row)"
+          <el-popover
+            v-if="row.status === 4"
+            placement="top-start"
+            title="创建失败"
+            :width="200"
+            trigger="hover"
+            :content="row.backReason"
           >
-            {{ getStatus(row.status) }}
-          </span>
-          <span class="cs-p fw-b" style="color: #909399">{{ getStatus(row.status) }}</span>
+            <template #reference>
+              <span class="cs-p fw-b" style="color: #e71316">{{ request_status.kv[row.status] }}</span>
+            </template>
+          </el-popover>
+          <span v-else class="cs-p fw-b" style="color: #909399">{{ request_status.kv[row.status] }}</span>
         </template>
       </el-table-column>
       <el-table-column label="客户单位名称" prop="custDesc" width="120" />
@@ -50,7 +54,7 @@
       <el-table-column label="FSE storage location" prop="rrr" width="140" />
       <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="270">
         <template #default="{ row }">
-          <div v-if="getStatus(row.status) !== '创建中'">
+          <div v-if="row.status !== 3">
             <el-button type="info" link @click="handleEdit(row)">完善信息</el-button>
             <el-button type="danger" link @click="handleDel(row)">RPA创建SO</el-button>
             <el-button type="danger" link @click="handleBack(row)">退回</el-button>
@@ -86,9 +90,12 @@
         </el-form-item>
         <el-form-item label="状态" prop="status">
           <el-select v-model="form.status" placeholder="请选择状态" clearable>
-            <el-option label="全部" value="" />
-            <el-option label="创建中" value="创建中" />
-            <el-option label="创建失败" value="创建失败" />
+            <el-option
+              v-for="(item, index) in request_status.options"
+              :key="index"
+              :label="item.label"
+              :value="item.value"
+            />
           </el-select>
         </el-form-item>
         <el-form-item label="客户联系人" prop="name">
@@ -294,10 +301,7 @@ const handleCloseBack = () => {
 const handleBackConfirm = () => {
   formRefBack.value.validate(valid => {
     if (valid) {
-      req.put('/request/rollback', formBack.value).then(({ code }) => {
-        if (code === 200) {
-          ElMessage.success('退回成功')
-        }
+      req.put('/request/rollback', formBack.value).then(() => {
         backVisible.value = false
       })
     }
@@ -331,11 +335,11 @@ const handleConfirm = () => {
   formRefDetails.value.validate(valid => {
     if (valid) {
       // console.log(formDetails.value)
-      req.put('/request/close', formDetails.value).then(({ code }) => {
-        if (code === 200) {
-          ElMessage.success('关闭成功')
-        }
-        backVisible.value = false
+      req.put('/request/close', formDetails.value).then(() => {
+        // if (code === 200) {
+        //   ElMessage.success('关闭成功')
+        // }
+        detailVisible.value = false
       })
     }
   })
@@ -375,19 +379,20 @@ const handleCloseSo = () => {
 }
 
 // 状态字典
-const dddddd = [
-  { label: '保存草稿', value: 0 },
-  { label: '已提交', value: 1 },
-  { label: '已退回', value: 2 },
-  { label: '创建中', value: 3 },
-  { label: '创建成功', value: 5 },
-  { label: '创建失败', value: 6 },
-  { label: '已关闭', value: 7 },
-]
-const getStatus = val => {
-  let name = dddddd.find(o => o.value === val).label
-  return name
-}
+const request_status = useDict('request_status')
+// const dddddd = [
+//   { label: '保存草稿', value: 0 },
+//   { label: '已提交', value: 1 },
+//   { label: '已退回', value: 2 },
+//   { label: '创建中', value: 3 },
+//   { label: '创建成功', value: 5 },
+//   { label: '创建失败', value: 6 },
+//   { label: '已关闭', value: 7 },
+// ]
+// const getStatus = val => {
+//   let name = dddddd.find(o => o.value === val).label
+//   return name
+// }
 
 // 状态失败原因
 const visibleState = ref(false)
@@ -395,11 +400,11 @@ const record = ref({
   state: 'xxxxxxxxxxxxxxxxxxxxxxxxxxx',
 })
 
-const handleState = row => {
-  // console.log(row)
-  record.value.state = row.backReason
-  visibleState.value = true
-}
+// const handleState = row => {
+//   // console.log(row)
+//   record.value.state = row.backReason
+//   visibleState.value = true
+// }
 const handleCloseState = () => {
   visibleState.value = false
 }
