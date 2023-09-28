@@ -32,7 +32,7 @@
         </el-radio-group>
       </el-form-item>
       <el-form-item label="状态" prop="status">
-        <el-radio-group v-model="form.valueType">
+        <el-radio-group v-model="form.status">
           <el-radio
             v-for="i in [
               { label: '启用', value: 1 },

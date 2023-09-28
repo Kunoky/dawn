@@ -7,7 +7,7 @@
     v-bind="$attrs"
     :close-on-click-modal="false"
   >
-    <el-form :model="form" ref="formRef" label-width="155" :rules="rules">
+    <el-form :model="form" ref="formRef" label-width="155" :rules="rules" v-loading="dataLoading">
       <el-row>
         <el-col :span="12">
           <el-form-item label="仪器序列号" prop="serialNo">
@@ -131,7 +131,7 @@
               @change="changeOptions"
               :props="{
                 label: 'name',
-                value: 'id',
+                value: 'name',
               }"
             />
           </el-form-item>
@@ -181,8 +181,12 @@
         <el-col :span="12">
           <el-form-item label="报修来源" prop="source">
             <el-select v-model="form.source" placeholder="请输入报修来源" style="width: 100%" clearable>
-              <el-option label="FSE" value="fse" />
-              <el-option label="其他" value="qt" />
+              <el-option
+                v-for="(item, index) in repairSource.options"
+                :key="index"
+                :label="item.label"
+                :value="item.value"
+              />
             </el-select>
           </el-form-item>
         </el-col>
@@ -295,7 +299,9 @@ const props = defineProps({
   options: Array,
 })
 
-const title = computed(() => (props.data ? '完善信息' : '新建维修申请'))
+const title = computed(() => (props.data ? '修改维修申请' : '新建维修申请'))
+
+const repairSource = useDict('repairSource')
 
 const rules = {
   serialNo: [{ required: true, message: '仪器序列号不能为空', trigger: 'blur' }],
@@ -374,17 +380,39 @@ watch(
         isConsistentSap: true,
         attaIds: '',
       }
-      if (props.data) {
-        for (let k in form.value) {
-          form.value[k] = props.data[k]
-        }
-      }
+      // if (props.data) {
+      //   console.log(1111);
+      //   // for (let k in form.value) {
+      //   //   form.value[k] = props.data[k]
+      //   // }
+
+      //   form.value.dataOptions = [form.value.orderType,form.value.subType]
+      // }
       nextTick(() => {
         formRef.value.clearValidate()
       })
+      props.data?.id && getRequestInfo()
     }
   },
   { immediate: true }
+)
+
+const { run: getRequestInfo, loading: dataLoading } = useAsync(
+  async () => {
+    return req.get(`/request/info/${props.data.id}`)
+  },
+  {
+    onSuccess(res) {
+      form.value = res.data
+      form.value.dataOptions = [res.data.orderType, res.data.subType]
+      form.value.engineerName = res.data.fseName
+      form.value.fseWorkCenter = res.data.fseWorkCenter
+      form.value.fseStorageLocation = res.data.fseStorageLocation
+      nextTick(() => {
+        formRef.value.clearValidate()
+      })
+    },
+  }
 )
 // 暂存数据，为提交校验数据
 const staging = ref({

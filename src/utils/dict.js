@@ -34,6 +34,7 @@ export async function init() {
     i.status && map.options.push({ label: i.label, value: i.value })
   })
   dict.value = dictMap
+  // console.log(22,dictMap);
 }
 export function useDict(type) {
   if (!source.value.length) {

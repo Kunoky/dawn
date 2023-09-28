@@ -68,7 +68,7 @@
               @change="changeOptions"
               :props="{
                 label: 'name',
-                value: 'id',
+                value: 'name',
               }"
             />
           </el-form-item>
