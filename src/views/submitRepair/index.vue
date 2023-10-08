@@ -8,8 +8,8 @@
       id="repairRequest"
     >
       <!-- <el-table-column label="维修任务号" prop="TaskID" width="120" /> -->
-      <el-table-column label="仪器序列号" prop="serialNo" width="100" />
-      <el-table-column label="型号" prop="modelNo" width="100" />
+      <el-table-column label="设备序列号" prop="serialNo" width="100" />
+      <el-table-column label="设备型号" prop="modelNo" width="100" />
       <el-table-column label="仪器SAP Equip编号" prop="eqId" width="128" />
       <el-table-column label="维修类型" width="100">
         <template #default="{ row }">{{ row.orderType }} / {{ row.subType }}</template>
@@ -83,14 +83,14 @@
         </el-button>
       </template>
       <template #form="{ form }">
-        <el-form-item label="仪器序列号" prop="serialNo">
-          <el-input v-model="form.serialNo" placeholder="请输入仪器序列号" clearable />
+        <el-form-item label="设备序列号" prop="serialNo">
+          <el-input v-model="form.serialNo" placeholder="请输入设备序列号" clearable />
 
-          <!-- <el-select v-model="form.serialNo" placeholder="请输入仪器序列号" style="width: 100%" clearable>
+          <!-- <el-select v-model="form.serialNo" placeholder="请输入设备序列号" style="width: 100%" clearable>
             <el-option label="A" value="shanghai" />
             <el-option label="B" value="beijing" />
           </el-select> -->
-          <!-- <el-select v-model="form.serialNo" placeholder="请输入仪器序列号" filterable remote reserve-keyword
+          <!-- <el-select v-model="form.serialNo" placeholder="请输入设备序列号" filterable remote reserve-keyword
             :remote-method="remoteMethod" :loading="selectlLoading" style="width: 100%">
             <el-option v-for="item in serialNoOptions" :key="item.value" :label="item.label" :value="item.value" />
           </el-select> -->
@@ -435,7 +435,7 @@ const repairSource = useDict('repairSource')
 // const handleCloseState = () => {
 //   visibleState.value = false
 // }
-// 查询仪器序列号
+// 查询设备序列号
 // const selectlLoading = ref(false)
 // const serialNoList = ref([])
 // const serialNoOptions = ref([])

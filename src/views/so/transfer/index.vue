@@ -9,8 +9,8 @@
     >
       <el-table-column label="SO NO" prop="so" width="130" />
       <el-table-column label="维修任务号" prop="TaskID" width="120" />
-      <el-table-column label="仪器序列号" prop="aaa" :show-overflow-tooltip="true" width="100" />
-      <el-table-column label="型号" prop="bbb" :show-overflow-tooltip="true" width="100" />
+      <el-table-column label="设备序列号" prop="aaa" :show-overflow-tooltip="true" width="100" />
+      <el-table-column label="设备型号" prop="bbb" :show-overflow-tooltip="true" width="100" />
       <el-table-column label="仪器SAP Equip编号" prop="ccc" width="128" />
       <el-table-column label="维修类型" prop="ddd" width="100" />
       <el-table-column label="仪器地址" prop="eee" width="100" />
@@ -44,27 +44,30 @@
           </el-button> -->
       </template>
       <template #form="{ form }">
-        <!-- <el-form-item label="仪器序列号" prop="TaskID">
-                    <el-select v-model="form.TaskID" placeholder="请输入维修任务号" clearable>
-                        <el-option label="A" value="shanghai" />
-                        <el-option label="B" value="beijing" />
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="型号" prop="ddd">
-                    <el-select v-model="form.ddd" placeholder="请选择维修类型" clearable>
-                        <el-option label="A" value="shanghai" />
-                        <el-option label="B" value="beijing" />
-                    </el-select>
-                </el-form-item> -->
-        <el-form-item label="客户单位名称" prop="fff">
-          <!-- <el-input v-model="form.fff" placeholder="请输入客户单位名称" clearable /> -->
-          <el-select v-model="form.fff" placeholder="请输入客户单位名称" style="width: 100%" clearable>
+        <el-form-item label="SO NO" prop="so">
+          <el-input v-model="form.so" placeholder="请输入联系人" clearable />
+        </el-form-item>
+        <el-form-item label="设备序列号" prop="serialNo">
+          <el-select v-model="form.serialNo" placeholder="请输入设备序列号" style="width: 100%" clearable>
             <el-option label="A" value="shanghai" />
             <el-option label="B" value="beijing" />
           </el-select>
         </el-form-item>
-        <el-form-item label="SO NO" prop="so">
-          <el-input v-model="form.so" placeholder="请输入联系人" clearable />
+        <el-form-item label="设备型号" prop="modelNo">
+          <el-input v-model="form.modelNo" placeholder="请输入设备型号" clearable />
+        </el-form-item>
+        <el-form-item label="CRC" prop="modelNo">
+          <el-select v-model="form.serialNo" placeholder="请选择CRC" style="width: 100%" clearable>
+            <el-option label="是" value="shanghai" />
+            <el-option label="否" value="beijing" />
+          </el-select>
+          <!-- <el-input v-model="form.modelNo" placeholder="请输入CRC" clearable /> -->
+        </el-form-item>
+        <el-form-item label="区域" prop="modelNo">
+          <el-input v-model="form.modelNo" placeholder="请输入区域" clearable />
+        </el-form-item>
+        <el-form-item label="客户名称" prop="custDesc">
+          <el-input v-model="form.custDesc" placeholder="请输入客户名称" clearable />
         </el-form-item>
         <el-form-item label="工程师名称">
           <el-input v-model="form.ppp" placeholder="请输入FSE工程师名称">
@@ -72,6 +75,20 @@
               <el-button><i-ep-Search /></el-button>
             </template>
           </el-input>
+        </el-form-item>
+        <el-form-item label="SO类型" prop="orderType">
+          <el-cascader
+            v-model="orderType"
+            :options="options"
+            filterable
+            clearable
+            @change="changeOptions"
+            :props="{
+              label: 'name',
+              value: 'id',
+              checkStrictly: true,
+            }"
+          />
         </el-form-item>
       </template>
     </CTable>
@@ -143,7 +160,26 @@ const visible = reactive({
   form: false,
   permission: false,
 })
-
+onMounted(() => {
+  getMaintenanceType()
+})
+const options = ref([])
+const getMaintenanceType = async () => {
+  return req.get('/data/maintenanceType').then(res => {
+    const [tree] = utils.arr2tree(res.data, 'id', 'pid')
+    options.value = tree
+  })
+}
+const orderType = ref([])
+const changeOptions = val => {
+  if (!val) {
+    tableRef.value.form.orderType = ''
+    tableRef.value.form.subType = ''
+  } else {
+    tableRef.value.form.orderType = val[0]
+    tableRef.value.form.subType = val[1]
+  }
+}
 // const status = useDict('status')
 
 // const handleAdd = () => {

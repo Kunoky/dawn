@@ -20,11 +20,11 @@
               {{ form.so }}
             </el-descriptions-item>
             <el-descriptions-item>
-              <template #label>仪器序列号</template>
+              <template #label>设备序列号</template>
               {{ form.aaa }}
             </el-descriptions-item>
             <el-descriptions-item>
-              <template #label>型号</template>
+              <template #label>设备型号</template>
               {{ form.bbb }}
             </el-descriptions-item>
             <el-descriptions-item>

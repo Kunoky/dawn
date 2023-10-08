@@ -10,10 +10,10 @@
     <el-form :model="form" ref="formRef" label-width="155" :rules="rules" v-loading="dataLoading">
       <el-row>
         <el-col :span="12">
-          <el-form-item label="仪器序列号" prop="serialNo">
+          <el-form-item label="设备序列号" prop="serialNo">
             <el-select
               v-model="form.serialNo"
-              placeholder="请输入仪器序列号"
+              placeholder="请输入设备序列号"
               filterable
               remote
               reserve-keyword
@@ -24,17 +24,17 @@
             >
               <el-option v-for="item in serialNoOptions" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
-            <!-- <el-select v-model="form.serialNo" placeholder="请输入仪器序列号" style="width: 100%" clearable>
+            <!-- <el-select v-model="form.serialNo" placeholder="请输入设备序列号" style="width: 100%" clearable>
               <el-option label="A" value="shanghai" />
               <el-option label="B" value="beijing" />
             </el-select> -->
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="型号" prop="modelNo" class="form_flex">
+          <el-form-item label="设备型号" prop="modelNo" class="form_flex">
             <el-input v-model="form.modelNo" disabled placeholder="自动填入" style="width: 83%" />
 
-            <!-- <el-select v-model="form.modelNo" placeholder="请选择型号" class="mgr-m" style="width: 83%" clearable>
+            <!-- <el-select v-model="form.modelNo" placeholder="请选择设备型号" class="mgr-m" style="width: 83%" clearable>
               <el-option label="A" value="shanghai" />
               <el-option label="B" value="beijing" />
             </el-select> -->
@@ -272,15 +272,21 @@
       max-height="190"
       :header-cell-style="{ background: '#f5f7fa' }"
     >
-      <el-table-column prop="serialNo" label="客户名称" />
-      <el-table-column prop="modelNo" label="状态" />
-      <el-table-column prop="eqId" label="维修类型" />
-      <el-table-column prop="ddd" label="创建人" />
-      <el-table-column prop="equipAddress" label="创建人时间" width="130" />
-      <el-table-column prop="custDesc" label="报修时间" width="130" />
-      <el-table-column prop="ggg" label="FSE工程师名称" width="120" />
-      <el-table-column prop="hhh" label="FSE work center" width="150" />
-      <el-table-column prop="mobile" label="FSE storage location" width="150" />
+      <el-table-column prop="custName" label="客户名称" width="150" fixed="left" />
+      <el-table-column prop="modelNo" label="状态">
+        <template #default="{ row }">
+          <span class="cs-p fw-b">{{ soStatus.kv[row.status] }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="维修类型">
+        <template #default="{ row }">{{ row.orderType }} / {{ row.subType }}</template>
+      </el-table-column>
+      <el-table-column prop="createBy" label="创建人" />
+      <el-table-column prop="createTime" label="创建人时间" width="130" />
+      <el-table-column prop="repairTime" label="报修时间" width="130" />
+      <el-table-column prop="fseName" label="FSE工程师名称" width="120" />
+      <el-table-column prop="fseWorkCenter" label="FSE work center" width="150" />
+      <el-table-column prop="fseStorageLocation" label="FSE storage location" width="150" />
     </el-table>
     <template #footer>
       <span class="dialog-footer">
@@ -304,8 +310,8 @@ const title = computed(() => (props.data ? '修改维修申请' : '新建维修�
 const repairSource = useDict('repairSource')
 
 const rules = {
-  serialNo: [{ required: true, message: '仪器序列号不能为空', trigger: 'blur' }],
-  modelNo: [{ required: true, message: '型号不能为空', trigger: 'blur' }],
+  serialNo: [{ required: true, message: '设备序列号不能为空', trigger: 'blur' }],
+  modelNo: [{ required: true, message: '设备型号不能为空', trigger: 'blur' }],
   // eqId: [{ required: true, message: '仪器SAP Equip编号不能为空', trigger: 'blur' }],
   dataOptions: [{ required: true, message: '维修类型不能为空', trigger: 'change' }],
   equipAddress: [{ required: true, message: '仪器地址不能为空', trigger: 'blur' }],
@@ -419,7 +425,7 @@ const staging = ref({
   aaa: '',
   bbb: '',
 })
-// 查询仪器序列号
+// 查询设备序列号
 const selectlLoading = ref(false)
 const serialNoList = ref([])
 const serialNoOptions = ref([])
@@ -549,33 +555,18 @@ const changeOptions = val => {
   }
 }
 
-// 查询
+// 查询未关闭SO数量
+const soStatus = useDict('soStatus')
+
 const visibleSo = ref(false)
-const tableData = [
-  {
-    serialNo: 'xxxxx',
-    modelNo: '待创建',
-    eqId: 'SM02',
-    ddd: '李四',
-    equipAddress: '2023-08-22 10:20:23',
-    custDesc: '2023-08-25 15:24:23',
-    ggg: '一号工程师',
-    hhh: '详情',
-    mobile: 'xxxxxx',
-  },
-  {
-    serialNo: 'xxxxx',
-    modelNo: '待维修',
-    eqId: 'SM02',
-    ddd: '李四',
-    equipAddress: '2023-08-22 10:20:23',
-    custDesc: '2023-08-25 15:24:23',
-    ggg: '一号工程师',
-    hhh: '详情',
-    mobile: 'xxxxxx',
-  },
-]
+const tableData = ref([])
+const getNotCloseSo = () => {
+  req.get('/so/notCloseSo', { params: { serialNo: form.value.serialNo, modelNo: form.value.modelNo } }).then(res => {
+    tableData.value = res.data
+  })
+}
 const handleNum = () => {
+  getNotCloseSo()
   visibleSo.value = true
 }
 const handleCloseSo = () => {

@@ -10,10 +10,10 @@
     <el-form :model="form" ref="formRef" label-width="155" :rules="rules">
       <el-row>
         <el-col :span="12">
-          <el-form-item label="仪器序列号" prop="serialNo">
+          <el-form-item label="设备序列号" prop="serialNo">
             <el-select
               v-model="form.serialNo"
-              placeholder="请输入仪器序列号"
+              placeholder="请输入设备序列号"
               filterable
               remote
               reserve-keyword
@@ -24,17 +24,17 @@
             >
               <el-option v-for="item in serialNoOptions" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
-            <!-- <el-select v-model="form.serialNo" placeholder="请输入仪器序列号" style="width: 100%" clearable>
+            <!-- <el-select v-model="form.serialNo" placeholder="请输入设备序列号" style="width: 100%" clearable>
               <el-option label="A" value="shanghai" />
               <el-option label="B" value="beijing" />
             </el-select> -->
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="型号" prop="modelNo" class="form_flex">
+          <el-form-item label="设备型号" prop="modelNo" class="form_flex">
             <el-input v-model="form.modelNo" disabled placeholder="自动填入" style="width: 83%" />
 
-            <!-- <el-select v-model="form.modelNo" placeholder="请选择型号" class="mgr-m" style="width: 83%" clearable>
+            <!-- <el-select v-model="form.modelNo" placeholder="请选择设备型号" class="mgr-m" style="width: 83%" clearable>
               <el-option label="A" value="shanghai" />
               <el-option label="B" value="beijing" />
             </el-select> -->
@@ -296,8 +296,8 @@ const props = defineProps({
 // const title = computed(() => (props.data ? '完善信息' : '新建维修申请'))
 
 const rules = {
-  serialNo: [{ required: true, message: '仪器序列号不能为空', trigger: 'blur' }],
-  modelNo: [{ required: true, message: '型号不能为空', trigger: 'blur' }],
+  serialNo: [{ required: true, message: '设备序列号不能为空', trigger: 'blur' }],
+  modelNo: [{ required: true, message: '设备型号不能为空', trigger: 'blur' }],
   // eqId: [{ required: true, message: '仪器SAP Equip编号不能为空', trigger: 'blur' }],
   dataOptions: [{ required: true, message: '维修类型不能为空', trigger: 'change' }],
   equipAddress: [{ required: true, message: '仪器地址不能为空', trigger: 'blur' }],
@@ -386,7 +386,7 @@ const staging = ref({
   aaa: '',
   bbb: '',
 })
-// 查询仪器序列号
+// 查询设备序列号
 const selectlLoading = ref(false)
 const serialNoList = ref([])
 const serialNoOptions = ref([])

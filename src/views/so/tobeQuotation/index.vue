@@ -33,25 +33,24 @@
         </template>
       </el-table-column>
       <!-- <el-table-column label="审批结果" prop="uuu" width="140" /> -->
-      <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="110">
+      <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="180">
         <template #default="{ row }">
           <div>
             <el-button type="info" link @click="handleDeatil(row)">详情</el-button>
-            <el-button type="info" link @click="handleQuotation(row)">报价</el-button>
+            <el-button type="info" link @click="handleUploadFile(row)">上传附件</el-button>
           </div>
           <div>
-            <!-- <el-button type="danger" link @click="handleAddRecord(row)">添加沟通记录</el-button> -->
-            <el-button type="danger" link @click="handleClose(row)">退回</el-button>
-            <el-button type="primary" link @click="handleExamine(row)">已报价</el-button>
+            <el-button type="danger" link @click="handleAddRecord(row)">添加沟通记录</el-button>
+            <el-button type="primary" link @click="handleExamine(row)">发起流程</el-button>
           </div>
         </template>
       </el-table-column>
       <!-- <template #actions>
-          <el-button type="primary" plain>
-            <i-ep-bottom />
-            导出
-          </el-button>
-        </template> -->
+            <el-button type="primary" plain>
+              <i-ep-bottom />
+              导出
+            </el-button>
+          </template> -->
       <template #form="{ form }">
         <el-form-item label="SO NO" prop="so">
           <el-input v-model="form.so" placeholder="请输入SO NO" clearable />
@@ -105,16 +104,27 @@
         <el-form-item label="维修描述" prop="orderType">
           <el-input v-model="orderType" />
         </el-form-item>
+        <el-form-item label="未更新时长" prop="serialNo">
+          <el-select v-model="form.serialNo" placeholder="请选择未更新时长" style="width: 100%" clearable>
+            <el-option label="3天" value="shanghai" />
+            <el-option label="5天" value="beijing" />
+            <el-option label="超过7天" value="beijing" />
+            <el-option label="超过15天" value="beijing" />
+          </el-select>
+        </el-form-item>
       </template>
     </CTable>
     <Details :data="current" v-model="visible.detail" @success="handleFormSuccess"></Details>
 
-    <Quotation :data="currentQuotation" v-model="quotation.visible" @success="handleQuotationSuccess"></Quotation>
-
-    <el-dialog title="退回" width="30%" v-model="detailVisible" :close-on-click-modal="false">
-      <el-form :model="formDetails" ref="formRefDetails" label-width="80" :rules="rules">
-        <el-form-item label="退回原因" prop="details">
-          <el-input type="textarea" v-model="formDetails.details" placeholder="请输入退回原因" clearable />
+    <el-dialog title="上传附件" width="30%" v-model="detailVisible" :close-on-click-modal="false">
+      <el-form ref="formRefDetails" label-width="80" class="item">
+        <el-form-item prop="attaIds">
+          <CUpload
+            style="width: 100%"
+            :params="params"
+            v-model="list"
+            accept="image/png,image/jpg,image/jpeg,application/pdf"
+          ></CUpload>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -125,8 +135,8 @@
       </template>
     </el-dialog>
 
-    <!-- <el-dialog title="添加沟通记录" width="30%" v-model="addRecordVisible" :close-on-click-modal="false">
-      <el-form :model="addForm" ref="addRefForm" label-width="80" :rules="AddRules">
+    <el-dialog title="添加沟通记录" width="30%" v-model="addRecordVisible" :close-on-click-modal="false">
+      <el-form :model="addForm" ref="addRefForm" label-width="130" :rules="AddRules">
         <el-form-item label="沟通人" prop="aaa">
           <el-input v-model="addForm.aaa" placeholder="请输入沟通人" clearable />
         </el-form-item>
@@ -136,6 +146,15 @@
         <el-form-item label="结果" prop="ccc">
           <el-input type="textarea" v-model="addForm.ccc" placeholder="请输入结果" clearable />
         </el-form-item>
+        <el-form-item label="Pending具体状态" prop="hhh">
+          <el-select v-model="addForm.hhh" placeholder="请选择Pending具体状态" clearable style="width: 100%">
+            <el-option label="客户内部流程申请" value="1" />
+            <el-option label="与客户议价中" value="2" />
+            <el-option label="待付款" value="3" />
+            <el-option label="线下合同审批" value="4" />
+            <el-option label="其他" value="5" />
+          </el-select>
+        </el-form-item>
       </el-form>
       <template #footer>
         <span class="dialog-footer">
@@ -143,13 +162,13 @@
           <el-button type="primary" @click="handleConfirmAddRecord">{{ $t('common.confirm') }}</el-button>
         </span>
       </template>
-    </el-dialog> -->
+    </el-dialog>
   </div>
 </template>
 
 <script setup>
 import Details from './components/details.vue'
-import Quotation from './components/quotation.vue'
+//   import Quotation from './components/quotation.vue'
 
 const tableRef = ref()
 const refresh = () => tableRef.value.refresh()
@@ -174,70 +193,6 @@ const changeOptions = val => {
     tableRef.value.form.subType = val[1]
   }
 }
-// const options = [
-//   {
-//     value: 'SM01',
-//     label: 'SM01',
-//   },
-//   {
-//     value: 'SM02',
-//     label: 'SM02',
-//   },
-//   {
-//     value: 'SM03',
-//     label: 'SM03',
-//     children: [
-//       {
-//         value: 'xxx',
-//         label: '111',
-//       },
-//       {
-//         value: 'xxx',
-//         label: '222',
-//       },
-//       {
-//         value: 'xxx',
-//         label: '333',
-//       },
-//       {
-//         value: 'xxx',
-//         label: '444',
-//       },
-//     ],
-//   },
-//   {
-//     value: 'SM04',
-//     label: 'SM04',
-//     children: [
-//       {
-//         value: 'xxx',
-//         label: '111',
-//       },
-//       {
-//         value: 'xxx',
-//         label: '222',
-//       },
-//     ],
-//   },
-//   {
-//     value: 'SM05',
-//     label: 'SM05',
-//     children: [
-//       {
-//         value: 'xxx',
-//         label: '111',
-//       },
-//       {
-//         value: 'xxx',
-//         label: '222',
-//       },
-//       {
-//         value: 'xxx',
-//         label: '333',
-//       },
-//     ],
-//   },
-// ]
 const current = ref(null)
 const visible = reactive({
   form: false,
@@ -272,15 +227,13 @@ const handleFormSuccess = () => {
   refresh()
 }
 
+// 上传附件
 const detailVisible = ref(false)
 const formRefDetails = ref(null)
-const formDetails = ref({
-  details: '',
-})
-const rules = {
-  details: [{ required: true, message: '退回原因不能为空', trigger: 'blur' }],
-}
-const handleClose = () => {
+// const formDetails = ref({
+//     details: '',
+// })
+const handleUploadFile = () => {
   detailVisible.value = true
 }
 const handleCloseDetail = () => {
@@ -307,63 +260,59 @@ const handleConfirm = () => {
     }
   })
 }
-
-const currentQuotation = ref(null)
-const quotation = reactive({
-  permission: false,
-  visible: false,
+const addRecordVisible = ref(false)
+const addRefForm = ref(null)
+const addForm = ref({
+  aaa: '',
+  bbb: '',
+  ccc: '',
+  hhh: '',
 })
-
-const handleQuotation = row => {
-  currentQuotation.value = row
-  quotation.visible = true
+const AddRules = {
+  aaa: [{ required: true, message: '沟通人不能为空', trigger: 'blur' }],
+  bbb: [{ required: true, message: '时间不能为空', trigger: 'blur' }],
+  ccc: [{ required: true, message: '结果不能为空', trigger: 'blur' }],
+  hhh: [{ required: true, message: 'pending具体状态不能为空', trigger: 'change' }],
 }
-const handleQuotationSuccess = () => {
-  refresh()
+const handleAddRecord = () => {
+  addRecordVisible.value = true
 }
-
-// const addRecordVisible = ref(false)
-// const addRefForm = ref(null)
-// const addForm = ref({
-//   aaa: '',
-//   bbb: '',
-//   ccc: '',
-// })
-// const AddRules = {
-//   aaa: [{ required: true, message: '沟通人不能为空', trigger: 'blur' }],
-//   bbb: [{ required: true, message: '时间不能为空', trigger: 'blur' }],
-//   ccc: [{ required: true, message: '结果不能为空', trigger: 'blur' }],
-// }
-// // const handleAddRecord = () => {
-// //   addRecordVisible.value = true
-// // }
-// const handleCloseAddRecord = () => {
-//   addRecordVisible.value = false
-//   nextTick(() => {
-//     addRefForm.value.clearValidate()
-//   })
-// }
-// const handleConfirmAddRecord = () => {
-//   addRefForm.value.validate(valid => {
-//     if (valid) {
-//       // form.value.value = form.value.category
-//       // loading.value = true
-//       // req[form.value.dictId ? 'put' : 'post']('/dict', form.value)
-//       //   .then(({ code }) => {
-//       //     if (code === 200) {
-//       //       emit('success')
-//       //       emit('update:modelValue', false)
-//       //     }
-//       //   })
-//       //   .finally(() => {
-//       //     loading.value = false
-//       //   })
-//     }
-//   })
-// }
+const handleCloseAddRecord = () => {
+  addRecordVisible.value = false
+  nextTick(() => {
+    addRefForm.value.clearValidate()
+  })
+}
+const handleConfirmAddRecord = () => {
+  addRefForm.value.validate(valid => {
+    if (valid) {
+      // form.value.value = form.value.category
+      // loading.value = true
+      // req[form.value.dictId ? 'put' : 'post']('/dict', form.value)
+      //   .then(({ code }) => {
+      //     if (code === 200) {
+      //       emit('success')
+      //       emit('update:modelValue', false)
+      //     }
+      //   })
+      //   .finally(() => {
+      //     loading.value = false
+      //   })
+    }
+  })
+}
+// 上传附件参数
+const list = ref([])
+const params = {
+  type: 1,
+}
 </script>
 <style scoped>
 .form_picker :deep(.el-input__wrapper) {
   width: 95%;
+}
+
+.item :deep(.el-form-item__content) {
+  margin-left: 0px !important;
 }
 </style>

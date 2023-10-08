@@ -10,16 +10,16 @@
     <!-- <el-form :model="form" ref="formRef" label-width="155" :rules="rules">
       <el-row>
         <el-col :span="12">
-          <el-form-item label="仪器序列号" prop="aaa">
-            <el-select v-model="form.aaa" placeholder="请输入仪器序列号" style="width: 100%" clearable>
+          <el-form-item label="设备序列号" prop="aaa">
+            <el-select v-model="form.aaa" placeholder="请输入设备序列号" style="width: 100%" clearable>
               <el-option label="A" value="shanghai" />
               <el-option label="B" value="beijing" />
             </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="型号" prop="bbb">
-            <el-select v-model="form.bbb" placeholder="请选择型号" style="width: 100%" clearable>
+          <el-form-item label="设备型号" prop="bbb">
+            <el-select v-model="form.bbb" placeholder="请选择设备型号" style="width: 100%" clearable>
               <el-option label="A" value="shanghai" />
               <el-option label="B" value="beijing" />
             </el-select>
@@ -125,11 +125,11 @@
         {{ form.so }}
       </el-descriptions-item>
       <el-descriptions-item>
-        <template #label>仪器序列号</template>
+        <template #label>设备序列号</template>
         {{ form.aaa }}
       </el-descriptions-item>
       <el-descriptions-item>
-        <template #label>型号</template>
+        <template #label>设备型号</template>
         {{ form.bbb }}
       </el-descriptions-item>
       <el-descriptions-item>
@@ -225,8 +225,8 @@ const props = defineProps({
 
 // const rules = {
 //   TaskID: [{ required: true, message: '维修任务号不能为空', trigger: 'blur' }],
-//   aaa: [{ required: true, message: '仪器序列号不能为空', trigger: 'blur' }],
-//   bbb: [{ required: true, message: '型号不能为空', trigger: 'blur' }],
+//   aaa: [{ required: true, message: '设备序列号不能为空', trigger: 'blur' }],
+//   bbb: [{ required: true, message: '设备型号不能为空', trigger: 'blur' }],
 //   ccc: [{ required: true, message: '仪器SAP Equip编号不能为空', trigger: 'blur' }],
 //   ddd: [{ required: true, message: '维修类型不能为空', trigger: 'change' }],
 //   eee: [{ required: true, message: '仪器地址不能为空', trigger: 'blur' }],

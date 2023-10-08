@@ -8,8 +8,8 @@
       id="repairRequest"
     >
       <!-- <el-table-column label="维修任务号" prop="TaskID" width="120" /> -->
-      <el-table-column label="仪器序列号" prop="serialNo" width="100" />
-      <el-table-column label="型号" prop="modelNo" width="100" />
+      <el-table-column label="设备序列号" prop="serialNo" width="100" />
+      <el-table-column label="设备型号" prop="modelNo" width="100" />
       <el-table-column label="仪器SAP Equip编号" prop="eqId" width="128" />
       <el-table-column label="维修类型" width="100">
         <template #default="{ row }">{{ row.orderType }} / {{ row.subType }}</template>
@@ -52,13 +52,17 @@
       <el-table-column label="FSE工程师名称" prop="ppp" width="100" />
       <el-table-column label="FSE work center" prop="qqq" width="115" />
       <el-table-column label="FSE storage location" prop="rrr" width="140" />
-      <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="270">
+      <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="180">
         <template #default="{ row }">
           <div v-if="row.status !== 3">
-            <el-button type="info" link @click="handleEdit(row)">完善信息</el-button>
-            <el-button type="danger" link @click="handleDel(row)">RPA创建SO</el-button>
-            <el-button type="danger" link @click="handleBack(row)">退回</el-button>
-            <el-button type="danger" link @click="handleClose(row)">关闭</el-button>
+            <div>
+              <el-button type="info" link @click="handleEdit(row)">完善信息</el-button>
+              <el-button type="danger" link @click="handleDel(row)">RPA创建SO</el-button>
+            </div>
+            <div>
+              <el-button type="danger" link @click="handleBack(row)">退回</el-button>
+              <el-button type="danger" link @click="handleClose(row)">关闭</el-button>
+            </div>
           </div>
         </template>
       </el-table-column>
@@ -69,56 +73,40 @@
         </el-button> -->
       </template>
       <template #form="{ form }">
-        <el-form-item label="仪器序列号" prop="serialNo">
-          <el-select v-model="form.serialNo" placeholder="请输入仪器序列号" style="width: 100%" clearable>
+        <el-form-item label="设备序列号" prop="serialNo">
+          <el-select v-model="form.serialNo" placeholder="请输入设备序列号" style="width: 100%" clearable>
             <el-option label="A" value="shanghai" />
             <el-option label="B" value="beijing" />
           </el-select>
         </el-form-item>
-        <el-form-item label="维修类型" prop="orderType">
-          <el-cascader
-            v-model="orderType"
-            :options="options"
-            filterable
-            clearable
-            @change="changeOptions"
-            :props="{
-              label: 'name',
-              value: 'id',
-            }"
-          />
+        <el-form-item label="设备型号" prop="modelNo">
+          <el-input v-model="form.modelNo" placeholder="请输入设备型号" clearable />
         </el-form-item>
-        <el-form-item label="状态" prop="status">
-          <el-select v-model="form.status" placeholder="请选择状态" clearable>
-            <el-option
-              v-for="(item, index) in request_status.options"
-              :key="index"
-              :label="item.label"
-              :value="item.value"
-            />
+        <el-form-item label="CRC" prop="modelNo">
+          <el-select v-model="form.serialNo" placeholder="请选择CRC" style="width: 100%" clearable>
+            <el-option label="是" value="shanghai" />
+            <el-option label="否" value="beijing" />
           </el-select>
+          <!-- <el-input v-model="form.modelNo" placeholder="请输入CRC" clearable /> -->
         </el-form-item>
-        <el-form-item label="客户联系人" prop="name">
-          <el-input v-model="form.name" placeholder="请输入客户联系人" clearable />
+        <el-form-item label="区域" prop="modelNo">
+          <el-input v-model="form.modelNo" placeholder="请输入区域" clearable />
         </el-form-item>
-        <el-form-item label="客户联系人电话" prop="mobile">
-          <el-input v-model="form.mobile" placeholder="请输入客户联系人电话" clearable />
+        <el-form-item label="客户名称" prop="custDesc">
+          <el-input v-model="form.custDesc" placeholder="请输入客户名称" clearable />
         </el-form-item>
-        <el-form-item label="报修来源" prop="source">
-          <el-select v-model="form.source" placeholder="请选择报修来源" clearable>
-            <el-option label="FSE" value="fse" />
-            <el-option label="其他" value="qt" />
-          </el-select>
-        </el-form-item>
-        <!-- <el-form-item label="客户单位名称" prop="fff">
-          <el-input v-model="form.fff" placeholder="请输入客户单位名称" clearable />
-        </el-form-item> -->
         <el-form-item label="工程师名称">
           <el-input v-model="form.ppp" placeholder="请输入FSE工程师名称">
             <template #append>
               <el-button><i-ep-Search /></el-button>
             </template>
           </el-input>
+        </el-form-item>
+        <el-form-item label="报修来源" prop="source">
+          <el-select v-model="form.source" placeholder="请选择报修来源" clearable>
+            <el-option label="FSE" value="fse" />
+            <el-option label="其他" value="qt" />
+          </el-select>
         </el-form-item>
         <el-form-item label="报修时间">
           <el-date-picker
@@ -128,6 +116,20 @@
             range-separator="-"
             start-placeholder="开始时间"
             end-placeholder="结束时间"
+          />
+        </el-form-item>
+        <el-form-item label="SO类型" prop="orderType">
+          <el-cascader
+            v-model="orderType"
+            :options="options"
+            filterable
+            clearable
+            @change="changeOptions"
+            :props="{
+              label: 'name',
+              value: 'id',
+              checkStrictly: true,
+            }"
           />
         </el-form-item>
       </template>

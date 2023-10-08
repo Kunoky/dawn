@@ -9,8 +9,8 @@
     >
       <el-table-column label="SO NO" prop="so" width="130" />
       <el-table-column label="维修任务号" prop="TaskID" width="120" />
-      <el-table-column label="仪器序列号" prop="aaa" :show-overflow-tooltip="true" width="100" />
-      <el-table-column label="型号" prop="bbb" :show-overflow-tooltip="true" width="100" />
+      <el-table-column label="设备序列号" prop="aaa" :show-overflow-tooltip="true" width="100" />
+      <el-table-column label="设备型号" prop="bbb" :show-overflow-tooltip="true" width="100" />
       <el-table-column label="仪器SAP Equip编号" prop="ccc" width="128" />
       <el-table-column label="维修类型" prop="ddd" width="100" />
       <el-table-column label="仪器地址" prop="eee" width="100" />
@@ -52,26 +52,32 @@
         <el-form-item label="SO NO" prop="so">
           <el-input v-model="form.so" placeholder="请输入SO NO" clearable />
         </el-form-item>
-        <el-form-item label="仪器序列号" prop="TaskID">
-          <!-- <el-input v-model="form.TaskID" placeholder="请输入联系人" clearable /> -->
-          <el-select v-model="form.TaskID" placeholder="请输入仪器序列号" style="width: 100%" clearable>
+        <el-form-item label="设备序列号" prop="serialNo">
+          <el-select v-model="form.serialNo" placeholder="请输入设备序列号" style="width: 100%" clearable>
             <el-option label="A" value="shanghai" />
             <el-option label="B" value="beijing" />
           </el-select>
         </el-form-item>
-        <el-form-item label="维修类型" prop="ddd">
-          <el-cascader v-model="form.ddd" :options="options" filterable clearable style="width: 100%" />
+        <el-form-item label="设备型号" prop="modelNo">
+          <el-input v-model="form.modelNo" placeholder="请输入设备型号" clearable />
         </el-form-item>
-        <el-form-item label="客户联系人" prop="hhh">
-          <el-input v-model="form.hhh" placeholder="请输入客户联系人" clearable />
+        <el-form-item label="CRC" prop="modelNo">
+          <el-select v-model="form.serialNo" placeholder="请选择CRC" style="width: 100%" clearable>
+            <el-option label="是" value="shanghai" />
+            <el-option label="否" value="beijing" />
+          </el-select>
+          <!-- <el-input v-model="form.modelNo" placeholder="请输入CRC" clearable /> -->
         </el-form-item>
-        <el-form-item label="客户联系人电话" prop="iii">
-          <el-input v-model="form.iii" placeholder="请输入客户联系人电话" clearable />
+        <el-form-item label="区域" prop="modelNo">
+          <el-input v-model="form.modelNo" placeholder="请输入区域" clearable />
         </el-form-item>
-        <el-form-item label="报修来源" prop="mmm">
-          <el-select v-model="form.mmm" placeholder="请输入报修来源" clearable>
-            <el-option label="FSE" value="fse" />
-            <el-option label="其他" value="qt" />
+        <el-form-item label="客户名称" prop="custDesc">
+          <el-input v-model="form.custDesc" placeholder="请输入客户名称" clearable />
+        </el-form-item>
+        <el-form-item label="客户锁定状态" prop="custDesc">
+          <el-select v-model="form.serialNo" placeholder="请选择客户锁定状态" style="width: 100%" clearable>
+            <el-option label="A" value="shanghai" />
+            <el-option label="B" value="beijing" />
           </el-select>
         </el-form-item>
         <el-form-item label="工程师名称">
@@ -81,7 +87,21 @@
             </template>
           </el-input>
         </el-form-item>
-        <el-form-item label="报修时间">
+        <el-form-item label="SO子类型" prop="orderType">
+          <el-cascader
+            v-model="orderType"
+            :options="options"
+            filterable
+            clearable
+            @change="changeOptions"
+            :props="{
+              label: 'name',
+              value: 'id',
+              checkStrictly: true,
+            }"
+          />
+        </el-form-item>
+        <el-form-item label="开票申请提交时间段">
           <el-date-picker
             v-model="form.params"
             placeholder="请选择时间"
@@ -118,70 +138,91 @@ const tableRef = ref()
 const refresh = () => tableRef.value.refresh()
 // const i18n = useI18n()
 
-const options = [
-  {
-    value: 'SM01',
-    label: 'SM01',
-  },
-  {
-    value: 'SM02',
-    label: 'SM02',
-  },
-  {
-    value: 'SM03',
-    label: 'SM03',
-    children: [
-      {
-        value: 'xxx',
-        label: '111',
-      },
-      {
-        value: 'xxx',
-        label: '222',
-      },
-      {
-        value: 'xxx',
-        label: '333',
-      },
-      {
-        value: 'xxx',
-        label: '444',
-      },
-    ],
-  },
-  {
-    value: 'SM04',
-    label: 'SM04',
-    children: [
-      {
-        value: 'xxx',
-        label: '111',
-      },
-      {
-        value: 'xxx',
-        label: '222',
-      },
-    ],
-  },
-  {
-    value: 'SM05',
-    label: 'SM05',
-    children: [
-      {
-        value: 'xxx',
-        label: '111',
-      },
-      {
-        value: 'xxx',
-        label: '222',
-      },
-      {
-        value: 'xxx',
-        label: '333',
-      },
-    ],
-  },
-]
+// const options = [
+//   {
+//     value: 'SM01',
+//     label: 'SM01',
+//   },
+//   {
+//     value: 'SM02',
+//     label: 'SM02',
+//   },
+//   {
+//     value: 'SM03',
+//     label: 'SM03',
+//     children: [
+//       {
+//         value: 'xxx',
+//         label: '111',
+//       },
+//       {
+//         value: 'xxx',
+//         label: '222',
+//       },
+//       {
+//         value: 'xxx',
+//         label: '333',
+//       },
+//       {
+//         value: 'xxx',
+//         label: '444',
+//       },
+//     ],
+//   },
+//   {
+//     value: 'SM04',
+//     label: 'SM04',
+//     children: [
+//       {
+//         value: 'xxx',
+//         label: '111',
+//       },
+//       {
+//         value: 'xxx',
+//         label: '222',
+//       },
+//     ],
+//   },
+//   {
+//     value: 'SM05',
+//     label: 'SM05',
+//     children: [
+//       {
+//         value: 'xxx',
+//         label: '111',
+//       },
+//       {
+//         value: 'xxx',
+//         label: '222',
+//       },
+//       {
+//         value: 'xxx',
+//         label: '333',
+//       },
+//     ],
+//   },
+// ]
+onMounted(() => {
+  getMaintenanceType()
+})
+const options = ref([])
+const getMaintenanceType = async () => {
+  return req.get('/data/maintenanceType').then(res => {
+    const [tree] = utils.arr2tree(res.data, 'id', 'pid')
+    options.value = tree
+  })
+}
+const orderType = ref([])
+const changeOptions = val => {
+  if (!val) {
+    tableRef.value.form.orderType = ''
+    tableRef.value.form.subType = ''
+  } else {
+    tableRef.value.form.orderType = val[0]
+    tableRef.value.form.subType = val[1]
+  }
+}
+
 const current = ref(null)
 const visible = reactive({
   form: false,

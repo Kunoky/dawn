@@ -9,8 +9,8 @@
     >
       <el-table-column label="SO NO" prop="so" width="120" />
       <el-table-column label="维修任务号" prop="TaskID" width="120" />
-      <el-table-column label="仪器序列号" prop="aaa" :show-overflow-tooltip="true" width="100" />
-      <el-table-column label="型号" prop="bbb" :show-overflow-tooltip="true" width="100" />
+      <el-table-column label="设备序列号" prop="aaa" :show-overflow-tooltip="true" width="100" />
+      <el-table-column label="设备型号" prop="bbb" :show-overflow-tooltip="true" width="100" />
       <el-table-column label="仪器SAP Equip编号" prop="ccc" width="128" />
       <el-table-column label="维修类型" prop="ddd" width="100" />
       <el-table-column label="仪器地址" prop="eee" width="100" />
@@ -50,8 +50,8 @@
         <el-form-item label="SO NO" prop="so">
           <el-input v-model="form.so" placeholder="请输入SO NO" clearable />
         </el-form-item>
-        <el-form-item label="仪器序列号" prop="TaskID">
-          <el-select v-model="form.aaa" placeholder="请输入仪器序列号" style="width: 100%" clearable>
+        <el-form-item label="设备序列号" prop="TaskID">
+          <el-select v-model="form.aaa" placeholder="请输入设备序列号" style="width: 100%" clearable>
             <el-option label="A" value="shanghai" />
             <el-option label="B" value="beijing" />
           </el-select>

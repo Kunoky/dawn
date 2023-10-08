@@ -159,6 +159,19 @@ const menus = [
     parentId: 5,
     menuType: 1,
     // icon: 'ep:message-box',
+    menuName: '报价待确认SO',
+    orderNum: 0,
+    path: '/so/tobeQuotation',
+    routeName: 'SoTobeQuotation',
+    isCache: 1,
+    visible: 1,
+    status: 1,
+  },
+  {
+    menuId: 12,
+    parentId: 5,
+    menuType: 1,
+    // icon: 'ep:message-box',
     menuName: '待转移SO',
     orderNum: 0,
     path: '/so/transfer',
@@ -168,7 +181,7 @@ const menus = [
     status: 1,
   },
   {
-    menuId: 12,
+    menuId: 13,
     parentId: 5,
     menuType: 1,
     // icon: 'ep:message-box',
@@ -181,7 +194,7 @@ const menus = [
     status: 1,
   },
   {
-    menuId: 13,
+    menuId: 14,
     parentId: 5,
     menuType: 1,
     // icon: 'ep:message-box',
@@ -194,7 +207,7 @@ const menus = [
     status: 1,
   },
   {
-    menuId: 14,
+    menuId: 15,
     parentId: 5,
     menuType: 1,
     // icon: 'ep:message-box',
@@ -207,7 +220,7 @@ const menus = [
     status: 1,
   },
   {
-    menuId: 15,
+    menuId: 16,
     parentId: 5,
     menuType: 1,
     // icon: 'ep:lock',
@@ -220,7 +233,7 @@ const menus = [
     status: 1,
   },
   {
-    menuId: 16,
+    menuId: 17,
     parentId: 0,
     menuType: 1,
     icon: 'ep:lock',
@@ -233,7 +246,7 @@ const menus = [
     status: 1,
   },
   {
-    menuId: 17,
+    menuId: 18,
     parentId: 0,
     menuType: 1,
     icon: 'eos-icons:packages-outlined',

@@ -128,7 +128,7 @@
               <el-input v-model="formData.ggg" placeholder="请输入注册地址及电话" clearable />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <!-- <el-col :span="12">
             <el-form-item label="Pending具体状态" prop="hhh">
               <el-select v-model="formData.hhh" placeholder="请选择Pending具体状态" clearable style="width: 100%">
                 <el-option label="客户内部流程申请" value="1" />
@@ -145,9 +145,6 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <!-- <el-form-item label="上传附件" prop="iii">
-              <el-input type="textarea" v-model="formData.iii" placeholder="请输入Pending具体" clearable />
-            </el-form-item> -->
             <el-form-item label="上传附件" prop="kkk">
               <el-upload
                 style="width: 100%"
@@ -166,7 +163,7 @@
                 </template>
               </el-upload>
             </el-form-item>
-          </el-col>
+          </el-col> -->
         </el-row>
       </el-form>
     </div>
@@ -271,22 +268,22 @@ const formData = ref({
   eee: '',
   fff: '',
   ggg: '',
-  hhh: '',
-  iii: '',
-  kkk: [],
+  // hhh: '',
+  // iii: '',
+  // kkk: [],
 })
 const rules = {
   // totalVal: [{ required: true, validator: validateRate, trigger: 'blur' }],
-  aaa: [{ required: true, message: '发票抬头不能为空', trigger: 'blur' }],
-  bbb: [{ required: true, message: '收件人不能为空', trigger: 'blur' }],
-  ccc: [{ required: true, message: '联系电话不能为空', trigger: 'blur' }],
-  ddd: [{ required: true, message: '开户行不能为空', trigger: 'blur' }],
-  eee: [{ required: true, message: '开户行账号不能为空', trigger: 'blur' }],
-  fff: [{ required: true, message: '税号不能为空', trigger: 'blur' }],
-  ggg: [{ required: true, message: '注册地址及电话不能为空', trigger: 'blur' }],
-  hhh: [{ required: true, message: 'pending具体状态不能为空', trigger: 'change' }],
-  iii: [{ required: true, message: 'remark不能为空', trigger: 'blur' }],
-  kkk: [{ required: true, message: '附件不能为空', trigger: 'blur' }],
+  // aaa: [{ required: true, message: '发票抬头不能为空', trigger: 'blur' }],
+  // bbb: [{ required: true, message: '收件人不能为空', trigger: 'blur' }],
+  // ccc: [{ required: true, message: '联系电话不能为空', trigger: 'blur' }],
+  // ddd: [{ required: true, message: '开户行不能为空', trigger: 'blur' }],
+  // eee: [{ required: true, message: '开户行账号不能为空', trigger: 'blur' }],
+  // fff: [{ required: true, message: '税号不能为空', trigger: 'blur' }],
+  // ggg: [{ required: true, message: '注册地址及电话不能为空', trigger: 'blur' }],
+  // hhh: [{ required: true, message: 'pending具体状态不能为空', trigger: 'change' }],
+  // iii: [{ required: true, message: 'remark不能为空', trigger: 'blur' }],
+  // kkk: [{ required: true, message: '附件不能为空', trigger: 'blur' }],
 }
 const validateRate = (rule, value, callback) => {
   // console.log(value, zong.value)
