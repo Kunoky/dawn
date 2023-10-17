@@ -2,10 +2,12 @@
   <div>
     <CTable
       :page-conf="{
-        action: '/request/toBeCreatedList',
+        action: listData,
+        // action: '/request/toBeCreatedList',
       }"
       ref="tableRef"
       id="repairRequest"
+      row-key="repairRequestId"
     >
       <!-- <el-table-column label="维修任务号" prop="TaskID" width="120" /> -->
       <el-table-column label="设备序列号" prop="serialNo" width="100" />
@@ -73,54 +75,56 @@
         </el-button> -->
       </template>
       <template #form="{ form }">
+        <el-form-item label="SO NO" prop="soNo">
+          <el-input v-model="form.soNo" placeholder="请输入SO NO" clearable />
+        </el-form-item>
         <el-form-item label="设备序列号" prop="serialNo">
-          <el-select v-model="form.serialNo" placeholder="请输入设备序列号" style="width: 100%" clearable>
-            <el-option label="A" value="shanghai" />
-            <el-option label="B" value="beijing" />
-          </el-select>
+          <el-input v-model="form.serialNo" placeholder="请输入设备型号" clearable />
         </el-form-item>
         <el-form-item label="设备型号" prop="modelNo">
           <el-input v-model="form.modelNo" placeholder="请输入设备型号" clearable />
         </el-form-item>
-        <el-form-item label="CRC" prop="modelNo">
-          <el-select v-model="form.serialNo" placeholder="请选择CRC" style="width: 100%" clearable>
-            <el-option label="是" value="shanghai" />
-            <el-option label="否" value="beijing" />
-          </el-select>
-          <!-- <el-input v-model="form.modelNo" placeholder="请输入CRC" clearable /> -->
-        </el-form-item>
-        <el-form-item label="区域" prop="modelNo">
-          <el-input v-model="form.modelNo" placeholder="请输入区域" clearable />
-        </el-form-item>
-        <el-form-item label="客户名称" prop="custDesc">
-          <el-input v-model="form.custDesc" placeholder="请输入客户名称" clearable />
-        </el-form-item>
-        <el-form-item label="工程师名称">
-          <el-input v-model="form.ppp" placeholder="请输入FSE工程师名称">
-            <template #append>
-              <el-button><i-ep-Search /></el-button>
-            </template>
-          </el-input>
-        </el-form-item>
-        <el-form-item label="报修来源" prop="source">
-          <el-select v-model="form.source" placeholder="请选择报修来源" clearable>
-            <el-option label="FSE" value="fse" />
-            <el-option label="其他" value="qt" />
+        <el-form-item label="CRC" prop="isCrc">
+          <el-select v-model="form.isCrc" placeholder="请选择CRC" style="width: 100%" clearable>
+            <el-option label="是" value="1" />
+            <el-option label="否" value="0" />
           </el-select>
         </el-form-item>
-        <el-form-item label="报修时间">
+        <el-form-item label="区域" prop="area">
+          <el-input v-model="form.area" placeholder="请输入区域" clearable />
+        </el-form-item>
+        <el-form-item label="客户名称" prop="companyName">
+          <el-input v-model="form.companyName" placeholder="请输入客户名称" clearable />
+        </el-form-item>
+        <el-form-item label="工程师名称" prop="fseId">
+          <el-select
+            clearable
+            v-model="form.fseId"
+            placeholder="请输入FSE工程师名称"
+            filterable
+            remote
+            reserve-keyword
+            :remote-method="remoteMethodEngineerName"
+            :loading="engineerNameLoading"
+          >
+            <el-option v-for="item in engineerNameOptions" :key="item.value" :label="item.label" :value="item.value" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="报修时间" prop="params">
           <el-date-picker
             v-model="form.params"
+            value-format="YYYY-MM-DD HH:mm:ss"
             placeholder="请选择时间"
             type="datetimerange"
             range-separator="-"
             start-placeholder="开始时间"
             end-placeholder="结束时间"
+            @change="getDatePicker"
           />
         </el-form-item>
         <el-form-item label="SO类型" prop="orderType">
           <el-cascader
-            v-model="orderType"
+            v-model="form.orderType"
             :options="options"
             filterable
             clearable
@@ -193,7 +197,7 @@
       </template>
     </el-dialog>
 
-    <el-dialog title="失败原因" width="30%" v-model="visibleState" :close-on-click-modal="false">
+    <!-- <el-dialog title="失败原因" width="30%" v-model="visibleState" :close-on-click-modal="false">
       <el-descriptions class="margin-top" :column="1" border size="small">
         <el-descriptions-item>
           <template #label>失败原因</template>
@@ -203,10 +207,10 @@
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="handleCloseState">{{ $t('common.cancel') }}</el-button>
-          <!-- <el-button type="primary" @click="handleConfirm">{{ $t('common.confirm') }}</el-button> -->
+          <el-button type="primary" @click="handleConfirm">{{ $t('common.confirm') }}</el-button>
         </span>
       </template>
-    </el-dialog>
+    </el-dialog> -->
   </div>
 </template>
 
@@ -217,6 +221,15 @@ import FormDialog from './components/FormDialog.vue'
 const tableRef = ref()
 const refresh = () => tableRef.value.refresh()
 const i18n = useI18n()
+
+const listData = params => {
+  delete params.params
+  delete params.orderType
+  return req.get('/request/toBeCreatedList', { params }).then(res => {
+    return { data: res.data }
+  })
+}
+
 onMounted(() => {
   getMaintenanceType()
 })
@@ -227,7 +240,6 @@ const getMaintenanceType = async () => {
     options.value = tree
   })
 }
-const orderType = ref([])
 const changeOptions = val => {
   if (!val) {
     tableRef.value.form.orderType = ''
@@ -237,18 +249,23 @@ const changeOptions = val => {
     tableRef.value.form.subType = val[1]
   }
 }
+
+// 获取时间
+const getDatePicker = val => {
+  if (!val) {
+    tableRef.value.form.repairStartTime = ''
+    tableRef.value.form.repairEndTime = ''
+  } else {
+    tableRef.value.form.repairStartTime = val[0]
+    tableRef.value.form.repairEndTime = val[1]
+  }
+}
+
 const current = ref(null)
 const visible = reactive({
   form: false,
   permission: false,
 })
-
-// const status = useDict('status')
-
-// const handleAdd = () => {
-//   current.value = null
-//   visible.form = true
-// }
 
 const handleEdit = row => {
   current.value = row
@@ -336,7 +353,6 @@ const handleCloseDetail = () => {
 const handleConfirm = () => {
   formRefDetails.value.validate(valid => {
     if (valid) {
-      // console.log(formDetails.value)
       req.put('/request/close', formDetails.value).then(() => {
         // if (code === 200) {
         //   ElMessage.success('关闭成功')
@@ -397,17 +413,44 @@ const request_status = useDict('request_status')
 // }
 
 // 状态失败原因
-const visibleState = ref(false)
-const record = ref({
-  state: 'xxxxxxxxxxxxxxxxxxxxxxxxxxx',
-})
+// const visibleState = ref(false)
+// const record = ref({
+//   state: 'xxxxxxxxxxxxxxxxxxxxxxxxxxx',
+// })
 
 // const handleState = row => {
 //   // console.log(row)
 //   record.value.state = row.backReason
 //   visibleState.value = true
 // }
-const handleCloseState = () => {
-  visibleState.value = false
+// const handleCloseState = () => {
+//   visibleState.value = false
+// }
+
+// FSE工程师名称
+const engineerNameLoading = ref(false)
+const engineerNameList = ref([])
+const engineerNameOptions = ref([])
+async function getEngineerName(v) {
+  return req.get('/user/fse', { params: { fseName: v } }).then(res => {
+    engineerNameList.value = res.data.map(item => {
+      return { value: item.fseId, label: `${item.fseId} / ${item.fseName}` }
+    })
+  })
+}
+const remoteMethodEngineerName = query => {
+  if (query) {
+    engineerNameLoading.value = true
+    getEngineerName(query).then(() => {
+      engineerNameLoading.value = false
+      engineerNameOptions.value = engineerNameList.value.filter(item => {
+        return item.label.toLowerCase().includes(query.toLowerCase())
+      })
+    })
+    // setTimeout(() => {
+    // }, 200)
+  } else {
+    engineerNameOptions.value = []
+  }
 }
 </script>

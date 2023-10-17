@@ -2,7 +2,8 @@
   <div>
     <CTable
       :page-conf="{
-        action: '/request/myList',
+        // action: '/request/myList',
+        action: listData,
       }"
       ref="tableRef"
       id="repairRequest"
@@ -95,9 +96,9 @@
             <el-option v-for="item in serialNoOptions" :key="item.value" :label="item.label" :value="item.value" />
           </el-select> -->
         </el-form-item>
-        <el-form-item label="维修类型" prop="orderType">
+        <el-form-item label="SO类型" prop="orderType">
           <el-cascader
-            v-model="orderType"
+            v-model="form.orderType"
             :options="options"
             filterable
             clearable
@@ -105,6 +106,7 @@
             :props="{
               label: 'name',
               value: 'id',
+              checkStrictly: true,
             }"
           />
         </el-form-item>
@@ -137,21 +139,37 @@
         <!-- <el-form-item label="客户单位名称" prop="fff">
           <el-input v-model="form.fff" placeholder="请输入客户单位名称" clearable />
         </el-form-item> -->
-        <el-form-item label="工程师名称">
+        <!-- <el-form-item label="工程师名称">
           <el-input v-model="form.ppp" placeholder="请输入FSE工程师名称">
             <template #append>
               <el-button><i-ep-Search /></el-button>
             </template>
           </el-input>
+        </el-form-item> -->
+        <el-form-item label="FSE工程师名称" prop="engineerId">
+          <el-select
+            clearable
+            v-model="form.engineerId"
+            placeholder="请输入FSE工程师名称"
+            filterable
+            remote
+            reserve-keyword
+            :remote-method="remoteMethodEngineerName"
+            :loading="engineerNameLoading"
+          >
+            <el-option v-for="item in engineerNameOptions" :key="item.value" :label="item.label" :value="item.value" />
+          </el-select>
         </el-form-item>
-        <el-form-item label="报修时间">
+        <el-form-item label="报修时间" prop="params">
           <el-date-picker
             v-model="form.params"
+            value-format="YYYY-MM-DD HH:mm:ss"
             placeholder="请选择时间"
             type="datetimerange"
             range-separator="-"
             start-placeholder="开始时间"
             end-placeholder="结束时间"
+            @change="getDatePicker"
           />
         </el-form-item>
       </template>
@@ -234,6 +252,14 @@
 import { ref } from 'vue'
 import FormDialog from './components/FormDialog.vue'
 
+const listData = params => {
+  delete params.params
+  delete params.orderType
+  return req.get('/request/myList', { params }).then(res => {
+    return { data: res.data }
+  })
+}
+
 const tableRef = ref()
 const refresh = () => tableRef.value.refresh()
 // const i18n = useI18n()
@@ -247,7 +273,7 @@ const getMaintenanceType = async () => {
     options.value = tree
   })
 }
-const orderType = ref([])
+// const orderType = ref([])
 const changeOptions = val => {
   // console.log(val);
   if (!val) {
@@ -258,6 +284,17 @@ const changeOptions = val => {
     tableRef.value.form.subType = val[1]
   }
 }
+
+const getDatePicker = val => {
+  if (!val) {
+    tableRef.value.form.repairStartTime = ''
+    tableRef.value.form.repairEndTime = ''
+  } else {
+    tableRef.value.form.repairStartTime = val[0]
+    tableRef.value.form.repairEndTime = val[1]
+  }
+}
+
 const current = ref(null)
 const visible = reactive({
   form: false,
@@ -462,4 +499,31 @@ const repairSource = useDict('repairSource')
 //     serialNoOptions.value = []
 //   }
 // }
+
+// FSE工程师名称
+const engineerNameLoading = ref(false)
+const engineerNameList = ref([])
+const engineerNameOptions = ref([])
+async function getEngineerName(v) {
+  return req.get('/user/fse', { params: { fseName: v } }).then(res => {
+    engineerNameList.value = res.data.map(item => {
+      return { value: item.fseId, label: `${item.fseId} / ${item.fseName}` }
+    })
+  })
+}
+const remoteMethodEngineerName = query => {
+  if (query) {
+    engineerNameLoading.value = true
+    getEngineerName(query).then(() => {
+      engineerNameLoading.value = false
+      engineerNameOptions.value = engineerNameList.value.filter(item => {
+        return item.label.toLowerCase().includes(query.toLowerCase())
+      })
+    })
+    // setTimeout(() => {
+    // }, 200)
+  } else {
+    engineerNameOptions.value = []
+  }
+}
 </script>

@@ -143,11 +143,6 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="FSE工程师名称" prop="engineerName">
-            <!-- <el-input v-model="form.engineerId" placeholder="请输入FSE工程师名称">
-              <template #append>
-                <el-button @click="searchFSE"><i-ep-Search /></el-button>
-              </template>
-            </el-input> -->
             <el-select
               v-model="form.engineerName"
               placeholder="请输入FSE工程师名称"
@@ -516,7 +511,7 @@ const engineerNameOptions = ref([])
 async function getEngineerName(v) {
   return req.get('/user/fse', { params: { fseName: v } }).then(res => {
     engineerNameList.value = res.data.map(item => {
-      return { value: item, label: `${item.fseName}` }
+      return { value: item, label: `${item.fseId} / ${item.fseName}` }
     })
   })
 }

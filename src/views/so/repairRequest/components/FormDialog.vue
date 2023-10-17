@@ -2,12 +2,12 @@
   <el-dialog
     :model-value="modelValue"
     @close="handleClose"
-    title="完善信息"
+    :title="title"
     width="60%"
     v-bind="$attrs"
     :close-on-click-modal="false"
   >
-    <el-form :model="form" ref="formRef" label-width="155" :rules="rules">
+    <el-form :model="form" ref="formRef" label-width="155" :rules="rules" v-loading="dataLoading">
       <el-row>
         <el-col :span="12">
           <el-form-item label="设备序列号" prop="serialNo">
@@ -47,33 +47,6 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="保修期" prop="warrantyTime" class="date-box">
-            <el-date-picker
-              v-model="form.warrantyTime"
-              type="date"
-              placeholder="请选择保修期"
-              style="width: 100%"
-              clearabl
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="维修类型" prop="dataOptions">
-            <el-cascader
-              v-model="form.dataOptions"
-              :options="props.options"
-              filterable
-              clearable
-              style="width: 100%"
-              @change="changeOptions"
-              :props="{
-                label: 'name',
-                value: 'name',
-              }"
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
           <el-form-item label="仪器地址" prop="equipAddress">
             <el-input v-model="form.equipAddress" placeholder="请输入仪器地址" clearable />
           </el-form-item>
@@ -110,12 +83,12 @@
             <el-input v-model="form.name" placeholder="请输入客户联系人" clearable />
           </el-form-item>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="7">
           <el-form-item label="客户联系人拼音" prop="lastName" class="form_flex">
             <el-input v-model="form.lastName" placeholder="请输入客户联系人拼音(姓)" clearable />
           </el-form-item>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="5">
           <el-form-item prop="firstName" class="item">
             <el-input v-model="form.firstName" placeholder="请输入客户联系人拼音(名)" clearable />
           </el-form-item>
@@ -136,17 +109,40 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
+          <el-form-item label="保修期" prop="warrantyTime" class="date-box">
+            <el-date-picker
+              v-model="form.warrantyTime"
+              type="date"
+              value-format="YYYY-MM-DD"
+              placeholder="请选择保修期"
+              style="width: 100%"
+              clearabl
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="维修类型" prop="dataOptions">
+            <el-cascader
+              v-model="form.dataOptions"
+              :options="props.options"
+              filterable
+              clearable
+              style="width: 100%"
+              @change="changeOptions"
+              :props="{
+                label: 'name',
+                value: 'name',
+              }"
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
           <el-form-item label="代理商" prop="vendor">
             <el-input v-model="form.vendor" placeholder="请输入代理商" clearable />
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="FSE工程师名称" prop="engineerName">
-            <!-- <el-input v-model="form.engineerId" placeholder="请输入FSE工程师名称">
-              <template #append>
-                <el-button @click="searchFSE"><i-ep-Search /></el-button>
-              </template>
-            </el-input> -->
             <el-select
               v-model="form.engineerName"
               placeholder="请输入FSE工程师名称"
@@ -180,8 +176,12 @@
         <el-col :span="12">
           <el-form-item label="报修来源" prop="source">
             <el-select v-model="form.source" placeholder="请输入报修来源" style="width: 100%" clearable>
-              <el-option label="FSE" value="fse" />
-              <el-option label="其他" value="qt" />
+              <el-option
+                v-for="(item, index) in repairSource.options"
+                :key="index"
+                :label="item.label"
+                :value="item.value"
+              />
             </el-select>
           </el-form-item>
         </el-col>
@@ -195,6 +195,7 @@
             <el-date-picker
               v-model="form.repairTime"
               style="width: 100%"
+              value-format="YYYY-MM-DD hh:ss:mm"
               type="datetime"
               placeholder="请选择报修时间"
               clearable
@@ -203,10 +204,10 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="所属区域" prop="area">
-            <el-input v-model="form.area" placeholder="请输入所属区域" clearable />
+            <el-input v-model="form.area" disabled placeholder="自动填入" clearable />
           </el-form-item>
         </el-col>
-        <!-- <el-col :span="12">
+        <el-col :span="12">
           <el-form-item label="是否CRC" prop="isCrc">
             <el-switch
               v-model="form.isCrc"
@@ -216,38 +217,12 @@
               inactive-text="否"
             />
           </el-form-item>
-        </el-col> -->
+        </el-col>
         <el-col :span="24">
           <el-form-item label="报修内容" prop="content">
             <el-input type="textarea" v-model="form.content" placeholder="请输入报修内容" clearable />
           </el-form-item>
         </el-col>
-        <!-- <el-col :span="12">
-          <el-form-item label="上传附件" prop="attaIds"> -->
-        <!-- <el-upload
-              style="width: 100%"
-              class="upload-demo"
-              drag
-              action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
-              multiple
-            >
-              <i-ep-UploadFilled class="fs-1" />
-              <div class="el-upload__text">
-                将文件拖到此处
-                <em>或点击上传</em>
-              </div>
-              <template #tip>
-                <div class="el-upload__tip">只能上传PDF, 单个文件 ≤10MB</div>
-              </template>
-            </el-upload> -->
-        <!-- <CUpload
-              style="width: 100%"
-              :params="params"
-              v-model="list"
-              accept="image/png,image/jpg,image/jpeg,application/pdf"
-            ></CUpload> -->
-        <!-- </el-form-item>
-        </el-col> -->
       </el-row>
     </el-form>
     <template #footer>
@@ -266,15 +241,21 @@
       max-height="190"
       :header-cell-style="{ background: '#f5f7fa' }"
     >
-      <el-table-column prop="serialNo" label="客户名称" />
-      <el-table-column prop="modelNo" label="状态" />
-      <el-table-column prop="eqId" label="维修类型" />
-      <el-table-column prop="ddd" label="创建人" />
-      <el-table-column prop="equipAddress" label="创建人时间" width="130" />
-      <el-table-column prop="custDesc" label="报修时间" width="130" />
-      <el-table-column prop="ggg" label="FSE工程师名称" width="120" />
-      <el-table-column prop="hhh" label="FSE work center" width="150" />
-      <el-table-column prop="mobile" label="FSE storage location" width="150" />
+      <el-table-column prop="custName" label="客户名称" width="150" fixed="left" />
+      <el-table-column prop="modelNo" label="状态">
+        <template #default="{ row }">
+          <span class="cs-p fw-b">{{ soStatus.kv[row.status] }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="维修类型">
+        <template #default="{ row }">{{ row.orderType }} / {{ row.subType }}</template>
+      </el-table-column>
+      <el-table-column prop="createBy" label="创建人" />
+      <el-table-column prop="createTime" label="创建人时间" width="130" />
+      <el-table-column prop="repairTime" label="报修时间" width="130" />
+      <el-table-column prop="fseName" label="FSE工程师名称" width="120" />
+      <el-table-column prop="fseWorkCenter" label="FSE work center" width="150" />
+      <el-table-column prop="fseStorageLocation" label="FSE storage location" width="150" />
     </el-table>
     <template #footer>
       <span class="dialog-footer">
@@ -293,7 +274,9 @@ const props = defineProps({
   options: Array,
 })
 
-// const title = computed(() => (props.data ? '完善信息' : '新建维修申请'))
+const title = computed(() => (props.data ? '修改维修申请' : '新建维修申请'))
+
+const repairSource = useDict('repairSource')
 
 const rules = {
   serialNo: [{ required: true, message: '设备序列号不能为空', trigger: 'blur' }],
@@ -316,7 +299,7 @@ const rules = {
   engineerName: [{ required: true, message: 'FSE工程师名称不能为空', trigger: 'blur' }],
   // center: [{ required: true, message: 'FSE work cente不能为空', trigger: 'blur' }],
   // location: [{ required: true, message: 'FSE storage location不能为空', trigger: 'blur' }],
-  area: [{ required: true, message: '所属区域不能为空', trigger: 'blur' }],
+  // area: [{ required: true, message: '所属区域不能为空', trigger: 'blur' }],
 }
 // onMounted(() => {
 //   getMaintenanceType()
@@ -324,14 +307,15 @@ const rules = {
 // const options = ref([])
 // const getMaintenanceType = async () => {
 //   return req.get('/data/maintenanceType').then(res => {
-//     console.log(res, 'qqqq');
-//     // options.value = res
+//     const [tree] = utils.arr2tree(res.data,'id',  'pid')
+//     options.value = tree
 //   })
 // }
 const loading = ref(false)
 const formRef = ref()
 const form = ref({})
 // const form2 = ref({
+//   // custDesc: '',
 //   location: '',
 //   center: '',
 // })
@@ -361,25 +345,49 @@ watch(
         warrantyTime: '',
         engineerName: '',
         engineerId: '',
-        relationSourceNo: '',
         fseWorkCenter: '',
         fseStorageLocation: '',
+        relationSourceNo: '',
+        isCrc: false,
         area: '',
         orderType: '', // 维修类型
         subType: '', //维修子类型
         isConsistentSap: true,
+        // attaIds: '',
       }
-      if (props.data) {
-        for (let k in form.value) {
-          form.value[k] = props.data[k]
-        }
-      }
+      // if (props.data) {
+      //   console.log(1111);
+      //   // for (let k in form.value) {
+      //   //   form.value[k] = props.data[k]
+      //   // }
+
+      //   form.value.dataOptions = [form.value.orderType,form.value.subType]
+      // }
       nextTick(() => {
         formRef.value.clearValidate()
       })
+      props.data?.id && getRequestInfo()
     }
   },
   { immediate: true }
+)
+
+const { run: getRequestInfo, loading: dataLoading } = useAsync(
+  async () => {
+    return req.get(`/request/info/${props.data.id}`)
+  },
+  {
+    onSuccess(res) {
+      form.value = res.data
+      form.value.dataOptions = [res.data.orderType, res.data.subType]
+      form.value.engineerName = res.data.fseName
+      form.value.fseWorkCenter = res.data.fseWorkCenter
+      form.value.fseStorageLocation = res.data.fseStorageLocation
+      nextTick(() => {
+        formRef.value.clearValidate()
+      })
+    },
+  }
 )
 // 暂存数据，为提交校验数据
 const staging = ref({
@@ -418,7 +426,7 @@ const changeSeriaNo = val => {
   form.value.modelNo = val.typbz
   form.value.eqId = val.matnr
   staging.value.aaa = val.customer.companyName1
-  staging.value.bbb = val.customer.companyName1
+  staging.value.bbb = val.customer.city1 + val.customer.city2 + val.customer.street
   form.value.custDesc = val.customer.companyName1
   form.value.customerId = val.customer.kunnr
   form.value.name = val.customer.name3
@@ -427,6 +435,8 @@ const changeSeriaNo = val => {
   form.value.firstName = val.customer.namev
   form.value.mobile = val.customer.tel
   form.value.email = val.customer.smtpAddr
+  form.value.area = val.customer.regio //区域
+  form.value.equipAddress = val.customer.city1 + val.customer.city2 + val.customer.street //仪器地址
 }
 
 // 客户单位名称
@@ -464,6 +474,8 @@ const changeCustDesc = val => {
   form.value.firstName = val.namev
   form.value.mobile = val.tel
   form.value.email = val.smtpAddr
+  form.value.area = val.customer.regio //区域
+  form.value.equipAddress = val.customer.city1 + val.custome.street //仪器地址
 }
 
 // FSE工程师名称
@@ -473,7 +485,7 @@ const engineerNameOptions = ref([])
 async function getEngineerName(v) {
   return req.get('/user/fse', { params: { fseName: v } }).then(res => {
     engineerNameList.value = res.data.map(item => {
-      return { value: item, label: `${item.fseName}` }
+      return { value: item, label: `${item.fseId} / ${item.fseName}` }
     })
   })
 }
@@ -499,6 +511,36 @@ const changeEngineerName = val => {
   form.value.fseStorageLocation = val.fseStorageLocation
 }
 
+const changeOptions = val => {
+  if (!val) {
+    form.value.orderType = ''
+    form.value.subType = ''
+  } else if (val.length === 1) {
+    form.value.orderType = val[0]
+    form.value.subType = ''
+  } else {
+    form.value.orderType = val[0]
+    form.value.subType = val[1]
+  }
+}
+
+// 查询未关闭SO数量
+const soStatus = useDict('soStatus')
+
+const visibleSo = ref(false)
+const tableData = ref([])
+const getNotCloseSo = () => {
+  req.get('/so/notCloseSo', { params: { serialNo: form.value.serialNo, modelNo: form.value.modelNo } }).then(res => {
+    tableData.value = res.data
+  })
+}
+const handleNum = () => {
+  getNotCloseSo()
+  visibleSo.value = true
+}
+const handleCloseSo = () => {
+  visibleSo.value = false
+}
 // 取消
 const handleClose = () => {
   emit('update:modelValue', false)
@@ -507,11 +549,19 @@ const handleConfirm = () => {
   formRef.value.validate(valid => {
     // console.log(form.value);
     if (valid) {
-      // if (staging.value.aaa !== form2.value.custDesc) {
-      //   form.value.isConsistentSap = false
-      // } else {
-      //   form.value.isConsistentSap = true
-      // }
+      delete form.value.blockFlag
+      delete form.value.fseWorkCenter
+      delete form.value.fseStorageLocation
+      delete form.value.dataOptions
+      delete form.value.area
+      delete form.value.engineerName
+      // form.value.attaIds = list.value.map(item => item.id)
+      if (staging.value.aaa !== form.value.custDesc || staging.value.bbb !== form.value.equipAddress) {
+        form.value.isConsistentSap = false
+      } else {
+        form.value.isConsistentSap = true
+      }
+      // console.log(form.value);
       loading.value = true
       req[form.value.id ? 'put' : 'post']('/request', form.value)
         .then(({ code }) => {
@@ -526,59 +576,6 @@ const handleConfirm = () => {
     }
   })
 }
-
-const changeOptions = val => {
-  if (!val) {
-    form.value.orderType = ''
-    form.value.subType = ''
-  } else if (val.length === 1) {
-    form.value.orderType = val[0]
-    form.value.subType = ''
-  } else {
-    form.value.orderType = val[0]
-    form.value.subType = val[1]
-  }
-}
-
-// 查询
-const visibleSo = ref(false)
-const tableData = [
-  {
-    serialNo: 'xxxxx',
-    modelNo: '待创建',
-    eqId: 'SM02',
-    ddd: '李四',
-    equipAddress: '2023-08-22 10:20:23',
-    custDesc: '2023-08-25 15:24:23',
-    ggg: '一号工程师',
-    hhh: '详情',
-    mobile: 'xxxxxx',
-  },
-  {
-    serialNo: 'xxxxx',
-    modelNo: '待维修',
-    eqId: 'SM02',
-    ddd: '李四',
-    equipAddress: '2023-08-22 10:20:23',
-    custDesc: '2023-08-25 15:24:23',
-    ggg: '一号工程师',
-    hhh: '详情',
-    mobile: 'xxxxxx',
-  },
-]
-const handleNum = () => {
-  visibleSo.value = true
-}
-const handleCloseSo = () => {
-  visibleSo.value = false
-}
-// 上传附件参数
-// const list = ref([])
-// const params = {
-//   type: 1,
-// }
-
-// const searchFSE = () => {}
 </script>
 <style scoped>
 .date-box :deep(.el-input__wrapper) {
