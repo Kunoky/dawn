@@ -54,7 +54,7 @@ const props = defineProps({
   // 分页水平位置，同justify-content
   justifyContent: {
     type: String,
-    default: 'end',
+    default: 'right',
   },
   // 隐藏分页
   hidePager: {
