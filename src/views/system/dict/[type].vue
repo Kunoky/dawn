@@ -73,8 +73,9 @@ const refresh = async force => {
     tableRef.value.refresh()
   }, 100)
 }
-refresh()
-
+onActivated(() => {
+  refresh()
+})
 const type = useDict('type')
 const dicts = computed(() => source.value.filter(i => i.pid === type.value.ko[route.params.type].id))
 async function listData(params) {
@@ -87,7 +88,7 @@ async function listData(params) {
   return {
     data: {
       records,
-      totalRow: records.length,
+      totalRow: list.length,
     },
   }
 }
@@ -117,7 +118,7 @@ const handleDel = row => {
         ...row,
         deleting: true,
       }
-      return req.delete('system/dict/' + row.id)
+      return req.delete('dict/' + row.id)
     })
     .then(({ code }) => {
       if (code === 200) {
