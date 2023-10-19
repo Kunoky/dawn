@@ -8,6 +8,7 @@
     :on-preview="handlePreview"
     :before-upload="beforeUpload"
     :on-remove="handleRemove"
+    :on-success="handleSuccess"
     :accept="accept"
     v-bind="$attrs"
     v-model:file-list="fileList"
@@ -98,6 +99,11 @@ function beforeUpload(file) {
 
 function handleRemove(file) {
   file.id && req.delete('attachment/' + file.id)
+}
+function handleSuccess(res) {
+  if (res.code === 200) {
+    ElMessage.success('上传成功!')
+  }
 }
 defineExpose({
   upload,

@@ -11,7 +11,7 @@
       <el-table-column label="维修任务号" prop="TaskID" width="120" />
       <el-table-column label="设备序列号" prop="serialNo" :show-overflow-tooltip="true" width="100" />
       <el-table-column label="设备型号" prop="modelNo" :show-overflow-tooltip="true" width="100" />
-      <el-table-column label="仪器SAP Equip编号" prop="ccc" width="128" />
+      <el-table-column label="仪器SAP Equip编号" prop="eqId" width="128" />
       <el-table-column label="维修类型" width="100">
         <template #default="{ row }">{{ row.orderType }} / {{ row.subType }}</template>
       </el-table-column>
@@ -59,7 +59,7 @@
           <el-input v-model="form.modelNo" placeholder="请输入设备型号" clearable />
         </el-form-item>
         <el-form-item label="CRC" prop="isCrc">
-          <el-select v-model="form.isCrc" placeholder="请选择CRC" style="width: 100%" clearable>
+          <el-select v-model="form.isCrc" placeholder="请选择CRC" clearable>
             <el-option label="是" value="1" />
             <el-option label="否" value="0" />
           </el-select>
@@ -98,14 +98,19 @@
             }"
           />
         </el-form-item>
+        <el-form-item label="SO状态" prop="soStatus">
+          <el-select v-model="form.soStatus" placeholder="请选择SO状态" clearable>
+            <el-option v-for="(item, index) in soStatus.options" :key="index" :label="item.label" :value="item.value" />
+          </el-select>
+        </el-form-item>
       </template>
     </CTable>
     <CDetails :data="current" v-model="visible.detail" @success="handleFormSuccess" :only="'query'"></CDetails>
 
     <el-dialog title="关闭" width="30%" v-model="detailVisible" :close-on-click-modal="false">
       <el-form :model="formDetails" ref="formRefDetails" label-width="80" :rules="rules">
-        <el-form-item label="原因" prop="reason">
-          <el-select v-model="formDetails.reason" placeholder="请选择原因" clearable style="width: 100%">
+        <el-form-item label="原因" prop="closeStatus">
+          <el-select v-model="formDetails.closeStatus" placeholder="请选择原因" clearable style="width: 100%">
             <el-option label="超客户预算" value="1" />
             <el-option label="经费审批未通过" value="2" />
             <el-option label="第三方维修" value="3" />
@@ -117,8 +122,8 @@
             <el-option label="其他" value="9" />
           </el-select>
         </el-form-item>
-        <el-form-item v-if="formDetails.reason === '9'" label="其他原因" prop="details">
-          <el-input type="textarea" v-model="formDetails.details" placeholder="请输入其他原因" clearable />
+        <el-form-item v-if="formDetails.closeStatus === '9'" label="其他原因" prop="reason">
+          <el-input type="textarea" v-model="formDetails.reason" placeholder="请输入其他原因" clearable />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -178,12 +183,12 @@ const detailVisible = ref(false)
 const formRefDetails = ref(null)
 const formDetails = ref({
   soNo: '',
+  closeStatus: '',
   reason: '',
-  details: '',
 })
 const rules = {
-  reason: [{ required: true, message: '原因不能为空', trigger: 'change' }],
-  details: [{ required: true, message: '其他原因不能为空', trigger: 'blur' }],
+  closeStatus: [{ required: true, message: '原因不能为空', trigger: 'change' }],
+  reason: [{ required: true, message: '其他原因不能为空', trigger: 'blur' }],
 }
 const handleClose = row => {
   formDetails.value.soNo = row.soNo
@@ -198,11 +203,12 @@ const handleCloseDetail = () => {
 const handleConfirm = () => {
   formRefDetails.value.validate(valid => {
     if (valid) {
-      if (formDetails.value.reason !== '9') {
-        delete formDetails.value.details
+      if (formDetails.value.closeStatus !== '9') {
+        delete formDetails.value.reason
       }
       req.put('/so/close', formDetails.value).then(() => {
         detailVisible.value = false
+        refresh()
       })
     }
   })

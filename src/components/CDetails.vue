@@ -31,7 +31,7 @@
             </el-descriptions-item>
             <el-descriptions-item>
               <template #label>仪器SAP Equip编号</template>
-              {{ form.ccc }}
+              {{ form.eqId }}
             </el-descriptions-item>
             <el-descriptions-item>
               <template #label>维修类型</template>
@@ -87,7 +87,7 @@
             </el-descriptions-item>
             <el-descriptions-item>
               <template #label>报修来源</template>
-              {{ form.mmm }}
+              {{ repairSource.kv[form.source] }}
             </el-descriptions-item>
             <el-descriptions-item>
               <template #label>报修时间</template>
@@ -95,7 +95,7 @@
             </el-descriptions-item>
             <el-descriptions-item>
               <template #label>保修期</template>
-              {{ form.ooo }}
+              {{ form.warrantyTime }}
             </el-descriptions-item>
             <el-descriptions-item>
               <template #label>报修内容</template>
@@ -112,13 +112,13 @@
               max-height="190"
               :header-cell-style="{ background: '#f5f7fa' }"
               show-summary
+              :summary-method="getSummaries"
             >
-              <!-- :summary-method="getSummaries" -->
-              <el-table-column prop="itemNo" label="配件/Labor料号" />
+              <el-table-column prop="materialNo" label="配件/Labor料号" />
               <el-table-column prop="unit" label="单位" />
               <el-table-column prop="unitPrice" label="单价" />
               <el-table-column prop="quantity" label="配件/Labor数量" />
-              <el-table-column prop="address" label="总价" />
+              <el-table-column prop="subTotal" label="总价" />
             </el-table>
           </div>
         </el-collapse-item>
@@ -132,11 +132,11 @@
             max-height="190"
             :header-cell-style="{ background: '#f5f7fa' }"
             show-summary
+            :summary-method="getSummaries"
           >
-            <!-- :summary-method="getSummaries" -->
-            <el-table-column prop="itemId" label="配件/Labor料号" />
-            <el-table-column prop="name" label="单位" />
-            <el-table-column prop="unitPrice" label="含税价格" />
+            <el-table-column prop="materialNo" label="配件/Labor料号" />
+            <el-table-column prop="unit" label="单位" />
+            <el-table-column prop="includeTaxPrice" label="含税价格" />
             <el-table-column prop="quantity" label="配件/Labor数量" />
             <el-table-column prop="subTotal" label="总价" />
           </el-table>
@@ -150,11 +150,17 @@
             >
               <el-table-column type="index" label="序号" />
               <el-table-column prop="quotePrice" label="配件总价" />
-              <el-table-column prop="bbb" label="最终价格" />
+              <el-table-column prop="finalPrice" label="最终价格" />
               <el-table-column prop="discountRate" label="折扣率" />
-              <el-table-column prop="quoterId" label="报价人" />
+              <el-table-column prop="quoteName" label="报价人" />
               <el-table-column prop="quoteTime" label="报价时间" />
-              <el-table-column prop="fff" label="审批状态" />
+              <el-table-column prop="approveStatus" label="审批状态">
+                <template #default="{ row }">
+                  <span>
+                    {{ row?.approveStatus === 0 ? '未审批' : row?.approveStatus === 1 ? '审批通过' : '审批拒绝' }}
+                  </span>
+                </template>
+              </el-table-column>
             </el-table>
           </div>
           <p class="p">发票信息：</p>
@@ -169,7 +175,7 @@
             </el-descriptions-item>
             <el-descriptions-item>
               <template #label>联系电话</template>
-              <!-- {{ quoteData?.invoiceInfo?.recipient }} -->
+              {{ quoteData?.invoiceInfo?.tel }}
             </el-descriptions-item>
             <el-descriptions-item>
               <template #label>开户行</template>
@@ -222,7 +228,17 @@
             </el-timeline-item>
           </el-timeline>
         </el-collapse-item>
-        <el-collapse-item v-if="only !== 'quotation'" title="服务报告信息" name="5">
+        <el-collapse-item
+          v-if="
+            only !== 'quotation' &&
+            only !== 'tobeQuotation' &&
+            props.data.status !== 3 &&
+            props.data.status !== 4 &&
+            props.data.status !== 5
+          "
+          title="服务报告信息"
+          name="5"
+        >
           <el-descriptions class="margin-top" :column="2" border size="small">
             <el-descriptions-item>
               <template #label>开始维修时间</template>
@@ -279,13 +295,13 @@
             max-height="200"
             :header-cell-style="{ background: '#f5f7fa' }"
             show-summary
+            :summary-method="getSummaries"
           >
-            <!-- :summary-method="getSummaries" -->
             <el-table-column prop="itemNo" label="配件/Labor料号" />
             <el-table-column prop="name" label="单位" />
             <el-table-column prop="unitPrice" label="单价" />
             <el-table-column prop="quantity" label="实际消耗数量" />
-            <el-table-column prop="address" label="总价" />
+            <el-table-column prop="subTotal" label="总价" />
           </el-table>
         </el-collapse-item>
         <el-collapse-item title="附件信息" name="6">
@@ -300,13 +316,61 @@
             >
               <el-table-column prop="fileName" label="文件名称" />
               <el-table-column prop="createTime" label="上传时间" />
+              <el-table-column prop="createByName" label="上传人" />
               <el-table-column label="操作" class-name="small-padding fixed-width" width="100">
                 <template #default="{ row }">
                   <el-button type="primary" link @click="handleDownloadFile(row)">下载</el-button>
+                  <el-button type="primary" v-if="row.createBy === user.userId" link @click="handleDel(row)">
+                    删除
+                  </el-button>
                 </template>
               </el-table-column>
             </el-table>
           </div>
+        </el-collapse-item>
+        <el-collapse-item title="工作日志" name="7">
+          <el-descriptions class="margin-top" :column="3" border size="small">
+            <el-descriptions-item>
+              <template #label>工作时长</template>
+              {{ workLogList?.workHour }}
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>开始时间</template>
+              {{ workLogList?.startTime }}
+            </el-descriptions-item>
+            <el-descriptions-item :span="3">
+              <template #label>结束时间</template>
+              {{ workLogList?.endTime }}
+            </el-descriptions-item>
+            <el-descriptions-item :span="3">
+              <template #label>工作过程</template>
+              {{ workLogList?.content }}
+            </el-descriptions-item>
+            <el-descriptions-item :span="3">
+              <template #label>服务描述</template>
+              {{ workLogList?.shortDescription }}
+            </el-descriptions-item>
+            <el-descriptions-item :span="3">
+              <template #label>服务描述</template>
+              {{ workLogList?.longDescription }}
+            </el-descriptions-item>
+          </el-descriptions>
+          <p>Parts & Labor消耗情况</p>
+          <el-table
+            size="small"
+            :data="workLogList?.itemConsumptionList"
+            style="width: 100%; margin-bottom: 20px"
+            max-height="200"
+            :header-cell-style="{ background: '#f5f7fa' }"
+            show-summary
+            :summary-method="getSummaries"
+          >
+            <el-table-column prop="itemNo" label="配件/Labor料号" />
+            <el-table-column prop="name" label="单位" />
+            <el-table-column prop="unitPrice" label="单价" />
+            <el-table-column prop="quantity" label="实际消耗数量" />
+            <el-table-column prop="subTotal" label="总价" />
+          </el-table>
         </el-collapse-item>
       </el-collapse>
     </div>
@@ -319,6 +383,9 @@
 </template>
 
 <script setup>
+import { useUserStore } from '@/store/user'
+const userStore = useUserStore()
+const { user } = storeToRefs(userStore)
 const emit = defineEmits(['update:modelValue', 'success'])
 const props = defineProps({
   data: Object,
@@ -326,6 +393,7 @@ const props = defineProps({
   only: String,
 })
 const attachmentType = useDict('attachmentType')
+const repairSource = useDict('repairSource')
 
 const activeNames = ref(['1'])
 const form = ref({})
@@ -334,55 +402,12 @@ const quoteData = ref({})
 const transferLogList = ref([]) //流转信息
 const serviceReport = ref([])
 const attachmentList = ref([])
-// watch(
-//   () => props.modelValue,
-//   v => {
-//     if (v) {
-//       // form.value = {
-//         // id: undefined,
-//         // serialNo: '',
-//         // modelNo: '',
-//         // eqId: '',
-//         // dataOptions: '',
-//         // equipAddress: '',
-//         // custDesc: '',
-//         // customerId: '',
-//         // blockFlag: '',
-//         // name: '',
-//         // lastName: '',
-//         // firstName: '',
-//         // mobile: '',
-//         // email: '',
-//         // vendor: '',
-//         // content: '',
-//         // source: '',
-//         // repairTime: '',
-//         // warrantyTime: '',
-//         // engineerName: '',
-//         // engineerId: '',
-//         // fseWorkCenter: '',
-//         // fseStorageLocation: '',
-//         // relationSourceNo: '',
-//         // isCrc: false,
-//         // area: '',
-//         // orderType: '', // 维修类型
-//         // subType: '', //维修子类型
-//         // isConsistentSap: true,
-//         // attaIds: '',
-//       // }
-//       props.data?.soNo && getInfo()
-//     }
-//   },
-//   { immediate: true }
-// )
+const workLogList = ref([])
 watch(
   () => props.modelValue,
   v => {
     if (v) {
       props.data?.soNo && getInfo()
-      //   if (props.data) {
-      //     form.value = props.data
-      //   }
     }
   },
   { immediate: true }
@@ -399,65 +424,65 @@ const { run: getInfo, loading: dataLoading } = useAsync(
       transferLogList.value = res.data.transferLogList
       serviceReport.value = res.data.serviceReport
       attachmentList.value = res.data.attachmentList
+      workLogList.value = res.data.workLogList
     },
   }
 )
 
-// const getSummaries = param => {
-//   const { columns, data } = param
-//   const sums = []
-//   columns.forEach((column, index) => {
-//     if (index === 0) {
-//       sums[index] = '合计'
-//       return
-//     }
-//     const values = data.map(item => Number(item[column.property]))
-//     if (column.property === 'unitPrice') {
-//       sums[index] = values.reduce((prev, curr) => {
-//         const value = Number(curr)
-//         if (!isNaN(value)) {
-//           return prev + curr
-//         } else {
-//           return prev
-//         }
-//       }, 0)
-//     }
-//   })
-//   for (let i = 0; i < sums.length; i++) {
-//     if (!isNaN(sums[i])) {
-//       sums[i] = sums[i].toFixed(2)
-//     }
-//   }
-//   // zong.value = sums
-//   // formData.value.totalVal = zong.value[4]
-//   return sums
-// }
+const getSummaries = param => {
+  const { columns, data } = param
+  const sums = []
+  columns.forEach((column, index) => {
+    if (index === 0) {
+      sums[index] = '合计'
+      return
+    }
+    const values = data.map(item => Number(item[column.property]))
+    if (column.property === 'subTotal') {
+      sums[index] = values.reduce((prev, curr) => {
+        const value = Number(curr)
+        if (!isNaN(value)) {
+          return prev + curr
+        } else {
+          return prev
+        }
+      }, 0)
+    }
+  })
+  for (let i = 0; i < sums.length; i++) {
+    if (!isNaN(sums[i])) {
+      sums[i] = sums[i].toFixed(2)
+    }
+  }
+  // zong.value = sums
+  // formData.value.totalVal = zong.value[4]
+  return sums
+}
 
 const handleClose = () => {
   activeNames.value = ['1']
   emit('update:modelValue', false)
 }
-// const handleConfirm = () => {
-//   formRef.value.validate(valid => {
-//     if (valid) {
-//       // form.value.value = form.value.category
-//       // loading.value = true
-//       // req[form.value.dictId ? 'put' : 'post']('/dict', form.value)
-//       //   .then(({ code }) => {
-//       //     if (code === 200) {
-//       //       emit('success')
-//       //       emit('update:modelValue', false)
-//       //     }
-//       //   })
-//       //   .finally(() => {
-//       //     loading.value = false
-//       //   })
-//     }
-//   })
-// }
-// const mitter = useMitt()
+
 const handleDownloadFile = () => {
-  // mitter.emit('query-refresh')
+  // req.post('/so/export', tableRef.value.form, { responseType: 'blob' }).then(response => {
+  //   if (response) {
+  //     const elink = document.createElement('a')
+  //     elink.style.display = 'none'
+  //     const blob = new Blob([response], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+  //     const blobUrl = URL.createObjectURL(blob)
+  //     elink.href = blobUrl
+  //     elink.download = 'so数据'
+  //     document.body.appendChild(elink)
+  //     elink.click()
+  //     document.body.removeChild(elink)
+  //   }
+  // })
+}
+const handleDel = row => {
+  req.delete('attachment/' + row.id).then(() => {
+    getInfo()
+  })
 }
 </script>
 <style scoped>
@@ -466,9 +491,6 @@ const handleDownloadFile = () => {
   font-weight: bold;
 }
 
-/* .query-detail-dialog .el-dialog__body {
-  padding: 0;
-} */
 .p {
   margin: 20px 0 0;
 }

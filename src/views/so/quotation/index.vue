@@ -11,7 +11,7 @@
       <el-table-column label="维修任务号" prop="TaskID" width="120" />
       <el-table-column label="设备序列号" prop="serialNo" :show-overflow-tooltip="true" width="100" />
       <el-table-column label="设备型号" prop="modelNo" :show-overflow-tooltip="true" width="100" />
-      <el-table-column label="仪器SAP Equip编号" prop="ccc" width="128" />
+      <el-table-column label="仪器SAP Equip编号" prop="eqId" width="128" />
       <el-table-column label="维修类型" width="100">
         <template #default="{ row }">{{ row.orderType }} / {{ row.subType }}</template>
       </el-table-column>
@@ -111,11 +111,11 @@
             }"
           />
         </el-form-item>
-        <el-form-item label="报价货号" prop="orderType">
-          <el-input v-model="orderType" />
+        <el-form-item label="报价货号" prop="materialNo">
+          <el-input v-model="form.materialNo" clearable placeholder="请输入报价货号" />
         </el-form-item>
-        <el-form-item label="维修描述" prop="orderType">
-          <el-input v-model="orderType" />
+        <el-form-item label="维修描述" prop="repairDescription">
+          <el-input v-model="form.repairDescription" clearable placeholder="请输入维修描述" />
         </el-form-item>
       </template>
     </CTable>
@@ -171,7 +171,7 @@ const soStatus = useDict('soStatus')
 
 const listData = params => {
   delete params.orderType
-  params.soStatus = 1
+  params.soStatus = 3 // TODO: SO状态 待报价
   return req.get('/so/page', { params }).then(res => {
     return { data: res.data }
   })
@@ -190,7 +190,6 @@ const getMaintenanceType = async () => {
     options.value = tree
   })
 }
-const orderType = ref([])
 const changeOptions = val => {
   if (!val) {
     tableRef.value.form.orderType = ''
@@ -211,24 +210,28 @@ const handleDeatil = row => {
   current.value = row
   visible.detail = true
 }
-const handleExamine = () => {
+const handleExamine = row => {
   ElMessageBox.confirm('确定后无法修改，是否继续？', i18n.t('common.warning'), {
     confirmButtonText: i18n.t('common.confirm'),
     cancelButtonText: i18n.t('common.cancel'),
     type: 'warning',
-  }).then(() => {
-    // current.value = {
-    //   ...row,
-    //   deleting: true,
-    // }
-    // return req.delete('system/user/' + row.userId)
   })
-  // .then(({ code }) => {
-  // if (code === 200) {
-  //   ElMessage.success(i18n.t('tip.success'))
-  //   refresh()
-  // }
-  // })
+    .then(() => {
+      // current.value = {
+      //   ...row,
+      //   deleting: true,
+      // }
+      let data = {
+        soNo: row.soNo,
+        status: 4, //TODO:SO状态 报价待确认
+      }
+      return req.put('/so/update', data)
+    })
+    .then(({ code }) => {
+      if (code === 200) {
+        refresh()
+      }
+    })
 }
 const handleFormSuccess = () => {
   refresh()
@@ -261,6 +264,7 @@ const handleBackConfirm = () => {
     if (valid) {
       req.put('/so/rollback', formBack.value).then(() => {
         backVisible.value = false
+        refresh()
       })
     }
   })

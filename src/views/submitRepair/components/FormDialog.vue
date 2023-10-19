@@ -218,6 +218,11 @@
             />
           </el-form-item>
         </el-col>
+        <el-col :span="12">
+          <el-form-item label="PO号" prop="po">
+            <el-input v-model="form.po" placeholder="请输入PO号" clearable />
+          </el-form-item>
+        </el-col>
         <el-col :span="24">
           <el-form-item label="报修内容" prop="content">
             <el-input type="textarea" v-model="form.content" placeholder="请输入报修内容" clearable />
@@ -244,7 +249,7 @@
             <CUpload
               style="width: 100%"
               :params="params"
-              v-model="list"
+              v-model="attachmentsList"
               accept="image/png,image/jpg,image/jpeg,application/pdf"
             ></CUpload>
           </el-form-item>
@@ -375,6 +380,7 @@ watch(
         fseStorageLocation: '',
         relationSourceNo: '',
         isCrc: false,
+        po: '',
         area: '',
         orderType: '', // 维修类型
         subType: '', //维修子类型
@@ -409,6 +415,7 @@ const { run: getRequestInfo, loading: dataLoading } = useAsync(
       form.value.engineerName = res.data.fseName
       form.value.fseWorkCenter = res.data.fseWorkCenter
       form.value.fseStorageLocation = res.data.fseStorageLocation
+      attachmentsList.value = res.data.attachments
       nextTick(() => {
         formRef.value.clearValidate()
       })
@@ -568,9 +575,9 @@ const handleCloseSo = () => {
   visibleSo.value = false
 }
 // 上传附件参数
-const list = ref([])
+const attachmentsList = ref([])
 const params = {
-  type: 1,
+  type: 5,
 }
 // 取消
 const handleClose = () => {
@@ -586,7 +593,7 @@ const handleConfirm = () => {
       delete form.value.dataOptions
       delete form.value.area
       delete form.value.engineerName
-      form.value.attaIds = list.value.map(item => item.id)
+      form.value.attaIds = attachmentsList.value.map(item => item.id)
       if (staging.value.aaa !== form.value.custDesc || staging.value.bbb !== form.value.equipAddress) {
         form.value.isConsistentSap = false
       } else {

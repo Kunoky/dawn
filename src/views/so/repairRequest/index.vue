@@ -63,7 +63,7 @@
             </div>
             <div>
               <el-button type="danger" link @click="handleBack(row)">退回</el-button>
-              <el-button type="danger" link @click="handleClose(row)">关闭</el-button>
+              <el-button type="danger" link @click="handleClose(row)">手工处理</el-button>
             </div>
           </div>
         </template>
@@ -75,9 +75,9 @@
         </el-button> -->
       </template>
       <template #form="{ form }">
-        <el-form-item label="SO NO" prop="soNo">
+        <!-- <el-form-item label="SO NO" prop="soNo">
           <el-input v-model="form.soNo" placeholder="请输入SO NO" clearable />
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="设备序列号" prop="serialNo">
           <el-input v-model="form.serialNo" placeholder="请输入设备型号" clearable />
         </el-form-item>
@@ -96,10 +96,10 @@
         <el-form-item label="客户名称" prop="companyName">
           <el-input v-model="form.companyName" placeholder="请输入客户名称" clearable />
         </el-form-item>
-        <el-form-item label="工程师名称" prop="fseId">
+        <el-form-item label="工程师名称" prop="engineerId">
           <el-select
             clearable
-            v-model="form.fseId"
+            v-model="form.engineerId"
             placeholder="请输入FSE工程师名称"
             filterable
             remote
@@ -140,12 +140,25 @@
     </CTable>
     <FormDialog :data="current" v-model="visible.form" @success="handleFormSuccess" :options="options"></FormDialog>
 
-    <el-dialog title="关闭" width="30%" v-model="detailVisible" :close-on-click-modal="false">
+    <el-dialog title="手工处理" width="30%" v-model="detailVisible" :close-on-click-modal="false">
       <el-form :model="formDetails" ref="formRefDetails" label-width="80" :rules="rules">
-        <el-form-item label="SO NO" prop="soNo">
+        <el-form-item label="处理方式" prop="aaaaa">
+          <el-select
+            v-model="formDetails.aaaaa"
+            style="width: 100%"
+            @change="handelA"
+            placeholder="请选择处理方式"
+            clearable
+          >
+            <el-option label="创建成功" value="1" />
+            <el-option label="关闭" value="2" />
+            <el-option label="重复" value="3" />
+          </el-select>
+        </el-form-item>
+        <el-form-item v-if="formDetails.aaaaa === '1' || formDetails.aaaaa === '3'" label="SO NO" prop="soNo">
           <el-input v-model="formDetails.soNo" placeholder="请输入SO" clearable />
         </el-form-item>
-        <el-form-item label="关闭原因" prop="reason">
+        <el-form-item v-if="formDetails.aaaaa === '2'" label="关闭原因" prop="reason">
           <el-input type="textarea" v-model="formDetails.reason" placeholder="请输入关闭原因" clearable />
         </el-form-item>
       </el-form>
@@ -327,20 +340,27 @@ const handleBackConfirm = () => {
   })
 }
 
-// 关闭
+// 手工处理
 const formRefDetails = ref(null)
 const detailVisible = ref(false)
+const handleClose = row => {
+  formDetails.value.id = row.id
+  detailVisible.value = true
+}
 const formDetails = ref({
+  aaaaa: '',
   soNo: '',
   reason: '',
   id: '',
 })
 const rules = {
+  aaaaa: [{ required: true, message: '处理方式不能为空', trigger: 'blur' }],
+  soNo: [{ required: true, message: 'SO NO不能为空', trigger: 'blur' }],
   reason: [{ required: true, message: '关闭原因不能为空', trigger: 'blur' }],
 }
-const handleClose = row => {
-  formDetails.value.id = row.id
-  detailVisible.value = true
+const handelA = () => {
+  formDetails.value.soNo = ''
+  formDetails.value.reason = ''
 }
 const handleCloseDetail = () => {
   detailVisible.value = false
@@ -354,9 +374,6 @@ const handleConfirm = () => {
   formRefDetails.value.validate(valid => {
     if (valid) {
       req.put('/request/close', formDetails.value).then(() => {
-        // if (code === 200) {
-        //   ElMessage.success('关闭成功')
-        // }
         detailVisible.value = false
       })
     }
