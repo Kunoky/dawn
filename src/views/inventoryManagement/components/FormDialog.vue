@@ -8,43 +8,41 @@
     :close-on-click-modal="false"
   >
     <el-form v-if="title !== '移库单详情'" :model="form" ref="formRef" label-width="155" :rules="rules">
-      <el-form-item label="移库凭证号" prop="ccc">
-        <el-input v-model="form.ccc" placeholder="请输入移库凭证号" />
+      <el-form-item label="移库凭证号" prop="transferVoucherNo">
+        <el-input v-model="form.transferVoucherNo" placeholder="请输入移库凭证号" />
       </el-form-item>
-      <el-form-item label="SO订单编号" prop="bbb">
-        <el-input v-model="form.bbb" placeholder="请输入SO订单编号" />
+      <el-form-item label="SO订单编号" prop="soNo">
+        <el-input v-model="form.soNo" placeholder="请输入SO订单编号" />
       </el-form-item>
-      <el-form-item label="快递单号" prop="kkk">
-        <el-input v-model="form.kkk" placeholder="请输入快递单号" />
+      <el-form-item label="快递单号" prop="expressNo">
+        <el-input v-model="form.expressNo" placeholder="请输入快递单号" />
       </el-form-item>
-      <!-- <el-form-item label="是否有异常" prop="lll">
-        <el-select v-model="form.lll" placeholder="请选择是否有异常" clearable>
-          <el-option label="是" value="SM01" />
-          <el-option label="否" value="SM02" />
-        </el-select>
-      </el-form-item> -->
     </el-form>
-    <div style="margin-bottom: 20px" v-if="title == '移库单详情'">
-      <el-descriptions class="margin-top" :column="2" border size="small">
-        <el-descriptions-item>
-          <template #label>移库凭证号</template>
-          {{ form.ccc }}
-        </el-descriptions-item>
-        <el-descriptions-item>
-          <template #label>SO订单编号</template>
-          {{ form.bbb }}
-        </el-descriptions-item>
-        <el-descriptions-item>
-          <template #label>快递单号</template>
-          {{ form.kkk }}
-        </el-descriptions-item>
-        <el-descriptions-item>
-          <template #label>是否有异常情况</template>
-          {{ form.lll }}
-        </el-descriptions-item>
-      </el-descriptions>
-    </div>
-    <div v-if="title == '移库单详情'">
+    <div v-if="title === '移库单详情'" v-loading="dataLoading">
+      <div style="margin-bottom: 20px">
+        <el-descriptions class="margin-top" :column="2" border size="small">
+          <el-descriptions-item>
+            <template #label>移库凭证号</template>
+            {{ form.transferVoucherNo }}
+          </el-descriptions-item>
+          <el-descriptions-item>
+            <template #label>SO订单编号</template>
+            {{ form.soNo }}
+          </el-descriptions-item>
+          <el-descriptions-item>
+            <template #label>快递单号</template>
+            {{ form.expressNo }}
+          </el-descriptions-item>
+          <el-descriptions-item>
+            <template #label>是否有异常情况</template>
+            {{ form.exceptionFlag === 1 ? '是' : '否' }}
+          </el-descriptions-item>
+          <!-- <el-descriptions-item>
+            <template #label :span="2">异常内容</template>
+            {{ form.exception }}
+          </el-descriptions-item> -->
+        </el-descriptions>
+      </div>
       <span style="font-weight: bold">移库单详情</span>
       <el-table
         size="small"
@@ -62,8 +60,6 @@
         <el-table-column prop="address" label="Storage location" width="120" />
         <el-table-column prop="time" label="时间" />
       </el-table>
-    </div>
-    <div v-if="title == '移库单详情'">
       <span style="font-weight: bold">异常情况</span>
       <el-descriptions style="margin-top: 10px" class="margin-top" :column="2" border size="small">
         <el-descriptions-item>
@@ -147,18 +143,9 @@ const annexData = [
   { name: '香香', id: 2, dateTime: '2023-08-01' },
 ]
 const rules = {
-  // aaa: [{ required: true, message: 'SO订单编号不能为空', trigger: 'blur' }],
-  bbb: [{ required: true, message: '移库凭证号不能为空', trigger: 'blur' }],
-  ccc: [{ required: true, message: '时间不能为空', trigger: 'blur' }],
-  // ddd: [{ required: true, message: 'torage location不能为空', trigger: 'blur' }],
-  // eee: [{ required: true, message: '配件料号不能为空', trigger: 'blur' }],
-  // fff: [{ required: true, message: '数量不能为空', trigger: 'blur' }],
-  // ggg: [{ required: true, message: '数量借/贷不能为空', trigger: 'blur' }],
-  // hhh: [{ required: true, message: '单位不能为空', trigger: 'blur' }],
-  // iii: [{ required: true, message: '批次号不能为空', trigger: 'blur' }],
-  // jjj: [{ required: true, message: '序列号不能为空', trigger: 'blur' }],
-  kkk: [{ required: true, message: '快递单号不能为空', trigger: 'blur' }],
-  lll: [{ required: true, message: '是否有异常情况不能为空', trigger: 'blur' }],
+  soNo: [{ required: true, message: 'SO订单编号不能为空', trigger: 'blur' }],
+  transferVoucherNo: [{ required: true, message: '移库凭证号不能为空', trigger: 'blur' }],
+  expressNo: [{ required: true, message: '快递单号不能为空', trigger: 'blur' }],
 }
 
 const loading = ref(false)
@@ -169,32 +156,20 @@ watch(
   () => props.modelValue,
   v => {
     if (v) {
-      form.value = {
-        // aaa: '',
-        bbb: '',
-        ccc: '',
-        // ddd: '',
-        // eee: '',
-        // fff: '',
-        // ggg: '',
-        // hhh: '',
-        // iii: '',
-        // jjj: '',
-        kkk: '',
-        lll: '',
-      }
-      if (props.data) {
-        for (let k in form.value) {
-          form.value[k] = props.data[k]
-        }
-      }
-      // nextTick(() => {
-      //   formRef.value.clearValidate()
-      // })
+      props.data?.id && getDetails()
     }
   },
   { immediate: true }
 )
+const { run: getDetails, loading: dataLoading } = useAsync(async () => {
+  return req.get(`/st/details`, { params: { id: props.data.id } }).then(res => {
+    form.value = res.data
+    // tableData.value = res.data.quoteDetailList
+    // formData.value = res.data.quoteSummary
+    // invoiceInfo.value = res.data.invoiceInfo
+    return res
+  })
+})
 
 const handleClose = () => {
   emit('update:modelValue', false)
@@ -202,18 +177,10 @@ const handleClose = () => {
 const handleConfirm = () => {
   formRef.value.validate(valid => {
     if (valid) {
-      // form.value.value = form.value.category
-      // loading.value = true
-      // req[form.value.dictId ? 'put' : 'post']('/dict', form.value)
-      //   .then(({ code }) => {
-      //     if (code === 200) {
-      //       emit('success')
-      //       emit('update:modelValue', false)
-      //     }
-      //   })
-      //   .finally(() => {
-      //     loading.value = false
-      //   })
+      req.post('/st', form.value).then(() => {
+        emit('success')
+        emit('update:modelValue', false)
+      })
     }
   })
 }

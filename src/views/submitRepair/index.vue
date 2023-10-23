@@ -76,9 +76,9 @@
         <el-form-item label="设备序列号" prop="serialNo">
           <el-input v-model="form.serialNo" placeholder="请输入设备序列号" clearable />
         </el-form-item>
-        <el-form-item label="SO类型" prop="orderType">
+        <el-form-item label="SO类型" prop="options">
           <el-cascader
-            v-model="form.orderType"
+            v-model="form.options"
             :options="options"
             filterable
             clearable
@@ -165,7 +165,7 @@ import FormDialog from './components/FormDialog.vue'
 
 const listData = params => {
   delete params.params
-  delete params.orderType
+  delete params.options
   return req.get('/request/myList', { params }).then(res => {
     return { data: res.data }
   })

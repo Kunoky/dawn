@@ -10,7 +10,6 @@
   >
     <div class="demo-collapse">
       <el-collapse v-model="activeNames" v-loading="dataLoading">
-        {{ only }}
         <el-collapse-item title="基础信息" name="1">
           <el-descriptions class="margin-top" :column="3" border size="small">
             <el-descriptions-item>
@@ -123,7 +122,6 @@
           </div>
         </el-collapse-item>
         <el-collapse-item title="报价信息" name="3">
-          <!-- <div v-for="(item, index) in quoteList" :key="index"> -->
           <div style="margin-bottom: 10px">报价编号：{{ quoteData?.quoteNo }}</div>
           <el-table
             size="small"
@@ -209,8 +207,6 @@
             <el-table-column prop="communicationTime" label="时间" />
             <el-table-column prop="content" label="结果" />
           </el-table>
-
-          <!-- </div> -->
         </el-collapse-item>
         <el-collapse-item title="流转信息" name="4">
           <el-timeline>
@@ -228,14 +224,11 @@
             </el-timeline-item>
           </el-timeline>
         </el-collapse-item>
+        <!-- {{ props.data.status }}
+        {{ only }} -->
+        <!-- TODO so状态 需修改 -->
         <el-collapse-item
-          v-if="
-            only !== 'quotation' &&
-            only !== 'tobeQuotation' &&
-            props.data.status !== 3 &&
-            props.data.status !== 4 &&
-            props.data.status !== 5
-          "
+          v-if="props.data.status !== 3 && props.data.status !== 4 && props.data.status !== 5 && only !== 'shipped'"
           title="服务报告信息"
           name="5"
         >
@@ -304,7 +297,7 @@
             <el-table-column prop="subTotal" label="总价" />
           </el-table>
         </el-collapse-item>
-        <el-collapse-item title="附件信息" name="6">
+        <el-collapse-item title="附件信息" name="6" v-if="only !== 'shipped'">
           <div v-for="(val, idx) in attachmentList" :key="idx">
             <span>{{ attachmentType.kv[val.type] }}</span>
             <el-table
@@ -328,7 +321,7 @@
             </el-table>
           </div>
         </el-collapse-item>
-        <el-collapse-item title="工作日志" name="7">
+        <el-collapse-item v-if="only !== 'shipped'" title="工作日志" name="7">
           <el-descriptions class="margin-top" :column="3" border size="small">
             <el-descriptions-item>
               <template #label>工作时长</template>

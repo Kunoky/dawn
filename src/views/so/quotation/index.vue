@@ -23,9 +23,9 @@
       <el-table-column label="客户联系人邮箱" prop="email" width="130" />
       <el-table-column label="代理商" prop="vendor" width="100" />
       <el-table-column label="报修内容" prop="content" width="100" :show-overflow-tooltip="true" />
-      <el-table-column label="报修来源" prop="mmm" width="100" />
+      <el-table-column label="报修来源" prop="source" width="100" />
       <el-table-column label="报修时间" prop="repairTime" width="130" />
-      <el-table-column label="保修期" prop="ooo" width="100" />
+      <el-table-column label="保修期" prop="warrantyTime" width="100" />
       <el-table-column label="FSE工程师名称" prop="transferFseName" width="100" />
       <el-table-column label="FSE work center" prop="workCenter" width="115" />
       <el-table-column label="FSE storage location" prop="storageLocation" width="140" />
@@ -97,9 +97,9 @@
             <el-option v-for="item in engineerNameOptions" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
-        <el-form-item label="SO类型" prop="orderType">
+        <el-form-item label="SO类型" prop="options">
           <el-cascader
-            v-model="form.orderType"
+            v-model="form.options"
             :options="options"
             filterable
             clearable
@@ -120,7 +120,7 @@
       </template>
     </CTable>
     <!-- <Details :data="current" v-model="visible.detail" @success="handleFormSuccess"></Details> -->
-    <CDetails :data="current" v-model="visible.detail" @success="handleFormSuccess" :only="'quotation'"></CDetails>
+    <CDetails :data="current" v-model="visible.detail" @success="handleFormSuccess"></CDetails>
 
     <Quotation :data="currentQuotation" v-model="quotation.visible" @success="handleQuotationSuccess"></Quotation>
 
@@ -170,7 +170,7 @@ import Quotation from './components/quotation.vue'
 const soStatus = useDict('soStatus')
 
 const listData = params => {
-  delete params.orderType
+  delete params.options
   params.soStatus = 3 // TODO: SO状态 待报价
   return req.get('/so/page', { params }).then(res => {
     return { data: res.data }

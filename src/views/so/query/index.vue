@@ -2,7 +2,7 @@
   <div>
     <CTable
       :page-conf="{
-        action: '/so/page',
+        action: listData,
       }"
       ref="tableRef"
       id="query"
@@ -24,9 +24,9 @@
       <el-table-column label="客户联系人邮箱" prop="email" width="130" />
       <el-table-column label="代理商" prop="vendor" width="100" />
       <el-table-column label="报修内容" prop="content" width="100" :show-overflow-tooltip="true" />
-      <el-table-column label="报修来源" prop="mmm" width="100" />
+      <el-table-column label="报修来源" prop="source" width="100" />
       <el-table-column label="报修时间" prop="repairTime" width="130" />
-      <el-table-column label="保修期" prop="ooo" width="100" />
+      <el-table-column label="保修期" prop="warrantyTime" width="100" />
       <el-table-column label="FSE工程师名称" prop="transferFseName" width="100" />
       <el-table-column label="FSE work center" prop="workCenter" width="115" />
       <el-table-column label="FSE storage location" prop="storageLocation" width="140" />
@@ -84,9 +84,9 @@
             <el-option v-for="item in engineerNameOptions" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
-        <el-form-item label="SO类型" prop="orderType">
+        <el-form-item label="SO类型" prop="options">
           <el-cascader
-            v-model="orderType"
+            v-model="form.options"
             :options="options"
             filterable
             clearable
@@ -105,7 +105,7 @@
         </el-form-item>
       </template>
     </CTable>
-    <CDetails :data="current" v-model="visible.detail" @success="handleFormSuccess" :only="'query'"></CDetails>
+    <CDetails :data="current" v-model="visible.detail" @success="handleFormSuccess"></CDetails>
 
     <el-dialog title="关闭" width="30%" v-model="detailVisible" :close-on-click-modal="false">
       <el-form :model="formDetails" ref="formRefDetails" label-width="80" :rules="rules">
@@ -142,6 +142,14 @@ import CDetails from './../../../components/CDetails.vue'
 // 状态字典
 const soStatus = useDict('soStatus')
 const tableRef = ref()
+
+const listData = params => {
+  delete params.options
+  return req.get('/so/page', { params }).then(res => {
+    return { data: res.data }
+  })
+}
+
 const refresh = () => tableRef.value.refresh()
 onMounted(() => {
   getMaintenanceType()
@@ -153,7 +161,6 @@ const getMaintenanceType = async () => {
     options.value = tree
   })
 }
-const orderType = ref([])
 // 获取so类型
 const changeOptions = val => {
   if (!val) {

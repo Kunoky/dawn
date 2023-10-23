@@ -122,9 +122,9 @@
             @change="getDatePicker"
           />
         </el-form-item>
-        <el-form-item label="SO类型" prop="orderType">
+        <el-form-item label="SO类型" prop="options">
           <el-cascader
-            v-model="form.orderType"
+            v-model="form.options"
             :options="options"
             filterable
             clearable
@@ -237,7 +237,7 @@ const i18n = useI18n()
 
 const listData = params => {
   delete params.params
-  delete params.orderType
+  delete params.options
   return req.get('/request/toBeCreatedList', { params }).then(res => {
     return { data: res.data }
   })
@@ -364,10 +364,8 @@ const handelA = () => {
 }
 const handleCloseDetail = () => {
   detailVisible.value = false
-  formDetails.value.soNo = ''
-  formDetails.value.reason = ''
   nextTick(() => {
-    formRefDetails.value.clearValidate()
+    formRefDetails.value.resetFields()
   })
 }
 const handleConfirm = () => {
