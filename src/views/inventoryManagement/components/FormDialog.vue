@@ -37,10 +37,10 @@
             <template #label>是否有异常情况</template>
             {{ form.exceptionFlag === 1 ? '是' : '否' }}
           </el-descriptions-item>
-          <!-- <el-descriptions-item>
-            <template #label :span="2">异常内容</template>
+          <el-descriptions-item :span="2" v-if="form.exceptionFlag === 1">
+            <template #label>异常内容</template>
             {{ form.exception }}
-          </el-descriptions-item> -->
+          </el-descriptions-item>
         </el-descriptions>
       </div>
       <span style="font-weight: bold">移库单详情</span>
