@@ -10,6 +10,7 @@
   >
     <div class="demo-collapse">
       <el-collapse v-model="activeNames" v-loading="dataLoading">
+        {{ props.data.status }}
         <el-collapse-item title="基础信息" name="1">
           <el-descriptions class="margin-top" :column="3" border size="small">
             <el-descriptions-item>

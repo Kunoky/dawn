@@ -18,10 +18,25 @@
         </template>
       </el-table-column>
       <template #actions>
-        <el-button type="primary" plain @click="handleAdd" v-hasPermi="['system:user:add']">
+        <el-button type="primary" plain @click="handleAdd">
           <i-ep-plus />
           新增
         </el-button>
+        <el-upload
+          ref="upload"
+          v-model:file-list="fileList"
+          class="upload-demo"
+          :action="url"
+          :show-file-list="false"
+          :headers="headers"
+          multiple
+          accept=".xls,.xlsx"
+          :on-error="handleError"
+          :before-upload="beforeUpload"
+          :on-success="handleSuccess"
+        >
+          <el-button type="primary">导入</el-button>
+        </el-upload>
       </template>
       <template #form="{ form }">
         <el-form-item label="SO订单编号" prop="soNo">
@@ -49,7 +64,7 @@
 </template>
 
 <script setup>
-import { reactive } from 'vue'
+import { getToken } from '@/utils/auth'
 import FormDialog from './components/FormDialog.vue'
 const i18n = useI18n()
 const tableRef = ref()
@@ -103,4 +118,57 @@ const handleDel = row => {
 const handleFormSuccess = () => {
   refresh()
 }
+
+// 导入
+const headers = {
+  Authorization: 'Bearer ' + getToken(),
+  'Call-Source': 'WEB',
+  'Api-Version': 1.0,
+}
+const url = import.meta.env.VITE_SERVER_PATH + '/st/import'
+const fileList = ref([])
+function handleError(e) {
+  let msg = e.message
+  try {
+    msg = JSON.parse(e.message).msg
+  } catch (e) {
+    console.error(e)
+  }
+  ElMessage.error(msg)
+}
+
+function beforeUpload(file) {
+  const isLt2M = file.size / 1024 / 1024 < 10
+  const isStyle =
+    file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
+    // .excel
+    file.type === 'application/vnd.ms-excel'
+  // .xls
+  if (!isStyle) {
+    ElMessage.error('文件只能是 EXCEL/XLS格式!')
+    return false
+  }
+  if (!isLt2M) {
+    ElMessage.error('上传图片大小不能超过 10MB！')
+    return false
+  }
+  return isLt2M && isStyle
+}
+
+function handleSuccess(res) {
+  if (res.code === 200) {
+    ElMessage.success({
+      dangerouslyUseHTMLString: true,
+      message: `上传成功：${res.data.successCount}条<br/>上传失败：${res.data.failedCount}条`,
+    })
+    refresh()
+  }
+}
 </script>
+
+<style scoped>
+.upload-demo {
+  display: inline-block;
+  margin: 0 10px;
+}
+</style>

@@ -173,6 +173,7 @@ const { run: getDetails, loading: dataLoading } = useAsync(async () => {
 
 const handleClose = () => {
   emit('update:modelValue', false)
+  formRef.value.resetFields()
 }
 const handleConfirm = () => {
   formRef.value.validate(valid => {

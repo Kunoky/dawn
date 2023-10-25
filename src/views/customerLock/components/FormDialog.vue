@@ -10,109 +10,111 @@
     <el-form :model="form" ref="formRef" label-width="155" :rules="rules">
       <el-row>
         <el-col :span="12">
-          <el-form-item label="客户编码" prop="aaa">
-            <el-input v-model="form.aaa" disabled placeholder="请输入客户编码" clearable />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="客户锁信息" prop="bbb" class="date-box">
-            <el-select v-model="form.bbb" multiple placeholder="请选择客户锁信息" style="width: 100%" clearable>
-              <el-option label="TC锁" value="TC锁" />
-              <el-option label="Block" value="Block" />
-              <!-- <el-option label="Block+TC锁" value="Block+TC锁" /> -->
-              <el-option label="财务锁" value="财务锁" />
-              <!-- <el-option label="TC锁+财务锁" value="TC锁+财务锁" /> -->
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="创建人" prop="ccc">
-            <el-input v-model="form.ccc" placeholder="请输入创建人" clearable />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="创建时间" prop="ddd" class="date-box">
-            <el-date-picker
-              v-model="form.ddd"
-              style="width: 100%"
-              type="datetime"
-              placeholder="请选择创建时间"
+          <el-form-item label="客户编码" prop="customerId">
+            <el-input
+              v-model="form.customerId"
+              :disabled="title === '修改客户锁信息'"
+              placeholder="请输入客户编码"
               clearable
             />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="分组" prop="eee" class="data-box">
-            <el-select v-model="form.eee" placeholder="请选择客户锁信息" style="width: 100%" clearable>
-              <el-option label="AAA" value="1" />
-              <el-option label="BBB" value="2" />
-              <el-option label="ccc" value="3" />
-            </el-select>
+          <el-form-item label="客户锁信息" prop="blockFlag" class="date-box">
+            <el-input v-model="form.blockFlag" placeholder="请输入客户锁信息" clearable />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="名称一" prop="fff">
-            <el-input v-model="form.fff" placeholder="请输入名称一" clearable />
+          <el-form-item label="创建来源" prop="creator">
+            <el-input v-model="form.creator" placeholder="请输入创建人" clearable />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="名称二" prop="ggg">
-            <el-input v-model="form.ggg" placeholder="请输入名称二" clearable />
+          <el-form-item label="创建时间" prop="date" class="date-box">
+            <el-date-picker
+              v-model="form.date"
+              style="width: 100%"
+              type="date"
+              placeholder="请选择创建时间"
+              value-format="YYYY-MM-DD"
+              clearable
+            />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="名称三" prop="hhh">
-            <el-input v-model="form.hhh" placeholder="请输入名称三" clearable />
+          <el-form-item label="分组" prop="group" class="data-box">
+            <el-input v-model="form.group" placeholder="请输入分组" clearable />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="名称四" prop="iii">
-            <el-input v-model="form.iii" placeholder="请输入名称四" clearable />
+          <el-form-item label="名称一" prop="name">
+            <el-input v-model="form.name" placeholder="请输入名称一" clearable />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="城市" prop="jjj">
-            <el-input v-model="form.jjj" placeholder="请输入城市" clearable />
+          <el-form-item label="名称二" prop="name2">
+            <el-input v-model="form.name2" placeholder="请输入名称二" clearable />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="区" prop="kkk">
-            <el-input v-model="form.kkk" placeholder="请输入区" clearable />
+          <el-form-item label="名称三" prop="name3">
+            <el-input v-model="form.name3" placeholder="请输入名称三" clearable />
           </el-form-item>
         </el-col>
         <el-col :span="12">
+          <el-form-item label="名称四" prop="name4">
+            <el-input v-model="form.name4" placeholder="请输入名称四" clearable />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="国家" prop="cty">
+            <el-input v-model="form.cty" placeholder="请输入城市" clearable />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="城市" prop="city">
+            <el-input v-model="form.city" placeholder="请输入城市" clearable />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="地区" prop="district">
+            <el-input v-model="form.district" placeholder="请输入区" clearable />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="邮政编码" prop="postalCode">
+            <el-input v-model="form.postalCode" placeholder="请输入邮政编码" clearable />
+          </el-form-item>
+        </el-col>
+        <!-- <el-col :span="12">
           <el-form-item label="县" prop="lll">
             <el-input v-model="form.lll" placeholder="请输入县" clearable />
           </el-form-item>
-        </el-col>
+        </el-col> -->
         <el-col :span="12">
-          <el-form-item label="街道" prop="mmm">
-            <el-input type="textarea" v-model="form.mmm" placeholder="请输入街道" clearable />
+          <el-form-item label="街道" prop="street">
+            <el-input type="textarea" v-model="form.street" placeholder="请输入街道" clearable />
+          </el-form-item>
+        </el-col>
+
+        <el-col :span="12">
+          <el-form-item label="传真一" prop="taxNo1">
+            <el-input v-model="form.taxNo1" placeholder="请输入传真一" clearable />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="邮政编码" prop="nnn">
-            <el-input v-model="form.nnn" placeholder="请输入邮政编码" clearable />
+          <el-form-item label="传真二" prop="taxNo2">
+            <el-input v-model="form.taxNo2" placeholder="请输入传真二" clearable />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="税号一" prop="ooo">
-            <el-input v-model="form.ooo" placeholder="请输入税号一" clearable />
+          <el-form-item label="区域" prop="region">
+            <el-input v-model="form.region" placeholder="请输入区域" clearable />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="税号二" prop="ppp">
-            <el-input v-model="form.ppp" placeholder="请输入税号二" clearable />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="公司" prop="qqq">
-            <el-input v-model="form.qqq" placeholder="请输入公司" clearable />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="电话" prop="rrr">
-            <el-input v-model="form.rrr" placeholder="请输入电话" clearable />
+          <el-form-item label="电话" prop="tel">
+            <el-input v-model="form.tel" placeholder="请输入电话" clearable />
           </el-form-item>
         </el-col>
       </el-row>
@@ -136,24 +138,24 @@ const props = defineProps({
 const title = computed(() => (props.data ? '修改客户锁信息' : '新增客户锁信息'))
 
 const rules = {
-  aaa: [{ required: true, message: '客户编号不能为空', trigger: 'blur' }],
-  bbb: [{ required: true, message: '客户锁信息不能为空', trigger: 'blur' }],
-  ccc: [{ required: true, message: '创建人不能为空', trigger: 'blur' }],
-  ddd: [{ required: true, message: '创建时间不能为空', trigger: 'change' }],
-  eee: [{ required: true, message: '分组不能为空', trigger: 'blur' }],
-  fff: [{ required: true, message: '名称一不能为空', trigger: 'blur' }],
-  ggg: [{ required: true, message: '名称二不能为空', trigger: 'blur' }],
-  hhh: [{ required: true, message: '名称三不能为空', trigger: 'blur' }],
-  iii: [{ required: true, message: '名称四不能为空', trigger: 'blur' }],
-  jjj: [{ required: true, message: '城市不能为空', trigger: 'blur' }],
-  kkk: [{ required: true, message: '区不能为空', trigger: 'blur' }],
-  lll: [{ required: true, message: '县不能为空', trigger: 'blur' }],
-  mmm: [{ required: true, message: '街道不能为空', trigger: 'blur' }],
-  nnn: [{ required: true, message: '邮政编码不能为空', trigger: 'blur' }],
-  ooo: [{ required: true, message: '税号一不能为空', trigger: 'blur' }],
-  ppp: [{ required: true, message: '税号二不能为空', trigger: 'blur' }],
-  qqq: [{ required: true, message: '公司不能为空', trigger: 'blur' }],
-  rrr: [{ required: true, message: '电话不能为空', trigger: 'blur' }],
+  customerId: [{ required: true, message: '客户编号不能为空', trigger: 'blur' }],
+  blockFlag: [{ required: true, message: '客户锁信息不能为空', trigger: 'blur' }],
+  // creator: [{ required: true, message: '创建来源不能为空', trigger: 'blur' }],
+  // date: [{ required: true, message: '创建时间不能为空', trigger: 'change' }],
+  // group: [{ required: true, message: '分组不能为空', trigger: 'blur' }],
+  // name: [{ required: true, message: '名称一不能为空', trigger: 'blur' }],
+  // name2: [{ required: true, message: '名称二不能为空', trigger: 'blur' }],
+  // name3: [{ required: true, message: '名称三不能为空', trigger: 'blur' }],
+  // name4: [{ required: true, message: '名称四不能为空', trigger: 'blur' }],
+  // cty: [{ required: true, message: '国家不能为空', trigger: 'blur' }],
+  // city: [{ required: true, message: '城市不能为空', trigger: 'blur' }],
+  // district: [{ required: true, message: '地区不能为空', trigger: 'blur' }],
+  // street: [{ required: true, message: '街道不能为空', trigger: 'blur' }],
+  // postalCode: [{ required: true, message: '邮政编码不能为空', trigger: 'blur' }],
+  // taxNo1: [{ required: true, message: '传真一不能为空', trigger: 'blur' }],
+  // taxNo2: [{ required: true, message: '传真二不能为空', trigger: 'blur' }],
+  // region: [{ required: true, message: '区域不能为空', trigger: 'blur' }],
+  // tel: [{ required: true, message: '电话不能为空', trigger: 'blur' }],
 }
 const loading = ref(false)
 const formRef = ref()
@@ -164,24 +166,23 @@ watch(
   v => {
     if (v) {
       form.value = {
-        aaa: '',
-        bbb: [],
-        ccc: '',
-        ddd: [],
-        eee: '',
-        fff: '',
-        ggg: '',
-        hhh: '',
-        iii: '',
-        jjj: '',
-        kkk: '',
-        lll: '',
-        mmm: '',
-        nnn: '',
-        ooo: '',
-        ppp: '',
-        qqq: '',
-        rrr: '',
+        customerId: '',
+        blockFlag: '',
+        creator: '',
+        date: [],
+        group: '',
+        name: '',
+        name2: '',
+        name3: '',
+        name4: '',
+        city: '',
+        district: '',
+        street: '',
+        postalCode: '',
+        taxNo1: '',
+        taxNo2: '',
+        region: '',
+        tel: '',
       }
       if (props.data) {
         for (let k in form.value) {
@@ -202,18 +203,17 @@ const handleClose = () => {
 const handleConfirm = () => {
   formRef.value.validate(valid => {
     if (valid) {
-      // form.value.value = form.value.category
-      // loading.value = true
-      // req[form.value.dictId ? 'put' : 'post']('/dict', form.value)
-      //   .then(({ code }) => {
-      //     if (code === 200) {
-      //       emit('success')
-      //       emit('update:modelValue', false)
-      //     }
-      //   })
-      //   .finally(() => {
-      //     loading.value = false
-      //   })
+      loading.value = true
+      req[title.value === '修改客户锁信息' ? 'put' : 'post']('/block', form.value)
+        .then(({ code }) => {
+          if (code === 200) {
+            emit('success')
+            emit('update:modelValue', false)
+          }
+        })
+        .finally(() => {
+          loading.value = false
+        })
     }
   })
 }
