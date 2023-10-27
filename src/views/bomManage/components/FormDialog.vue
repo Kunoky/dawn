@@ -55,8 +55,10 @@
 
 <script setup>
 const emit = defineEmits(['update:modelValue', 'success'])
+defineProps({
+  modelValue: Boolean,
+})
 const loading = ref(false)
-
 const formRef = ref()
 const form = ref({})
 const rules = {
@@ -102,6 +104,9 @@ const changeMaterialNo = val => {
 
 const handleClose = () => {
   emit('update:modelValue', false)
+  nextTick(() => {
+    formRef.value.resetFields()
+  })
 }
 const handleConfirm = () => {
   formRef.value.validate(valid => {

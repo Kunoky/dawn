@@ -2,31 +2,21 @@
   <div>
     <CTable
       :page-conf="{
-        action: 'so/getSoList',
+        action: listData,
       }"
       ref="tableRef"
       id="handle"
     >
-      <el-table-column label="SO NO" prop="so" width="120" />
-      <!-- <el-table-column label="维修任务号" prop="TaskID" width="120" /> -->
-      <!-- <el-table-column label="设备序列号" prop="aaa" :show-overflow-tooltip="true" width="100" /> -->
-      <!-- <el-table-column label="设备型号" prop="bbb" :show-overflow-tooltip="true" width="100" /> -->
-      <!-- <el-table-column label="仪器SAP Equip编号" prop="ccc" width="128" /> -->
+      <el-table-column label="SO NO" prop="soNo" width="120" />
       <el-table-column label="维修类型" prop="ddd" />
-      <!-- <el-table-column label="仪器地址" prop="eee" width="100" /> -->
-      <!-- <el-table-column label="客户单位名称" prop="fff" width="100" /> -->
-      <!-- <el-table-column label="客户编号" prop="ggg" width="100" /> -->
-      <!-- <el-table-column label="客户联系人" prop="hhh" width="100" /> -->
-      <!-- <el-table-column label="客户联系人电话" prop="iii" width="120" /> -->
-      <!-- <el-table-column label="客户联系人邮箱" prop="jjj" width="130" /> -->
       <el-table-column label="物料号" prop="kkk" />
       <el-table-column label="批次号" prop="lll" />
       <el-table-column label="数量" prop="mmm" />
       <el-table-column label="失败原因" prop="state" width="200" />
       <el-table-column label="FSE ID" prop="ooo" width="100" />
-      <el-table-column label="FSE工程师名称" prop="ppp" width="100" />
-      <el-table-column label="FSE work center" prop="qqq" width="115" />
-      <el-table-column label="FSE storage location" prop="rrr" width="140" />
+      <el-table-column label="FSE工程师名称" prop="transferFseName" width="100" />
+      <el-table-column label="FSE work center" prop="workCenter" width="115" />
+      <el-table-column label="FSE storage location" prop="storageLocation" width="140" />
       <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="110">
         <template #default="{ row }">
           <el-button type="info" link @click="handleEdit(row)">详情</el-button>
@@ -74,9 +64,9 @@
             </template>
           </el-input>
         </el-form-item>
-        <el-form-item label="SO类型" prop="orderType">
+        <el-form-item label="SO类型" prop="options">
           <el-cascader
-            v-model="orderType"
+            v-model="form.options"
             :options="options"
             filterable
             clearable
@@ -88,8 +78,8 @@
             }"
           />
         </el-form-item>
-        <el-form-item label="错误原因" prop="orderType">
-          <el-input v-model="orderType" />
+        <el-form-item label="错误原因" prop="errorReason">
+          <el-input v-model="form.errorReason" />
         </el-form-item>
       </template>
     </CTable>
@@ -122,72 +112,14 @@ import FormDialog from './components/FormDialog.vue'
 
 const tableRef = ref()
 const refresh = () => tableRef.value.refresh()
-// const i18n = useI18n()
 
-// const options = [
-//   {
-//     value: 'SM01',
-//     label: 'SM01',
-//   },
-//   {
-//     value: 'SM02',
-//     label: 'SM02',
-//   },
-//   {
-//     value: 'SM03',
-//     label: 'SM03',
-//     children: [
-//       {
-//         value: 'xxx',
-//         label: '111',
-//       },
-//       {
-//         value: 'xxx',
-//         label: '222',
-//       },
-//       {
-//         value: 'xxx',
-//         label: '333',
-//       },
-//       {
-//         value: 'xxx',
-//         label: '444',
-//       },
-//     ],
-//   },
-//   {
-//     value: 'SM04',
-//     label: 'SM04',
-//     children: [
-//       {
-//         value: 'xxx',
-//         label: '111',
-//       },
-//       {
-//         value: 'xxx',
-//         label: '222',
-//       },
-//     ],
-//   },
-//   {
-//     value: 'SM05',
-//     label: 'SM05',
-//     children: [
-//       {
-//         value: 'xxx',
-//         label: '111',
-//       },
-//       {
-//         value: 'xxx',
-//         label: '222',
-//       },
-//       {
-//         value: 'xxx',
-//         label: '333',
-//       },
-//     ],
-//   },
-// ]
+const listData = params => {
+  delete params.options
+  return req.get('/lockSo/page', { params }).then(res => {
+    return { data: res.data }
+  })
+}
+
 onMounted(() => {
   getMaintenanceType()
 })
@@ -198,7 +130,7 @@ const getMaintenanceType = async () => {
     options.value = tree
   })
 }
-const orderType = ref([])
+
 const changeOptions = val => {
   if (!val) {
     tableRef.value.form.orderType = ''

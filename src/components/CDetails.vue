@@ -47,7 +47,7 @@
             </el-descriptions-item>
             <el-descriptions-item>
               <template #label>客户锁信息</template>
-              TC锁
+              {{ form.customerLockName }}
             </el-descriptions-item>
             <el-descriptions-item>
               <template #label>仪器地址</template>
