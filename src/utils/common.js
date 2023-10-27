@@ -192,3 +192,27 @@ export function wildMatch(str, pattern) {
 export function mimeTypeMatch(type, types) {
   return types.split(/,\s*/).some(i => wildMatch(type, i))
 }
+
+/**
+ *
+ * @description 导出csv
+ * @author kuroky <1048413674@qq.com>
+ * @date 2023-10-27
+ * @param {Array} data csv数据
+ * @param {String} name 下载时的文件名
+ */
+export function exportCSV(data, name) {
+  name ??= new Date().toLocaleString()
+  const csv = []
+  data.forEach(i => {
+    csv.push(['\ufeff' + i.join(',') + '\n'])
+  })
+  const blob = new Blob(csv, { type: 'text/csv;charset=UTF-8' })
+  const url = URL.createObjectURL(blob)
+  // const url =  "data:text/csv;charset=utf-8,\ufeff" + encodeURIComponent(csv)
+  let link = document.createElement('a')
+  link.href = url
+  link.download = name + '.csv'
+  link.click()
+  URL.revokeObjectURL(url)
+}

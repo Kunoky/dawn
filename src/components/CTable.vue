@@ -28,6 +28,13 @@
               </template>
             </el-button>
           </el-tooltip>
+          <el-tooltip v-if="$slots.form" :content="$t('common.export')" placement="top">
+            <el-button link @click="handleExport" :aria-description="$t('common.export')">
+              <template #icon>
+                <i-ep-download />
+              </template>
+            </el-button>
+          </el-tooltip>
           <el-tooltip :content="$t('common.refresh')" placement="top">
             <el-button link @click="refresh" :aria-description="$t('common.refresh')">
               <template #icon>
@@ -135,6 +142,26 @@
             </div>
           </el-popover>
         </div>
+        <el-dialog v-model="visible.export" :title="$t('common.export')">
+          <div>
+            {{ $t('common.total') }}:
+            <span class="cl-p">{{ exportFrom.total }}</span>
+          </div>
+          <div class="mgt-s">
+            {{ $t('common.page') }}:
+            <el-input-number v-model="exportFrom.page" :min="1" :precision="0" />
+          </div>
+          <div class="mgt-s">
+            {{ $t('common.size') }}:
+            <el-input-number v-model="exportFrom.size" :min="1" :max="exportFrom.total" :precision="0" />
+          </div>
+          <template #footer>
+            <span class="dialog-footer">
+              <el-button @click="visible.export = false">{{ $t('common.cancel') }}</el-button>
+              <el-button type="primary" @click="exportData">{{ $t('common.confirm') }}</el-button>
+            </span>
+          </template>
+        </el-dialog>
       </div>
       <PageWrapper ref="pageRef" v-bind="pageConf" :params="mergedParams" :default-size="defaultSize">
         <template v-slot="{ data, loading }">
@@ -232,6 +259,9 @@ const props = defineProps({
 })
 const emit = defineEmits(['update:modelValue', 'query', 'reset'])
 
+const visible = reactive({
+  export: false,
+})
 const i18n = useI18n()
 const pageRef = ref()
 const tableRef = ref()
@@ -367,6 +397,8 @@ const handleSyncColumns = runTimeColumns => {
     }
   })
 }
+
+let columns
 const getColumns = () => {
   let cols = useSlots().default()
   handleSyncColumns(cols)
@@ -381,6 +413,7 @@ const getColumns = () => {
     return true
   })
   cols.sort((a, b) => a.order - b.order)
+  columns = cols
   return cols
 }
 const handleDragUpdate = ({ target }) => {
@@ -483,6 +516,43 @@ const handleSelectAll = v => {
 
 const isSelectAll = computed(() => allKeys.value.length && allKeys.value.every(i => modelValueKeys.value.includes(i)))
 
+// 导出
+const exportFrom = reactive({
+  page: 1,
+  size: 10,
+  total: 0,
+  loading: false,
+})
+function handleExport() {
+  exportFrom.size = pageRef.value.total
+  exportFrom.total = pageRef.value.total
+  visible.export = true
+}
+const exportData = () => {
+  const { sizeKey = 'pageSize', pageKey = 'pageNum' } = props.pageConf
+  exportFrom.loading = true
+  pageRef.value
+    .listData({
+      [pageKey]: exportFrom.page,
+      [sizeKey]: exportFrom.size,
+    })
+    .then(res => {
+      const csvData = [[]]
+      const getText = []
+      columns.forEach(i => {
+        if (i.props?.label && i.props?.prop) {
+          csvData[0].push(i.props.label)
+          getText.push(row => row[i.props.prop])
+        }
+      })
+      res.forEach(i => {
+        csvData.push(getText.map(j => j(i)))
+      })
+      utils.exportCSV(csvData, props.title)
+      visible.export = false
+    })
+    .finally(() => (exportFrom.loading = false))
+}
 defineExpose({
   pageRef,
   tableRef,
@@ -493,6 +563,7 @@ defineExpose({
   handleColReset,
   handleQueryReset,
   handleSave,
+  handleExport,
 })
 </script>
 <style lang="scss">

@@ -47,6 +47,10 @@ export default {
     back: '返回',
     execute: '执行',
     log: '日志',
+    export: '导出',
+    total: '总数',
+    page: '分页',
+    size: '大小',
   },
   tip: {
     delete: '数据删除后无法恢复，确定继续？',
