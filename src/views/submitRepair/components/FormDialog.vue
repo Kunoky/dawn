@@ -185,7 +185,14 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="所属区域" prop="area">
-            <el-input v-model="form.area" disabled placeholder="自动填入" clearable />
+            <el-select v-model="form.area" placeholder="请选择所属区域" style="width: 100%" clearable>
+              <el-option
+                v-for="(item, index) in regionalStatus.options"
+                :key="index"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -202,6 +209,22 @@
         <el-col :span="12">
           <el-form-item label="PO号" prop="po">
             <el-input v-model="form.po" placeholder="请输入PO号" clearable />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="是否Promotion" prop="isPromotion">
+            <el-switch
+              v-model="form.isPromotion"
+              class="ml-2"
+              style="--el-switch-on-color: #ff4949"
+              active-text="是"
+              inactive-text="否"
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12" v-if="form.isPromotion">
+          <el-form-item label="promotionCode" prop="promotionCode">
+            <el-input v-model="form.promotionCode" placeholder="请输入promotionCode" clearable />
           </el-form-item>
         </el-col>
         <el-col :span="24">
@@ -270,7 +293,8 @@ const props = defineProps({
 })
 
 const title = computed(() => (props.data ? '修改维修申请' : '新增维修申请'))
-const repairSource = useDict('repairSource')
+const repairSource = useDict('repairSource') // 报修来源
+const regionalStatus = useDict('regionalStatus') // 区域
 
 const rules = {
   serialNo: [{ required: true, message: '设备序列号不能为空', trigger: 'blur' }],
@@ -325,6 +349,8 @@ watch(
         orderType: '', // 维修类型
         subType: '', //维修子类型
         isConsistentSap: true,
+        isPromotion: false,
+        promotionCode: '',
         attaIds: '',
       }
       nextTick(() => {
@@ -394,20 +420,16 @@ const changeSeriaNo = val => {
   form.value.serialNo = val.sernr
   form.value.modelNo = val.typbz
   form.value.eqId = val.matnr
-  form.value.custDesc = val.customer.companyName1
-  form.value.customerId = val.customer.kunnr
-  form.value.name = val.customer.name3
-  form.value.blockFlag = val.blockFlag !== null ? val.blockFlag : '无'
-  form.value.lastName = val.customer.lastName
-  form.value.firstName = val.customer.namev
-  form.value.mobile = val.customer.tel
-  form.value.email = val.customer.smtpAddr
-  form.value.area = val.customer.regio //区域
-  form.value.equipAddress = val.customer.city1 + val.customer.city2 + val.customer.street //仪器地址
+
+  form.value.customerId = val.customer.customerId
+  form.value.custDesc = val.customer.name === '' ? val.customer.enName : val.customer.name
+  form.value.equipAddress = val.customer.address === '' ? val.customer.enAddress : val.customer.address
+  form.value.area = val.customer.region
+  form.value.blockFlag = val.customer.blockFlag !== null ? val.customer.blockFlag : '无'
 
   // 暂存用做数据对比
-  staging.value.aaa = val.customer.companyName1
-  staging.value.bbb = val.customer.city1 + val.customer.city2 + val.customer.street
+  staging.value.aaa = val.customer.name === '' ? val.customer.enName : val.customer.name
+  staging.value.bbb = val.customer.address === '' ? val.customer.enAddress : val.customer.address
 }
 
 // 客户单位名称
@@ -417,15 +439,7 @@ const custDescOptions = ref([])
 async function getCustomer(v) {
   return req.get('/data/customer', { params: { name: v } }).then(res => {
     custDescList.value = res.data.map(item => {
-      // console.log(item);
-      // let sss = {}
-      // if (item.address !== null) {
-      //   sss= item.address
-      // } else {
-      //   sss=item
-      // }
-      // console.log(sss,'sss');
-      return { value: item, label: `${item.name1}${item.name2}` }
+      return { value: item, label: `${item.name === '' ? item.enName : item.name}` }
     })
   })
 }
@@ -444,18 +458,12 @@ const remoteMethodCustDesc = query => {
     custDescOptions.value = []
   }
 }
-const changeCustDesc = () => {
-  // const changeCustDesc = val => {
-  // console.log(val, 'val')
-  // form.value.blockFlag = val.blockFlag !== null ? val.blockFlag : '无'
-  // form.value.name = val.name3
-  // form.value.customerId = val.kunnr
-  // form.value.lastName = val.lastName
-  // form.value.firstName = val.namev
-  // form.value.mobile = val.tel
-  // form.value.email = val.smtpAddr
-  // form.value.area = val.customer.regio //区域
-  // form.value.equipAddress = val.customer.city1 + val.custome.street //仪器地址
+const changeCustDesc = val => {
+  form.value.customerId = val.customerId
+  form.value.custDesc = val.name === '' ? val.enName : val.name
+  form.value.equipAddress = val.address === '' ? val.enAddress : val.address
+  form.value.area = val.region
+  form.value.blockFlag = val.blockFlag !== null ? val.blockFlag : '无'
 }
 
 // FSE工程师名称
@@ -540,11 +548,14 @@ const handleConfirm = () => {
       delete form.value.area
       // delete form.value.engineerName
       form.value.attaIds = attachmentsList.value.map(item => item.id)
-      if (staging.value.aaa !== form.value.custDesc || staging.value.bbb !== form.value.equipAddress) {
-        form.value.isConsistentSap = false
-      } else {
-        form.value.isConsistentSap = true
+      if (form.value.id) {
+        if (staging.value.aaa !== form.value.custDesc || staging.value.bbb !== form.value.equipAddress) {
+          form.value.isConsistentSap = false
+        } else {
+          form.value.isConsistentSap = true
+        }
       }
+      // console.log(form.value);
       loading.value = true
       req[form.value.id ? 'put' : 'post']('/request', form.value)
         .then(({ code }) => {
