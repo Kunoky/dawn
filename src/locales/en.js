@@ -47,6 +47,10 @@ export default {
     back: 'Back',
     execute: 'Execute',
     log: 'Log',
+    export: 'Export',
+    total: 'Total',
+    page: 'Page',
+    size: 'Size',
   },
   tip: {
     delete: 'Data cannot be restored after deletion. Continue?',
