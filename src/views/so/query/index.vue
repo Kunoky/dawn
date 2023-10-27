@@ -70,10 +70,10 @@
         <el-form-item label="客户名称" prop="companyName">
           <el-input v-model="form.companyName" placeholder="请输入客户名称" clearable />
         </el-form-item>
-        <el-form-item label="工程师名称" prop="fseId">
+        <el-form-item label="FSE工程师名称" prop="fseWorkCenter">
           <el-select
             clearable
-            v-model="form.fseId"
+            v-model="form.fseWorkCenter"
             placeholder="请输入FSE工程师名称"
             filterable
             remote
@@ -228,7 +228,7 @@ const engineerNameOptions = ref([])
 async function getEngineerName(v) {
   return req.get('/user/fse', { params: { fseName: v } }).then(res => {
     engineerNameList.value = res.data.map(item => {
-      return { value: item.fseId, label: `${item.fseId} / ${item.fseName}` }
+      return { value: item.fseWorkCenter, label: `${item.fseWorkCenter} / ${item.fseName}` }
     })
   })
 }

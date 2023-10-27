@@ -124,10 +124,10 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="FSE工程师名称" prop="engineerId">
+        <el-form-item label="FSE工程师名称" prop="fseWorkCenter">
           <el-select
             clearable
-            v-model="form.engineerId"
+            v-model="form.fseWorkCenter"
             placeholder="请输入FSE工程师名称"
             filterable
             remote
@@ -144,9 +144,9 @@
         <el-form-item label="报修时间" prop="params">
           <el-date-picker
             v-model="form.params"
-            value-format="YYYY-MM-DD HH:mm:ss"
+            value-format="YYYY-MM-DD"
             placeholder="请选择时间"
-            type="datetimerange"
+            type="daterange"
             range-separator="-"
             start-placeholder="开始时间"
             end-placeholder="结束时间"
@@ -262,7 +262,7 @@ const engineerNameOptions = ref([])
 async function getEngineerName(v) {
   return req.get('/user/fse', { params: { fseName: v } }).then(res => {
     engineerNameList.value = res.data.map(item => {
-      return { value: item.fseId, label: `${item.fseId} / ${item.fseName}` }
+      return { value: item.fseWorkCenter, label: `${item.fseWorkCenter} / ${item.fseName}` }
     })
   })
 }

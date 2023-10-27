@@ -42,6 +42,12 @@
           <div class="txt">{{ row.unit }}</div>
         </template>
       </el-table-column>
+      <el-table-column prop="unitPrice" label="单价">
+        <template #default="{ row }">
+          <el-input v-model="row.unitPrice" placeholder="请输入" @blur="handelPrice(row)"></el-input>
+          <!-- <div class="txt">{{ row.unitPrice }}</div> -->
+        </template>
+      </el-table-column>
       <el-table-column prop="includeTaxPrice" label="含税价格">
         <template #default="{ row }">
           <!-- <el-input v-if="row.isEdit" v-model="row.includeTaxPrice" placeholder="请输入" @change="sssss(row)"></el-input> -->
@@ -230,6 +236,7 @@ const remoteMethodMaterialNo = query => {
 const changeMaterialNo = (val, row) => {
   row.materialNo = val.materialNo
   row.unit = val.unit
+  row.unitPrice = val.unitPrice
   row.includeTaxPrice = val.includeTaxPrice
 }
 
@@ -241,7 +248,6 @@ function getTotal() {
     }, 0)
     .toFixed(2)
   formData.value.quotePrice = total
-  // formData.value.finalPrice = total
 }
 
 const getSummaries = () => {
@@ -293,7 +299,7 @@ const handelEditDiscount = () => {
       if (formData.value.discoun !== undefined || formData.value.discoun !== '') {
         let totalData = ref(null)
         totalData.value = (formData.value.discountRate * formData.value.quotePrice) / 100
-        formData.value.finalPrice = totalData.value.toFixed(2)
+        formData.value.finalPrice = (parseInt(totalData.value * 100) / 100).toFixed(2)
       }
     }
   })
@@ -318,8 +324,14 @@ const handelEditTotal = () => {
 // const handleCellLeave = row => {
 // row.isEdit = false
 // }
+const handelPrice = row => {
+  let res = row.unitPrice * 1.13
+  row.includeTaxPrice = (parseInt(res * 100) / 100).toFixed(2)
+  handelCalculateTotalPrice(row)
+}
 const handelCalculateTotalPrice = row => {
-  row.subTotal = (row.includeTaxPrice * row.quantity).toFixed(2)
+  let data = row.includeTaxPrice * row.quantity
+  row.subTotal = (parseInt(data * 100) / 100).toFixed(2)
   getTotal()
 }
 const handleClose = () => {

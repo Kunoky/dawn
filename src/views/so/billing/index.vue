@@ -70,10 +70,10 @@
             <el-option label="B" value="beijing" />
           </el-select>
         </el-form-item>
-        <el-form-item label="工程师名称" prop="fseId">
+        <el-form-item label="FSE工程师名称" prop="fseWorkCenter">
           <el-select
             clearable
-            v-model="form.fseId"
+            v-model="form.fseWorkCenter"
             placeholder="请输入FSE工程师名称"
             filterable
             remote
@@ -151,7 +151,7 @@ const engineerNameOptions = ref([])
 async function getEngineerName(v) {
   return req.get('/user/fse', { params: { fseName: v } }).then(res => {
     engineerNameList.value = res.data.map(item => {
-      return { value: item.fseId, label: `${item.fseId} / ${item.fseName}` }
+      return { value: item.fseWorkCenter, label: `${item.fseWorkCenter} / ${item.fseName}` }
     })
   })
 }
@@ -164,6 +164,8 @@ const remoteMethodEngineerName = query => {
         return item.label.toLowerCase().includes(query.toLowerCase())
       })
     })
+    // setTimeout(() => {
+    // }, 200)
   } else {
     engineerNameOptions.value = []
   }
