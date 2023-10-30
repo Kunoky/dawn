@@ -26,7 +26,7 @@
       <el-table-column label="报修来源" prop="source" width="100" />
       <el-table-column label="报修时间" prop="repairTime" width="130" />
       <el-table-column label="保修期" prop="warrantyTime" width="100" />
-      <el-table-column label="FSE工程师名称" prop="transferFseName" width="100" />
+      <el-table-column label="FSE工程师名称" prop="fseName" width="100" />
       <el-table-column label="FSE work center" prop="workCenter" width="115" />
       <el-table-column label="FSE storage location" prop="storageLocation" width="140" />
       <el-table-column label="状态" prop="status" width="100">
@@ -41,18 +41,11 @@
             <el-button type="info" link @click="handleQuotation(row)">报价</el-button>
           </div>
           <div>
-            <!-- <el-button type="danger" link @click="handleAddRecord(row)">添加沟通记录</el-button> -->
             <el-button type="danger" link @click="handleBack(row)">退回</el-button>
             <el-button type="primary" link @click="handleExamine(row)">已报价</el-button>
           </div>
         </template>
       </el-table-column>
-      <!-- <template #actions>
-          <el-button type="primary" plain>
-            <i-ep-bottom />
-            导出
-          </el-button>
-        </template> -->
       <template #form="{ form }">
         <el-form-item label="SO NO" prop="soNo">
           <el-input v-model="form.soNo" placeholder="请输入SO NO" clearable />
@@ -68,7 +61,6 @@
             <el-option label="是" value="1" />
             <el-option label="否" value="0" />
           </el-select>
-          <!-- <el-input v-model="form.modelNo" placeholder="请输入CRC" clearable /> -->
         </el-form-item>
         <el-form-item label="所属区域" prop="area">
           <el-select v-model="form.area" placeholder="请选择所属区域" style="width: 100%" clearable>
@@ -83,13 +75,6 @@
         <el-form-item label="客户名称" prop="companyName">
           <el-input v-model="form.companyName" placeholder="请输入客户名称" clearable />
         </el-form-item>
-        <!-- <el-form-item label="工程师名称">
-          <el-input v-model="form.fseId" placeholder="请输入FSE工程师名称">
-            <template #append>
-              <el-button><i-ep-Search /></el-button>
-            </template>
-          </el-input>
-        </el-form-item> -->
         <el-form-item label="FSE工程师名称" prop="fseWorkCenter">
           <el-select
             clearable
@@ -126,7 +111,6 @@
         </el-form-item>
       </template>
     </CTable>
-    <!-- <Details :data="current" v-model="visible.detail" @success="handleFormSuccess"></Details> -->
     <CDetails :data="current" v-model="visible.detail" @success="handleFormSuccess"></CDetails>
 
     <Quotation :data="currentQuotation" v-model="quotation.visible" @success="handleQuotationSuccess"></Quotation>
@@ -144,33 +128,10 @@
         </span>
       </template>
     </el-dialog>
-
-    <!-- <el-dialog title="添加沟通记录" width="30%" v-model="addRecordVisible" :close-on-click-modal="false">
-      <el-form :model="addForm" ref="addRefForm" label-width="80" :rules="AddRules">
-        <el-form-item label="沟通人" prop="aaa">
-          <el-input v-model="addForm.aaa" placeholder="请输入沟通人" clearable />
-        </el-form-item>
-        <el-form-item label="时间" prop="bbb" class="form_picker">
-          <el-date-picker v-model="addForm.bbb" type="datetime" placeholder="请选择时间" style="width: 100%" />
-        </el-form-item>
-        <el-form-item label="结果" prop="ccc">
-          <el-input type="textarea" v-model="addForm.ccc" placeholder="请输入结果" clearable />
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <span class="dialog-footer">
-          <el-button @click="handleCloseAddRecord">{{ $t('common.cancel') }}</el-button>
-          <el-button type="primary" @click="handleConfirmAddRecord">{{ $t('common.confirm') }}</el-button>
-        </span>
-      </template>
-    </el-dialog> -->
   </div>
 </template>
 
 <script setup>
-// import Details from './components/details.vue'
-import CDetails from './../../../components/CDetails.vue'
-
 import Quotation from './components/quotation.vue'
 
 // 状态字典
@@ -225,10 +186,6 @@ const handleExamine = row => {
     type: 'warning',
   })
     .then(() => {
-      // current.value = {
-      //   ...row,
-      //   deleting: true,
-      // }
       let data = {
         soNo: row.soNo,
         status: 4, //TODO:SO状态 报价待确认
@@ -292,45 +249,6 @@ const handleQuotationSuccess = () => {
   refresh()
 }
 
-// const addRecordVisible = ref(false)
-// const addRefForm = ref(null)
-// const addForm = ref({
-//   aaa: '',
-//   bbb: '',
-//   ccc: '',
-// })
-// const AddRules = {
-//   aaa: [{ required: true, message: '沟通人不能为空', trigger: 'blur' }],
-//   bbb: [{ required: true, message: '时间不能为空', trigger: 'blur' }],
-//   ccc: [{ required: true, message: '结果不能为空', trigger: 'blur' }],
-// }
-// // const handleAddRecord = () => {
-// //   addRecordVisible.value = true
-// // }
-// const handleCloseAddRecord = () => {
-//   addRecordVisible.value = false
-//   nextTick(() => {
-//     addRefForm.value.clearValidate()
-//   })
-// }
-// const handleConfirmAddRecord = () => {
-//   addRefForm.value.validate(valid => {
-//     if (valid) {
-//       // form.value.value = form.value.category
-//       // loading.value = true
-//       // req[form.value.dictId ? 'put' : 'post']('/dict', form.value)
-//       //   .then(({ code }) => {
-//       //     if (code === 200) {
-//       //       emit('success')
-//       //       emit('update:modelValue', false)
-//       //     }
-//       //   })
-//       //   .finally(() => {
-//       //     loading.value = false
-//       //   })
-//     }
-//   })
-// }
 // FSE工程师名称
 const engineerNameLoading = ref(false)
 const engineerNameList = ref([])

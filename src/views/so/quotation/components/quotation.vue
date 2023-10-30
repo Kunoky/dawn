@@ -32,32 +32,26 @@
           >
             <el-option v-for="item in materialNoOptions" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
-          <!-- <el-input v-model="row.materialNo" placeholder="请输入"></el-input> -->
-          <!-- <div v-else class="txt">{{ row.materialNo }}</div> -->
         </template>
       </el-table-column>
       <el-table-column prop="unit" label="单位">
         <template #default="{ row }">
-          <!-- <el-input v-if="row.isEdit" v-model="row.unit" placeholder="请输入"></el-input> -->
           <div class="txt">{{ row.unit }}</div>
         </template>
       </el-table-column>
       <el-table-column prop="unitPrice" label="单价">
         <template #default="{ row }">
           <el-input v-model="row.unitPrice" placeholder="请输入" @blur="handelPrice(row)"></el-input>
-          <!-- <div class="txt">{{ row.unitPrice }}</div> -->
         </template>
       </el-table-column>
       <el-table-column prop="includeTaxPrice" label="含税价格">
         <template #default="{ row }">
-          <!-- <el-input v-if="row.isEdit" v-model="row.includeTaxPrice" placeholder="请输入" @change="sssss(row)"></el-input> -->
           <div class="txt">{{ row.includeTaxPrice }}</div>
         </template>
       </el-table-column>
       <el-table-column prop="quantity" label="配件/Labor数量">
         <template #default="{ row }">
           <el-input v-model="row.quantity" placeholder="请输入" @blur="handelCalculateTotalPrice(row)"></el-input>
-          <!-- <div class="txt">{{ row.quantity }}</div> -->
         </template>
       </el-table-column>
       <el-table-column prop="subTotal" label="总价">
@@ -149,8 +143,8 @@
     </div>
     <template #footer>
       <span class="dialog-footer">
-        <el-button @click="handleClose">{{ $t('common.cancel') }}</el-button>
-        <el-button type="primary" @click="handleConfirm" :loading="loading">{{ $t('common.confirm') }}</el-button>
+        <el-button @click="handleClose">取消</el-button>
+        <el-button type="primary" @click="handleConfirm" :loading="loading">确定</el-button>
       </span>
     </template>
   </el-dialog>
@@ -347,7 +341,8 @@ const handleConfirm = () => {
         quoteSummary: formData.value,
         soNo: props.data.soNo,
       }
-      req.post('/quote/save', data).then(() => {
+      req.post('/quote/save', data).then(res => {
+        window.open(import.meta.env.VITE_SERVER_PATH + res.data, '_blank')
         emit('update:modelValue', false)
       })
     }

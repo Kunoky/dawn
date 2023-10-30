@@ -26,7 +26,7 @@
       <el-table-column label="报修来源" prop="source" width="100" />
       <el-table-column label="报修时间" prop="repairTime" width="130" />
       <el-table-column label="保修期" prop="warrantyTime" width="100" />
-      <el-table-column label="FSE工程师名称" prop="transferFseName" width="100" />
+      <el-table-column label="FSE工程师名称" prop="fseName" width="100" />
       <el-table-column label="FSE work center" prop="workCenter" width="115" />
       <el-table-column label="FSE storage location" prop="storageLocation" width="140" />
       <el-table-column label="状态" prop="status" width="100">
@@ -183,8 +183,6 @@
 </template>
 
 <script setup>
-import CDetails from './../../../components/CDetails.vue'
-
 const tableRef = ref()
 const refresh = () => tableRef.value.refresh()
 const i18n = useI18n()
@@ -265,11 +263,7 @@ const handleExamine = row => {
     type: 'warning',
   })
     .then(() => {
-      let data = {
-        soNo: row.soNo,
-        status: 5, //TODO:SO状态 报价审批中
-      }
-      return req.put('/so/update', data)
+      return req.put(`/quote/initiate/${row.soNo}`)
     })
     .then(({ code }) => {
       if (code === 200) {

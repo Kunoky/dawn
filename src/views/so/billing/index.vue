@@ -26,21 +26,15 @@
       <el-table-column label="报修来源" prop="source" width="100" />
       <el-table-column label="报修时间" prop="repairTime" width="130" />
       <el-table-column label="保修期" prop="warrantyTime" width="100" />
-      <el-table-column label="FSE工程师名称" prop="transferFseName" width="100" />
+      <el-table-column label="FSE工程师名称" prop="fseName" width="100" />
       <el-table-column label="FSE work center" prop="workCenter" width="115" />
       <el-table-column label="FSE storage location" prop="storageLocation" width="140" />
       <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="110">
         <template #default="{ row }">
           <el-button type="info" link @click="handleDeatil(row)">详情</el-button>
-          <el-button type="primary" link @click="handleClose(row)">Billing</el-button>
+          <el-button type="primary" link @click="handleBilling(row)">Billing</el-button>
         </template>
       </el-table-column>
-      <!-- <template #actions>
-        <el-button type="primary" plain>
-          <i-ep-bottom />
-          导出
-        </el-button>
-      </template> -->
       <template #form="{ form }">
         <el-form-item label="SO NO" prop="soNo">
           <el-input v-model="form.soNo" placeholder="请输入SO NO" clearable />
@@ -70,12 +64,8 @@
         <el-form-item label="客户名称" prop="companyName">
           <el-input v-model="form.companyName" placeholder="请输入客户名称" clearable />
         </el-form-item>
-
-        <el-form-item label="客户锁定状态" prop="custDesc">
-          <el-select v-model="form.serialNo" placeholder="请选择客户锁定状态" style="width: 100%" clearable>
-            <el-option label="A" value="shanghai" />
-            <el-option label="B" value="beijing" />
-          </el-select>
+        <el-form-item label="客户锁信息" prop="blockFlag">
+          <el-input v-model="form.blockFlag" placeholder="请输入客户锁信息" clearable />
         </el-form-item>
         <el-form-item label="FSE工程师名称" prop="fseWorkCenter">
           <el-select
@@ -123,8 +113,8 @@
 
     <el-dialog title="添加Billing号" width="30%" v-model="detailVisible" :close-on-click-modal="false">
       <el-form :model="formDetails" ref="formRefDetails" label-width="80" :rules="rules">
-        <el-form-item label="Billing号" prop="TaskID">
-          <el-input v-model="formDetails.TaskID" placeholder="请输入Billing号" clearable />
+        <el-form-item label="Billing号" prop="billingNo">
+          <el-input v-model="formDetails.billingNo" placeholder="请输入Billing号" clearable />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -138,7 +128,6 @@
 </template>
 
 <script setup>
-// import FormDialog from './components/FormDialog.vue'
 const regionalStatus = useDict('regionalStatus') // 区域
 const tableRef = ref()
 const refresh = () => tableRef.value.refresh()
@@ -228,12 +217,14 @@ const handleFormSuccess = () => {
 const detailVisible = ref(false)
 const formRefDetails = ref(null)
 const formDetails = ref({
-  TaskID: '',
+  soNo: '',
+  billingNo: '',
 })
 const rules = {
-  TaskID: [{ required: true, message: 'Billing号不能为空', trigger: 'blur' }],
+  billingNo: [{ required: true, message: 'Billing号不能为空', trigger: 'blur' }],
 }
-const handleClose = () => {
+const handleBilling = row => {
+  formDetails.value.soNo = row.soNo
   detailVisible.value = true
 }
 const handleCloseDetail = () => {
@@ -245,18 +236,12 @@ const handleCloseDetail = () => {
 const handleConfirm = () => {
   formRefDetails.value.validate(valid => {
     if (valid) {
-      // form.value.value = form.value.category
-      // loading.value = true
-      // req[form.value.dictId ? 'put' : 'post']('/dict', form.value)
-      //   .then(({ code }) => {
-      //     if (code === 200) {
-      //       emit('success')
-      //       emit('update:modelValue', false)
-      //     }
-      //   })
-      //   .finally(() => {
-      //     loading.value = false
-      //   })
+      // console.log(formDetails.value)
+      req.put('/so/billing', formDetails.value).then(({ code }) => {
+        if (code === 200) {
+          refresh()
+        }
+      })
     }
   })
 }

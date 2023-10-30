@@ -176,7 +176,8 @@
             <el-date-picker
               v-model="form.repairTime"
               style="width: 100%"
-              value-format="YYYY-MM-DD hh:ss:mm"
+              format="YYYY-MM-DD HH:mm"
+              value-format="YYYY-MM-DD HH:mm"
               type="datetime"
               placeholder="请选择报修时间"
               clearable
@@ -228,7 +229,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="24">
-          <el-form-item label="报修内容" prop="content">
+          <el-form-item label="报修内容(填写英文)" prop="content">
             <el-input type="textarea" v-model="form.content" placeholder="请输入报修内容" clearable />
           </el-form-item>
         </el-col>
@@ -339,7 +340,6 @@ watch(
         repairTime: '',
         warrantyTime: '',
         fseName: '',
-        // engineerId: '',
         fseWorkCenter: '',
         fseStorageLocation: '',
         relationSourceNo: '',
@@ -370,9 +370,6 @@ const { run: getRequestInfo, loading: dataLoading } = useAsync(
     onSuccess(res) {
       form.value = res.data
       form.value.dataOptions = [res.data.orderType, res.data.subType]
-      // form.value.fseName = res.data.fseName
-      // form.value.fseWorkCenter = res.data.fseWorkCenter
-      // form.value.fseStorageLocation = res.data.fseStorageLocation
       attachmentsList.value = res.data.attachments
 
       // 暂存用做数据对比
@@ -542,11 +539,8 @@ const handleConfirm = () => {
   formRef.value.validate(valid => {
     if (valid) {
       delete form.value.blockFlag
-      // delete form.value.fseWorkCenter
       delete form.value.fseStorageLocation
       delete form.value.dataOptions
-      delete form.value.area
-      // delete form.value.engineerName
       form.value.attaIds = attachmentsList.value.map(item => item.id)
       if (form.value.id) {
         if (staging.value.aaa !== form.value.custDesc || staging.value.bbb !== form.value.equipAddress) {
@@ -555,7 +549,6 @@ const handleConfirm = () => {
           form.value.isConsistentSap = true
         }
       }
-      // console.log(form.value);
       loading.value = true
       req[form.value.id ? 'put' : 'post']('/request', form.value)
         .then(({ code }) => {

@@ -26,7 +26,7 @@
       <el-table-column label="报修来源" prop="source" width="100" />
       <el-table-column label="报修时间" prop="repairTime" width="130" />
       <el-table-column label="保修期" prop="warrantyTime" width="100" />
-      <el-table-column label="FSE工程师名称" prop="transferFseName" width="100" />
+      <el-table-column label="FSE工程师名称" prop="fseName" width="100" />
       <el-table-column label="FSE work center" prop="workCenter" width="115" />
       <el-table-column label="FSE storage location" prop="storageLocation" width="140" />
       <el-table-column label="转移原因" prop="transferReason" width="140" :show-overflow-tooltip="true" />
@@ -36,12 +36,7 @@
           <el-button type="primary" link @click="handleClose(row)">拒绝</el-button>
         </template>
       </el-table-column>
-      <template #actions>
-        <!-- <el-button type="primary" plain @click="handleAdd" v-hasPermi="['system:user:add']">
-            <i-ep-plus />
-            新增
-          </el-button> -->
-      </template>
+      <template #actions></template>
       <template #form="{ form }">
         <el-form-item label="SO NO" prop="soNo">
           <el-input v-model="form.soNo" placeholder="请输入SO NO" clearable />
@@ -106,7 +101,7 @@
       <el-descriptions class="margin-top" :column="1" border size="small">
         <el-descriptions-item>
           <template #label>原FSE</template>
-          {{ record.engineerName }}
+          {{ record.fseName }}
         </el-descriptions-item>
         <el-descriptions-item>
           <template #label>原FSE work center</template>
@@ -224,14 +219,6 @@ const record = ref({})
 const transferVisible = ref(false)
 const handleTransfer = row => {
   record.value = row
-  // record.value.engineerName = row.engineerName
-  // record.value.workCenter = row.workCenter
-  // record.value.storageLocation = row.storageLocation
-  // record.value.transferFseName = row.transferFseName
-  // record.value.transferWorkCenter = row.transferWorkCenter
-  // record.value.transferStorageLocation = row.transferStorageLocation
-  // record.value.transferReason = row.transferReason
-
   transferVisible.value = true
 }
 const handleCloseTransfer = () => {

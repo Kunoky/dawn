@@ -71,15 +71,15 @@
             </el-descriptions-item>
             <el-descriptions-item>
               <template #label>FSE工程师名称</template>
-              {{ form.transferFseName }}
+              {{ form.fseName }}
             </el-descriptions-item>
             <el-descriptions-item>
               <template #label>FSE work center</template>
-              {{ form.transferWorkCenter }}
+              {{ form.workCenter }}
             </el-descriptions-item>
             <el-descriptions-item>
               <template #label>FSE storage location</template>
-              {{ form.transferStorageLocation }}
+              {{ form.storageLocation }}
             </el-descriptions-item>
             <el-descriptions-item>
               <template #label>代理商</template>
@@ -458,20 +458,18 @@ const handleClose = () => {
   emit('update:modelValue', false)
 }
 
-const handleDownloadFile = () => {
-  // req.post('/so/export', tableRef.value.form, { responseType: 'blob' }).then(response => {
-  //   if (response) {
-  //     const elink = document.createElement('a')
-  //     elink.style.display = 'none'
-  //     const blob = new Blob([response], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
-  //     const blobUrl = URL.createObjectURL(blob)
-  //     elink.href = blobUrl
-  //     elink.download = 'so数据'
-  //     document.body.appendChild(elink)
-  //     elink.click()
-  //     document.body.removeChild(elink)
-  //   }
-  // })
+const handleDownloadFile = row => {
+  let fileName = attachmentType.value.kv[row.type]
+  if (row.path) {
+    const link = document.createElement('a')
+    //_blank表示在新窗口打开链接
+    // link.target = '_blank'
+    link.href = import.meta.env.VITE_SERVER_PATH + row.path
+    link.setAttribute('download', fileName) // 下载文件的名称及文件类型后缀
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link) // 下载完成移除元素
+  }
 }
 const handleDel = row => {
   req.delete('attachment/' + row.id).then(() => {

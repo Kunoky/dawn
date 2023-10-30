@@ -136,16 +136,18 @@ const handleClose = () => {
     formRef.value.resetFields()
   }
 }
-// const handleConfirm = () => {
-//   formRef.value.validate(valid => {
-//     if (valid) {
-//       console.log(form.value)
-//       // req.post('/st', form.value).then(() => {
-//       //   emit('success')
-//       //   emit('update:modelValue', false)
-//       // })
-//     }
-//   })
-// }
-const handleDownloadFile = () => {}
+
+const attachmentType = useDict('attachmentType')
+const handleDownloadFile = row => {
+  // console.log(row,'row');
+  let fileName = attachmentType.value.kv[row.type]
+  if (row.path) {
+    const link = document.createElement('a')
+    link.href = import.meta.env.VITE_SERVER_PATH + row.path
+    link.setAttribute('download', fileName) // 下载文件的名称及文件类型后缀
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link) // 下载完成移除元素
+  }
+}
 </script>
