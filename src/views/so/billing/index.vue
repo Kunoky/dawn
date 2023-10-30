@@ -57,8 +57,15 @@
             <el-option label="否" value="0" />
           </el-select>
         </el-form-item>
-        <el-form-item label="区域" prop="area">
-          <el-input v-model="form.area" placeholder="请输入区域" clearable />
+        <el-form-item label="所属区域" prop="area">
+          <el-select v-model="form.area" placeholder="请选择所属区域" style="width: 100%" clearable>
+            <el-option
+              v-for="(item, index) in regionalStatus.options"
+              :key="index"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="客户名称" prop="companyName">
           <el-input v-model="form.companyName" placeholder="请输入客户名称" clearable />
@@ -132,7 +139,7 @@
 
 <script setup>
 // import FormDialog from './components/FormDialog.vue'
-
+const regionalStatus = useDict('regionalStatus') // 区域
 const tableRef = ref()
 const refresh = () => tableRef.value.refresh()
 const listData = params => {

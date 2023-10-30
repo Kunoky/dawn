@@ -64,8 +64,15 @@
             <el-option label="否" value="0" />
           </el-select>
         </el-form-item>
-        <el-form-item label="区域" prop="area">
-          <el-input v-model="form.area" placeholder="请输入区域" clearable />
+        <el-form-item label="所属区域" prop="area">
+          <el-select v-model="form.area" placeholder="请选择所属区域" style="width: 100%" clearable>
+            <el-option
+              v-for="(item, index) in regionalStatus.options"
+              :key="index"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="客户名称" prop="companyName">
           <el-input v-model="form.companyName" placeholder="请输入客户名称" clearable />
@@ -111,15 +118,12 @@
       <el-form :model="formDetails" ref="formRefDetails" label-width="80" :rules="rules">
         <el-form-item label="原因" prop="closeStatus">
           <el-select v-model="formDetails.closeStatus" placeholder="请选择原因" clearable style="width: 100%">
-            <el-option label="超客户预算" value="1" />
-            <el-option label="经费审批未通过" value="2" />
-            <el-option label="第三方维修" value="3" />
-            <el-option label="未中标" value="4" />
-            <el-option label="暂不维修" value="5" />
-            <el-option label="仪器报废" value="6" />
-            <el-option label="转延保" value="7" />
-            <el-option label="客户无反馈" value="8" />
-            <el-option label="其他" value="9" />
+            <el-option
+              v-for="(item, index) in closedState.options"
+              :key="index"
+              :label="item.label"
+              :value="item.value"
+            />
           </el-select>
         </el-form-item>
         <el-form-item v-if="formDetails.closeStatus === '9'" label="其他原因" prop="reason">
@@ -141,6 +145,9 @@ import CDetails from './../../../components/CDetails.vue'
 // import Details from './components/details.vue'
 // 状态字典
 const soStatus = useDict('soStatus')
+const closedState = useDict('closedState')
+const regionalStatus = useDict('regionalStatus') // 区域
+
 const tableRef = ref()
 
 const listData = params => {
