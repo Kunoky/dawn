@@ -8,11 +8,11 @@
             <el-input v-model="form.fseName" placeholder="请输入FSE姓名" />
           </el-form-item>
         </el-col>
-        <el-col :span="12">
+        <!-- <el-col :span="12">
           <el-form-item label="ID" prop="fseId">
             <el-input v-model="form.fseId" placeholder="请输入FSE ID" />
           </el-form-item>
-        </el-col>
+        </el-col> -->
         <el-col :span="12">
           <el-form-item label="Work Center" prop="fseWorkCenter">
             <el-input v-model="form.fseWorkCenter" placeholder="请输入FSE work center" />
@@ -21,6 +21,20 @@
         <el-col :span="12">
           <el-form-item label="Storage Location" prop="fseStorageLocation">
             <el-input v-model="form.fseStorageLocation" placeholder="请输入FSE Storage Location" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="isCrc">
+            <el-radio-group v-model="form.isCrc">
+              <el-radio v-for="i in bool.options" :key="i.value" :label="i.value">
+                {{ i.label }}
+              </el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="Team" prop="team">
+            <el-input v-model="form.team" placeholder="请输入team" />
           </el-form-item>
         </el-col>
       </el-row>
@@ -146,6 +160,7 @@ const form = ref({})
 
 const gender = useDict('gender')
 const status = useDict('status')
+const bool = useDict('bool')
 
 watch(
   () => props.modelValue,
@@ -153,7 +168,7 @@ watch(
     if (v) {
       form.value = {
         fseName: '',
-        fseId: '',
+        // fseId: '',
         fseWorkCenter: '',
         fseStorageLocation: '',
         userId: undefined,
@@ -167,6 +182,8 @@ watch(
         status: 1,
         remark: '',
         roleIds: [],
+        isCrc: 0,
+        team: '',
       }
       nextTick(() => {
         formRef.value.clearValidate()
