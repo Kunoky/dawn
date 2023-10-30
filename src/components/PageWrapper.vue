@@ -93,7 +93,7 @@ const refresh = () => {
   }
 }
 
-watch([page, size], run, { immediate: true })
+watch([page, size], () => run(), { immediate: true })
 
 watch(() => props.params, refresh, { deep: true })
 
