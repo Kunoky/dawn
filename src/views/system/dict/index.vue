@@ -81,7 +81,7 @@ async function listData(params) {
   return {
     data: {
       records,
-      totalRow: records.length,
+      totalRow: list.length,
     },
   }
 }

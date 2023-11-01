@@ -21,6 +21,7 @@
         <el-radio-group v-model="form.valueType">
           <el-radio
             v-for="i in [
+              { label: 'boolean', value: 3 },
               { label: 'string', value: 2 },
               { label: 'number', value: 1 },
             ]"

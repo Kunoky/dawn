@@ -18,8 +18,14 @@ export async function init() {
       }
       // data必须pid为0的在前
     } else if (dictMap.type.ko[i.type]) {
-      if (dictMap.type.ko[i.type].valueType === 1) {
-        i.value = +i.value
+      switch (dictMap.type.ko[i.type].valueType) {
+        case 1:
+          i.value = +i.value
+          break
+        case 3:
+          i.value = JSON.parse(i.value)
+          break
+        default:
       }
     } else {
       console.warn('数据找不到父节点: ', i)
@@ -34,7 +40,6 @@ export async function init() {
     i.status && map.options.push({ label: i.label, value: i.value })
   })
   dict.value = dictMap
-  // console.log(22,dictMap);
 }
 export function useDict(type) {
   if (!source.value.length) {
