@@ -30,7 +30,7 @@
         <el-col :span="12">
           <el-form-item label="设备型号" prop="modelNo" class="form_flex">
             <el-input v-model="form.modelNo" disabled placeholder="自动填入" style="width: 83%" />
-            <el-button style="width: 11%" type="primary" @click="handleNum(row)">查询</el-button>
+            <el-button style="width: 11%" type="primary" @click="handleNum">查询</el-button>
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -96,7 +96,8 @@
               v-model="form.warrantyTime"
               type="date"
               value-format="YYYY-MM-DD"
-              placeholder="请选择保修期"
+              disabled
+              placeholder="自动填入"
               style="width: 100%"
               clearabl
             />
@@ -124,7 +125,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="FSE工程师名称" prop="fseName">
+          <el-form-item label="工程师名称" prop="fseName">
             <el-select
               v-model="form.fseName"
               placeholder="请输入FSE工程师名称"
@@ -169,19 +170,21 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="关联来源编号" prop="relationSourceNo">
-            <el-input v-model="form.relationSourceNo" placeholder="自动填入" clearable />
+            <el-input v-model="form.relationSourceNo" placeholder="请输入关联来源编号" clearable />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-date-picker
-            v-model="form.repairTime"
-            style="width: 100%"
-            format="YYYY-MM-DD HH:mm"
-            value-format="YYYY-MM-DD HH:mm"
-            type="datetime"
-            placeholder="请选择报修时间"
-            clearable
-          />
+          <el-form-item label="报修时间" prop="repairTime" class="date-box">
+            <el-date-picker
+              v-model="form.repairTime"
+              style="width: 100%"
+              format="YYYY-MM-DD HH:mm"
+              value-format="YYYY-MM-DD HH:mm"
+              type="datetime"
+              placeholder="请选择报修时间"
+              clearable
+            />
+          </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="所属区域" prop="area">
@@ -246,8 +249,8 @@
     <el-table
       size="small"
       :data="tableData"
-      style="width: 100%; margin-bottom: 20px"
-      max-height="190"
+      style="width: 100%"
+      max-height="200px"
       :header-cell-style="{ background: '#f5f7fa' }"
     >
       <el-table-column prop="custName" label="客户名称" width="150" fixed="left" />
@@ -262,7 +265,7 @@
       <el-table-column prop="createBy" label="创建人" />
       <el-table-column prop="createTime" label="创建人时间" width="130" />
       <el-table-column prop="repairTime" label="报修时间" width="130" />
-      <el-table-column prop="fseName" label="FSE工程师名称" width="120" />
+      <el-table-column prop="fseName" label="工程师名称" width="120" />
       <el-table-column prop="fseWorkCenter" label="FSE work center" width="150" />
       <el-table-column prop="fseStorageLocation" label="FSE storage location" width="150" />
     </el-table>
@@ -392,9 +395,6 @@ const remoteMethod = query => {
         return item.label.toLowerCase().includes(query.toLowerCase())
       })
     })
-    // setTimeout(() => {
-    //   console.log(111);
-    // }, 2000)
   } else {
     serialNoOptions.value = []
   }
@@ -403,6 +403,7 @@ const changeSeriaNo = val => {
   form.value.serialNo = val.sernr
   form.value.modelNo = val.typbz
   form.value.eqId = val.matnr
+  form.value.warrantyTime = val.validTo
 
   form.value.customerId = val.customer.customerId
   form.value.custDesc = val.customer.name === '' ? val.customer.enName : val.customer.name
@@ -449,7 +450,7 @@ const changeCustDesc = val => {
   form.value.blockFlag = val.blockFlag !== null ? val.blockFlag : '无'
 }
 
-// FSE工程师名称
+// 工程师名称
 const engineerNameLoading = ref(false)
 const engineerNameList = ref([])
 const engineerNameOptions = ref([])
@@ -500,13 +501,13 @@ const soStatus = useDict('soStatus')
 
 const visibleSo = ref(false)
 const tableData = ref([])
-const getNotCloseSo = () => {
-  req.get('/so/notCloseSo', { params: { serialNo: form.value.serialNo, modelNo: form.value.modelNo } }).then(res => {
+const getNotCloseSo = (requestId, eqId) => {
+  req.get('/so/notCloseSo', { params: { requestId: requestId, eqId: eqId } }).then(res => {
     tableData.value = res.data
   })
 }
 const handleNum = () => {
-  getNotCloseSo()
+  getNotCloseSo(props.data.id, props.data.eqId)
   visibleSo.value = true
 }
 const handleCloseSo = () => {

@@ -15,9 +15,9 @@
       <!-- <el-table-column label="批次号" prop="lll" /> -->
       <!-- <el-table-column label="数量" prop="mmm" /> -->
       <el-table-column label="失败原因" prop="rpaErrorMessage" width="200" />
-      <el-table-column label="FSE工程师名称" prop="fseName" />
-      <el-table-column label="FSE work center" prop="workCenter" width="140" />
-      <el-table-column label="FSE storage location" prop="storageLocation" width="140" />
+      <el-table-column label="工程师名称" prop="fseName" />
+      <el-table-column label="FSE work center" prop="fseWorkCenter" width="140" />
+      <el-table-column label="FSE storage location" prop="fseStorageLocation" width="140" />
       <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="110">
         <template #default="{ row }">
           <el-button type="info" link @click="handleEdit(row)">详情</el-button>
@@ -54,7 +54,7 @@
         <el-form-item label="客户名称" prop="companyName">
           <el-input v-model="form.companyName" placeholder="请输入客户名称" clearable />
         </el-form-item>
-        <el-form-item label="FSE工程师名称" prop="fseWorkCenter">
+        <el-form-item label="工程师名称" prop="fseWorkCenter">
           <el-select
             clearable
             v-model="form.fseWorkCenter"
@@ -77,7 +77,7 @@
             @change="changeOptions"
             :props="{
               label: 'name',
-              value: 'id',
+              value: 'name',
               checkStrictly: true,
             }"
           />
@@ -87,14 +87,18 @@
         </el-form-item>
       </template>
     </CTable>
-    <CDetails :data="current" v-model="visible.detail" @success="handleFormSuccess"></CDetails>
+    <Detail :data="current" v-model="visible.detail" @success="handleFormSuccess" />
 
     <el-dialog title="已处理" width="30%" v-model="detailVisible" :close-on-click-modal="false">
       <el-form :model="formDetails" ref="formRefDetails" label-width="80" :rules="rules">
         <el-form-item label="处理方式" prop="processType">
           <el-select v-model="formDetails.processType" placeholder="请选择处理方式" style="width: 100%" clearable>
-            <el-option label="忽略此条失败" :value="1" />
-            <el-option label="移除此条Lock记录" :value="2" />
+            <el-option
+              v-for="(item, index) in processType.options"
+              :key="index"
+              :label="item.label"
+              :value="item.value"
+            />
           </el-select>
         </el-form-item>
         <el-form-item label="备注" prop="remark">
@@ -112,7 +116,9 @@
 </template>
 
 <script setup>
+import Detail from './component/Detail.vue'
 const regionalStatus = useDict('regionalStatus') // 区域
+const processType = useDict('processType') // 处理方式
 
 const tableRef = ref()
 const refresh = () => tableRef.value.refresh()
@@ -124,7 +130,7 @@ const listData = params => {
   })
 }
 
-// FSE工程师名称
+// 工程师名称
 const engineerNameLoading = ref(false)
 const engineerNameList = ref([])
 const engineerNameOptions = ref([])

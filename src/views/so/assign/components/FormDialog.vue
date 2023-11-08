@@ -8,10 +8,10 @@
     :close-on-click-modal="false"
   >
     <el-descriptions class="margin-top" :column="3" border size="small">
-      <el-descriptions-item>
+      <!-- <el-descriptions-item>
         <template #label>维修任务号</template>
         {{ form.TaskID }}
-      </el-descriptions-item>
+      </el-descriptions-item> -->
       <el-descriptions-item>
         <template #label>SO NO</template>
         {{ form.soNo }}
@@ -70,7 +70,7 @@
       </el-descriptions-item>
       <el-descriptions-item>
         <template #label>报修来源</template>
-        {{ form.source }}
+        {{ repairSource.kv[form.source] }}
       </el-descriptions-item>
       <el-descriptions-item>
         <template #label>报修时间</template>
@@ -94,6 +94,7 @@
 </template>
 
 <script setup>
+const repairSource = useDict('repairSource')
 const emit = defineEmits(['update:modelValue', 'success'])
 const props = defineProps({
   data: Object,

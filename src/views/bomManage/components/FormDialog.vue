@@ -91,7 +91,7 @@ const remoteMethodMaterialNo = query => {
 }
 
 const changeMaterialNo = val => {
-  if (val.isBom === 1) {
+  if (val.isBom) {
     ElMessage.error('已是BOM，无需添加')
     form.value.material = ''
   } else {

@@ -98,14 +98,33 @@
           </el-col>
         </el-row>
       </el-form>
-      <el-form :model="invoiceInfo" label-width="112px">
+      <el-form ref="invoiceInfoRef" :model="invoiceInfo" label-width="112px">
         <el-row>
           <el-col :span="24">
             <div class="mgb-l fw-b fs-3" style="margin-left: 40px">发票信息：</div>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="发票抬头" prop="companyName">
-              <el-input v-model="invoiceInfo.companyName" placeholder="请输入发票抬头" clearable />
+            <el-form-item label="发票类型" prop="invoiceType">
+              <el-select
+                v-model="invoiceInfo.invoiceType"
+                style="width: 100%"
+                @change="handelInvoiceType"
+                placeholder="请选择发票类型"
+                clearable
+              >
+                <el-option label="普票" :value="1" />
+                <el-option label="专票" :value="2" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12" v-if="invoiceInfo.invoiceType === 1">
+            <el-form-item label="邮箱" prop="recipientEmail">
+              <el-input v-model="invoiceInfo.recipientEmail" placeholder="请输入邮箱" clearable />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12" v-if="invoiceInfo.invoiceType === 2">
+            <el-form-item label="地址" prop="mailingAddress">
+              <el-input v-model="invoiceInfo.mailingAddress" placeholder="请输入地址" clearable />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -150,6 +169,8 @@
   </el-dialog>
 </template>
 <script setup>
+// const Big = require('big.js')
+import Big from 'big.js'
 const emit = defineEmits(['update:modelValue', 'success'])
 const props = defineProps({
   data: Object,
@@ -159,6 +180,9 @@ const props = defineProps({
 const loading = ref(false)
 const tableData = ref([])
 const invoiceInfo = ref({
+  invoiceType: 1,
+  recipientEmail: '',
+  mailingAddress: '',
   companyName: '',
   recipient: '',
   tel: '',
@@ -168,6 +192,7 @@ const invoiceInfo = ref({
   registeredAddress: '',
 })
 const formData = ref({
+  type: 1,
   discountRate: 100,
   finalPrice: null,
   quotePrice: null,
@@ -184,8 +209,9 @@ watch(
 const { run: getPayDemandNote, loading: dataLoading } = useAsync(async () => {
   return req.get(`/quote/payDemandNote`, { params: { soNo: props.data.soNo, type: 1 } }).then(res => {
     tableData.value = res.data.quoteDetailList
-    formData.value = res.data.quoteSummary
-    invoiceInfo.value = res.data.invoiceInfo
+    formData.value = res.data.quoteSummary === null ? formData.value : res.data.quoteSummary
+    invoiceInfo.value = res.data.invoiceInfo === null ? invoiceInfo.value : res.data.invoiceInfo
+    getTotal()
     return res
   })
 })
@@ -201,6 +227,7 @@ const onAddItem = () => {
 }
 const deleteRow = index => {
   tableData.value.splice(index, 1)
+  getTotal()
 }
 
 const materialNoLoading = ref(false)
@@ -232,8 +259,9 @@ const changeMaterialNo = (val, row) => {
   row.unit = val.unit
   row.unitPrice = val.unitPrice
   row.includeTaxPrice = val.includeTaxPrice
+  row.isBom = val.isBom
+  row.itemName = val.itemName
 }
-
 function getTotal() {
   const total = tableData.value
     .reduce((p, i) => {
@@ -242,10 +270,11 @@ function getTotal() {
     }, 0)
     .toFixed(2)
   formData.value.quotePrice = total
+  formData.value.finalPrice ??= total
 }
 
 const getSummaries = () => {
-  return ['总计', '', '', '', formData.value.quotePrice]
+  return ['总计', '', '', '', '', '', formData.value.quotePrice]
 }
 const validateDiscount = (rule, value, callback) => {
   let reg = new RegExp('^([1-9]|[1-9]\\d|100)$')
@@ -290,10 +319,14 @@ const rules = {
 const handelEditDiscount = () => {
   formRef.value.validate(valid => {
     if (valid) {
-      if (formData.value.discoun !== undefined || formData.value.discoun !== '') {
-        let totalData = ref(null)
-        totalData.value = (formData.value.discountRate * formData.value.quotePrice) / 100
-        formData.value.finalPrice = (parseInt(totalData.value * 100) / 100).toFixed(2)
+      if (formData.value.discountRate !== undefined || formData.value.discountRate !== '') {
+        const x = new Big(formData.value.discountRate)
+        const y = new Big(formData.value.quotePrice)
+        formData.value.finalPrice = x.times(y).div(100)
+
+        // let totalData = ref(null)
+        // totalData.value = (formData.value.discountRate * formData.value.quotePrice) / 100
+        // formData.value.finalPrice = (parseInt(totalData.value * 100) / 100).toFixed(2)
       }
     }
   })
@@ -302,9 +335,13 @@ const handelEditTotal = () => {
   formRef.value.validate(valid => {
     if (valid) {
       if (formData.value.finalPrice !== '' || formData.value.totalVa !== undefined) {
-        let data = ref(null)
-        data.value = (formData.value.finalPrice / formData.value.quotePrice) * 100
-        formData.value.discountRate = Math.floor(data.value)
+        const x = new Big(formData.value.finalPrice)
+        const y = new Big(formData.value.quotePrice)
+        formData.value.discountRate = x.dev(y).times(100)
+
+        // let data = ref(null)
+        // data.value = (formData.value.finalPrice / formData.value.quotePrice) * 100
+        // formData.value.discountRate = Math.floor(data.value)
       }
     }
   })
@@ -328,10 +365,26 @@ const handelCalculateTotalPrice = row => {
   row.subTotal = (parseInt(data * 100) / 100).toFixed(2)
   getTotal()
 }
+
+function handelInvoiceType(val) {
+  if (val === 1) {
+    invoiceInfo.value.mailingAddress = ''
+  } else {
+    invoiceInfo.value.recipientEmail = ''
+  }
+}
+
+const formRef = ref(null)
+const invoiceInfoRef = ref(null)
 const handleClose = () => {
+  nextTick(() => {
+    formRef.value.resetFields()
+    invoiceInfoRef.value.resetFields()
+    tableData.value = []
+  })
   emit('update:modelValue', false)
 }
-const formRef = ref(null)
+
 const handleConfirm = () => {
   formRef.value.validate(valid => {
     if (valid) {
@@ -341,6 +394,7 @@ const handleConfirm = () => {
         quoteSummary: formData.value,
         soNo: props.data.soNo,
       }
+      // console.log(data);
       req.post('/quote/save', data).then(res => {
         window.open(import.meta.env.VITE_SERVER_PATH + res.data, '_blank')
         emit('update:modelValue', false)

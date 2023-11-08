@@ -46,10 +46,14 @@
       <el-table-column label="客户联系人邮箱" prop="email" width="130" />
       <el-table-column label="代理商" prop="vendor" width="100" />
       <el-table-column label="报修内容" prop="content" width="120" :show-overflow-tooltip="true" />
-      <el-table-column label="报修来源" prop="source" width="100" />
+      <el-table-column label="报修来源" prop="source" width="120">
+        <template #default="{ row }">
+          {{ repairSource.kv[row.source] }}
+        </template>
+      </el-table-column>
       <el-table-column label="报修时间" prop="repairTime" width="130" />
       <el-table-column label="保修期" prop="warrantyTime" width="130" />
-      <el-table-column label="FSE工程师名称" prop="fseName" width="100" />
+      <el-table-column label="工程师名称" prop="fseName" width="100" />
       <el-table-column label="FSE work center" prop="fseWorkCenter" width="115" />
       <el-table-column label="FSE storage location" prop="fseStorageLocation" width="140" />
       <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="180">
@@ -92,7 +96,7 @@
         <el-form-item label="客户名称" prop="companyName">
           <el-input v-model="form.companyName" placeholder="请输入客户名称" clearable />
         </el-form-item>
-        <el-form-item label="FSE工程师名称" prop="fseWorkCenter">
+        <el-form-item label="工程师名称" prop="fseWorkCenter">
           <el-select
             clearable
             v-model="form.fseWorkCenter"
@@ -104,6 +108,16 @@
             :loading="engineerNameLoading"
           >
             <el-option v-for="item in engineerNameOptions" :key="item.value" :label="item.label" :value="item.value" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="报修来源" prop="source">
+          <el-select v-model="form.source" placeholder="请输入报修来源" style="width: 100%" clearable>
+            <el-option
+              v-for="(item, index) in repairSource.options"
+              :key="index"
+              :label="item.label"
+              :value="item.value"
+            />
           </el-select>
         </el-form-item>
         <el-form-item label="报修时间" prop="params">
@@ -127,7 +141,7 @@
             @change="changeOptions"
             :props="{
               label: 'name',
-              value: 'id',
+              value: 'name',
               checkStrictly: true,
             }"
           />
@@ -182,6 +196,7 @@
 
     <el-dialog title="未关闭SO数量" width="50%" v-model="visibleSo" :close-on-click-modal="false">
       <el-table
+        v-loading="loading"
         size="small"
         :data="tableData"
         style="width: 100%; margin-bottom: 20px"
@@ -200,7 +215,7 @@
         <el-table-column prop="createBy" label="创建人" />
         <el-table-column prop="createTime" label="创建人时间" width="130" />
         <el-table-column prop="repairTime" label="报修时间" width="130" />
-        <el-table-column prop="fseName" label="FSE工程师名称" width="120" />
+        <el-table-column prop="fseName" label="工程师名称" width="120" />
         <el-table-column prop="fseWorkCenter" label="FSE work center" width="150" />
         <el-table-column prop="fseStorageLocation" label="FSE storage location" width="150" />
       </el-table>
@@ -217,6 +232,7 @@
 import { ref } from 'vue'
 import FormDialog from './components/FormDialog.vue'
 const regionalStatus = useDict('regionalStatus') // 区域
+const repairSource = useDict('repairSource') // 报修来源
 
 const tableRef = ref()
 const refresh = () => tableRef.value.refresh()
@@ -317,6 +333,7 @@ const handleBackConfirm = () => {
     if (valid) {
       req.put('/request/rollback', formBack.value).then(() => {
         backVisible.value = false
+        refresh()
       })
     }
   })
@@ -355,6 +372,7 @@ const handleConfirm = () => {
     if (valid) {
       req.put('/request/close', formDetails.value).then(() => {
         detailVisible.value = false
+        refresh()
       })
     }
   })
@@ -363,7 +381,7 @@ const handleConfirm = () => {
 // 状态字典
 const request_status = useDict('request_status')
 
-// FSE工程师名称
+// 工程师名称
 const engineerNameLoading = ref(false)
 const engineerNameList = ref([])
 const engineerNameOptions = ref([])
@@ -393,14 +411,20 @@ const remoteMethodEngineerName = query => {
 // 查询未关闭SO数量
 const soStatus = useDict('soStatus')
 const visibleSo = ref(false)
+const loading = ref(false)
 const tableData = ref([])
-const getNotCloseSo = row => {
-  req.get('/so/notCloseSo', { params: { serialNo: row.serialNo, modelNo: row.modelNo } }).then(res => {
-    tableData.value = res.data
-  })
+const getNotCloseSo = (requestId, eqId) => {
+  loading.value = true
+  req
+    .get('/so/notCloseSo', { params: { requestId: requestId, eqId: eqId } })
+    .then(res => {
+      tableData.value = res.data
+      loading.value = false
+    })
+    .finally(() => (loading.value = false))
 }
 const handleNum = row => {
-  getNotCloseSo(row)
+  getNotCloseSo(row.id, row.eqId)
   visibleSo.value = true
 }
 const handleCloseSo = () => {

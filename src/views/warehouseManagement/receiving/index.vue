@@ -17,9 +17,9 @@
         </template>
       </el-table-column>
       <!-- <el-table-column label="领用时间" prop="repairTime" width="130" /> -->
-      <el-table-column label="FSE工程师名称" prop="fseName" />
-      <el-table-column label="FSE work center" prop="workCenter" width="120" />
-      <el-table-column label="FSE storage location" prop="storageLocation" width="140" />
+      <el-table-column label="工程师名称" prop="fseName" />
+      <el-table-column label="FSE work center" prop="fseWorkCenter" width="120" />
+      <el-table-column label="FSE storage location" prop="fseStorageLocation" width="140" />
       <el-table-column label="备注" prop="remark" :show-overflow-tooltip="true" width="150" />
       <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="160">
         <template #default="{ row }">
@@ -37,7 +37,7 @@
         <el-form-item label="设备型号" prop="modelNo">
           <el-input v-model="form.modelNo" placeholder="请输入设备型号" clearable />
         </el-form-item>
-        <el-form-item label="FSE工程师名称" prop="fseWorkCenter">
+        <el-form-item label="工程师名称" prop="fseWorkCenter">
           <el-select
             clearable
             v-model="form.fseWorkCenter"
@@ -59,7 +59,7 @@
 
 <script setup>
 import Details from './Details.vue'
-// FSE工程师名称
+// 工程师名称
 const engineerNameLoading = ref(false)
 const engineerNameList = ref([])
 const engineerNameOptions = ref([])

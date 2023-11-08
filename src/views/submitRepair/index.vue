@@ -85,7 +85,7 @@
             @change="changeOptions"
             :props="{
               label: 'name',
-              value: 'id',
+              value: 'name',
               checkStrictly: true,
             }"
           />
@@ -124,7 +124,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="FSE工程师名称" prop="fseWorkCenter">
+        <el-form-item label="工程师名称" prop="fseWorkCenter">
           <el-select
             clearable
             v-model="form.fseWorkCenter"
@@ -255,7 +255,7 @@ const remoteMethodCustDesc = query => {
     custDescOptions.value = []
   }
 }
-// FSE工程师名称
+// 工程师名称
 const engineerNameLoading = ref(false)
 const engineerNameList = ref([])
 const engineerNameOptions = ref([])
