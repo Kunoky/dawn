@@ -3,7 +3,7 @@
     :model-value="modelValue"
     @close="handleClose"
     title="生成报价"
-    width="60%"
+    width="65%"
     v-bind="$attrs"
     :close-on-click-modal="false"
   >
@@ -17,7 +17,7 @@
       :header-cell-style="{ background: '#f5f7fa' }"
       show-summary
     >
-      <el-table-column prop="materialNo" label="配件/Labor料号">
+      <el-table-column width="130" prop="materialNo" label="配件/Labor料号">
         <template #default="{ row }">
           <el-select
             clearable
@@ -59,7 +59,7 @@
           <div class="txt">{{ row.subTotal }}</div>
         </template>
       </el-table-column>
-      <el-table-column fixed="right" label="操作" width="120">
+      <el-table-column fixed="right" label="操作" width="100">
         <template #default="scope">
           <el-button link type="primary" size="small" @click.prevent="deleteRow(scope.$index)">删除</el-button>
         </template>
@@ -398,11 +398,12 @@ const handleClose = () => {
 const handleConfirm = () => {
   formRef.value.validate(valid => {
     if (valid) {
+      invoiceInfo.value.soNo = props.data.soNo
+      formData.value.soNo = props.data.soNo
       let data = {
         quoteDetailList: tableData.value,
         invoiceInfo: invoiceInfo.value,
         quoteSummary: formData.value,
-        soNo: props.data.soNo,
       }
       // console.log(data);
       req.post('/quote/save', data).then(res => {

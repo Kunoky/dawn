@@ -98,7 +98,7 @@
             </el-descriptions-item>
           </el-descriptions>
         </el-collapse-item>
-        <el-collapse-item v-if="itemList.length > 0" title="Parts Plan & Labor" name="2">
+        <el-collapse-item v-if="itemList.length > 0 || itemList !== null" title="Parts Plan & Labor" name="2">
           <div>
             <el-table
               size="small"
@@ -228,7 +228,7 @@
             </el-table-column>
           </el-table>
         </el-collapse-item>
-        <el-collapse-item v-if="transferLogList.length > 0" title="流转信息" name="4">
+        <el-collapse-item v-if="transferLogList.length > 0 || transferLogList !== null" title="流转信息" name="4">
           <el-timeline class="timeline">
             <el-timeline-item
               v-for="(item, index) in transferLogList"
@@ -245,7 +245,7 @@
           </el-timeline>
         </el-collapse-item>
         <!-- v-if="props.data.status !== 3 && props.data.status !== 4 && props.data.status !== 5 && only !== 'shipped'" -->
-        <el-collapse-item v-if="serviceReport.length > 0" title="服务报告信息" name="5">
+        <el-collapse-item v-if="serviceReport.length > 0 || serviceReport !== null" title="服务报告信息" name="5">
           <div v-for="(item, index) in serviceReport" :key="index" class="workLogList">
             <el-descriptions class="margin-top" :column="2" border size="small">
               <el-descriptions-item>
@@ -306,7 +306,7 @@
           </div>
         </el-collapse-item>
         <!-- v-if="only !== 'shipped'" -->
-        <el-collapse-item v-if="attachmentList.length > 0" title="附件信息" name="6">
+        <el-collapse-item v-if="attachmentList.length > 0 || attachmentList !== null" title="附件信息" name="6">
           <div v-for="(val, idx) in attachmentList" :key="idx">
             <span>{{ attachmentType.kv[val.type] }}</span>
             <el-table
@@ -331,7 +331,7 @@
           </div>
         </el-collapse-item>
         <!-- v-if="only !== 'shipped'" -->
-        <el-collapse-item v-if="workLogList.length > 0" title="工作日志" name="7">
+        <el-collapse-item v-if="workLogList.length > 0 || workLogList !== null" title="工作日志" name="7">
           <div v-for="(item, index) in workLogList" :key="index" class="workLogList">
             <el-descriptions class="margin-top" :column="3" border size="small">
               <el-descriptions-item>
