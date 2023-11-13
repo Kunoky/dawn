@@ -38,8 +38,8 @@
               <el-switch
                 v-if="!row.isSuperAdmin"
                 v-model="row.status"
-                :active-value="1"
-                :inactive-value="0"
+                :active-value="true"
+                :inactive-value="false"
                 @click="handleStatusChange(row)"
               ></el-switch>
             </template>

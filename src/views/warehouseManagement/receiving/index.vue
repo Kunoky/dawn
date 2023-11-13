@@ -53,7 +53,7 @@
         </el-form-item>
       </template>
     </CTable>
-    <Details :data="current" v-model="visible.detail" @success="handleFormSuccess" only="shipped"></Details>
+    <Details :data="current" v-model="visible.detail" @success="handleFormSuccess"></Details>
   </div>
 </template>
 

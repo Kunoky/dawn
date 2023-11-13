@@ -9,7 +9,7 @@
     >
       <el-table-column label="物料号" prop="material" />
       <el-table-column label="描述" prop="description" />
-      <el-table-column label="创建人" prop="createBy" />
+      <el-table-column label="创建人" prop="createByName" />
       <el-table-column label="创建时间" prop="createTime" />
       <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="130">
         <template #default="{ row }">

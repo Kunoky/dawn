@@ -98,7 +98,7 @@
           </el-col>
         </el-row>
       </el-form>
-      <el-form ref="invoiceInfoRef" :model="invoiceInfo" label-width="112px">
+      <el-form ref="invoiceInfoRef" :model="invoiceInfo" :rules="rulesInvoiceInfo" label-width="112px">
         <el-row>
           <el-col :span="24">
             <div class="mgb-l fw-b fs-3" style="margin-left: 40px">发票信息：</div>
@@ -169,7 +169,6 @@
   </el-dialog>
 </template>
 <script setup>
-// const Big = require('big.js')
 import Big from 'big.js'
 const emit = defineEmits(['update:modelValue', 'success'])
 const props = defineProps({
@@ -215,6 +214,11 @@ const { run: getPayDemandNote, loading: dataLoading } = useAsync(async () => {
     return res
   })
 })
+
+const rulesInvoiceInfo = {
+  recipientEmail: [{ type: 'email', message: '请输入正确的邮箱格式', trigger: 'blur' }],
+  tel: [{ pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/, message: '请输入正确的电话格式', trigger: 'blur' }],
+}
 
 const onAddItem = () => {
   tableData.value.push({
@@ -315,6 +319,15 @@ const rules = {
 //     formRef.value.clearValidate()
 //   })
 // }
+
+// b就是a四舍五入的值 如果b小于a 就返回b+0.01 否则返回b
+function getFinalPrice(a) {
+  let b = Number(a.toFixed(2))
+  if (b < a) {
+    b = b + 0.01
+  }
+  return Number(b.toFixed(2))
+}
 // 修改折扣
 const handelEditDiscount = () => {
   formRef.value.validate(valid => {
@@ -322,11 +335,11 @@ const handelEditDiscount = () => {
       if (formData.value.discountRate !== undefined || formData.value.discountRate !== '') {
         const x = new Big(formData.value.discountRate)
         const y = new Big(formData.value.quotePrice)
-        formData.value.finalPrice = x.times(y).div(100)
-
-        // let totalData = ref(null)
-        // totalData.value = (formData.value.discountRate * formData.value.quotePrice) / 100
-        // formData.value.finalPrice = (parseInt(totalData.value * 100) / 100).toFixed(2)
+        let totalData = ref(null)
+        // (折扣率 * 总金额) / 100
+        totalData.value = x.times(y).div(100)
+        const temp = getFinalPrice(totalData.value)
+        formData.value.finalPrice = temp
       }
     }
   })
@@ -337,11 +350,8 @@ const handelEditTotal = () => {
       if (formData.value.finalPrice !== '' || formData.value.totalVa !== undefined) {
         const x = new Big(formData.value.finalPrice)
         const y = new Big(formData.value.quotePrice)
-        formData.value.discountRate = x.dev(y).times(100)
-
-        // let data = ref(null)
-        // data.value = (formData.value.finalPrice / formData.value.quotePrice) * 100
-        // formData.value.discountRate = Math.floor(data.value)
+        // (最终价格 / 总金额) * 100
+        formData.value.discountRate = Math.floor(x.div(y).times(100))
       }
     }
   })

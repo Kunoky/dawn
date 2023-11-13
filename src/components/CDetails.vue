@@ -10,13 +10,8 @@
   >
     <div class="demo-collapse">
       <el-collapse v-model="activeNames" v-loading="dataLoading">
-        <!-- {{ props.data.status }} -->
         <el-collapse-item title="基础信息" name="1">
           <el-descriptions class="margin-top" :column="3" border size="small">
-            <!-- <el-descriptions-item>
-              <template #label>维修任务号</template>
-              {{ form.TaskID }}
-            </el-descriptions-item> -->
             <el-descriptions-item>
               <template #label>SO NO</template>
               {{ form.soNo }}
@@ -103,7 +98,7 @@
             </el-descriptions-item>
           </el-descriptions>
         </el-collapse-item>
-        <el-collapse-item title="Parts Plan & Labor" name="2">
+        <el-collapse-item v-if="itemList.length > 0" title="Parts Plan & Labor" name="2">
           <div>
             <el-table
               size="small"
@@ -122,11 +117,11 @@
             </el-table>
           </div>
         </el-collapse-item>
-        <el-collapse-item title="报价信息" name="3">
-          <div style="margin-bottom: 10px">报价编号：{{ quoteData?.quoteNo }}</div>
+        <el-collapse-item v-if="quoteData" title="报价信息" name="3">
+          <div style="margin-bottom: 10px">报价编号：{{ quoteData.quoteNo }}</div>
           <el-table
             size="small"
-            :data="quoteData?.quoteDetailList"
+            :data="quoteData.quoteDetailList"
             style="width: 100%; margin-bottom: 20px"
             max-height="190"
             :header-cell-style="{ background: '#f5f7fa' }"
@@ -144,7 +139,7 @@
           <div>
             <el-table
               size="small"
-              :data="quoteData === null ? [] : [quoteData?.quoteSummary]"
+              :data="quoteData === null ? [] : [quoteData.quoteSummary]"
               style="width: 100%; margin-bottom: 20px"
               max-height="190"
               :header-cell-style="{ background: '#f5f7fa' }"
@@ -171,58 +166,58 @@
             <el-descriptions-item>
               <template #label>发票类型</template>
               {{
-                quoteData?.invoiceInfo?.invoiceType === 1
+                quoteData.invoiceInfo?.invoiceType === 1
                   ? '普票'
-                  : quoteData?.invoiceInfo?.invoiceType === 2
+                  : quoteData.invoiceInfo?.invoiceType === 2
                   ? '专票'
                   : ''
               }}
             </el-descriptions-item>
-            <el-descriptions-item v-if="quoteData?.invoiceInfo?.invoiceType === 1">
+            <el-descriptions-item v-if="quoteData.invoiceInfo?.invoiceType === 1">
               <template #label>邮箱</template>
-              {{ quoteData?.invoiceInfo?.recipientEmail }}
+              {{ quoteData.invoiceInfo?.recipientEmail }}
             </el-descriptions-item>
-            <el-descriptions-item v-if="quoteData?.invoiceInfo?.invoiceType === 2">
+            <el-descriptions-item v-if="quoteData.invoiceInfo?.invoiceType === 2">
               <template #label>地址</template>
-              {{ quoteData?.invoiceInfo?.mailingAddress }}
+              {{ quoteData.invoiceInfo?.mailingAddress }}
             </el-descriptions-item>
             <el-descriptions-item>
               <template #label>发票抬头</template>
-              {{ quoteData?.invoiceInfo?.companyName }}
+              {{ quoteData.invoiceInfo?.companyName }}
             </el-descriptions-item>
             <el-descriptions-item>
               <template #label>收件人</template>
-              {{ quoteData?.invoiceInfo?.recipient }}
+              {{ quoteData.invoiceInfo?.recipient }}
             </el-descriptions-item>
             <el-descriptions-item>
               <template #label>联系电话</template>
-              {{ quoteData?.invoiceInfo?.tel }}
+              {{ quoteData.invoiceInfo?.tel }}
             </el-descriptions-item>
             <el-descriptions-item>
               <template #label>开户行</template>
-              {{ quoteData?.invoiceInfo?.bankName }}
+              {{ quoteData.invoiceInfo?.bankName }}
             </el-descriptions-item>
             <el-descriptions-item>
               <template #label>开户行账号</template>
-              {{ quoteData?.invoiceInfo?.bankAccount }}
+              {{ quoteData.invoiceInfo?.bankAccount }}
             </el-descriptions-item>
             <el-descriptions-item :span="2">
               <template #label>税号</template>
-              {{ quoteData?.invoiceInfo?.taxNo }}
+              {{ quoteData.invoiceInfo?.taxNo }}
             </el-descriptions-item>
             <el-descriptions-item :span="3">
               <template #label>注册地址及电话</template>
-              {{ quoteData?.invoiceInfo?.registeredAddress }}
+              {{ quoteData.invoiceInfo?.registeredAddress }}
             </el-descriptions-item>
             <el-descriptions-item :span="3">
               <template #label>特殊要求</template>
-              {{ quoteData?.invoiceInfo?.remark }}
+              {{ quoteData.invoiceInfo?.remark }}
             </el-descriptions-item>
           </el-descriptions>
           <!-- <p class="p">沟通记录：</p> -->
           <el-table
             size="small"
-            :data="quoteData?.quoteCommunicationList"
+            :data="quoteData.quoteCommunicationList"
             style="width: 100%; margin-bottom: 10px"
             :header-cell-style="{ background: '#f5f7fa' }"
           >
@@ -233,30 +228,24 @@
             </el-table-column>
           </el-table>
         </el-collapse-item>
-        <el-collapse-item title="流转信息" name="4">
-          <el-timeline>
-            <el-timeline-item center timestamp="2023-08-24 10:30:23" placement="top">
+        <el-collapse-item v-if="transferLogList.length > 0" title="流转信息" name="4">
+          <el-timeline class="timeline">
+            <el-timeline-item
+              v-for="(item, index) in transferLogList"
+              :key="index"
+              center
+              :timestamp="item.approvalDate"
+              placement="top"
+            >
               <el-card>
-                <h4>审批人：xxxx</h4>
-                <p>审批结果：xxxxx</p>
-              </el-card>
-            </el-timeline-item>
-            <el-timeline-item center timestamp="2023-08-23 12:34:26" placement="top">
-              <el-card>
-                <h4>审批人：xxxx</h4>
-                <p>审批结果：xxxxx</p>
+                <h4>审批人：{{ item.approve }}</h4>
+                <p>审批状态：{{ item.approvalStatus }}</p>
               </el-card>
             </el-timeline-item>
           </el-timeline>
         </el-collapse-item>
-        <!-- {{ props.data.status }}
-        {{ only }} -->
-        <!-- TODO so状态 需修改 -->
-        <el-collapse-item
-          v-if="props.data.status !== 3 && props.data.status !== 4 && props.data.status !== 5 && only !== 'shipped'"
-          title="服务报告信息"
-          name="5"
-        >
+        <!-- v-if="props.data.status !== 3 && props.data.status !== 4 && props.data.status !== 5 && only !== 'shipped'" -->
+        <el-collapse-item v-if="serviceReport.length > 0" title="服务报告信息" name="5">
           <div v-for="(item, index) in serviceReport" :key="index" class="workLogList">
             <el-descriptions class="margin-top" :column="2" border size="small">
               <el-descriptions-item>
@@ -316,7 +305,8 @@
             </el-table>
           </div>
         </el-collapse-item>
-        <el-collapse-item title="附件信息" name="6" v-if="only !== 'shipped'">
+        <!-- v-if="only !== 'shipped'" -->
+        <el-collapse-item v-if="attachmentList.length > 0" title="附件信息" name="6">
           <div v-for="(val, idx) in attachmentList" :key="idx">
             <span>{{ attachmentType.kv[val.type] }}</span>
             <el-table
@@ -340,7 +330,8 @@
             </el-table>
           </div>
         </el-collapse-item>
-        <el-collapse-item v-if="only !== 'shipped'" title="工作日志" name="7">
+        <!-- v-if="only !== 'shipped'" -->
+        <el-collapse-item v-if="workLogList.length > 0" title="工作日志" name="7">
           <div v-for="(item, index) in workLogList" :key="index" class="workLogList">
             <el-descriptions class="margin-top" :column="3" border size="small">
               <el-descriptions-item>
@@ -544,5 +535,11 @@ const handleDel = row => {
 
 .workLogList .title {
   font-size: 12px;
+}
+.timeline :deep(.el-timeline-item__content) .el-card__body {
+  padding: 10px 20px;
+}
+.timeline :deep(.el-timeline-item__content) .el-card__body p {
+  margin: 5px 0 0;
 }
 </style>

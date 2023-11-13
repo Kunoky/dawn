@@ -9,7 +9,7 @@
           <span>{{ row.exceptionFlag ? '是' : '否' }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="创建人" prop="createBy" />
+      <el-table-column label="创建人" prop="createByName" />
       <el-table-column label="创建时间" prop="createTime" />
       <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="120">
         <template #default="{ row }">

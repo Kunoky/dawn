@@ -15,7 +15,7 @@
         <template #default="{ row }">{{ row.orderType }} / {{ row.subType }}</template>
       </el-table-column>
       <el-table-column label="仪器地址" prop="equipAddress" width="130" />
-      <el-table-column label="创建人" prop="createBy" width="100" />
+      <el-table-column label="创建人" prop="createByName" width="100" />
       <el-table-column label="创建时间" prop="updateTime" width="100" />
       <el-table-column label="未关闭so数量" width="100">
         <template #default="{ row }">
@@ -212,8 +212,8 @@
         <el-table-column label="维修类型">
           <template #default="{ row }">{{ row.orderType }} / {{ row.subType }}</template>
         </el-table-column>
-        <el-table-column prop="createBy" label="创建人" />
-        <el-table-column prop="createTime" label="创建人时间" width="130" />
+        <el-table-column prop="createByName" label="创建人" />
+        <el-table-column prop="createTime" label="创建时间" width="130" />
         <el-table-column prop="repairTime" label="报修时间" width="130" />
         <el-table-column prop="fseName" label="工程师名称" width="120" />
         <el-table-column prop="fseWorkCenter" label="FSE work center" width="150" />

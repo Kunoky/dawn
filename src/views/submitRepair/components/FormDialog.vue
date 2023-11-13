@@ -269,8 +269,8 @@
       <el-table-column label="维修类型">
         <template #default="{ row }">{{ row.orderType }} / {{ row.subType }}</template>
       </el-table-column>
-      <el-table-column prop="createBy" label="创建人" />
-      <el-table-column prop="createTime" label="创建人时间" width="130" />
+      <el-table-column prop="createByName" label="创建人" />
+      <el-table-column prop="createTime" label="创建时间" width="130" />
       <el-table-column prop="repairTime" label="报修时间" width="130" />
       <el-table-column prop="fseName" label="工程师名称" width="120" />
       <el-table-column prop="fseWorkCenter" label="FSE work center" width="150" />
@@ -303,10 +303,22 @@ const rules = {
   equipAddress: [{ required: true, message: '仪器地址不能为空', trigger: 'blur' }],
   custDesc: [{ required: true, message: '客户单位名称不能为空', trigger: 'change' }],
   name: [{ required: true, message: '客户联系人不能为空', trigger: 'blur' }],
-  lastName: [{ required: true, message: '客户联系人拼音(姓)不能为空', trigger: 'blur' }],
-  firstName: [{ required: true, message: '客户联系人拼音(名)不能为空', trigger: 'blur' }],
-  mobile: [{ required: true, message: '客户联系人电话不能为空', trigger: 'blur' }],
-  email: [{ required: true, message: '客户联系人邮箱不能为空', trigger: 'blur' }],
+  lastName: [
+    { required: true, message: '客户联系人拼音(姓)不能为空', trigger: 'blur' },
+    { pattern: /^[A-Za-z]*$/, message: '请输入拼音', trigger: 'blur' },
+  ],
+  firstName: [
+    { required: true, message: '客户联系人拼音(名)不能为空', trigger: 'blur' },
+    { pattern: /^[A-Za-z]*$/, message: '请输入拼音', trigger: 'blur' },
+  ],
+  mobile: [
+    { required: true, message: '客户联系人电话不能为空', trigger: 'blur' },
+    { pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/, message: '请输入正确的电话格式', trigger: 'blur' },
+  ],
+  email: [
+    { required: true, message: '客户联系人邮箱不能为空', trigger: 'blur' },
+    { type: 'email', message: '请输入正确的邮箱格式', trigger: ['blur'] },
+  ],
   content: [{ required: true, message: '报修内容不能为空', trigger: 'blur' }],
   repairTime: [{ required: true, message: '报修时间不能为空', trigger: 'blur' }],
   fseName: [{ required: true, message: 'FSE工程师名称不能为空', trigger: 'blur' }],
@@ -467,7 +479,7 @@ const engineerNameOptions = ref([])
 async function getEngineerName(v) {
   return req.get('/user/fse', { params: { fseName: v } }).then(res => {
     engineerNameList.value = res.data.map(item => {
-      return { value: item, label: `${item.fseWorkCenter} / ${item.fseName}` }
+      return { value: item, label: `${item.fseName} / ${item.fseWorkCenter}` }
     })
   })
 }
