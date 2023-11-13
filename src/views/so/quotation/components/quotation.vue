@@ -189,6 +189,7 @@ const invoiceInfo = ref({
   bankAccount: '',
   taxNo: '',
   registeredAddress: '',
+  type: 1,
 })
 const formData = ref({
   type: 1,
