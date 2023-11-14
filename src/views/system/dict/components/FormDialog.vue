@@ -86,7 +86,7 @@ watch(
         label: '',
         value: '',
         type: '',
-        status: 1,
+        status: true,
         orderNum: 0,
         valueType: 2,
         remark: '',

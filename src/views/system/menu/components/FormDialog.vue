@@ -178,9 +178,9 @@ watch(
         orderNum: 0,
         path: '',
         routeName: '',
-        isCache: 1,
-        visible: 1,
-        status: 1,
+        isCache: true,
+        visible: true,
+        status: true,
       }
       if (props.data) {
         for (let k in form.value) {

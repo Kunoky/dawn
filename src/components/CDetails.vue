@@ -222,7 +222,7 @@
             <el-table-column label="沟通记录" align="center">
               <el-table-column prop="custName" label="沟通人" />
               <el-table-column prop="communicationTime" label="时间" />
-              <el-table-column prop="content" label="结果" />
+              <el-table-column prop="content" label="结果" width="400" :show-overflow-tooltip="true" />
             </el-table-column>
           </el-table>
         </el-collapse-item>
