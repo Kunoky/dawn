@@ -58,7 +58,7 @@ const userOptions = [
     value: 'logout',
   },
 ]
-if (user.value.roles.includes('fse')) {
+if (user.value.roles?.includes('fse')) {
   userOptions.splice(1, 0, {
     label: '切换FSE',
     value: 'fse',
