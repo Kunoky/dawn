@@ -131,7 +131,6 @@ const handleDel = row => {
     })
     .then(({ code }) => {
       if (code === 200) {
-        ElMessage.success(i18n.t('tip.success'))
         refresh()
       }
     })
