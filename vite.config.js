@@ -8,7 +8,7 @@ import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import Icons from 'unplugin-icons/vite'
 import IconsResolver from 'unplugin-icons/resolver'
-import purgecss from '@mojojoejo/vite-plugin-purgecss'
+// import purgecss from '@mojojoejo/vite-plugin-purgecss'
 import { VueRouterAutoImports, getPascalCaseRouteName } from 'unplugin-vue-router'
 import VueRouter from 'unplugin-vue-router/vite'
 // import { viteMockServe } from 'vite-plugin-mock'
@@ -73,21 +73,21 @@ const plugins = [
   Icons({
     autoInstall: true,
   }),
-  {
-    // # Using the default output directory: "dist/"
-    // vite build
-    // purgecss --css 'dist/**/*.css' --content 'dist/**/*.!(css)'
-    //
-    // 该插件实际是针对编译后的dist目录进行加工，所以针对项目文件和目录的配置无法起到预期效果
-    ...purgecss({
-      // css: ['oocss/src/index.css'],
-      // skippedContentGlobs: ['node_modules/**'],
-      safelist: {
-        standard: [/^var-/, /^el-/, /^is-/, /^\[class/],
-      },
-    }),
-    apply: 'build',
-  },
+  // {
+  //   // # Using the default output directory: "dist/"
+  //   // vite build
+  //   // purgecss --css 'dist/**/*.css' --content 'dist/**/*.!(css)'
+  //   //
+  //   // 该插件实际是针对编译后的dist目录进行加工，所以针对项目文件和目录的配置无法起到预期效果
+  //   ...purgecss({
+  //     // css: ['oocss/src/index.css'],
+  //     // skippedContentGlobs: ['node_modules/**'],
+  //     safelist: {
+  //       standard: [/^var-/, /^el-/, /^is-/, ],
+  //     },
+  //   }),
+  //   apply: 'build',
+  // },
   {
     ...visualizer(),
     apply: () => process.env.stats,
