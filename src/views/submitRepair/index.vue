@@ -14,7 +14,7 @@
         <template #default="{ row }">{{ row.orderType }} / {{ row.subType }}</template>
       </el-table-column>
       <el-table-column label="仪器地址" prop="equipAddress" width="130" />
-      <el-table-column label="创建人" prop="createBy" width="100" />
+      <el-table-column label="创建人" prop="createByName" width="100" />
       <el-table-column label="创建时间" prop="updateTime" width="140" />
       <el-table-column label="状态" prop="status" width="100">
         <template #default="{ row }">
@@ -85,7 +85,7 @@
             @change="changeOptions"
             :props="{
               label: 'name',
-              value: 'id',
+              value: 'name',
               checkStrictly: true,
             }"
           />
@@ -124,7 +124,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="FSE工程师名称" prop="fseWorkCenter">
+        <el-form-item label="工程师名称" prop="fseWorkCenter">
           <el-select
             clearable
             v-model="form.fseWorkCenter"
@@ -255,7 +255,7 @@ const remoteMethodCustDesc = query => {
     custDescOptions.value = []
   }
 }
-// FSE工程师名称
+// 工程师名称
 const engineerNameLoading = ref(false)
 const engineerNameList = ref([])
 const engineerNameOptions = ref([])

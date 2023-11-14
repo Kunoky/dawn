@@ -6,10 +6,10 @@
       <el-table-column label="快递单号" prop="expressNo" />
       <el-table-column label="是否有异常" prop="exceptionFlag">
         <template #default="{ row }">
-          <span>{{ row.exceptionFlag === 1 ? '是' : '否' }}</span>
+          <span>{{ row.exceptionFlag ? '是' : '否' }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="创建人" prop="createBy" />
+      <el-table-column label="创建人" prop="createByName" />
       <el-table-column label="创建时间" prop="createTime" />
       <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="120">
         <template #default="{ row }">
@@ -53,8 +53,7 @@
         </el-form-item>
         <el-form-item label="是否有异常" prop="exceptionFlag">
           <el-select v-model="form.exceptionFlag" placeholder="请选择是否有异常" clearable>
-            <el-option label="是" :value="1" />
-            <el-option label="否" :value="0" />
+            <el-option v-for="i in bool.options" :key="i.value" v-bind="i" />
           </el-select>
         </el-form-item>
       </template>
@@ -66,6 +65,7 @@
 <script setup>
 import { getToken } from '@/utils/auth'
 import FormDialog from './components/FormDialog.vue'
+const bool = useDict('bool')
 const i18n = useI18n()
 const tableRef = ref()
 const refresh = () => tableRef.value.refresh()

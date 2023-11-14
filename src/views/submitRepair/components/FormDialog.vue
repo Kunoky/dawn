@@ -27,9 +27,12 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="设备型号" prop="modelNo" class="form_flex">
+          <el-form-item v-if="props.data" label="设备型号" prop="modelNo" class="form_flex">
             <el-input v-model="form.modelNo" disabled placeholder="自动填入" style="width: 83%" />
-            <el-button style="width: 11%" type="primary" @click="handleNum(row)">查询</el-button>
+            <el-button style="width: 11%" type="primary" @click="handleNum">查询</el-button>
+          </el-form-item>
+          <el-form-item v-else label="设备型号" prop="modelNo">
+            <el-input v-model="form.modelNo" disabled placeholder="自动填入" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -95,7 +98,8 @@
               v-model="form.warrantyTime"
               type="date"
               value-format="YYYY-MM-DD"
-              placeholder="请选择保修期"
+              disabled
+              placeholder="自动填入"
               style="width: 100%"
               clearabl
             />
@@ -113,6 +117,7 @@
               :props="{
                 label: 'name',
                 value: 'name',
+                checkStrictly: true,
               }"
             />
           </el-form-item>
@@ -123,7 +128,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="FSE工程师名称" prop="fseName">
+          <el-form-item label="工程师名称" prop="fseName">
             <el-select
               v-model="form.fseName"
               placeholder="请输入FSE工程师名称"
@@ -168,7 +173,7 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="关联来源编号" prop="relationSourceNo">
-            <el-input v-model="form.relationSourceNo" placeholder="自动填入" clearable />
+            <el-input v-model="form.relationSourceNo" placeholder="请输入关联来源编号" clearable />
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -254,13 +259,7 @@
   </el-dialog>
 
   <el-dialog title="未关闭SO数量" width="50%" v-model="visibleSo" :close-on-click-modal="false">
-    <el-table
-      size="small"
-      :data="tableData"
-      style="width: 100%; margin-bottom: 20px"
-      max-height="190"
-      :header-cell-style="{ background: '#f5f7fa' }"
-    >
+    <el-table size="small" :data="tableData" style="width: 100%" :header-cell-style="{ background: '#f5f7fa' }">
       <el-table-column prop="custName" label="客户名称" width="150" fixed="left" />
       <el-table-column prop="modelNo" label="状态">
         <template #default="{ row }">
@@ -270,10 +269,10 @@
       <el-table-column label="维修类型">
         <template #default="{ row }">{{ row.orderType }} / {{ row.subType }}</template>
       </el-table-column>
-      <el-table-column prop="createBy" label="创建人" />
-      <el-table-column prop="createTime" label="创建人时间" width="130" />
+      <el-table-column prop="createByName" label="创建人" />
+      <el-table-column prop="createTime" label="创建时间" width="130" />
       <el-table-column prop="repairTime" label="报修时间" width="130" />
-      <el-table-column prop="fseName" label="FSE工程师名称" width="120" />
+      <el-table-column prop="fseName" label="工程师名称" width="120" />
       <el-table-column prop="fseWorkCenter" label="FSE work center" width="150" />
       <el-table-column prop="fseStorageLocation" label="FSE storage location" width="150" />
     </el-table>
@@ -304,10 +303,22 @@ const rules = {
   equipAddress: [{ required: true, message: '仪器地址不能为空', trigger: 'blur' }],
   custDesc: [{ required: true, message: '客户单位名称不能为空', trigger: 'change' }],
   name: [{ required: true, message: '客户联系人不能为空', trigger: 'blur' }],
-  lastName: [{ required: true, message: '客户联系人拼音(姓)不能为空', trigger: 'blur' }],
-  firstName: [{ required: true, message: '客户联系人拼音(名)不能为空', trigger: 'blur' }],
-  mobile: [{ required: true, message: '客户联系人电话不能为空', trigger: 'blur' }],
-  email: [{ required: true, message: '客户联系人邮箱不能为空', trigger: 'blur' }],
+  lastName: [
+    { required: true, message: '客户联系人拼音(姓)不能为空', trigger: 'blur' },
+    { pattern: /^[A-Za-z]*$/, message: '请输入拼音', trigger: 'blur' },
+  ],
+  firstName: [
+    { required: true, message: '客户联系人拼音(名)不能为空', trigger: 'blur' },
+    { pattern: /^[A-Za-z]*$/, message: '请输入拼音', trigger: 'blur' },
+  ],
+  mobile: [
+    { required: true, message: '客户联系人电话不能为空', trigger: 'blur' },
+    { pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/, message: '请输入正确的电话格式', trigger: 'blur' },
+  ],
+  email: [
+    { required: true, message: '客户联系人邮箱不能为空', trigger: 'blur' },
+    { type: 'email', message: '请输入正确的邮箱格式', trigger: ['blur'] },
+  ],
   content: [{ required: true, message: '报修内容不能为空', trigger: 'blur' }],
   repairTime: [{ required: true, message: '报修时间不能为空', trigger: 'blur' }],
   fseName: [{ required: true, message: 'FSE工程师名称不能为空', trigger: 'blur' }],
@@ -406,9 +417,6 @@ const remoteMethod = query => {
         return item.label.toLowerCase().includes(query.toLowerCase())
       })
     })
-    // setTimeout(() => {
-    //   console.log(111);
-    // }, 2000)
   } else {
     serialNoOptions.value = []
   }
@@ -417,6 +425,7 @@ const changeSeriaNo = val => {
   form.value.serialNo = val.sernr
   form.value.modelNo = val.typbz
   form.value.eqId = val.matnr
+  form.value.warrantyTime = val.validTo
 
   form.value.customerId = val.customer.customerId
   form.value.custDesc = val.customer.name === '' ? val.customer.enName : val.customer.name
@@ -463,14 +472,14 @@ const changeCustDesc = val => {
   form.value.blockFlag = val.blockFlag !== null ? val.blockFlag : '无'
 }
 
-// FSE工程师名称
+// 工程师名称
 const engineerNameLoading = ref(false)
 const engineerNameList = ref([])
 const engineerNameOptions = ref([])
 async function getEngineerName(v) {
   return req.get('/user/fse', { params: { fseName: v } }).then(res => {
     engineerNameList.value = res.data.map(item => {
-      return { value: item, label: `${item.fseWorkCenter} / ${item.fseName}` }
+      return { value: item, label: `${item.fseName} / ${item.fseWorkCenter}` }
     })
   })
 }
@@ -514,13 +523,13 @@ const soStatus = useDict('soStatus')
 
 const visibleSo = ref(false)
 const tableData = ref([])
-const getNotCloseSo = () => {
-  req.get('/so/notCloseSo', { params: { serialNo: form.value.serialNo, modelNo: form.value.modelNo } }).then(res => {
+const getNotCloseSo = (requestId, eqId) => {
+  req.get('/so/notCloseSo', { params: { requestId: requestId, eqId: eqId } }).then(res => {
     tableData.value = res.data
   })
 }
 const handleNum = () => {
-  getNotCloseSo()
+  getNotCloseSo(props.data.id, props.data.eqId)
   visibleSo.value = true
 }
 const handleCloseSo = () => {

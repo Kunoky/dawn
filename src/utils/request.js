@@ -8,7 +8,7 @@ import { i18n } from '@/i18nSetup'
 const service = axios.create({
   baseURL: import.meta.env.VITE_SERVER_PATH, // url = base url + request url
   // withCredentials: true, // send cookies when cross-domain requests
-  timeout: 5000, // request timeout
+  timeout: 15000, // request timeout
   // adapter: ['http'], // polyfill tauri
   // adapter: axiosTauriApiAdapter， // polyfill tauri
 })
@@ -50,8 +50,12 @@ service.interceptors.response.use(
     const code = data?.code || status
     const msg = i18n.global.t('httpCode.' + code)
     // 业务异常
+    // if (code === 401) {
+    // useUserStore().logout(true)
+    // }
     if (code === 401) {
       useUserStore().logout(true)
+      location.href = import.meta.env.VITE_SERVER_PATH + '/sso/login'
     } else if (code !== 200) {
       ElMessage({
         message: data.msg || msg || '操作失败',

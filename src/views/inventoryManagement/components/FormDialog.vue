@@ -35,7 +35,7 @@
           </el-descriptions-item>
           <el-descriptions-item>
             <template #label>是否有异常情况</template>
-            {{ form.exceptionFlag === 1 ? '是' : '否' }}
+            {{ form.exceptionFlag ? '是' : '否' }}
           </el-descriptions-item>
         </el-descriptions>
       </div>
@@ -55,7 +55,7 @@
         <el-table-column prop="shkzg" label="借/贷" />
         <el-table-column prop="lgort" label="Storage location" width="120" />
       </el-table>
-      <div v-if="form.exceptionFlag === 1" style="margin-bottom: 10px">
+      <div v-if="form.exceptionFlag" style="margin-bottom: 10px">
         <span style="font-weight: bold">异常情况</span>
         <el-descriptions style="margin-top: 10px" class="margin-top" :column="2" border size="small">
           <el-descriptions-item :span="2">

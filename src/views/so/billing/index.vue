@@ -8,7 +8,7 @@
       id="billing"
     >
       <el-table-column label="SO NO" prop="soNo" width="130" />
-      <el-table-column label="维修任务号" prop="TaskID" width="120" />
+      <!-- <el-table-column label="维修任务号" prop="TaskID" width="120" /> -->
       <el-table-column label="设备序列号" prop="serialNo" :show-overflow-tooltip="true" width="100" />
       <el-table-column label="设备型号" prop="modelNo" :show-overflow-tooltip="true" width="100" />
       <el-table-column label="仪器SAP Equip编号" prop="eqId" width="128" />
@@ -23,12 +23,16 @@
       <el-table-column label="客户联系人邮箱" prop="email" width="130" />
       <el-table-column label="代理商" prop="vendor" width="100" />
       <el-table-column label="报修内容" prop="content" width="100" :show-overflow-tooltip="true" />
-      <el-table-column label="报修来源" prop="source" width="100" />
+      <el-table-column label="报修来源" prop="source" width="120">
+        <template #default="{ row }">
+          {{ repairSource.kv[row.source] }}
+        </template>
+      </el-table-column>
       <el-table-column label="报修时间" prop="repairTime" width="130" />
       <el-table-column label="保修期" prop="warrantyTime" width="100" />
-      <el-table-column label="FSE工程师名称" prop="fseName" width="100" />
-      <el-table-column label="FSE work center" prop="workCenter" width="115" />
-      <el-table-column label="FSE storage location" prop="storageLocation" width="140" />
+      <el-table-column label="工程师名称" prop="fseName" width="100" />
+      <el-table-column label="FSE work center" prop="fseWorkCenter" width="115" />
+      <el-table-column label="FSE storage location" prop="fseStorageLocation" width="140" />
       <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="110">
         <template #default="{ row }">
           <el-button type="info" link @click="handleDeatil(row)">详情</el-button>
@@ -67,7 +71,7 @@
         <el-form-item label="客户锁信息" prop="blockFlag">
           <el-input v-model="form.blockFlag" placeholder="请输入客户锁信息" clearable />
         </el-form-item>
-        <el-form-item label="FSE工程师名称" prop="fseWorkCenter">
+        <el-form-item label="工程师名称" prop="fseWorkCenter">
           <el-select
             clearable
             v-model="form.fseWorkCenter"
@@ -90,17 +94,17 @@
             @change="changeOptions"
             :props="{
               label: 'name',
-              value: 'id',
+              value: 'name',
               checkStrictly: true,
             }"
           />
         </el-form-item>
         <el-form-item label="开票申请提交时间段">
           <el-date-picker
-            value-format="YYYY-MM-DD HH:mm:ss"
+            value-format="YYYY-MM-DD"
             v-model="form.params"
             placeholder="请选择时间"
-            type="datetimerange"
+            type="daterange"
             range-separator="-"
             start-placeholder="开始时间"
             end-placeholder="结束时间"
@@ -129,6 +133,7 @@
 
 <script setup>
 const regionalStatus = useDict('regionalStatus') // 区域
+const repairSource = useDict('repairSource')
 const tableRef = ref()
 const refresh = () => tableRef.value.refresh()
 const listData = params => {
@@ -140,7 +145,7 @@ const listData = params => {
   })
 }
 
-// FSE工程师名称
+// 工程师名称
 const engineerNameLoading = ref(false)
 const engineerNameList = ref([])
 const engineerNameOptions = ref([])
@@ -230,15 +235,15 @@ const handleBilling = row => {
 const handleCloseDetail = () => {
   detailVisible.value = false
   nextTick(() => {
-    formRefDetails.value.clearValidate()
+    formRefDetails.value.resetFields()
   })
 }
 const handleConfirm = () => {
   formRefDetails.value.validate(valid => {
     if (valid) {
-      // console.log(formDetails.value)
       req.put('/so/billing', formDetails.value).then(({ code }) => {
         if (code === 200) {
+          detailVisible.value = false
           refresh()
         }
       })

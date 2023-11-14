@@ -14,7 +14,7 @@
       <el-table-column label="变更信息" prop="content" width="200" :show-overflow-tooltip="true" />
       <el-table-column label="状态" prop="status">
         <template #default="{ row }">
-          {{ row.status === false ? '已提交' : '已关闭' }}
+          {{ row.status ? '已关闭' : '已提交' }}
         </template>
       </el-table-column>
       <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="100">
@@ -86,7 +86,7 @@
         </el-descriptions-item>
         <el-descriptions-item :span="2">
           <template #label>状态</template>
-          {{ current.status === false ? '已提交' : '已关闭' }}
+          {{ current.status ? '已关闭' : '已提交' }}
         </el-descriptions-item>
         <el-descriptions-item :span="2">
           <template #label>变更信息</template>
@@ -108,7 +108,7 @@ const refresh = () => tableRef.value.refresh()
 
 const tableRef = ref(null)
 
-// FSE工程师名称
+// 工程师名称
 // const engineerNameLoading = ref(false)
 // const engineerNameList = ref([])
 // const engineerNameOptions = ref([])

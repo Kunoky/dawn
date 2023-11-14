@@ -14,9 +14,9 @@
       <el-table-column label="联系人" prop="contactPerson" width="100" />
       <el-table-column label="联系人电话" prop="contactTel" width="120" />
       <el-table-column label="领用时间" prop="createTime" width="140" />
-      <el-table-column label="FSE工程师名称" prop="fseName" />
-      <el-table-column label="FSE work center" prop="workCenter" width="145" />
-      <el-table-column label="FSE storage location" prop="storageLocation" width="140" />
+      <el-table-column label="工程师名称" prop="fseName" />
+      <el-table-column label="FSE work center" prop="fseWorkCenter" width="145" />
+      <el-table-column label="FSE storage location" prop="fseStorageLocation" width="140" />
       <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="80">
         <template #default="{ row }">
           <el-button type="info" link @click="handleDeatil(row)">领用详情</el-button>
@@ -32,7 +32,7 @@
         <el-form-item label="设备型号" prop="modelNo">
           <el-input v-model="form.modelNo" placeholder="请输入设备型号" clearable />
         </el-form-item>
-        <el-form-item label="FSE工程师名称" prop="fseWorkCenter">
+        <el-form-item label="工程师名称" prop="fseWorkCenter">
           <el-select
             clearable
             v-model="form.fseWorkCenter"
@@ -48,7 +48,7 @@
         </el-form-item>
       </template>
     </CTable>
-    <Details :data="current" v-model="visible.detail" @success="handleFormSuccess" only="shipped"></Details>
+    <Details :data="current" v-model="visible.detail" @success="handleFormSuccess"></Details>
   </div>
 </template>
 
@@ -60,7 +60,7 @@ const listData = params => {
   })
 }
 
-// FSE工程师名称
+// 工程师名称
 const engineerNameLoading = ref(false)
 const engineerNameList = ref([])
 const engineerNameOptions = ref([])

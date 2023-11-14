@@ -8,7 +8,7 @@
       id="transfer"
     >
       <el-table-column label="SO NO" prop="soNo" width="130" />
-      <el-table-column label="维修任务号" prop="TaskID" width="120" />
+      <!-- <el-table-column label="维修任务号" prop="TaskID" width="120" /> -->
       <el-table-column label="设备序列号" prop="serialNo" :show-overflow-tooltip="true" width="100" />
       <el-table-column label="设备型号" prop="modelNo" :show-overflow-tooltip="true" width="100" />
       <el-table-column label="仪器SAP Equip编号" prop="eqId" width="128" />
@@ -23,12 +23,16 @@
       <el-table-column label="客户联系人邮箱" prop="email" width="130" />
       <el-table-column label="代理商" prop="vendor" width="100" />
       <el-table-column label="报修内容" prop="content" width="100" :show-overflow-tooltip="true" />
-      <el-table-column label="报修来源" prop="source" width="100" />
+      <el-table-column label="报修来源" prop="source" width="120">
+        <template #default="{ row }">
+          {{ repairSource.kv[row.source] }}
+        </template>
+      </el-table-column>
       <el-table-column label="报修时间" prop="repairTime" width="130" />
       <el-table-column label="保修期" prop="warrantyTime" width="100" />
-      <el-table-column label="FSE工程师名称" prop="fseName" width="100" />
-      <el-table-column label="FSE work center" prop="workCenter" width="115" />
-      <el-table-column label="FSE storage location" prop="storageLocation" width="140" />
+      <el-table-column label="工程师名称" prop="fseName" width="100" />
+      <el-table-column label="FSE work center" prop="fseWorkCenter" width="115" />
+      <el-table-column label="FSE storage location" prop="fseStorageLocation" width="140" />
       <el-table-column label="转移原因" prop="transferReason" width="140" :show-overflow-tooltip="true" />
       <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="100">
         <template #default="{ row }">
@@ -66,7 +70,7 @@
         <el-form-item label="客户名称" prop="companyName">
           <el-input v-model="form.companyName" placeholder="请输入客户名称" clearable />
         </el-form-item>
-        <el-form-item label="FSE工程师名称" prop="fseWorkCenter">
+        <el-form-item label="工程师名称" prop="fseWorkCenter">
           <el-select
             clearable
             v-model="form.fseWorkCenter"
@@ -89,7 +93,7 @@
             @change="changeOptions"
             :props="{
               label: 'name',
-              value: 'id',
+              value: 'name',
               checkStrictly: true,
             }"
           />
@@ -105,11 +109,11 @@
         </el-descriptions-item>
         <el-descriptions-item>
           <template #label>原FSE work center</template>
-          {{ record.workCenter }}
+          {{ record.fseWorkCenter }}
         </el-descriptions-item>
         <el-descriptions-item>
           <template #label>原FSE storage location</template>
-          {{ record.storageLocation }}
+          {{ record.fseStorageLocation }}
         </el-descriptions-item>
         <el-descriptions-item>
           <template #label>转移后FSE</template>
@@ -154,6 +158,7 @@
 
 <script setup>
 const regionalStatus = useDict('regionalStatus') // 区域
+const repairSource = useDict('repairSource')
 
 const tableRef = ref()
 const refresh = () => tableRef.value.refresh()
@@ -166,7 +171,7 @@ const listData = params => {
   })
 }
 
-// FSE工程师名称
+// 工程师名称
 const engineerNameLoading = ref(false)
 const engineerNameList = ref([])
 const engineerNameOptions = ref([])
@@ -224,7 +229,22 @@ const handleTransfer = row => {
 const handleCloseTransfer = () => {
   transferVisible.value = false
 }
-const sssssssss = () => {}
+const sssssssss = () => {
+  let data = {
+    soNo: record.value.soNo,
+    oldFseName: record.value.fseName,
+    oldFseWorkCenter: record.value.fseWorkCenter,
+    oldFseStorageLocation: record.value.fseStorageLocation,
+    fseName: record.value.transferFseName,
+    fseWorkCenter: record.value.transferWorkCenter,
+    fseStorageLocation: record.value.transferStorageLocation,
+    transferReason: record.value.transferReason,
+  }
+  req.put('/so/transfer', data).then(() => {
+    transferVisible.value = false
+    refresh()
+  })
+}
 
 // 拒绝
 const detailVisible = ref(false)

@@ -8,7 +8,7 @@
       id="assign"
     >
       <el-table-column label="SO NO" prop="soNo" width="130" />
-      <el-table-column label="维修任务号" prop="TaskID" width="120" />
+      <!-- <el-table-column label="维修任务号" prop="TaskID" width="120" /> -->
       <el-table-column label="设备序列号" prop="serialNo" :show-overflow-tooltip="true" width="100" />
       <el-table-column label="设备型号" prop="modelNo" :show-overflow-tooltip="true" width="100" />
       <el-table-column label="仪器SAP Equip编号" prop="eqId" width="128" />
@@ -16,7 +16,7 @@
         <template #default="{ row }">{{ row.orderType }} / {{ row.subType }}</template>
       </el-table-column>
       <el-table-column label="仪器地址" prop="eee" width="100" />
-      <el-table-column label="创建人" prop="createBy" width="100" />
+      <el-table-column label="创建人" prop="createByName" width="100" />
       <el-table-column label="客户单位名称" prop="custDesc" width="100" />
       <el-table-column label="客户编号" prop="customerId" width="100" />
       <el-table-column label="客户联系人" prop="name" width="100" />
@@ -24,12 +24,16 @@
       <el-table-column label="客户联系人邮箱" prop="email" width="130" />
       <el-table-column label="代理商" prop="vendor" width="100" />
       <el-table-column label="报修内容" prop="content" width="100" :show-overflow-tooltip="true" />
-      <el-table-column label="报修来源" prop="source" width="100" />
+      <el-table-column label="报修来源" prop="source" width="120">
+        <template #default="{ row }">
+          {{ repairSource.kv[row.source] }}
+        </template>
+      </el-table-column>
       <el-table-column label="报修时间" prop="repairTime" width="130" />
       <el-table-column label="保修期" prop="warrantyTime" width="100" />
-      <el-table-column label="FSE工程师名称" prop="fseName" width="100" />
-      <el-table-column label="FSE work center" prop="workCenter" width="115" />
-      <el-table-column label="FSE storage location" prop="storageLocation" width="140" />
+      <el-table-column label="工程师名称" prop="fseName" width="100" />
+      <el-table-column label="FSE work center" prop="fseWorkCenter" width="115" />
+      <el-table-column label="FSE storage location" prop="fseStorageLocation" width="140" />
       <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="130">
         <template #default="{ row }">
           <el-button type="info" link @click="handleEdit(row)">详情</el-button>
@@ -66,7 +70,7 @@
         <el-form-item label="客户名称" prop="companyName">
           <el-input v-model="form.companyName" placeholder="请输入客户名称" clearable />
         </el-form-item>
-        <el-form-item label="FSE工程师名称" prop="fseWorkCenter">
+        <el-form-item label="工程师名称" prop="fseWorkCenter">
           <el-select
             clearable
             v-model="form.fseWorkCenter"
@@ -89,7 +93,7 @@
             @change="changeOptions"
             :props="{
               label: 'name',
-              value: 'id',
+              value: 'name',
               checkStrictly: true,
             }"
           />
@@ -100,7 +104,7 @@
 
     <el-dialog title="指派FSE" width="30%" v-model="detailVisible" :close-on-click-modal="false">
       <el-form :model="formDetails" ref="formRefDetails" label-width="150" :rules="rules">
-        <el-form-item label="FSE工程师名称" prop="fseName">
+        <el-form-item label="工程师名称" prop="fseName">
           <el-select
             v-model="formDetails.fseName"
             placeholder="请输入FSE工程师名称"
@@ -135,19 +139,20 @@
 <script setup>
 import FormDialog from './components/FormDialog.vue'
 const regionalStatus = useDict('regionalStatus') // 区域
+const repairSource = useDict('repairSource')
 
 const tableRef = ref()
 const refresh = () => tableRef.value.refresh()
 
 const listData = params => {
   delete params.options
-  params.assignStatus = 1 // TODO: 待指派
+  params.assignStatus = true // TODO: 待指派
   return req.get('/so/page', { params }).then(res => {
     return { data: res.data }
   })
 }
 
-// FSE工程师名称
+// 工程师名称
 const engineerNameLoading = ref(false)
 const engineerNameList = ref([])
 const engineerNameOptions = ref([])

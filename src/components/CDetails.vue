@@ -10,13 +10,8 @@
   >
     <div class="demo-collapse">
       <el-collapse v-model="activeNames" v-loading="dataLoading">
-        {{ props.data.status }}
         <el-collapse-item title="基础信息" name="1">
           <el-descriptions class="margin-top" :column="3" border size="small">
-            <el-descriptions-item>
-              <template #label>维修任务号</template>
-              {{ form.TaskID }}
-            </el-descriptions-item>
             <el-descriptions-item>
               <template #label>SO NO</template>
               {{ form.soNo }}
@@ -70,16 +65,16 @@
               {{ form.email }}
             </el-descriptions-item>
             <el-descriptions-item>
-              <template #label>FSE工程师名称</template>
+              <template #label>工程师名称</template>
               {{ form.fseName }}
             </el-descriptions-item>
             <el-descriptions-item>
               <template #label>FSE work center</template>
-              {{ form.workCenter }}
+              {{ form.fseWorkCenter }}
             </el-descriptions-item>
             <el-descriptions-item>
               <template #label>FSE storage location</template>
-              {{ form.storageLocation }}
+              {{ form.fseStorageLocation }}
             </el-descriptions-item>
             <el-descriptions-item>
               <template #label>代理商</template>
@@ -103,7 +98,7 @@
             </el-descriptions-item>
           </el-descriptions>
         </el-collapse-item>
-        <el-collapse-item title="Parts Plan & Labor" name="2">
+        <el-collapse-item v-if="itemList.length > 0 || itemList !== null" title="Parts Plan & Labor" name="2">
           <div>
             <el-table
               size="small"
@@ -122,183 +117,196 @@
             </el-table>
           </div>
         </el-collapse-item>
-        <el-collapse-item title="报价信息" name="3">
-          <div style="margin-bottom: 10px">报价编号：{{ quoteData?.quoteNo }}</div>
+        <el-collapse-item v-if="quoteData" title="报价信息" name="3">
+          <div style="margin-bottom: 10px">报价编号：{{ quoteData.quoteNo }}</div>
           <el-table
             size="small"
-            :data="quoteData?.quoteDetailList"
+            :data="quoteData.quoteDetailList"
             style="width: 100%; margin-bottom: 20px"
             max-height="190"
             :header-cell-style="{ background: '#f5f7fa' }"
             show-summary
             :summary-method="getSummaries"
           >
-            <el-table-column prop="materialNo" label="配件/Labor料号" />
-            <el-table-column prop="unit" label="单位" />
-            <el-table-column prop="includeTaxPrice" label="含税价格" />
-            <el-table-column prop="quantity" label="配件/Labor数量" />
-            <el-table-column prop="subTotal" label="总价" />
+            <el-table-column label="报价明细" align="center">
+              <el-table-column prop="materialNo" label="配件/Labor料号" />
+              <el-table-column prop="unit" label="单位" />
+              <el-table-column prop="includeTaxPrice" label="含税价格" />
+              <el-table-column prop="quantity" label="配件/Labor数量" />
+              <el-table-column prop="subTotal" label="总价" />
+            </el-table-column>
           </el-table>
           <div>
             <el-table
               size="small"
-              :data="[quoteData?.quoteSummary]"
+              :data="quoteData === null ? [] : [quoteData.quoteSummary]"
               style="width: 100%; margin-bottom: 20px"
               max-height="190"
               :header-cell-style="{ background: '#f5f7fa' }"
             >
-              <el-table-column type="index" label="序号" />
-              <el-table-column prop="quotePrice" label="配件总价" />
-              <el-table-column prop="finalPrice" label="最终价格" />
-              <el-table-column prop="discountRate" label="折扣率" />
-              <el-table-column prop="quoteName" label="报价人" />
-              <el-table-column prop="quoteTime" label="报价时间" />
-              <el-table-column prop="approveStatus" label="审批状态">
-                <template #default="{ row }">
-                  <span>
-                    {{ row?.approveStatus === 0 ? '未审批' : row?.approveStatus === 1 ? '审批通过' : '审批拒绝' }}
-                  </span>
-                </template>
+              <el-table-column label="汇总" align="center">
+                <!-- <el-table-column type="index" label="序号" /> -->
+                <el-table-column prop="quotePrice" label="配件总价" />
+                <el-table-column prop="finalPrice" label="最终价格" />
+                <el-table-column prop="discountRate" label="折扣率" />
+                <el-table-column prop="quoteName" label="报价人" />
+                <el-table-column prop="quoteTime" label="报价时间" />
+                <el-table-column prop="approveStatus" label="审批状态">
+                  <template #default="{ row }">
+                    <span>
+                      {{ row?.approveStatus === 0 ? '未审批' : row?.approveStatus === 1 ? '审批通过' : '审批拒绝' }}
+                    </span>
+                  </template>
+                </el-table-column>
               </el-table-column>
             </el-table>
           </div>
-          <p class="p">发票信息：</p>
+          <p class="p">发票信息</p>
           <el-descriptions class="margin-top" :column="3" border size="small">
             <el-descriptions-item>
+              <template #label>发票类型</template>
+              {{
+                quoteData.invoiceInfo?.invoiceType === 1
+                  ? '普票'
+                  : quoteData.invoiceInfo?.invoiceType === 2
+                  ? '专票'
+                  : ''
+              }}
+            </el-descriptions-item>
+            <el-descriptions-item v-if="quoteData.invoiceInfo?.invoiceType === 1">
+              <template #label>邮箱</template>
+              {{ quoteData.invoiceInfo?.recipientEmail }}
+            </el-descriptions-item>
+            <el-descriptions-item v-if="quoteData.invoiceInfo?.invoiceType === 2">
+              <template #label>地址</template>
+              {{ quoteData.invoiceInfo?.mailingAddress }}
+            </el-descriptions-item>
+            <el-descriptions-item>
               <template #label>发票抬头</template>
-              {{ quoteData?.invoiceInfo?.companyName }}
+              {{ quoteData.invoiceInfo?.companyName }}
             </el-descriptions-item>
             <el-descriptions-item>
               <template #label>收件人</template>
-              {{ quoteData?.invoiceInfo?.recipient }}
+              {{ quoteData.invoiceInfo?.recipient }}
             </el-descriptions-item>
             <el-descriptions-item>
               <template #label>联系电话</template>
-              {{ quoteData?.invoiceInfo?.tel }}
+              {{ quoteData.invoiceInfo?.tel }}
             </el-descriptions-item>
             <el-descriptions-item>
               <template #label>开户行</template>
-              {{ quoteData?.invoiceInfo?.bankName }}
+              {{ quoteData.invoiceInfo?.bankName }}
             </el-descriptions-item>
             <el-descriptions-item>
               <template #label>开户行账号</template>
-              {{ quoteData?.invoiceInfo?.bankAccount }}
+              {{ quoteData.invoiceInfo?.bankAccount }}
             </el-descriptions-item>
-            <el-descriptions-item>
+            <el-descriptions-item :span="2">
               <template #label>税号</template>
-              {{ quoteData?.invoiceInfo?.taxNo }}
+              {{ quoteData.invoiceInfo?.taxNo }}
             </el-descriptions-item>
             <el-descriptions-item :span="3">
               <template #label>注册地址及电话</template>
-              {{ quoteData?.invoiceInfo?.registeredAddress }}
+              {{ quoteData.invoiceInfo?.registeredAddress }}
             </el-descriptions-item>
             <el-descriptions-item :span="3">
               <template #label>特殊要求</template>
-              {{ quoteData?.invoiceInfo?.remark }}
+              {{ quoteData.invoiceInfo?.remark }}
             </el-descriptions-item>
           </el-descriptions>
-          <p class="p">沟通记录：</p>
+          <!-- <p class="p">沟通记录：</p> -->
           <el-table
             size="small"
-            :data="quoteData?.quoteCommunicationList"
+            :data="quoteData.quoteCommunicationList"
             style="width: 100%; margin-bottom: 10px"
             :header-cell-style="{ background: '#f5f7fa' }"
           >
-            <el-table-column prop="custName" label="沟通人" />
-            <el-table-column prop="communicationTime" label="时间" />
-            <el-table-column prop="content" label="结果" />
+            <el-table-column label="沟通记录" align="center">
+              <el-table-column prop="custName" label="沟通人" />
+              <el-table-column prop="communicationTime" label="时间" />
+              <el-table-column prop="content" label="结果" />
+            </el-table-column>
           </el-table>
         </el-collapse-item>
-        <el-collapse-item title="流转信息" name="4">
-          <el-timeline>
-            <el-timeline-item center timestamp="2023-08-24 10:30:23" placement="top">
+        <el-collapse-item v-if="transferLogList.length > 0 || transferLogList !== null" title="流转信息" name="4">
+          <el-timeline class="timeline">
+            <el-timeline-item
+              v-for="(item, index) in transferLogList"
+              :key="index"
+              center
+              :timestamp="item.approvalDate"
+              placement="top"
+            >
               <el-card>
-                <h4>审批人：xxxx</h4>
-                <p>审批结果：xxxxx</p>
-              </el-card>
-            </el-timeline-item>
-            <el-timeline-item center timestamp="2023-08-23 12:34:26" placement="top">
-              <el-card>
-                <h4>审批人：xxxx</h4>
-                <p>审批结果：xxxxx</p>
+                <h4>审批人：{{ item.approve }}</h4>
+                <p>审批状态：{{ item.approvalStatus }}</p>
               </el-card>
             </el-timeline-item>
           </el-timeline>
         </el-collapse-item>
-        <!-- {{ props.data.status }}
-        {{ only }} -->
-        <!-- TODO so状态 需修改 -->
-        <el-collapse-item
-          v-if="props.data.status !== 3 && props.data.status !== 4 && props.data.status !== 5 && only !== 'shipped'"
-          title="服务报告信息"
-          name="5"
-        >
-          <el-descriptions class="margin-top" :column="2" border size="small">
-            <el-descriptions-item>
-              <template #label>开始维修时间</template>
-              {{ serviceReport?.reportBaseInfo?.startTime }}
-            </el-descriptions-item>
-            <el-descriptions-item>
-              <template #label>结束维修时间</template>
-              {{ serviceReport?.reportBaseInfo?.endTime }}
-            </el-descriptions-item>
-            <el-descriptions-item :span="2">
-              <template #label>维修描述</template>
-              {{ serviceReport?.reportBaseInfo?.content }}
-            </el-descriptions-item>
-            <el-descriptions-item :span="2">
-              <template #label>是否草稿标识</template>
-              {{ serviceReport?.reportBaseInfo?.draftFlag === 1 ? '是' : '否' }}
-            </el-descriptions-item>
-            <div v-if="serviceReport?.reportBaseInfo?.draftFlag === 1">
-              <el-descriptions-item :span="2">
-                <template #label>Q1</template>
-                {{ serviceReport?.reportBaseInfo.startTime }}
+        <!-- v-if="props.data.status !== 3 && props.data.status !== 4 && props.data.status !== 5 && only !== 'shipped'" -->
+        <el-collapse-item v-if="serviceReport.length > 0 || serviceReport !== null" title="服务报告信息" name="5">
+          <div v-for="(item, index) in serviceReport" :key="index" class="workLogList">
+            <el-descriptions class="margin-top" :column="2" border size="small">
+              <el-descriptions-item>
+                <template #label>工程师名称</template>
+                {{ item.createByName }}
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template #label>开始维修时间</template>
+                {{ item.startTime }}
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template #label>结束维修时间</template>
+                {{ item.endTime }}
               </el-descriptions-item>
               <el-descriptions-item :span="2">
-                <template #label>Q2</template>
-                {{ serviceReport?.reportBaseInfo.startTime }}
+                <template #label>维修描述</template>
+                {{ item.content }}
               </el-descriptions-item>
               <el-descriptions-item :span="2">
-                <template #label>Q3</template>
-                {{ serviceReport?.reportBaseInfo.startTime }}
+                <template #label>是否草稿标识</template>
+                {{ item.draftFlag ? '是' : '否' }}
               </el-descriptions-item>
-              <el-descriptions-item :span="2">
-                <template #label>Q4</template>
-                {{ serviceReport?.reportBaseInfo.startTime }}
-              </el-descriptions-item>
-              <el-descriptions-item :span="2">
-                <template #label>Q5</template>
-                {{ serviceReport?.reportBaseInfo.startTime }}
-              </el-descriptions-item>
-              <el-descriptions-item :span="2">
-                <template #label>Q6</template>
-                {{ serviceReport?.reportBaseInfo.startTime }}
-              </el-descriptions-item>
-              <el-descriptions-item :span="2">
-                <template #label>Q6</template>
-                {{ serviceReport?.reportBaseInfo.startTime }}
-              </el-descriptions-item>
-            </div>
-          </el-descriptions>
-          <p>Parts & Labor消耗情况</p>
-          <el-table
-            size="small"
-            :data="serviceReport?.itemConsumptionList"
-            style="width: 100%; margin-bottom: 20px"
-            max-height="200"
-            :header-cell-style="{ background: '#f5f7fa' }"
-            show-summary
-            :summary-method="getSummaries"
-          >
-            <el-table-column prop="itemNo" label="配件/Labor料号" />
-            <el-table-column prop="name" label="单位" />
-            <el-table-column prop="unitPrice" label="单价" />
-            <el-table-column prop="quantity" label="实际消耗数量" />
-            <el-table-column prop="subTotal" label="总价" />
-          </el-table>
+            </el-descriptions>
+            <el-table
+              size="small"
+              :data="item.materialList"
+              style="width: 100%; margin-bottom: 20px"
+              max-height="200"
+              :header-cell-style="{ background: '#f5f7fa' }"
+              show-summary
+              :summary-method="getSummaries"
+            >
+              <el-table-column label="Parts消耗情况" align="center">
+                <el-table-column prop="materialNo" label="料号" />
+                <el-table-column prop="unit" label="单位" />
+                <el-table-column prop="unitPrice" label="单价" />
+                <el-table-column prop="quantity" label="实际消耗数量" />
+                <el-table-column prop="subTotal" label="总价" />
+              </el-table-column>
+            </el-table>
+            <el-table
+              size="small"
+              :data="item.laborList"
+              style="width: 100%; margin-bottom: 20px"
+              max-height="200"
+              :header-cell-style="{ background: '#f5f7fa' }"
+              show-summary
+              :summary-method="getSummaries"
+            >
+              <el-table-column label="Labor消耗情况" align="center">
+                <el-table-column prop="materialNo" label="料号" />
+                <el-table-column prop="unit" label="单位" />
+                <el-table-column prop="unitPrice" label="单价" />
+                <el-table-column prop="quantity" label="实际消耗数量" />
+                <el-table-column prop="subTotal" label="总价" />
+              </el-table-column>
+            </el-table>
+          </div>
         </el-collapse-item>
-        <el-collapse-item title="附件信息" name="6" v-if="only !== 'shipped'">
+        <!-- v-if="only !== 'shipped'" -->
+        <el-collapse-item v-if="attachmentList.length > 0 || attachmentList !== null" title="附件信息" name="6">
           <div v-for="(val, idx) in attachmentList" :key="idx">
             <span>{{ attachmentType.kv[val.type] }}</span>
             <el-table
@@ -322,49 +330,72 @@
             </el-table>
           </div>
         </el-collapse-item>
-        <el-collapse-item v-if="only !== 'shipped'" title="工作日志" name="7">
-          <el-descriptions class="margin-top" :column="3" border size="small">
-            <el-descriptions-item>
-              <template #label>工作时长</template>
-              {{ workLogList?.workHour }}
-            </el-descriptions-item>
-            <el-descriptions-item>
-              <template #label>开始时间</template>
-              {{ workLogList?.startTime }}
-            </el-descriptions-item>
-            <el-descriptions-item :span="3">
-              <template #label>结束时间</template>
-              {{ workLogList?.endTime }}
-            </el-descriptions-item>
-            <el-descriptions-item :span="3">
-              <template #label>工作过程</template>
-              {{ workLogList?.content }}
-            </el-descriptions-item>
-            <el-descriptions-item :span="3">
-              <template #label>服务描述</template>
-              {{ workLogList?.shortDescription }}
-            </el-descriptions-item>
-            <el-descriptions-item :span="3">
-              <template #label>服务描述</template>
-              {{ workLogList?.longDescription }}
-            </el-descriptions-item>
-          </el-descriptions>
-          <p>Parts & Labor消耗情况</p>
-          <el-table
-            size="small"
-            :data="workLogList?.itemConsumptionList"
-            style="width: 100%; margin-bottom: 20px"
-            max-height="200"
-            :header-cell-style="{ background: '#f5f7fa' }"
-            show-summary
-            :summary-method="getSummaries"
-          >
-            <el-table-column prop="itemNo" label="配件/Labor料号" />
-            <el-table-column prop="name" label="单位" />
-            <el-table-column prop="unitPrice" label="单价" />
-            <el-table-column prop="quantity" label="实际消耗数量" />
-            <el-table-column prop="subTotal" label="总价" />
-          </el-table>
+        <!-- v-if="only !== 'shipped'" -->
+        <el-collapse-item v-if="workLogList.length > 0 || workLogList !== null" title="工作日志" name="7">
+          <div v-for="(item, index) in workLogList" :key="index" class="workLogList">
+            <el-descriptions class="margin-top" :column="3" border size="small">
+              <el-descriptions-item>
+                <template #label>工程师姓名</template>
+                {{ item?.createByName }}
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template #label>开始时间</template>
+                {{ item?.startTime }}
+              </el-descriptions-item>
+              <el-descriptions-item :span="3">
+                <template #label>结束时间</template>
+                {{ item?.endTime }}
+              </el-descriptions-item>
+              <el-descriptions-item :span="3">
+                <template #label>工作过程</template>
+                {{ item?.content }}
+              </el-descriptions-item>
+              <el-descriptions-item :span="3">
+                <template #label>服务描述（英文）</template>
+                {{ item?.longDescription }}
+              </el-descriptions-item>
+            </el-descriptions>
+            <el-table
+              size="small"
+              :data="item?.lockMaterialList"
+              style="width: 100%; margin-bottom: 20px"
+              max-height="200"
+              :header-cell-style="{ background: '#f5f7fa' }"
+              show-summary
+              :summary-method="getSummaries"
+            >
+              <el-table-column label="配件消耗情况" align="center">
+                <el-table-column prop="material" label="物料号" />
+                <el-table-column prop="unit" label="单位" />
+                <el-table-column prop="unitPrice" label="单价" />
+                <el-table-column prop="itemName" label="名称" />
+                <el-table-column prop="count" label="实际消耗数量" />
+                <el-table-column prop="type" label="消耗类型">
+                  <template #default="{ row }">{{ MaterialConsumptionType.kv[row.type] }}</template>
+                </el-table-column>
+                <el-table-column prop="subTotal" label="总价" />
+              </el-table-column>
+            </el-table>
+            <el-table
+              size="small"
+              :data="item?.lockLaborList"
+              style="width: 100%; margin-bottom: 20px"
+              max-height="200"
+              :header-cell-style="{ background: '#f5f7fa' }"
+            >
+              <el-table-column label="工时" align="center">
+                <el-table-column prop="aty" label="工时种类" />
+                <el-table-column prop="materialNo" label="物料号" />
+                <el-table-column prop="itemName" label="描述" />
+                <el-table-column prop="itemName" label="Labor类型">
+                  <template #default="{ row }">
+                    {{ laborType.kv[row.laborType] }}
+                  </template>
+                </el-table-column>
+                <el-table-column prop="workHour" label="工作时长(小时)" />
+              </el-table-column>
+            </el-table>
+          </div>
         </el-collapse-item>
       </el-collapse>
     </div>
@@ -388,6 +419,8 @@ const props = defineProps({
 })
 const attachmentType = useDict('attachmentType')
 const repairSource = useDict('repairSource')
+const laborType = useDict('laborType')
+const MaterialConsumptionType = useDict('MaterialConsumptionType')
 
 const activeNames = ref(['1'])
 const form = ref({})
@@ -485,5 +518,28 @@ const handleDel = row => {
 
 .p {
   margin: 20px 0 0;
+}
+
+.margin-top {
+  margin-bottom: 20px;
+}
+.margin-top :deep(.el-descriptions__label) {
+  width: 130px;
+}
+.workLogList {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  /* padding: 0 10px; */
+  margin-bottom: 10px;
+}
+
+.workLogList .title {
+  font-size: 12px;
+}
+.timeline :deep(.el-timeline-item__content) .el-card__body {
+  padding: 10px 20px;
+}
+.timeline :deep(.el-timeline-item__content) .el-card__body p {
+  margin: 5px 0 0;
 }
 </style>

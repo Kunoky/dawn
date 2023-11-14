@@ -3,7 +3,7 @@
     :model-value="modelValue"
     @close="handleClose"
     title="生成报价"
-    width="60%"
+    width="65%"
     v-bind="$attrs"
     :close-on-click-modal="false"
   >
@@ -17,7 +17,7 @@
       :header-cell-style="{ background: '#f5f7fa' }"
       show-summary
     >
-      <el-table-column prop="materialNo" label="配件/Labor料号">
+      <el-table-column width="130" prop="materialNo" label="配件/Labor料号">
         <template #default="{ row }">
           <el-select
             clearable
@@ -59,7 +59,7 @@
           <div class="txt">{{ row.subTotal }}</div>
         </template>
       </el-table-column>
-      <el-table-column fixed="right" label="操作" width="120">
+      <el-table-column fixed="right" label="操作" width="100">
         <template #default="scope">
           <el-button link type="primary" size="small" @click.prevent="deleteRow(scope.$index)">删除</el-button>
         </template>
@@ -98,14 +98,33 @@
           </el-col>
         </el-row>
       </el-form>
-      <el-form :model="invoiceInfo" label-width="112px">
+      <el-form ref="invoiceInfoRef" :model="invoiceInfo" :rules="rulesInvoiceInfo" label-width="112px">
         <el-row>
           <el-col :span="24">
             <div class="mgb-l fw-b fs-3" style="margin-left: 40px">发票信息：</div>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="发票抬头" prop="companyName">
-              <el-input v-model="invoiceInfo.companyName" placeholder="请输入发票抬头" clearable />
+            <el-form-item label="发票类型" prop="invoiceType">
+              <el-select
+                v-model="invoiceInfo.invoiceType"
+                style="width: 100%"
+                @change="handelInvoiceType"
+                placeholder="请选择发票类型"
+                clearable
+              >
+                <el-option label="普票" :value="1" />
+                <el-option label="专票" :value="2" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12" v-if="invoiceInfo.invoiceType === 1">
+            <el-form-item label="邮箱" prop="recipientEmail">
+              <el-input v-model="invoiceInfo.recipientEmail" placeholder="请输入邮箱" clearable />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12" v-if="invoiceInfo.invoiceType === 2">
+            <el-form-item label="地址" prop="mailingAddress">
+              <el-input v-model="invoiceInfo.mailingAddress" placeholder="请输入地址" clearable />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -150,6 +169,7 @@
   </el-dialog>
 </template>
 <script setup>
+import Big from 'big.js'
 const emit = defineEmits(['update:modelValue', 'success'])
 const props = defineProps({
   data: Object,
@@ -159,6 +179,9 @@ const props = defineProps({
 const loading = ref(false)
 const tableData = ref([])
 const invoiceInfo = ref({
+  invoiceType: 1,
+  recipientEmail: '',
+  mailingAddress: '',
   companyName: '',
   recipient: '',
   tel: '',
@@ -166,8 +189,10 @@ const invoiceInfo = ref({
   bankAccount: '',
   taxNo: '',
   registeredAddress: '',
+  type: 1,
 })
 const formData = ref({
+  type: 1,
   discountRate: 100,
   finalPrice: null,
   quotePrice: null,
@@ -184,11 +209,17 @@ watch(
 const { run: getPayDemandNote, loading: dataLoading } = useAsync(async () => {
   return req.get(`/quote/payDemandNote`, { params: { soNo: props.data.soNo, type: 1 } }).then(res => {
     tableData.value = res.data.quoteDetailList
-    formData.value = res.data.quoteSummary
-    invoiceInfo.value = res.data.invoiceInfo
+    formData.value = res.data.quoteSummary === null ? formData.value : res.data.quoteSummary
+    invoiceInfo.value = res.data.invoiceInfo === null ? invoiceInfo.value : res.data.invoiceInfo
+    getTotal()
     return res
   })
 })
+
+const rulesInvoiceInfo = {
+  recipientEmail: [{ type: 'email', message: '请输入正确的邮箱格式', trigger: 'blur' }],
+  tel: [{ pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/, message: '请输入正确的电话格式', trigger: 'blur' }],
+}
 
 const onAddItem = () => {
   tableData.value.push({
@@ -201,6 +232,7 @@ const onAddItem = () => {
 }
 const deleteRow = index => {
   tableData.value.splice(index, 1)
+  getTotal()
 }
 
 const materialNoLoading = ref(false)
@@ -232,8 +264,9 @@ const changeMaterialNo = (val, row) => {
   row.unit = val.unit
   row.unitPrice = val.unitPrice
   row.includeTaxPrice = val.includeTaxPrice
+  row.isBom = val.isBom
+  row.itemName = val.itemName
 }
-
 function getTotal() {
   const total = tableData.value
     .reduce((p, i) => {
@@ -242,10 +275,11 @@ function getTotal() {
     }, 0)
     .toFixed(2)
   formData.value.quotePrice = total
+  formData.value.finalPrice ??= total
 }
 
 const getSummaries = () => {
-  return ['总计', '', '', '', formData.value.quotePrice]
+  return ['总计', '', '', '', '', '', formData.value.quotePrice]
 }
 const validateDiscount = (rule, value, callback) => {
   let reg = new RegExp('^([1-9]|[1-9]\\d|100)$')
@@ -286,14 +320,27 @@ const rules = {
 //     formRef.value.clearValidate()
 //   })
 // }
+
+// b就是a四舍五入的值 如果b小于a 就返回b+0.01 否则返回b
+function getFinalPrice(a) {
+  let b = Number(a.toFixed(2))
+  if (b < a) {
+    b = b + 0.01
+  }
+  return Number(b.toFixed(2))
+}
 // 修改折扣
 const handelEditDiscount = () => {
   formRef.value.validate(valid => {
     if (valid) {
-      if (formData.value.discoun !== undefined || formData.value.discoun !== '') {
+      if (formData.value.discountRate !== undefined || formData.value.discountRate !== '') {
+        const x = new Big(formData.value.discountRate)
+        const y = new Big(formData.value.quotePrice)
         let totalData = ref(null)
-        totalData.value = (formData.value.discountRate * formData.value.quotePrice) / 100
-        formData.value.finalPrice = (parseInt(totalData.value * 100) / 100).toFixed(2)
+        // (折扣率 * 总金额) / 100
+        totalData.value = x.times(y).div(100)
+        const temp = getFinalPrice(totalData.value)
+        formData.value.finalPrice = temp
       }
     }
   })
@@ -302,9 +349,10 @@ const handelEditTotal = () => {
   formRef.value.validate(valid => {
     if (valid) {
       if (formData.value.finalPrice !== '' || formData.value.totalVa !== undefined) {
-        let data = ref(null)
-        data.value = (formData.value.finalPrice / formData.value.quotePrice) * 100
-        formData.value.discountRate = Math.floor(data.value)
+        const x = new Big(formData.value.finalPrice)
+        const y = new Big(formData.value.quotePrice)
+        // (最终价格 / 总金额) * 100
+        formData.value.discountRate = Math.floor(x.div(y).times(100))
       }
     }
   })
@@ -328,19 +376,37 @@ const handelCalculateTotalPrice = row => {
   row.subTotal = (parseInt(data * 100) / 100).toFixed(2)
   getTotal()
 }
+
+function handelInvoiceType(val) {
+  if (val === 1) {
+    invoiceInfo.value.mailingAddress = ''
+  } else {
+    invoiceInfo.value.recipientEmail = ''
+  }
+}
+
+const formRef = ref(null)
+const invoiceInfoRef = ref(null)
 const handleClose = () => {
+  nextTick(() => {
+    formRef.value.resetFields()
+    invoiceInfoRef.value.resetFields()
+    tableData.value = []
+  })
   emit('update:modelValue', false)
 }
-const formRef = ref(null)
+
 const handleConfirm = () => {
   formRef.value.validate(valid => {
     if (valid) {
+      invoiceInfo.value.soNo = props.data.soNo
+      formData.value.soNo = props.data.soNo
       let data = {
         quoteDetailList: tableData.value,
         invoiceInfo: invoiceInfo.value,
         quoteSummary: formData.value,
-        soNo: props.data.soNo,
       }
+      // console.log(data);
       req.post('/quote/save', data).then(res => {
         window.open(import.meta.env.VITE_SERVER_PATH + res.data, '_blank')
         emit('update:modelValue', false)

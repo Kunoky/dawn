@@ -140,22 +140,13 @@ const title = computed(() => (props.data ? '修改客户锁信息' : '新增客�
 const rules = {
   customerId: [{ required: true, message: '客户编号不能为空', trigger: 'blur' }],
   blockFlag: [{ required: true, message: '客户锁信息不能为空', trigger: 'blur' }],
-  // creator: [{ required: true, message: '创建来源不能为空', trigger: 'blur' }],
-  // date: [{ required: true, message: '创建时间不能为空', trigger: 'change' }],
-  // group: [{ required: true, message: '分组不能为空', trigger: 'blur' }],
-  // name: [{ required: true, message: '名称一不能为空', trigger: 'blur' }],
-  // name2: [{ required: true, message: '名称二不能为空', trigger: 'blur' }],
-  // name3: [{ required: true, message: '名称三不能为空', trigger: 'blur' }],
-  // name4: [{ required: true, message: '名称四不能为空', trigger: 'blur' }],
-  // cty: [{ required: true, message: '国家不能为空', trigger: 'blur' }],
-  // city: [{ required: true, message: '城市不能为空', trigger: 'blur' }],
-  // district: [{ required: true, message: '地区不能为空', trigger: 'blur' }],
-  // street: [{ required: true, message: '街道不能为空', trigger: 'blur' }],
-  // postalCode: [{ required: true, message: '邮政编码不能为空', trigger: 'blur' }],
-  // taxNo1: [{ required: true, message: '传真一不能为空', trigger: 'blur' }],
-  // taxNo2: [{ required: true, message: '传真二不能为空', trigger: 'blur' }],
-  // region: [{ required: true, message: '区域不能为空', trigger: 'blur' }],
-  // tel: [{ required: true, message: '电话不能为空', trigger: 'blur' }],
+  tel: [
+    {
+      pattern: /^((0\d{2,3}(-)?\d{7,8})|(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8})$/,
+      message: '请输入正确的电话格式',
+      trigger: 'blur',
+    },
+  ],
 }
 const loading = ref(false)
 const formRef = ref()
