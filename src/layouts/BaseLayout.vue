@@ -16,6 +16,12 @@ const isCollapse = ref(false)
 // const { lang, langs, loading } = storeToRefs(appStore)
 const { user, menuTree, idMenu, keyMenu } = storeToRefs(userStore)
 const breadcrumb = ref([])
+const roleOptions = computed(() => {
+  return user.value?.roles.map(i => ({
+    value: i,
+    label: i,
+  }))
+})
 watch(
   route,
   async v => {
@@ -76,6 +82,12 @@ const setComponentName = (c, name) => {
   c.type.name = name
   return c
 }
+
+const handleRoleChange = v => {
+  if (v === 'gss') {
+    location.href = '/mobile'
+  }
+}
 </script>
 <template>
   <el-container class="base-layout">
@@ -118,6 +130,9 @@ const setComponentName = (c, name) => {
             <CDropdown :modelValue="lang" @update:modelValue="handleLangChange" :options="langs">
               <span v-loading="loading.lang" class="mgl-s">{{ $t('lang') }}</span>
             </CDropdown> -->
+            <CDropdown v-if="roleOptions.length > 1" @update:modelValue="handleRoleChange" :options="roleOptions">
+              <span class="mgl-s">角色</span>
+            </CDropdown>
             <CDropdown v-if="user.userId" @update:modelValue="handleUserCommand" :options="userOptions">
               <span class="cs-p">{{ user.userName }}</span>
             </CDropdown>
