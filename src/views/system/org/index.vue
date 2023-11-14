@@ -92,8 +92,7 @@ const visible = reactive({
 })
 
 const orgTree = ref([])
-const genorgTree = () => {
-  if (orgTree.value.length) return
+const genOrgTree = () => {
   let tree = [
     {
       orgId: '0',
@@ -101,21 +100,19 @@ const genorgTree = () => {
       children: [],
     },
   ]
-  listData().then(({ data }) => {
-    tree[0].children = data
-    orgTree.value = tree
-  })
+  tree[0].children = tableRef.value.pageRef.data
+  orgTree.value = tree
 }
 
 const handleAdd = row => {
-  genorgTree()
+  genOrgTree()
   parentId.value = row?.orgId || '0'
   current.value = null
   visible.form = true
 }
 
 const handleEdit = row => {
-  genorgTree()
+  genOrgTree()
   current.value = row
   visible.form = true
 }
@@ -134,7 +131,6 @@ const handleDel = row => {
     })
     .then(({ code }) => {
       if (code === 200) {
-        ElMessage.success(i18n.t('tip.success'))
         refresh()
       }
     })
