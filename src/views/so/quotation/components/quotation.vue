@@ -117,6 +117,11 @@
               </el-select>
             </el-form-item>
           </el-col>
+          <el-col :span="12">
+            <el-form-item label="发票抬头" prop="companyName">
+              <el-input v-model="invoiceInfo.companyName" placeholder="请输入发票抬头" clearable />
+            </el-form-item>
+          </el-col>
           <el-col :span="12" v-if="invoiceInfo.invoiceType === 1">
             <el-form-item label="邮箱" prop="recipientEmail">
               <el-input v-model="invoiceInfo.recipientEmail" placeholder="请输入邮箱" clearable />

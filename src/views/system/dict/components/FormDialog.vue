@@ -36,8 +36,8 @@
         <el-radio-group v-model="form.status">
           <el-radio
             v-for="i in [
-              { label: '启用', value: 1 },
-              { label: '禁用', value: 0 },
+              { label: '启用', value: true },
+              { label: '禁用', value: false },
             ]"
             :key="i.value"
             :label="i.value"

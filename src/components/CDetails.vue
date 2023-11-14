@@ -46,7 +46,7 @@
             </el-descriptions-item>
             <el-descriptions-item>
               <template #label>仪器地址</template>
-              {{ form.eee }}
+              {{ form.equipAddress }}
             </el-descriptions-item>
             <el-descriptions-item>
               <template #label>客户联系人</template>
@@ -98,7 +98,7 @@
             </el-descriptions-item>
           </el-descriptions>
         </el-collapse-item>
-        <el-collapse-item v-if="itemList.length > 0 || itemList !== null" title="Parts Plan & Labor" name="2">
+        <el-collapse-item v-if="itemList.length > 0" title="Parts Plan & Labor" name="2">
           <div>
             <el-table
               size="small"
@@ -145,7 +145,6 @@
               :header-cell-style="{ background: '#f5f7fa' }"
             >
               <el-table-column label="汇总" align="center">
-                <!-- <el-table-column type="index" label="序号" /> -->
                 <el-table-column prop="quotePrice" label="配件总价" />
                 <el-table-column prop="finalPrice" label="最终价格" />
                 <el-table-column prop="discountRate" label="折扣率" />
@@ -214,7 +213,6 @@
               {{ quoteData.invoiceInfo?.remark }}
             </el-descriptions-item>
           </el-descriptions>
-          <!-- <p class="p">沟通记录：</p> -->
           <el-table
             size="small"
             :data="quoteData.quoteCommunicationList"
@@ -228,7 +226,7 @@
             </el-table-column>
           </el-table>
         </el-collapse-item>
-        <el-collapse-item v-if="transferLogList.length > 0 || transferLogList !== null" title="流转信息" name="4">
+        <el-collapse-item v-if="transferLogList !== null && transferLogList.length > 0" title="流转信息" name="4">
           <el-timeline class="timeline">
             <el-timeline-item
               v-for="(item, index) in transferLogList"
@@ -244,8 +242,7 @@
             </el-timeline-item>
           </el-timeline>
         </el-collapse-item>
-        <!-- v-if="props.data.status !== 3 && props.data.status !== 4 && props.data.status !== 5 && only !== 'shipped'" -->
-        <el-collapse-item v-if="serviceReport.length > 0 || serviceReport !== null" title="服务报告信息" name="5">
+        <el-collapse-item v-if="serviceReport !== null && serviceReport.length > 0" title="服务报告信息" name="5">
           <div v-for="(item, index) in serviceReport" :key="index" class="workLogList">
             <el-descriptions class="margin-top" :column="2" border size="small">
               <el-descriptions-item>
@@ -305,8 +302,7 @@
             </el-table>
           </div>
         </el-collapse-item>
-        <!-- v-if="only !== 'shipped'" -->
-        <el-collapse-item v-if="attachmentList.length > 0 || attachmentList !== null" title="附件信息" name="6">
+        <el-collapse-item v-if="attachmentList !== null && attachmentList.length > 0" title="附件信息" name="6">
           <div v-for="(val, idx) in attachmentList" :key="idx">
             <span>{{ attachmentType.kv[val.type] }}</span>
             <el-table
@@ -330,8 +326,7 @@
             </el-table>
           </div>
         </el-collapse-item>
-        <!-- v-if="only !== 'shipped'" -->
-        <el-collapse-item v-if="workLogList.length > 0 || workLogList !== null" title="工作日志" name="7">
+        <el-collapse-item v-if="workLogList !== null && workLogList.length > 0" title="工作日志" name="7">
           <div v-for="(item, index) in workLogList" :key="index" class="workLogList">
             <el-descriptions class="margin-top" :column="3" border size="small">
               <el-descriptions-item>

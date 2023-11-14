@@ -8,21 +8,25 @@
       id="query"
     >
       <el-table-column label="SO NO" prop="soNo" width="130" />
-      <!-- <el-table-column label="维修任务号" prop="TaskID" width="120" /> -->
       <el-table-column label="设备序列号" prop="serialNo" :show-overflow-tooltip="true" width="100" />
       <el-table-column label="设备型号" prop="modelNo" :show-overflow-tooltip="true" width="100" />
       <el-table-column label="仪器SAP Equip编号" prop="eqId" width="128" />
       <el-table-column label="维修类型" width="100">
         <template #default="{ row }">{{ row.orderType }} / {{ row.subType }}</template>
       </el-table-column>
-      <el-table-column label="仪器地址" prop="eee" width="100" />
+      <el-table-column label="仪器地址" prop="equipAddress" width="120" />
       <el-table-column label="创建人" prop="createByName" width="100" />
-      <el-table-column label="客户单位名称" prop="custDesc" width="100" />
+      <el-table-column label="客户单位名称" prop="custDesc" width="160" />
       <el-table-column label="客户编号" prop="customerId" width="100" />
       <el-table-column label="客户联系人" prop="name" width="100" />
       <el-table-column label="客户联系人电话" prop="mobile" width="120" />
       <el-table-column label="客户联系人邮箱" prop="email" width="130" />
       <el-table-column label="代理商" prop="vendor" width="100" />
+      <el-table-column label="状态" prop="status" width="100">
+        <template #default="{ row }">
+          <span class="cs-p fw-b" style="color: #909399">{{ soStatus.kv[row.status] }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="报修内容" prop="content" width="100" :show-overflow-tooltip="true" />
       <el-table-column label="报修来源" prop="source" width="120">
         <template #default="{ row }">
@@ -34,16 +38,12 @@
       <el-table-column label="工程师名称" prop="fseName" width="100" />
       <el-table-column label="FSE work center" prop="fseWorkCenter" width="115" />
       <el-table-column label="FSE storage location" prop="fseStorageLocation" width="140" />
-      <el-table-column label="状态" prop="status" width="100">
-        <template #default="{ row }">
-          <span class="cs-p fw-b" style="color: #909399">{{ soStatus.kv[row.status] }}</span>
-        </template>
-      </el-table-column>
-      <!-- <el-table-column label="审批结果" prop="uuu" width="140" /> -->
       <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="100">
         <template #default="{ row }">
           <el-button type="info" link @click="handleDeatil(row)">详情</el-button>
-          <el-button v-if="row.status !== 0" type="primary" link @click="handleClose(row)">关闭</el-button>
+          <el-button v-if="row.status !== 0 && row.status !== 12" type="primary" link @click="handleClose(row)">
+            关闭
+          </el-button>
         </template>
       </el-table-column>
       <template #actions>
@@ -133,11 +133,19 @@
         <el-form-item v-if="formDetails.closeStatus === '9'" label="其他原因" prop="reason">
           <el-input type="textarea" v-model="formDetails.reason" placeholder="请输入其他原因" clearable />
         </el-form-item>
+        <el-form-item label="上传附件" prop="attaIds">
+          <CUpload
+            style="width: 100%"
+            :params="params"
+            v-model="attachmentsList"
+            accept="image/png,image/jpg,image/jpeg,application/pdf"
+          ></CUpload>
+        </el-form-item>
       </el-form>
       <template #footer>
         <span class="dialog-footer">
-          <el-button @click="handleCloseDetail">{{ $t('common.cancel') }}</el-button>
-          <el-button type="primary" @click="handleConfirm">{{ $t('common.confirm') }}</el-button>
+          <el-button @click="handleCloseDetail">取消</el-button>
+          <el-button type="primary" @click="handleConfirm">确定</el-button>
         </span>
       </template>
     </el-dialog>
@@ -198,10 +206,17 @@ const handleFormSuccess = () => {
 // 关闭
 const detailVisible = ref(false)
 const formRefDetails = ref(null)
+// 上传附件参数
+const attachmentsList = ref([])
+const params = ref({
+  type: 9, // 异常关闭
+  relationId: '',
+})
 const formDetails = ref({
   soNo: '',
   closeStatus: '',
   reason: '',
+  // attachmentsList: []
 })
 const rules = {
   closeStatus: [{ required: true, message: '原因不能为空', trigger: 'change' }],
@@ -209,6 +224,7 @@ const rules = {
 }
 const handleClose = row => {
   formDetails.value.soNo = row.soNo
+  params.value.relationId = row.soNo
   detailVisible.value = true
 }
 const handleCloseDetail = () => {

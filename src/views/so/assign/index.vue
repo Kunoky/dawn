@@ -8,14 +8,13 @@
       id="assign"
     >
       <el-table-column label="SO NO" prop="soNo" width="130" />
-      <!-- <el-table-column label="维修任务号" prop="TaskID" width="120" /> -->
       <el-table-column label="设备序列号" prop="serialNo" :show-overflow-tooltip="true" width="100" />
       <el-table-column label="设备型号" prop="modelNo" :show-overflow-tooltip="true" width="100" />
       <el-table-column label="仪器SAP Equip编号" prop="eqId" width="128" />
       <el-table-column label="维修类型" width="100">
         <template #default="{ row }">{{ row.orderType }} / {{ row.subType }}</template>
       </el-table-column>
-      <el-table-column label="仪器地址" prop="eee" width="100" />
+      <el-table-column label="仪器地址" prop="equipAddress" width="100" />
       <el-table-column label="创建人" prop="createByName" width="100" />
       <el-table-column label="客户单位名称" prop="custDesc" width="100" />
       <el-table-column label="客户编号" prop="customerId" width="100" />
@@ -252,7 +251,6 @@ const remoteMethodEngineerName1 = query => {
   }
 }
 const changeEngineerName = val => {
-  // formDetails.value.fseId = val.fseId
   formDetails.value.fseName = val.fseName
   formDetails.value.fseWorkCenter = val.fseWorkCenter
   formDetails.value.fseStorageLocation = val.fseStorageLocation

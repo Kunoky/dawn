@@ -84,7 +84,9 @@
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="handleClose">{{ $t('common.cancel') }}</el-button>
-        <!-- <el-button type="primary" @click="handleConfirm" :loading="loading">{{ $t('common.confirm') }}</el-button> -->
+        <el-button type="primary" @click="handleConfirm" v-if="title !== '移库单详情'">
+          {{ $t('common.confirm') }}
+        </el-button>
       </span>
     </template>
   </el-dialog>
@@ -135,6 +137,22 @@ const handleClose = () => {
   } else {
     formRef.value.resetFields()
   }
+}
+const handleConfirm = () => {
+  formRef.value.validate(valid => {
+    if (valid) {
+      let data = {
+        soNo: form.value.soNo,
+        transferVoucherNo: form.value.transferVoucherNo,
+        expressNo: form.value.expressNo,
+      }
+      // console.log(data)
+      req.post('/st', data).then(() => {
+        emit('update:modelValue', false)
+        // refresh()
+      })
+    }
+  })
 }
 
 const attachmentType = useDict('attachmentType')

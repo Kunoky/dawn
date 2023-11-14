@@ -13,7 +13,7 @@
       <el-table-column label="排序" prop="orderNum" />
       <el-table-column label="状态" prop="status">
         <template #default="{ row }">
-          <span>{{ ['禁用', '启用'][row.status] }}</span>
+          <span>{{ row.status ? '禁用' : '停用' }}</span>
         </template>
       </el-table-column>
       <el-table-column label="备注" prop="remark" :show-overflow-tooltip="true" />
