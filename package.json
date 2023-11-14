@@ -38,6 +38,7 @@
     "@iconify-json/ep": "^1.1.9",
     "@mojojoejo/vite-plugin-purgecss": "^1.1.0",
     "@tauri-apps/cli": "^1.2.3",
+    "@vitejs/plugin-basic-ssl": "^1.0.1",
     "@vitejs/plugin-vue": "^4.0.0",
     "@vitejs/plugin-vue-jsx": "^3.0.0",
     "@vitest/coverage-c8": "^0.28.5",

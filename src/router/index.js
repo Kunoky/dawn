@@ -1,7 +1,7 @@
 // import { h } from 'vue'
 import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router/auto'
 // import { ElLoading, ElMessage } from 'element-plus'
-import { getToken } from '@/utils/auth'
+import { getToken, ssoLogin } from '@/utils/auth'
 import { useUserStore } from '../store/user'
 
 const baseRoutes = [
@@ -54,7 +54,15 @@ router.beforeEach(async (to, from) => {
   if (to.path === '/login') {
     if (hasToken) {
       return '/'
+    } else {
+      ssoLogin()
+      return false
     }
+  }
+  if (to.meta.public) return
+  if (!hasToken) {
+    ssoLogin()
+    // return false
   }
   const userStore = useUserStore()
   const meta = userStore.keyMenu[to.name]?.meta
@@ -62,22 +70,13 @@ router.beforeEach(async (to, from) => {
     ...to.meta,
     ...meta,
   }
-  if (to.meta.public) return
   const hasAuth = userStore.keyMenu[to.name] || userStore.hasPermission([to.path])
   // const hasAuth = userStore.hasPermission(to.name)
   if (hasAuth) return
-  if (hasToken) {
-    if (from.name === 'Login') return '/'
-    // ElMessage({
-    //   message: '权限不足',
-    //   type: 'error',
-    //   duration: 5 * 1000,
-    // })
+  if (from.name === 'Login') {
+    return '/'
+  } else {
     return '/401'
-  }
-  return {
-    path: '/login',
-    query: { redirect: to.fullPath },
   }
 })
 

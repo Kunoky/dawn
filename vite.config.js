@@ -12,6 +12,7 @@ import purgecss from '@mojojoejo/vite-plugin-purgecss'
 import { VueRouterAutoImports, getPascalCaseRouteName } from 'unplugin-vue-router'
 import VueRouter from 'unplugin-vue-router/vite'
 // import { viteMockServe } from 'vite-plugin-mock'
+import basicSsl from '@vitejs/plugin-basic-ssl'
 import DepsCache from './plugin/optimizeDepsCache'
 
 const plugins = [
@@ -24,6 +25,7 @@ const plugins = [
   vue(),
   vueJsx(),
   DepsCache(),
+  basicSsl(),
   AutoImport({
     resolvers: [
       ElementPlusResolver({
@@ -81,7 +83,7 @@ const plugins = [
       // css: ['oocss/src/index.css'],
       // skippedContentGlobs: ['node_modules/**'],
       safelist: {
-        standard: [/^var-/, /^el-/, /^is-/],
+        standard: [/^var-/, /^el-/, /^is-/, /^\[class/],
       },
     }),
     apply: 'build',
@@ -118,15 +120,22 @@ export default defineConfig({
   base: '/',
   server: {
     host: '0.0.0.0',
-    port: '8000',
-    strictPort: true,
+    port: '443',
+    // strictPort: true,
     proxy: {
       '^/api': {
         // target: 'http://10.71.4.66:5006',
         // target: 'http://10.71.15.61:8090',
+        // target: 'http://10.71.9.16:8090',
         target: 'http://10.71.9.27:8090',
         changeOrigin: true,
         rewrite: path => path.replace(/^\/api/, '/api'),
+      },
+      '/sso/login': {
+        // target: 'http://10.71.4.66:5006',
+        target: 'http://10.71.9.27:8090/api',
+        changeOrigin: true,
+        // rewrite: path => path.replace(/^\/api/, '/api'),
       },
     },
   },
