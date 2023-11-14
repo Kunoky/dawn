@@ -16,12 +16,7 @@ const isCollapse = ref(false)
 // const { lang, langs, loading } = storeToRefs(appStore)
 const { user, menuTree, idMenu, keyMenu } = storeToRefs(userStore)
 const breadcrumb = ref([])
-const roleOptions = computed(() => {
-  return user.value?.roles.map(i => ({
-    value: i,
-    label: i,
-  }))
-})
+
 watch(
   route,
   async v => {
@@ -63,10 +58,19 @@ const userOptions = [
     value: 'logout',
   },
 ]
+if (user.value.roles.includes('fse')) {
+  userOptions.splice(1, 0, {
+    label: '切换FSE',
+    value: 'fse',
+  })
+}
 const handleUserCommand = e => {
   switch (e) {
     case 'userProfile':
       router.push('/user/profile')
+      break
+    case 'fse':
+      location.href = '/mobile'
       break
     case 'logout':
       userStore.logout()
@@ -81,12 +85,6 @@ const handleUserCommand = e => {
 const setComponentName = (c, name) => {
   c.type.name = name
   return c
-}
-
-const handleRoleChange = v => {
-  if (v === 'gss') {
-    location.href = '/mobile'
-  }
 }
 </script>
 <template>
@@ -130,9 +128,6 @@ const handleRoleChange = v => {
             <CDropdown :modelValue="lang" @update:modelValue="handleLangChange" :options="langs">
               <span v-loading="loading.lang" class="mgl-s">{{ $t('lang') }}</span>
             </CDropdown> -->
-            <CDropdown v-if="roleOptions.length > 1" @update:modelValue="handleRoleChange" :options="roleOptions">
-              <span class="mgl-s">角色</span>
-            </CDropdown>
             <CDropdown v-if="user.userId" @update:modelValue="handleUserCommand" :options="userOptions">
               <span class="cs-p">{{ user.userName }}</span>
             </CDropdown>

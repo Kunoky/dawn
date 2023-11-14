@@ -65,6 +65,9 @@ router.beforeEach(async (to, from) => {
     // return false
   }
   const userStore = useUserStore()
+  if (!userStore.user.roles.includes('admin')) {
+    location.href = '/mobile'
+  }
   const meta = userStore.keyMenu[to.name]?.meta
   to.meta = {
     ...to.meta,
