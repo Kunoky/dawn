@@ -34,8 +34,11 @@
       <el-table-column label="FSE storage location" prop="fseStorageLocation" width="140" />
       <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="110">
         <template #default="{ row }">
-          <el-button type="info" link @click="handleDeatil(row)">详情</el-button>
-          <el-button type="primary" link @click="handleBilling(row)">Billing</el-button>
+          <div>
+            <el-button type="info" link @click="handleDeatil(row)">详情</el-button>
+            <el-button type="primary" link @click="handleBilling(row)">Billing</el-button>
+          </div>
+          <el-button type="primary" link @click="handleBack(row)">退回</el-button>
         </template>
       </el-table-column>
       <template #form="{ form }">
@@ -124,6 +127,36 @@
         <span class="dialog-footer">
           <el-button @click="handleCloseDetail">取消</el-button>
           <el-button type="primary" @click="handleConfirm">确定</el-button>
+        </span>
+      </template>
+    </el-dialog>
+
+    <el-dialog title="退回" width="30%" v-model="backVisible" :close-on-click-modal="false">
+      <el-form :model="formBack" ref="formRefBack" label-width="120" :rules="backRules">
+        <el-form-item label="Billing退回原因" prop="reason">
+          <el-select
+            v-model="formBack.reason"
+            placeholder="请选择Billing退回原因"
+            clearable
+            style="width: 100%"
+            @change="handleReason"
+          >
+            <el-option
+              v-for="(item, index) in billingReason.options"
+              :key="index"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item v-if="formBack.reason === '其他'" label="其他原因" prop="remark">
+          <el-input type="textarea" v-model="formBack.remark" placeholder="请输入其他原因" clearable />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="handleCloseBack">取消</el-button>
+          <el-button type="primary" @click="handleBackConfirm">确定</el-button>
         </span>
       </template>
     </el-dialog>
@@ -245,6 +278,45 @@ const handleConfirm = () => {
           detailVisible.value = false
           refresh()
         }
+      })
+    }
+  })
+}
+
+// 退回
+const billingReason = useDict('billingReason')
+const backVisible = ref(false)
+const formRefBack = ref(null)
+const formBack = ref({
+  reason: '',
+  remark: '',
+  soNo: '',
+})
+const backRules = {
+  reason: [{ required: true, message: 'Billing退回原因不能为空', trigger: 'change' }],
+  remark: [{ required: true, message: '其他原因不能为空', trigger: 'blur' }],
+}
+const handleBack = row => {
+  formBack.value.soNo = row.soNo
+  backVisible.value = true
+}
+function handleReason(val) {
+  if (val !== '其他') {
+    formBack.value.remark = ''
+  }
+}
+const handleCloseBack = () => {
+  backVisible.value = false
+  nextTick(() => {
+    formRefBack.value.resetFields()
+  })
+}
+const handleBackConfirm = () => {
+  formRefBack.value.validate(valid => {
+    if (valid) {
+      req.put('/so/billingBack', formBack.value).then(() => {
+        backVisible.value = false
+        refresh()
       })
     }
   })

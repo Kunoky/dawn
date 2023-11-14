@@ -77,7 +77,7 @@ watch(
         value: '',
         type: dict.value,
         orderNum: 0,
-        status: 1,
+        status: true,
         remark: '',
       }
       if (props.data) {

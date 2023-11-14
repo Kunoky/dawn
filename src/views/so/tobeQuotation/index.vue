@@ -332,6 +332,7 @@ const handleConfirmAddRecord = () => {
       req.post('/quote/communication/save', addForm.value).then(() => {
         addRecordVisible.value = false
         refresh()
+        addRefForm.value.resetFields()
       })
     }
   })
