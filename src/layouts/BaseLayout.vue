@@ -70,7 +70,7 @@ const handleUserCommand = e => {
       router.push('/user/profile')
       break
     case 'fse':
-      location.href = '/mobile'
+      location.href = '/mobile/'
       break
     case 'logout':
       userStore.logout()
