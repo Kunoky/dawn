@@ -51,7 +51,7 @@
           </el-table-column>
           <el-table-column label="操作" width="150" class-name="small-padding fixed-width">
             <template #default="{ row }">
-              <template v-if="!row.isSuperAdmin">
+              <template v-if="row.userName !== 'admin'">
                 <el-tooltip :content="$t('common.edit')" placement="top">
                   <el-button link type="info" @click="handleEdit(row)" v-hasPermi="['system:user:edit']">
                     <i-ep-edit />
