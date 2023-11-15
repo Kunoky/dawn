@@ -15,7 +15,7 @@
         <template #default="{ row }">{{ row.orderType }} / {{ row.subType }}</template>
       </el-table-column>
       <el-table-column label="仪器地址" prop="equipAddress" width="100" />
-      <el-table-column label="客户单位名称" prop="custDesc" width="100" />
+      <el-table-column label="客户名称" prop="custDesc" width="100" />
       <el-table-column label="客户编号" prop="customerId" width="100" />
       <el-table-column label="客户联系人" prop="name" width="100" />
       <el-table-column label="客户联系人电话" prop="mobile" width="120" />

@@ -2,7 +2,7 @@
   <div>
     <CTable
       :page-conf="{
-        action: listData,
+        action: '/request/myList',
       }"
       ref="tableRef"
       id="repairRequest"
@@ -45,7 +45,7 @@
           <span v-else class="cs-p fw-b" style="color: #909399">{{ request_status.kv[row.status] }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="客户单位名称" prop="custDesc" width="120" />
+      <el-table-column label="客户名称" prop="custDesc" width="120" />
       <el-table-column label="客户编号" prop="customerId" width="100" />
       <el-table-column label="客户联系人" prop="name" width="100" />
       <el-table-column label="客户联系人电话" prop="mobile" width="120" />
@@ -76,19 +76,8 @@
         <el-form-item label="设备序列号" prop="serialNo">
           <el-input v-model="form.serialNo" placeholder="请输入设备序列号" clearable />
         </el-form-item>
-        <el-form-item label="SO类型" prop="options">
-          <el-cascader
-            v-model="form.options"
-            :options="options"
-            filterable
-            clearable
-            @change="changeOptions"
-            :props="{
-              label: 'name',
-              value: 'name',
-              checkStrictly: true,
-            }"
-          />
+        <el-form-item label="设备型号" prop="modelNo">
+          <el-input v-model="form.modelNo" placeholder="请输入设备型号" clearable />
         </el-form-item>
         <el-form-item label="状态" prop="status">
           <el-select v-model="form.status" placeholder="请选择状态" clearable>
@@ -100,58 +89,8 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="客户单位名称" prop="customerId">
-          <el-select
-            v-model="form.customerId"
-            placeholder="请输入客户单位名称"
-            filterable
-            remote
-            reserve-keyword
-            :remote-method="remoteMethodCustDesc"
-            :loading="custDescLoading"
-            style="width: 100%"
-          >
-            <el-option v-for="item in custDescOptions" :key="item.value" :label="item.label" :value="item.value" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="报修来源" prop="source">
-          <el-select v-model="form.source" placeholder="请选择报修来源" clearable>
-            <el-option
-              v-for="(item, index) in repairSource.options"
-              :key="index"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="工程师名称" prop="fseWorkCenter">
-          <el-select
-            clearable
-            v-model="form.fseWorkCenter"
-            placeholder="请输入FSE工程师名称"
-            filterable
-            remote
-            reserve-keyword
-            :remote-method="remoteMethodEngineerName"
-            :loading="engineerNameLoading"
-          >
-            <el-option v-for="item in engineerNameOptions" :key="item.value" :label="item.label" :value="item.value" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="PO号" prop="po">
-          <el-input v-model="form.po" placeholder="请输入PO号" clearable />
-        </el-form-item>
-        <el-form-item label="报修时间" prop="params">
-          <el-date-picker
-            v-model="form.params"
-            value-format="YYYY-MM-DD"
-            placeholder="请选择时间"
-            type="daterange"
-            range-separator="-"
-            start-placeholder="开始时间"
-            end-placeholder="结束时间"
-            @change="getDatePicker"
-          />
+        <el-form-item label="客户名称" prop="custDesc">
+          <el-input v-model="form.custDesc" placeholder="请输入客户名称" clearable />
         </el-form-item>
       </template>
     </CTable>
@@ -163,17 +102,17 @@
 import { ref } from 'vue'
 import FormDialog from './components/FormDialog.vue'
 
-const listData = params => {
-  delete params.params
-  delete params.options
-  return req.get('/request/myList', { params }).then(res => {
-    return { data: res.data }
-  })
-}
-
 const tableRef = ref()
+// 状态字典
+const request_status = useDict('request_status')
+// 报修来源
+const repairSource = useDict('repairSource')
 const refresh = () => tableRef.value.refresh()
-// const i18n = useI18n()
+const current = ref(null)
+const visible = reactive({
+  form: false,
+  permission: false,
+})
 onMounted(() => {
   getMaintenanceType()
 })
@@ -184,34 +123,6 @@ const getMaintenanceType = async () => {
     options.value = tree
   })
 }
-const changeOptions = val => {
-  if (!val) {
-    tableRef.value.form.orderType = ''
-    tableRef.value.form.subType = ''
-  } else {
-    tableRef.value.form.orderType = val[0]
-    tableRef.value.form.subType = val[1]
-  }
-}
-
-const getDatePicker = val => {
-  if (!val) {
-    tableRef.value.form.beginDate = ''
-    tableRef.value.form.endDate = ''
-  } else {
-    tableRef.value.form.beginDate = val[0]
-    tableRef.value.form.endDate = val[1]
-  }
-}
-
-const current = ref(null)
-const visible = reactive({
-  form: false,
-  permission: false,
-})
-
-// const status = useDict('status')
-
 const handleAdd = () => {
   current.value = null
   visible.form = true
@@ -224,61 +135,5 @@ const handleEdit = row => {
 
 const handleFormSuccess = () => {
   refresh()
-}
-
-// 状态字典
-const request_status = useDict('request_status')
-// 报修来源
-const repairSource = useDict('repairSource')
-
-// 客户单位名称
-const custDescLoading = ref(false)
-const custDescList = ref([])
-const custDescOptions = ref([])
-async function getCustomer(v) {
-  return req.get('/data/customer', { params: { name: v } }).then(res => {
-    custDescList.value = res.data.map(item => {
-      return { value: item.kunnr, label: `${item.kunnr} / ${item.companyName1}` }
-    })
-  })
-}
-const remoteMethodCustDesc = query => {
-  if (query) {
-    custDescLoading.value = true
-    getCustomer(query).then(() => {
-      custDescLoading.value = false
-      custDescOptions.value = custDescList.value.filter(item => {
-        return item.label.toLowerCase().includes(query.toLowerCase())
-      })
-    })
-  } else {
-    custDescOptions.value = []
-  }
-}
-// 工程师名称
-const engineerNameLoading = ref(false)
-const engineerNameList = ref([])
-const engineerNameOptions = ref([])
-async function getEngineerName(v) {
-  return req.get('/user/fse', { params: { fseName: v } }).then(res => {
-    engineerNameList.value = res.data.map(item => {
-      return { value: item.fseWorkCenter, label: `${item.fseWorkCenter} / ${item.fseName}` }
-    })
-  })
-}
-const remoteMethodEngineerName = query => {
-  if (query) {
-    engineerNameLoading.value = true
-    getEngineerName(query).then(() => {
-      engineerNameLoading.value = false
-      engineerNameOptions.value = engineerNameList.value.filter(item => {
-        return item.label.toLowerCase().includes(query.toLowerCase())
-      })
-    })
-    // setTimeout(() => {
-    // }, 200)
-  } else {
-    engineerNameOptions.value = []
-  }
 }
 </script>

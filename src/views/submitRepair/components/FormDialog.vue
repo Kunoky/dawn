@@ -46,10 +46,10 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="客户单位名称" prop="custDesc">
+          <el-form-item label="客户名称" prop="custDesc">
             <el-select
               v-model="form.custDesc"
-              placeholder="请输入客户单位名称"
+              placeholder="请输入客户名称"
               filterable
               remote
               reserve-keyword
@@ -301,7 +301,7 @@ const rules = {
   modelNo: [{ required: true, message: '设备型号不能为空', trigger: 'blur' }],
   dataOptions: [{ required: true, message: '维修类型不能为空', trigger: 'change' }],
   equipAddress: [{ required: true, message: '仪器地址不能为空', trigger: 'blur' }],
-  custDesc: [{ required: true, message: '客户单位名称不能为空', trigger: 'change' }],
+  custDesc: [{ required: true, message: '客户名称不能为空', trigger: 'change' }],
   name: [{ required: true, message: '客户联系人不能为空', trigger: 'blur' }],
   lastName: [
     { required: true, message: '客户联系人拼音(姓)不能为空', trigger: 'blur' },
@@ -438,7 +438,7 @@ const changeSeriaNo = val => {
   staging.value.bbb = val.customer.address === '' ? val.customer.enAddress : val.customer.address
 }
 
-// 客户单位名称
+// 客户名称
 const custDescLoading = ref(false)
 const custDescList = ref([])
 const custDescOptions = ref([])

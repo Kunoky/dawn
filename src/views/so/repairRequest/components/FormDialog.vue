@@ -7,7 +7,7 @@
     v-bind="$attrs"
     :close-on-click-modal="false"
   >
-    <p v-if="!form.isConsistentSap" style="font-size: 12px; color: #e71316; margin: 0 50px 10px">与SAP信息不一致</p>
+    <p v-if="form.isConsistentSap" style="font-size: 12px; color: #e71316; margin: 0 50px 10px">与SAP信息不一致</p>
     <el-form :model="form" ref="formRef" label-width="155" :rules="rules" v-loading="dataLoading">
       <el-row>
         <el-col :span="12">
@@ -44,10 +44,10 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="客户单位名称" prop="custDesc">
+          <el-form-item label="客户名称" prop="custDesc">
             <el-select
               v-model="form.custDesc"
-              placeholder="请输入客户单位名称"
+              placeholder="请输入客户名称"
               filterable
               remote
               reserve-keyword
@@ -293,7 +293,7 @@ const rules = {
   modelNo: [{ required: true, message: '设备型号不能为空', trigger: 'blur' }],
   dataOptions: [{ required: true, message: '维修类型不能为空', trigger: 'change' }],
   equipAddress: [{ required: true, message: '仪器地址不能为空', trigger: 'blur' }],
-  custDesc: [{ required: true, message: '客户单位名称不能为空', trigger: 'change' }],
+  custDesc: [{ required: true, message: '客户名称不能为空', trigger: 'change' }],
   name: [{ required: true, message: '客户联系人不能为空', trigger: 'blur' }],
   lastName: [
     { required: true, message: '客户联系人拼音(姓)不能为空', trigger: 'blur' },
@@ -351,7 +351,7 @@ watch(
         area: '',
         orderType: '', // 维修类型
         subType: '', //维修子类型
-        isConsistentSap: true,
+        isConsistentSap: false,
         isPromotion: false,
         promotionCode: '',
       }
@@ -428,7 +428,7 @@ const changeSeriaNo = val => {
   staging.value.bbb = val.customer.address === '' ? val.customer.enAddress : val.customer.address
 }
 
-// 客户单位名称
+// 客户名称
 const custDescLoading = ref(false)
 const custDescList = ref([])
 const custDescOptions = ref([])

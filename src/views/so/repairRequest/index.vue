@@ -39,7 +39,7 @@
           <span v-else class="cs-p fw-b" style="color: #909399">{{ request_status.kv[row.status] }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="客户单位名称" prop="custDesc" width="160" />
+      <el-table-column label="客户名称" prop="custDesc" width="160" />
       <el-table-column label="客户编号" prop="customerId" width="100" />
       <el-table-column label="客户联系人" prop="name" width="100" />
       <el-table-column label="客户联系人电话" prop="mobile" width="120" />
@@ -93,8 +93,8 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="客户名称" prop="companyName">
-          <el-input v-model="form.companyName" placeholder="请输入客户名称" clearable />
+        <el-form-item label="客户名称" prop="custDesc">
+          <el-input v-model="form.custDesc" placeholder="请输入客户名称" clearable />
         </el-form-item>
         <el-form-item label="工程师名称" prop="fseWorkCenter">
           <el-select

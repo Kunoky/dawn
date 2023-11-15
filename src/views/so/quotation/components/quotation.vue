@@ -287,9 +287,9 @@ const getSummaries = () => {
   return ['总计', '', '', '', '', '', formData.value.quotePrice]
 }
 const validateDiscount = (rule, value, callback) => {
-  let reg = new RegExp('^([1-9]|[1-9]\\d|100)$')
+  let reg = new RegExp('^([0-9]|[1-9]\\d|100)$')
   if (!reg.test(value)) {
-    callback(new Error('只能输入1~100的正整数'))
+    callback(new Error('只能输入0~100的正整数'))
   } else {
     callback()
   }
