@@ -15,7 +15,7 @@
         <template #default="{ row }">{{ row.orderType }} / {{ row.subType }}</template>
       </el-table-column>
       <el-table-column label="仪器地址" prop="equipAddress" width="100" />
-      <el-table-column label="客户单位名称" prop="custDesc" width="100" />
+      <el-table-column label="客户名称" prop="custDesc" width="100" />
       <el-table-column label="客户编号" prop="customerId" width="100" />
       <el-table-column label="客户联系人" prop="name" width="100" />
       <el-table-column label="客户联系人电话" prop="mobile" width="120" />
@@ -164,8 +164,8 @@
         <el-form-item label="结果" prop="content">
           <el-input type="textarea" v-model="addForm.content" placeholder="请输入结果" clearable />
         </el-form-item>
-        <el-form-item label="Pending具体状态" prop="pendingStatus">
-          <el-select v-model="addForm.pendingStatus" placeholder="请选择Pending具体状态" clearable style="width: 100%">
+        <el-form-item label="Pending状态" prop="pendingStatus">
+          <el-select v-model="addForm.pendingStatus" placeholder="请选择Pending状态" clearable style="width: 100%">
             <el-option
               v-for="(item, index) in pendingStatus.options"
               :key="index"

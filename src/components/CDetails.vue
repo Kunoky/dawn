@@ -33,7 +33,7 @@
               {{ form.orderType }} / {{ form.subType }}
             </el-descriptions-item>
             <el-descriptions-item>
-              <template #label>客户单位名称</template>
+              <template #label>客户名称</template>
               {{ form.custDesc }}
             </el-descriptions-item>
             <el-descriptions-item>
@@ -222,7 +222,12 @@
             <el-table-column label="沟通记录" align="center">
               <el-table-column prop="custName" label="沟通人" />
               <el-table-column prop="communicationTime" label="时间" />
-              <el-table-column prop="content" label="结果" width="400" :show-overflow-tooltip="true" />
+              <el-table-column prop="content" label="结果" width="300" :show-overflow-tooltip="true" />
+              <el-table-column prop="pendingStatus" label="Pending状态">
+                <template #default="{ row }">
+                  {{ pendingStatus.kv[row.pendingStatus] }}
+                </template>
+              </el-table-column>
             </el-table-column>
           </el-table>
         </el-collapse-item>
@@ -416,6 +421,7 @@ const attachmentType = useDict('attachmentType')
 const repairSource = useDict('repairSource')
 const laborType = useDict('laborType')
 const MaterialConsumptionType = useDict('MaterialConsumptionType')
+const pendingStatus = useDict('pendingStatus')
 
 const activeNames = ref(['1'])
 const form = ref({})

@@ -33,7 +33,7 @@
         {{ form.orderType }} / {{ form.subType }}
       </el-descriptions-item>
       <el-descriptions-item>
-        <template #label>客户单位名称</template>
+        <template #label>客户名称</template>
         {{ form.custDesc }}
       </el-descriptions-item>
       <el-descriptions-item>
