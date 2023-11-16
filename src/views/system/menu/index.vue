@@ -117,10 +117,8 @@ const genMenuTree = () => {
       children: [],
     },
   ]
-  listData().then(({ data }) => {
-    tree[0].children = data
-    menuTree.value = tree
-  })
+  tree[0].children = tableRef.value.pageRef.data
+  menuTree.value = tree
 }
 
 const handleAdd = row => {
