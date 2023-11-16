@@ -3,7 +3,7 @@
     :model-value="modelValue"
     @close="handleClose"
     title="生成报价"
-    width="65%"
+    width="800px"
     v-bind="$attrs"
     :close-on-click-modal="false"
   >
@@ -39,17 +39,17 @@
           <div class="txt">{{ row.unit }}</div>
         </template>
       </el-table-column>
-      <el-table-column prop="unitPrice" label="单价">
+      <el-table-column prop="unitPrice" label="单价" width="120">
         <template #default="{ row }">
           <el-input v-model="row.unitPrice" placeholder="请输入" @blur="handelPrice(row)"></el-input>
         </template>
       </el-table-column>
       <el-table-column prop="includeTaxPrice" label="含税价格">
         <template #default="{ row }">
-          <div class="txt">{{ row.includeTaxPrice }}</div>
+          <div class="txt">{{ row.includeTaxPrice === null ? handelPrice(row) : row.includeTaxPrice }}</div>
         </template>
       </el-table-column>
-      <el-table-column prop="quantity" label="配件/Labor数量">
+      <el-table-column prop="quantity" label="配件/Labor数量" width="100">
         <template #default="{ row }">
           <el-input v-model="row.quantity" placeholder="请输入" @blur="handelCalculateTotalPrice(row)"></el-input>
         </template>
@@ -404,18 +404,31 @@ const handleClose = () => {
 const handleConfirm = () => {
   formRef.value.validate(valid => {
     if (valid) {
-      invoiceInfo.value.soNo = props.data.soNo
-      formData.value.soNo = props.data.soNo
-      let data = {
-        quoteDetailList: tableData.value,
-        invoiceInfo: invoiceInfo.value,
-        quoteSummary: formData.value,
+      const hasEmptyNum = tableData.value.some(
+        obj => obj.unitPrice === null || obj.unitPrice === '' || obj.quantity === null || obj.quantity === ''
+      )
+      if (hasEmptyNum) {
+        // 数组中存在空值，返回 false
+        ElMessage.error('单价与配件/Labor数量不能为空!')
+      } else {
+        // 数组中不存在空值，返回 true
+        invoiceInfo.value.soNo = props.data.soNo
+        formData.value.soNo = props.data.soNo
+        let data = {
+          quoteDetailList: tableData.value,
+          invoiceInfo: invoiceInfo.value,
+          quoteSummary: formData.value,
+        }
+        // console.log(data);
+        req.post('/quote/save', data).then(res => {
+          if (res.data === '') {
+            emit('update:modelValue', false)
+          } else {
+            window.open(import.meta.env.VITE_SERVER_PATH + res.data, '_blank')
+            emit('update:modelValue', false)
+          }
+        })
       }
-      // console.log(data);
-      req.post('/quote/save', data).then(res => {
-        window.open(import.meta.env.VITE_SERVER_PATH + res.data, '_blank')
-        emit('update:modelValue', false)
-      })
     }
   })
 }
