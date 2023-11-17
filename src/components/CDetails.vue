@@ -93,6 +93,26 @@
               {{ form.warrantyTime }}
             </el-descriptions-item>
             <el-descriptions-item>
+              <template #label>所属区域</template>
+              {{ regionalStatus.kv[form.area] }}
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>是否CRC</template>
+              {{ bool.kv[form.isCrc] }}
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>PO号</template>
+              {{ form.po }}
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>是否Promotio</template>
+              {{ bool.kv[form.isPromotion] }}
+            </el-descriptions-item>
+            <el-descriptions-item v-if="form.isPromotion">
+              <template #label>promotionCode</template>
+              {{ form.promotionCode }}
+            </el-descriptions-item>
+            <el-descriptions-item>
               <template #label>报修内容</template>
               {{ form.content }}
             </el-descriptions-item>
@@ -422,6 +442,8 @@ const repairSource = useDict('repairSource')
 const laborType = useDict('laborType')
 const MaterialConsumptionType = useDict('MaterialConsumptionType')
 const pendingStatus = useDict('pendingStatus')
+const regionalStatus = useDict('regionalStatus') // 区域
+const bool = useDict('bool')
 
 const activeNames = ref(['1'])
 const form = ref({})
@@ -431,6 +453,7 @@ const transferLogList = ref([]) //流转信息
 const serviceReport = ref([])
 const attachmentList = ref([])
 const workLogList = ref([])
+
 watch(
   () => props.modelValue,
   v => {

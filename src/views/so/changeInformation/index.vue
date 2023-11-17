@@ -45,6 +45,9 @@
         <el-form-item label="客户名称" prop="custName">
           <el-input v-model="form.custName" placeholder="请输入客户名称" clearable />
         </el-form-item>
+        <el-form-item label="申请人" prop="requestName">
+          <el-input v-model="form.requestName" placeholder="请输入申请人" clearable />
+        </el-form-item>
         <el-form-item label="状态" prop="status">
           <el-select clearable v-model="form.status" placeholder="请选择状态">
             <el-option label="已提交" value="0" />
