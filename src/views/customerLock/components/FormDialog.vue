@@ -43,7 +43,7 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="分组" prop="group" class="data-box">
-            <el-input v-model="form.group" placeholder="请输入分组" clearable />
+            <el-input-number v-model="form.group" :min="1" style="width: 100%" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -161,7 +161,7 @@ watch(
         blockFlag: '',
         creator: '',
         date: [],
-        group: '',
+        group: null,
         name: '',
         name2: '',
         name3: '',
