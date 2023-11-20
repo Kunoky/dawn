@@ -2,26 +2,25 @@
   <div>
     <CTable
       :page-conf="{
-        action: '/request/myList',
+        action: '/region/page',
       }"
       ref="tableRef"
       id="repairRequest"
     >
       <el-table-column label="省份编码" prop="reg" />
       <el-table-column label="省份" prop="province" />
-      <el-table-column label="省份(拼音)" prop="province_py" />
+      <el-table-column label="省份(拼音)" prop="provincePy" />
       <el-table-column label="区域" prop="region">
         <template #default="{ row }">
           {{ regionalStatus.kv[row.region] }}
         </template>
       </el-table-column>
-      <el-table-column label="FSE Leader邮箱" prop="fse_leader" />
-      <el-table-column label="service sales邮箱" prop="service_sales" />
-      <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="80">
+      <el-table-column label="FSE Leader邮箱" prop="fseLeader" />
+      <el-table-column label="service sales邮箱" prop="serviceSales" />
+      <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="100">
         <template #default="{ row }">
-          <div v-if="row.status === 2">
-            <el-button type="info" link @click="handleEdit(row)">修改</el-button>
-          </div>
+          <el-button type="info" link @click="handleEdit(row)">修改</el-button>
+          <el-button type="primary" link @click="handleDel(row)">删除</el-button>
         </template>
       </el-table-column>
       <template #actions>
@@ -31,6 +30,9 @@
         </el-button>
       </template>
       <template #form="{ form }">
+        <el-form-item label="省份" prop="province">
+          <el-input v-model="form.province" placeholder="请输入省份" />
+        </el-form-item>
         <el-form-item label="所属区域" prop="region">
           <el-select v-model="form.region" placeholder="请选择所属区域" style="width: 100%" clearable>
             <el-option
@@ -72,5 +74,21 @@ const handleEdit = row => {
 
 const handleFormSuccess = () => {
   refresh()
+}
+
+const handleDel = row => {
+  ElMessageBox.confirm('数据删除后无法恢复，确定继续？', '警告', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
+  })
+    .then(() => {
+      return req.delete(`/region/${row.reg}`)
+    })
+    .then(({ code }) => {
+      if (code === 200) {
+        refresh()
+      }
+    })
 }
 </script>
