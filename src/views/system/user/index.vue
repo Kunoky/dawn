@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-row :gutter="16">
+    <!-- <el-row :gutter="16">
       <el-col :span="4" class="bgc-1 pdt-m">
         <div>
           <el-input v-model="orgName" placeholder="请输入部门名称" clearable style="margin-bottom: 20px" />
@@ -19,79 +19,83 @@
           />
         </div>
       </el-col>
-      <el-col :span="20">
-        <CTable
-          :page-conf="{
-            action: 'user/list',
-          }"
-          :params="params"
-          ref="tableRef"
-          id="systemUser"
-        >
-          <el-table-column label="用户编号" key="userId" prop="userId" />
-          <el-table-column label="用户名称" key="userName" prop="userName" :show-overflow-tooltip="true" />
-          <el-table-column label="登录名称" key="loginName" prop="loginName" :show-overflow-tooltip="true" />
-          <el-table-column label="组织" key="orgName" prop="orgName" :show-overflow-tooltip="true" />
-          <el-table-column label="手机号码" key="phoneNumber" prop="phoneNumber" width="120" />
-          <el-table-column label="状态" key="status">
-            <template #default="{ row }">
-              <el-switch
-                v-if="!row.isSuperAdmin"
-                v-model="row.status"
-                :active-value="true"
-                :inactive-value="false"
-                @click="handleStatusChange(row)"
-              ></el-switch>
-            </template>
-          </el-table-column>
-          <el-table-column label="创建时间" prop="createTime" width="140">
-            <template #default="{ row }">
-              <span>{{ parseTime(row.createTime) }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="操作" width="150" class-name="small-padding fixed-width">
-            <template #default="{ row }">
-              <template v-if="row.userName !== 'admin'">
-                <el-tooltip :content="$t('common.edit')" placement="top">
-                  <el-button link type="info" @click="handleEdit(row)" v-hasPermi="['system:user:edit']">
-                    <i-ep-edit />
-                  </el-button>
-                </el-tooltip>
-                <el-tooltip :content="$t('common.delete')" placement="top">
-                  <el-button link type="info" @click="handleDel(row)" v-hasPermi="['system:user:del']">
-                    <i-ep-delete />
-                  </el-button>
-                </el-tooltip>
-                <el-tooltip :content="$t('view.user.resetPwd')" placement="top">
-                  <el-button link type="info" @click="handleResetPwd(row)" v-hasPermi="['system:user:resetPwd']">
-                    <i-ep-key />
-                  </el-button>
-                </el-tooltip>
-              </template>
-            </template>
-          </el-table-column>
-          <template #actions>
-            <el-button type="primary" plain @click="handleAdd" v-hasPermi="['system:user:add']">
-              <i-ep-plus />
-              新增
-            </el-button>
+      <el-col :span="20"> -->
+    <CTable
+      :page-conf="{
+        action: 'user/list',
+      }"
+      :params="params"
+      ref="tableRef"
+      id="systemUser"
+    >
+      <el-table-column label="用户编号" prop="userId" />
+      <el-table-column label="用户名称" prop="userName" :show-overflow-tooltip="true" />
+      <el-table-column label="登录名称" prop="loginName" :show-overflow-tooltip="true" />
+      <el-table-column label="区域" prop="area">
+        <template #default="{ row }">
+          {{ regionalStatus.kv[row.area] }}
+        </template>
+      </el-table-column>
+      <el-table-column label="手机号码" prop="phoneNumber" width="120" />
+      <el-table-column label="状态" prop="status">
+        <template #default="{ row }">
+          <el-switch
+            v-if="!row.isSuperAdmin"
+            v-model="row.status"
+            :active-value="true"
+            :inactive-value="false"
+            @click="handleStatusChange(row)"
+          ></el-switch>
+        </template>
+      </el-table-column>
+      <el-table-column label="创建时间" prop="createTime" width="140">
+        <template #default="{ row }">
+          <span>{{ parseTime(row.createTime) }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" width="150" class-name="small-padding fixed-width">
+        <template #default="{ row }">
+          <template v-if="row.userName !== 'admin'">
+            <el-tooltip :content="$t('common.edit')" placement="top">
+              <el-button link type="info" @click="handleEdit(row)" v-hasPermi="['system:user:edit']">
+                <i-ep-edit />
+              </el-button>
+            </el-tooltip>
+            <el-tooltip :content="$t('common.delete')" placement="top">
+              <el-button link type="info" @click="handleDel(row)" v-hasPermi="['system:user:del']">
+                <i-ep-delete />
+              </el-button>
+            </el-tooltip>
+            <el-tooltip :content="$t('view.user.resetPwd')" placement="top">
+              <el-button link type="info" @click="handleResetPwd(row)" v-hasPermi="['system:user:resetPwd']">
+                <i-ep-key />
+              </el-button>
+            </el-tooltip>
           </template>
-          <template #form="{ form }">
-            <el-form-item label="用户名称" prop="userName">
-              <el-input v-model="form.userName" placeholder="请输入用户名称" clearable />
-            </el-form-item>
-            <el-form-item label="手机号码" prop="phoneNumber">
-              <el-input v-model="form.phoneNumber" placeholder="请输入手机号码" clearable />
-            </el-form-item>
-            <el-form-item label="状态" prop="status">
-              <el-select v-model="form.status" placeholder="用户状态" clearable>
-                <el-option v-for="i in status.options" :key="i.value" :label="i.label" :value="i.value" />
-              </el-select>
-            </el-form-item>
-          </template>
-        </CTable>
-      </el-col>
-    </el-row>
+        </template>
+      </el-table-column>
+      <template #actions>
+        <el-button type="primary" plain @click="handleAdd" v-hasPermi="['system:user:add']">
+          <i-ep-plus />
+          新增
+        </el-button>
+      </template>
+      <template #form="{ form }">
+        <el-form-item label="用户名称" prop="userName">
+          <el-input v-model="form.userName" placeholder="请输入用户名称" clearable />
+        </el-form-item>
+        <el-form-item label="手机号码" prop="phoneNumber">
+          <el-input v-model="form.phoneNumber" placeholder="请输入手机号码" clearable />
+        </el-form-item>
+        <el-form-item label="状态" prop="status">
+          <el-select v-model="form.status" placeholder="用户状态" clearable>
+            <el-option v-for="i in status.options" :key="i.value" :label="i.label" :value="i.value" />
+          </el-select>
+        </el-form-item>
+      </template>
+    </CTable>
+    <!-- </el-col>
+    </el-row> -->
     <FormDialog :data="current" v-model="visible.form" :orgTree="orgTree" @success="handleFormSuccess"></FormDialog>
   </div>
 </template>
@@ -111,6 +115,7 @@ const visible = reactive({
 })
 
 const status = useDict('status')
+const regionalStatus = useDict('regionalStatus')
 
 const orgTree = ref([])
 req.get('/organization/list').then(res => {
@@ -156,24 +161,24 @@ const handleFormSuccess = () => {
 
 const orgName = ref('')
 const orgTreeRef = ref()
-const filterNode = (v, data) => {
-  if (!v) return true
-  return data.label.match(v)
-}
+// const filterNode = (v, data) => {
+//   if (!v) return true
+//   return data.label.match(v)
+// }
 watch(orgName, val => {
   orgTreeRef.value.filter(val)
 })
 const params = reactive({
   orgId: undefined,
 })
-function handleNodeClick(data) {
-  if (params.orgId === data.id) {
-    params.orgId = null
-    orgTreeRef.value.setCurrentKey(null)
-  } else {
-    params.orgId = data.id
-  }
-}
+// function handleNodeClick(data) {
+//   if (params.orgId === data.id) {
+//     params.orgId = null
+//     orgTreeRef.value.setCurrentKey(null)
+//   } else {
+//     params.orgId = data.id
+//   }
+// }
 
 const handleStatusChange = row => {
   ElMessageBox.confirm(i18n.t('tip.confirm'), i18n.t('common.warning'), {
