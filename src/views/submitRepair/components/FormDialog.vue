@@ -321,11 +321,11 @@ const rules = {
   ],
   content: [
     { required: true, message: '报修内容不能为空', trigger: 'blur' },
-    {
-      pattern: /^((?=.*[a-z])(?=.*[A-Z])(?=.*[!@;:,?]))$/,
-      message: '请输入英文与英文符号',
-      trigger: ['blur', 'change'],
-    },
+    // {
+    //   pattern: /^((?=.*[a-z])(?=.*[A-Z])(?=.*[!@;:,?]))$/,
+    //   message: '请输入英文与英文符号',
+    //   trigger: ['blur', 'change'],
+    // },
   ],
   repairTime: [{ required: true, message: '报修时间不能为空', trigger: 'blur' }],
   fseName: [{ required: true, message: 'FSE工程师名称不能为空', trigger: 'blur' }],
