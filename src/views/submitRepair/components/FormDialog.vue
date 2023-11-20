@@ -319,7 +319,14 @@ const rules = {
     { required: true, message: '客户联系人邮箱不能为空', trigger: 'blur' },
     { type: 'email', message: '请输入正确的邮箱格式', trigger: ['blur'] },
   ],
-  content: [{ required: true, message: '报修内容不能为空', trigger: 'blur' }],
+  content: [
+    { required: true, message: '报修内容不能为空', trigger: 'blur' },
+    {
+      pattern: /^((?=.*[a-z])(?=.*[A-Z])(?=.*[!@;:,?]))$/,
+      message: '请输入英文与英文符号',
+      trigger: ['blur', 'change'],
+    },
+  ],
   repairTime: [{ required: true, message: '报修时间不能为空', trigger: 'blur' }],
   fseName: [{ required: true, message: 'FSE工程师名称不能为空', trigger: 'blur' }],
 }
@@ -558,6 +565,7 @@ const handleConfirm = () => {
           form.value.isConsistentSap = true
         }
       }
+      // console.log(form.value);
       loading.value = true
       req[form.value.id ? 'put' : 'post']('/request', form.value)
         .then(({ code }) => {

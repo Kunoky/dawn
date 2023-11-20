@@ -192,9 +192,8 @@ const handleExamine = row => {
     .then(() => {
       let data = {
         soNo: row.soNo,
-        status: 4, //TODO:SO状态 报价待确认
       }
-      return req.put('/so/update', data)
+      return req.put('/quote/quoteConfirm', data)
     })
     .then(({ code }) => {
       if (code === 200) {

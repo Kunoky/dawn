@@ -385,13 +385,13 @@
               :summary-method="getSummaries"
             >
               <el-table-column label="配件消耗情况" align="center">
-                <el-table-column prop="material" label="物料号" />
+                <el-table-column prop="materialNo" label="物料号" />
                 <el-table-column prop="unit" label="单位" />
                 <el-table-column prop="unitPrice" label="单价" />
                 <el-table-column prop="itemName" label="名称" />
-                <el-table-column prop="count" label="实际消耗数量" />
-                <el-table-column prop="type" label="消耗类型">
-                  <template #default="{ row }">{{ MaterialConsumptionType.kv[row.type] }}</template>
+                <el-table-column prop="quantity" label="实际消耗数量" />
+                <el-table-column prop="itemType" label="消耗类型">
+                  <template #default="{ row }">{{ MaterialConsumptionType.kv[row.itemType] }}</template>
                 </el-table-column>
                 <el-table-column prop="subTotal" label="总价" />
               </el-table-column>

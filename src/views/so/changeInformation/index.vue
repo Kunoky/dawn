@@ -27,21 +27,6 @@
         <el-form-item label="SO NO" prop="soNo">
           <el-input v-model="form.soNo" placeholder="请输入SO NO" clearable />
         </el-form-item>
-        <!-- <el-form-item label="设备序列号" prop="serialNo">
-          <el-input v-model="form.serialNo" placeholder="请输入设备型号" clearable />
-        </el-form-item> -->
-        <!-- <el-form-item label="设备型号" prop="modelNo">
-          <el-input v-model="form.modelNo" placeholder="请输入设备型号" clearable />
-        </el-form-item> -->
-        <!-- <el-form-item label="CRC" prop="isCrc">
-          <el-select v-model="form.isCrc" placeholder="请选择CRC" clearable>
-            <el-option label="是" value="1" />
-            <el-option label="否" value="0" />
-          </el-select>
-        </el-form-item> -->
-        <!-- <el-form-item label="区域" prop="area">
-          <el-input v-model="form.area" placeholder="请输入区域" clearable />
-        </el-form-item> -->
         <el-form-item label="客户名称" prop="custName">
           <el-input v-model="form.custName" placeholder="请输入客户名称" clearable />
         </el-form-item>
@@ -54,19 +39,6 @@
             <el-option label="已关闭" value="1" />
           </el-select>
         </el-form-item>
-        <!-- <el-form-item label="工程师名称" prop="fseId">
-          <el-select clearable v-model="form.fseId" placeholder="请输入FSE工程师名称" filterable remote reserve-keyword
-            :remote-method="remoteMethodEngineerName" :loading="engineerNameLoading">
-            <el-option v-for="item in engineerNameOptions" :key="item.value" :label="item.label" :value="item.value" />
-          </el-select>
-        </el-form-item> -->
-        <!-- <el-form-item label="SO类型" prop="options">
-          <el-cascader v-model="form.options" :options="options" filterable clearable @change="changeOptions" :props="{
-            label: 'name',
-            value: 'id',
-            checkStrictly: true,
-          }" />
-        </el-form-item> -->
       </template>
     </CTable>
     <el-dialog title="详情" width="40%" v-model="detailVisible" :close-on-click-modal="false">
@@ -108,54 +80,7 @@
 <script setup>
 const i18n = useI18n()
 const refresh = () => tableRef.value.refresh()
-
 const tableRef = ref(null)
-
-// 工程师名称
-// const engineerNameLoading = ref(false)
-// const engineerNameList = ref([])
-// const engineerNameOptions = ref([])
-// async function getEngineerName(v) {
-//   return req.get('/user/fse', { params: { fseName: v } }).then(res => {
-//     engineerNameList.value = res.data.map(item => {
-//       return { value: item.fseId, label: `${item.fseId} / ${item.fseName}` }
-//     })
-//   })
-// }
-// const remoteMethodEngineerName = query => {
-//   if (query) {
-//     engineerNameLoading.value = true
-//     getEngineerName(query).then(() => {
-//       engineerNameLoading.value = false
-//       engineerNameOptions.value = engineerNameList.value.filter(item => {
-//         return item.label.toLowerCase().includes(query.toLowerCase())
-//       })
-//     })
-//   } else {
-//     engineerNameOptions.value = []
-//   }
-// }
-
-// onMounted(() => {
-//   getMaintenanceType()
-// })
-// const options = ref([])
-// const getMaintenanceType = async () => {
-//   return req.get('/data/maintenanceType').then(res => {
-//     const [tree] = utils.arr2tree(res.data, 'id', 'pid')
-//     options.value = tree
-//   })
-// }
-
-// const changeOptions = val => {
-//   if (!val) {
-//     tableRef.value.form.orderType = ''
-//     tableRef.value.form.subType = ''
-//   } else {
-//     tableRef.value.form.orderType = val[0]
-//     tableRef.value.form.subType = val[1]
-//   }
-// }
 
 // 详情
 const current = ref(null)

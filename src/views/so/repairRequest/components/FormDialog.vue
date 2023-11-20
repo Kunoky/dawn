@@ -7,7 +7,7 @@
     v-bind="$attrs"
     :close-on-click-modal="false"
   >
-    <p v-if="form.isConsistentSap" style="font-size: 12px; color: #e71316; margin: 0 50px 10px">与SAP信息不一致</p>
+    <p v-if="!form.isConsistentSap" style="font-size: 12px; color: #e71316; margin: 0 50px 10px">与SAP信息不一致</p>
     <el-form :model="form" ref="formRef" label-width="155" :rules="rules" v-loading="dataLoading">
       <el-row>
         <el-col :span="12">
@@ -311,7 +311,10 @@ const rules = {
     { required: true, message: '客户联系人邮箱不能为空', trigger: 'blur' },
     { type: 'email', message: '请输入正确的邮箱格式', trigger: ['blur'] },
   ],
-  content: [{ required: true, message: '报修内容不能为空', trigger: 'blur' }],
+  content: [
+    { required: true, message: '报修内容不能为空', trigger: 'blur' },
+    // { pattern: /((?=.*[a-z])(?=.*[A-Z])(?=.*[!@;:,?''""#$%&*()-=_+/]))/, message: '请输入英文与英文符号', trigger: ['change', 'blue'] }
+  ],
   repairTime: [{ required: true, message: '报修时间不能为空', trigger: 'blur' }],
   fseName: [{ required: true, message: 'FSE工程师名称不能为空', trigger: 'blur' }],
 }
