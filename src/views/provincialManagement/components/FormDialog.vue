@@ -7,11 +7,11 @@
     v-bind="$attrs"
     :close-on-click-modal="false"
   >
-    <el-form :model="form" ref="formRef" label-width="140" :rules="rules" v-loading="dataLoading">
+    <el-form :model="form" ref="formRef" label-width="140" :rules="rules">
       <el-row>
         <el-col :span="12">
           <el-form-item label="省份编码" prop="reg">
-            <el-input v-model="form.reg" placeholder="请输入省份编码" />
+            <el-input :disabled="title === '修改省份'" v-model="form.reg" placeholder="请输入省份编码" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -20,8 +20,8 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="省份(拼音)" prop="province_py">
-            <el-input v-model="form.province_py" placeholder="请输入省份(拼音)" />
+          <el-form-item label="省份(拼音)" prop="provincePy">
+            <el-input v-model="form.provincePy" placeholder="请输入省份(拼音)" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -37,13 +37,13 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="FSE Leader邮箱" prop="fse_leader">
-            <el-input v-model="form.fse_leader" placeholder="请输入FSE Leader邮箱" />
+          <el-form-item label="FSE Leader邮箱" prop="fseLeader">
+            <el-input v-model="form.fseLeader" placeholder="请输入FSE Leader邮箱" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="service sales邮箱" prop="service_sales">
-            <el-input v-model="form.service_sales" placeholder="请输入service sales邮箱" />
+          <el-form-item label="service sales邮箱" prop="serviceSales">
+            <el-input v-model="form.serviceSales" placeholder="请输入service sales邮箱" />
           </el-form-item>
         </el-col>
       </el-row>
@@ -65,74 +65,64 @@ const props = defineProps({
   options: Array,
 })
 
-const title = computed(() => (props.data ? '修改省份' : '新增省份管理'))
+const title = computed(() => (props.data ? '修改省份' : '新增省份'))
 const regionalStatus = useDict('regionalStatus') // 区域
 
 const rules = {
   reg: [{ required: true, message: '省份编码不能为空', trigger: 'blur' }],
   province: [{ required: true, message: '省份不能为空', trigger: 'blur' }],
-  province_py: [{ required: true, message: '省份编码(拼音)不能为空', trigger: 'blur' }],
-  region: [{ required: true, message: '所属区域不能为空', trigger: 'change' }],
-  fse_leader: [
+  provincePy: [{ required: true, message: '省份编码(拼音)不能为空', trigger: 'blur' }],
+  region: [{ required: true, message: '所属区域不能为空', trigger: 'blur' }],
+  fseLeader: [
     { required: true, message: 'FSE Leader邮箱不能为空', trigger: 'blur' },
     { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] },
   ],
-  service_sales: [
+  serviceSales: [
     { required: true, message: 'service sales邮箱不能为空', trigger: 'blur' },
     { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] },
   ],
 }
 const formRef = ref()
 const form = ref({})
+
 watch(
   () => props.modelValue,
   v => {
     if (v) {
       form.value = {
-        id: undefined,
         reg: '',
         province: '',
-        province_py: '',
+        provincePy: '',
         region: '',
-        fse_leader: '',
-        service_sales: '',
+        fseLeader: '',
+        serviceSales: '',
+      }
+      if (props.data) {
+        for (let k in form.value) {
+          form.value[k] = props.data[k]
+        }
       }
       nextTick(() => {
         formRef.value.clearValidate()
       })
-      // props.data?.id && getRequestInfo()
     }
   },
   { immediate: true }
 )
-
-// const { run: getRequestInfo, loading: dataLoading } = useAsync(
-//   async () => {
-//     return req.get(`/request/info/${props.data.id}`)
-//   },
-//   {
-//     onSuccess(res) {
-//       form.value = res.data
-//       form.value.dataOptions = [res.data.orderType, res.data.subType]
-//       attachmentsList.value = res.data.attachments
-
-//       // 暂存用做数据对比
-//       staging.value.aaa = res.data.custDesc
-//       staging.value.bbb = res.data.equipAddress
-//       nextTick(() => {
-//         formRef.value.clearValidate()
-//       })
-//     },
-//   }
-// )
 // 取消
 const handleClose = () => {
   emit('update:modelValue', false)
 }
 const handleConfirm = () => {
-  // formRef.value.validate(valid => {
-  //   if (valid) {
-  //   }
-  // })
+  formRef.value.validate(valid => {
+    if (valid) {
+      req[title.value === '修改省份' ? 'put' : 'post']('/region', form.value).then(({ code }) => {
+        if (code === 200) {
+          emit('success')
+          emit('update:modelValue', false)
+        }
+      })
+    }
+  })
 }
 </script>

@@ -190,10 +190,7 @@ const handleExamine = row => {
     type: 'warning',
   })
     .then(() => {
-      let data = {
-        soNo: row.soNo,
-      }
-      return req.put('/quote/quoteConfirm', data)
+      return req.put(`/quote/quoteConfirm/${row.soNo}`)
     })
     .then(({ code }) => {
       if (code === 200) {
