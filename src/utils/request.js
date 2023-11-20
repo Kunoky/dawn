@@ -18,7 +18,7 @@ service.interceptors.request.use(
   config => {
     // do something before request is sent
     config.headers = {
-      Authorization: 'Bearer ' + getToken(),
+      Authorization: getToken(),
       'Call-Source': 'WEB',
       'Api-Version': 1.0,
       'Content-Type': 'application/json;charset=utf-8',

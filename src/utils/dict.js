@@ -23,7 +23,7 @@ export async function init() {
           i.value = +i.value
           break
         case 3:
-          i.value = JSON.parse(i.value)
+          i.value = i.value === 'true'
           break
         default:
       }
