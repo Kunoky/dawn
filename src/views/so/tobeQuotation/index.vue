@@ -42,6 +42,7 @@
           <div>
             <el-button type="info" link @click="handleDeatil(row)">详情</el-button>
             <el-button type="info" link @click="handleUploadFile(row)">上传附件</el-button>
+            <el-button type="info" link @click="handleQuotation(row)">报价</el-button>
           </div>
           <div>
             <el-button type="danger" link @click="handleAddRecord(row)">添加沟通记录</el-button>
@@ -182,10 +183,14 @@
         </span>
       </template>
     </el-dialog>
+
+    <Quotation :data="currentQuotation" v-model="quotation.visible" @success="handleQuotationSuccess"></Quotation>
   </div>
 </template>
 
 <script setup>
+import Quotation from './components/quotation.vue'
+
 const tableRef = ref()
 const refresh = () => tableRef.value.refresh()
 const i18n = useI18n()
@@ -334,6 +339,20 @@ const handleConfirmAddRecord = () => {
       })
     }
   })
+}
+
+const currentQuotation = ref(null)
+const quotation = reactive({
+  permission: false,
+  visible: false,
+})
+
+const handleQuotation = row => {
+  currentQuotation.value = row
+  quotation.visible = true
+}
+const handleQuotationSuccess = () => {
+  refresh()
 }
 </script>
 <style scoped>

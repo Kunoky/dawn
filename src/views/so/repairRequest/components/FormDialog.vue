@@ -418,7 +418,7 @@ const remoteMethod = query => {
 const changeSeriaNo = val => {
   form.value.serialNo = val.sernr
   form.value.modelNo = val.typbz
-  form.value.eqId = val.matnr
+  form.value.eqId = val.equnr
   form.value.warrantyTime = val.validTo
 
   form.value.customerId = val.customer.customerId

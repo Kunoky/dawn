@@ -37,16 +37,16 @@
       <el-table-column label="工程师名称" prop="fseName" width="100" />
       <el-table-column label="FSE work center" prop="fseWorkCenter" width="115" />
       <el-table-column label="FSE storage location" prop="fseStorageLocation" width="140" />
-      <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="110">
+      <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="150">
         <template #default="{ row }">
           <div>
             <el-button type="info" link @click="handleDeatil(row)">详情</el-button>
             <el-button type="info" link @click="handleQuotation(row)">报价</el-button>
-          </div>
-          <div>
             <el-button type="danger" link @click="handleBack(row)">退回</el-button>
-            <el-button type="primary" link @click="handleExamine(row)">已报价</el-button>
           </div>
+          <!-- <div> -->
+          <!-- <el-button type="primary" link @click="handleExamine(row)">已报价</el-button> -->
+          <!-- </div> -->
         </template>
       </el-table-column>
       <template #form="{ form }">
@@ -152,7 +152,7 @@ const listData = params => {
 
 const tableRef = ref()
 const refresh = () => tableRef.value.refresh()
-const i18n = useI18n()
+// const i18n = useI18n()
 onMounted(() => {
   getMaintenanceType()
 })
@@ -183,21 +183,21 @@ const handleDeatil = row => {
   current.value = row
   visible.detail = true
 }
-const handleExamine = row => {
-  ElMessageBox.confirm('确定后无法修改，是否继续？', i18n.t('common.warning'), {
-    confirmButtonText: i18n.t('common.confirm'),
-    cancelButtonText: i18n.t('common.cancel'),
-    type: 'warning',
-  })
-    .then(() => {
-      return req.put(`/quote/quoteConfirm/${row.soNo}`)
-    })
-    .then(({ code }) => {
-      if (code === 200) {
-        refresh()
-      }
-    })
-}
+// const handleExamine = row => {
+//   ElMessageBox.confirm('确定后无法修改，是否继续？', i18n.t('common.warning'), {
+//     confirmButtonText: i18n.t('common.confirm'),
+//     cancelButtonText: i18n.t('common.cancel'),
+//     type: 'warning',
+//   })
+//     .then(() => {
+//       return req.put(`/quote/quoteConfirm/${row.soNo}`)
+//     })
+//     .then(({ code }) => {
+//       if (code === 200) {
+//         refresh()
+//       }
+//     })
+// }
 const handleFormSuccess = () => {
   refresh()
 }
