@@ -1,17 +1,19 @@
 <template>
-  <div class="tags-view of-a" @click.right="handleRightClick" ref="elRef">
-    <router-link
-      v-for="(i, index) in store.list"
-      :to="{ name: i.name }"
-      :key="i.name"
-      :data-index="index"
-      class="tag-link"
-    >
-      <el-tag :closable="!i.meta.affix" type="info" size="large" @close.prevent="store.close(index)">
-        {{ i.meta.title }}
-      </el-tag>
-    </router-link>
-    <div class="ft-r">
+  <div class="tags-view dp-f" @click.right="handleRightClick" ref="elRef">
+    <div class="tags fx-1 of-a ws-nw">
+      <router-link
+        v-for="(i, index) in store.list"
+        :to="{ name: i.name }"
+        :key="i.name"
+        :data-index="index"
+        class="tag-link"
+      >
+        <el-tag :closable="!i.meta.affix" type="info" size="large" @close.prevent="store.close(index)">
+          {{ i.meta.title }}
+        </el-tag>
+      </router-link>
+    </div>
+    <div>
       <el-button link @click="store.refresh"><i-ep-refresh /></el-button>
     </div>
     <CLay v-model="menuVisible" :x="menuPosition.x" :y="menuPosition.y">
@@ -28,6 +30,10 @@ watch(
   route,
   v => {
     store.add(v)
+    nextTick(() => {
+      const active = elRef.value.querySelector('.router-link-exact-active > .el-tag.el-tag--info')
+      active?.scrollIntoView()
+    })
   },
   { immediate: true }
 )
@@ -63,7 +69,7 @@ function handleMenuClick(index) {
 .tags-view {
   line-height: 40px;
   padding: 0 var(--size-m);
-  & > a + a {
+  .tags > a + a {
     margin-left: var(--size-s);
     display: inline-block;
   }

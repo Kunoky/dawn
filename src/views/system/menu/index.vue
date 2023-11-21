@@ -109,7 +109,6 @@ const visible = reactive({
 
 const menuTree = ref([])
 const genMenuTree = () => {
-  if (menuTree.value.length) return
   let tree = [
     {
       menuId: '0',
