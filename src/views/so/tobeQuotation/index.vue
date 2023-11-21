@@ -42,11 +42,13 @@
           <div>
             <el-button type="info" link @click="handleDeatil(row)">详情</el-button>
             <el-button type="info" link @click="handleUploadFile(row)">上传附件</el-button>
-            <el-button type="info" link @click="handleQuotation(row)">报价</el-button>
+          </div>
+          <div>
+            <el-button type="danger" link @click="handleQuotation(row)">修改报价</el-button>
           </div>
           <div>
             <el-button type="danger" link @click="handleAddRecord(row)">添加沟通记录</el-button>
-            <el-button type="primary" link @click="handleExamine(row)">发起流程</el-button>
+            <el-button type="danger" link @click="handleExamine(row)">发起流程</el-button>
           </div>
         </template>
       </el-table-column>
