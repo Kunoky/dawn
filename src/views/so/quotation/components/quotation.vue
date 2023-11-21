@@ -68,9 +68,6 @@
 
     <div style="margin-top: 20px">
       <el-form ref="formRef" :model="formData" :rules="rules" label-width="112px">
-        <!-- <el-form-item>
-          <el-switch v-model="switchVal" active-text="修改折扣率" inactive-text="修改最终价格" @change="handelShowSwitch" />
-        </el-form-item> -->
         <el-row>
           <el-col :span="12">
             <el-form-item label="最终价格" prop="finalPrice" class="form_flex">
@@ -315,17 +312,6 @@ const rules = {
   ],
 }
 
-// const switchVal = ref(true)
-// 修改开关按钮，值重置
-// const handelShowSwitch = () => {
-//   formData.value.discountRate = 100
-//   console.log(formData.value.quotePrice);
-//   formData.value.finalPrice = formData.value.quotePrice
-//   nextTick(() => {
-//     formRef.value.clearValidate()
-//   })
-// }
-
 // b就是a四舍五入的值 如果b小于a 就返回b+0.01 否则返回b
 function getFinalPrice(a) {
   let b = Number(a.toFixed(2))
@@ -362,15 +348,7 @@ const handelEditTotal = () => {
     }
   })
 }
-/** 鼠标移入cell */
-// const handleCellEnter = row => {
-//   row.isEdit = true
-//   console.log(tableData.value, '223334');
-// }
-/** 鼠标移出cell */
-// const handleCellLeave = row => {
-// row.isEdit = false
-// }
+
 const handelPrice = row => {
   let res = row.unitPrice * 1.13
   row.includeTaxPrice = (parseInt(res * 100) / 100).toFixed(2)

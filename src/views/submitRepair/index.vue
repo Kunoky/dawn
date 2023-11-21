@@ -8,7 +8,7 @@
       id="repairRequest"
     >
       <el-table-column label="设备序列号" prop="serialNo" width="100" />
-      <el-table-column label="设备型号" prop="modelNo" width="100" />
+      <el-table-column label="设备型号" prop="modelNo" width="140" />
       <el-table-column label="仪器SAP Equip编号" prop="eqId" width="128" />
       <el-table-column label="维修类型" width="100">
         <template #default="{ row }">{{ row.orderType }} / {{ row.subType }}</template>
@@ -45,7 +45,7 @@
           <span v-else class="cs-p fw-b" style="color: #909399">{{ request_status.kv[row.status] }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="客户名称" prop="custDesc" width="120" />
+      <el-table-column label="客户名称" prop="custDesc" width="160" />
       <el-table-column label="客户编号" prop="customerId" width="100" />
       <el-table-column label="客户联系人" prop="name" width="100" />
       <el-table-column label="客户联系人电话" prop="mobile" width="120" />

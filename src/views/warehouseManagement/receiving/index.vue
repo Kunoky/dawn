@@ -8,7 +8,7 @@
       id="shipped"
     >
       <el-table-column label="SO NO" prop="soNo" width="130" />
-      <el-table-column label="设备序列号" prop="serialNo" width="120" />
+      <el-table-column label="设备序列号" prop="serialNo" width="140" />
       <el-table-column label="设备型号" prop="modelNo" width="100" />
       <el-table-column label="快递单号" prop="expressNo" width="140" />
       <el-table-column label="还库类型" prop="returnType" width="100">
@@ -16,7 +16,6 @@
           <span>{{ row.returnType === 1 ? '好件还库' : '坏件还库' }}</span>
         </template>
       </el-table-column>
-      <!-- <el-table-column label="领用时间" prop="repairTime" width="130" /> -->
       <el-table-column label="工程师名称" prop="fseName" />
       <el-table-column label="FSE work center" prop="fseWorkCenter" width="120" />
       <el-table-column label="FSE storage location" prop="fseStorageLocation" width="140" />
@@ -79,8 +78,6 @@ const remoteMethodEngineerName = query => {
         return item.label.toLowerCase().includes(query.toLowerCase())
       })
     })
-    // setTimeout(() => {
-    // }, 200)
   } else {
     engineerNameOptions.value = []
   }

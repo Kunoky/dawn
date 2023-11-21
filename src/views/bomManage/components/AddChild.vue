@@ -53,7 +53,6 @@
             >
               <el-option v-for="item in materialNoOptions" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
-            <!-- <el-input v-model="form.material"  placeholder="请选择物料号" clearable /> -->
           </el-form-item>
         </el-col>
         <el-col :span="12">

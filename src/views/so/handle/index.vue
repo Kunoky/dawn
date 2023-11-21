@@ -11,9 +11,6 @@
       <el-table-column label="维修类型" width="160">
         <template #default="{ row }">{{ row.orderType }} / {{ row.subType }}</template>
       </el-table-column>
-      <!-- <el-table-column label="物料号" prop="kkk" /> -->
-      <!-- <el-table-column label="批次号" prop="lll" /> -->
-      <!-- <el-table-column label="数量" prop="mmm" /> -->
       <el-table-column label="失败原因" prop="rpaErrorMessage" width="200" />
       <el-table-column label="工程师名称" prop="fseName" />
       <el-table-column label="FSE work center" prop="fseWorkCenter" width="140" />
@@ -150,8 +147,6 @@ const remoteMethodEngineerName = query => {
         return item.label.toLowerCase().includes(query.toLowerCase())
       })
     })
-    // setTimeout(() => {
-    // }, 200)
   } else {
     engineerNameOptions.value = []
   }

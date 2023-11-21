@@ -8,15 +8,15 @@
       id="assign"
     >
       <el-table-column label="SO NO" prop="soNo" width="130" />
-      <el-table-column label="设备序列号" prop="serialNo" :show-overflow-tooltip="true" width="100" />
-      <el-table-column label="设备型号" prop="modelNo" :show-overflow-tooltip="true" width="100" />
+      <el-table-column label="设备序列号" prop="serialNo" width="140" />
+      <el-table-column label="设备型号" prop="modelNo" width="100" />
       <el-table-column label="仪器SAP Equip编号" prop="eqId" width="128" />
       <el-table-column label="维修类型" width="100">
         <template #default="{ row }">{{ row.orderType }} / {{ row.subType }}</template>
       </el-table-column>
       <el-table-column label="仪器地址" prop="equipAddress" width="100" />
       <el-table-column label="创建人" prop="createByName" width="100" />
-      <el-table-column label="客户名称" prop="custDesc" width="100" />
+      <el-table-column label="客户名称" prop="custDesc" width="160" />
       <el-table-column label="客户编号" prop="customerId" width="100" />
       <el-table-column label="客户联系人" prop="name" width="100" />
       <el-table-column label="客户联系人电话" prop="mobile" width="120" />
@@ -171,8 +171,6 @@ const remoteMethodEngineerName = query => {
         return item.label.toLowerCase().includes(query.toLowerCase())
       })
     })
-    // setTimeout(() => {
-    // }, 200)
   } else {
     engineerNameOptions.value = []
   }
