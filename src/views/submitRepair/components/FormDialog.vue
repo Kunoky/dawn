@@ -46,6 +46,31 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
+          <el-form-item label="所属区域" prop="area">
+            <el-select v-model="form.area" disabled placeholder="自动填入" style="width: 100%" clearable>
+              <el-option
+                v-for="(item, index) in regionalStatus.options"
+                :key="index"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="保修期" prop="warrantyTime" class="date-box">
+            <el-date-picker
+              v-model="form.warrantyTime"
+              type="date"
+              value-format="YYYY-MM-DD"
+              disabled
+              placeholder="自动填入"
+              style="width: 100%"
+              clearabl
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
           <el-form-item label="客户名称" prop="custDesc">
             <el-select
               v-model="form.custDesc"
@@ -90,19 +115,6 @@
         <el-col :span="12">
           <el-form-item label="客户联系人邮箱" prop="email">
             <el-input v-model="form.email" placeholder="请输入客户联系人邮箱" clearable />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="保修期" prop="warrantyTime" class="date-box">
-            <el-date-picker
-              v-model="form.warrantyTime"
-              type="date"
-              value-format="YYYY-MM-DD"
-              disabled
-              placeholder="自动填入"
-              style="width: 100%"
-              clearabl
-            />
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -187,18 +199,6 @@
               placeholder="请选择报修时间"
               clearable
             />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="所属区域" prop="area">
-            <el-select v-model="form.area" placeholder="请选择所属区域" style="width: 100%" clearable>
-              <el-option
-                v-for="(item, index) in regionalStatus.options"
-                :key="index"
-                :label="item.label"
-                :value="item.value"
-              />
-            </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -297,12 +297,25 @@ const title = computed(() => (props.data ? '修改维修申请' : '新增维修�
 const repairSource = useDict('repairSource') // 报修来源
 const regionalStatus = useDict('regionalStatus') // 区域
 
+const checkContent = (rule, value, callback) => {
+  // 匹配这些中文标点符号 。 ？ ！ ， 、 ； ： “ ” ‘ ' （ ） 《 》 〈 〉 【 】 『 』 「 」 ﹃ ﹄ 〔 〕 … — ～ ﹏ ￥
+  var reg =
+    /[\u3002|\uff1f|\uff01|\uff0c|\u3001|\uff1b|\uff1a|\u201c|\u201d|\u2018|\u2019|\uff08|\uff09|\u300a|\u300b|\u3008|\u3009|\u3010|\u3011|\u300e|\u300f|\u300c|\u300d|\ufe43|\ufe44|\u3014|\u3015|\u2026|\u2014|\uff5e|\ufe4f|\uffe5]/
+  if (value) {
+    if (/[\u4E00-\u9FA5]/g.test(value) || reg.test(value)) {
+      callback(new Error('不能输入中文以及中文标点符号!'))
+    } else {
+      callback()
+    }
+  }
+  callback()
+}
 const rules = {
   serialNo: [{ required: true, message: '设备序列号不能为空', trigger: 'blur' }],
   modelNo: [{ required: true, message: '设备型号不能为空', trigger: 'blur' }],
   dataOptions: [{ required: true, message: '维修类型不能为空', trigger: 'change' }],
   equipAddress: [{ required: true, message: '仪器地址不能为空', trigger: 'blur' }],
-  custDesc: [{ required: true, message: '客户名称不能为空', trigger: 'change' }],
+  custDesc: [{ required: true, message: '客户名称不能为空', trigger: 'blur' }],
   name: [{ required: true, message: '客户联系人不能为空', trigger: 'blur' }],
   lastName: [
     { required: true, message: '客户联系人拼音(姓)不能为空', trigger: 'blur' },
@@ -322,11 +335,7 @@ const rules = {
   ],
   content: [
     { required: true, message: '报修内容不能为空', trigger: 'blur' },
-    {
-      pattern: /^[a-zA-Z0-9]+$/,
-      message: '请输入英文与英文符号',
-      trigger: ['blur', 'change'],
-    },
+    { validator: checkContent, trigger: 'blur' },
   ],
   repairTime: [{ required: true, message: '报修时间不能为空', trigger: 'blur' }],
   fseName: [{ required: true, message: 'FSE工程师名称不能为空', trigger: 'blur' }],

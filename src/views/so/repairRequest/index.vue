@@ -120,17 +120,17 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="报修时间" prop="params">
+        <el-form-item label="报修时间" prop="timeScope">
           <el-date-picker
-            v-model="form.params"
+            v-model="form.timeScope"
             value-format="YYYY-MM-DD"
             placeholder="请选择时间"
             type="daterange"
             range-separator="-"
             start-placeholder="开始时间"
             end-placeholder="结束时间"
-            @change="getDatePicker"
           />
+          <!-- @change="getDatePicker" -->
         </el-form-item>
         <el-form-item label="SO类型" prop="options">
           <el-cascader
@@ -239,7 +239,7 @@ const tableRef = ref()
 const refresh = () => tableRef.value.refresh()
 
 const listData = params => {
-  delete params.params
+  // delete params.params
   delete params.options
   return req.get('/request/toBeCreatedList', { params }).then(res => {
     return { data: res.data }
@@ -267,15 +267,17 @@ const changeOptions = val => {
 }
 
 // 获取时间
-const getDatePicker = val => {
-  if (!val) {
-    tableRef.value.form.beginDate = ''
-    tableRef.value.form.endDate = ''
-  } else {
-    tableRef.value.form.beginDate = val[0]
-    tableRef.value.form.endDate = val[1]
-  }
-}
+// const getDatePicker = val => {
+//   console.log(val);
+//   tableRef.value.form.timeScope = val+''
+// //   // if (!val) {
+// //   //   tableRef.value.form.beginDate = ''
+// //   //   tableRef.value.form.endDate = ''
+// //   // } else {
+// //   //   tableRef.value.form.beginDate = val[0]
+// //   //   tableRef.value.form.endDate = val[1]
+// //   // }
+// }
 
 const current = ref(null)
 const visible = reactive({

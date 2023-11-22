@@ -104,14 +104,14 @@
         <el-form-item label="开票申请提交时间段">
           <el-date-picker
             value-format="YYYY-MM-DD"
-            v-model="form.params"
+            v-model="form.timeScope"
             placeholder="请选择时间"
             type="daterange"
             range-separator="-"
             start-placeholder="开始时间"
             end-placeholder="结束时间"
-            @change="getDatePicker"
           />
+          <!-- @change="getDatePicker" -->
         </el-form-item>
       </template>
     </CTable>
@@ -170,7 +170,7 @@ const tableRef = ref()
 const refresh = () => tableRef.value.refresh()
 const listData = params => {
   delete params.options
-  delete params.params
+  // delete params.params
   params.soStatus = 9 // TODO: SO状态 待billing
   return req.get('/so/page', { params }).then(res => {
     return { data: res.data }
@@ -223,15 +223,15 @@ const changeOptions = val => {
   }
 }
 
-const getDatePicker = val => {
-  if (!val) {
-    tableRef.value.form.invoicingStartTime = ''
-    tableRef.value.form.invoicingEndTime = ''
-  } else {
-    tableRef.value.form.invoicingStartTime = val[0]
-    tableRef.value.form.invoicingEndTime = val[1]
-  }
-}
+// const getDatePicker = val => {
+//   if (!val) {
+//     tableRef.value.form.invoicingStartTime = ''
+//     tableRef.value.form.invoicingEndTime = ''
+//   } else {
+//     tableRef.value.form.invoicingStartTime = val[0]
+//     tableRef.value.form.invoicingEndTime = val[1]
+//   }
+// }
 
 const current = ref(null)
 const visible = reactive({

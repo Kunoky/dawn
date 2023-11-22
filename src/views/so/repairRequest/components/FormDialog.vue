@@ -288,13 +288,24 @@ const props = defineProps({
 
 const repairSource = useDict('repairSource') // 报修来源
 const regionalStatus = useDict('regionalStatus') // 区域
-
+const checkContent = (rule, value, callback) => {
+  var reg =
+    /[\u3002|\uff1f|\uff01|\uff0c|\u3001|\uff1b|\uff1a|\u201c|\u201d|\u2018|\u2019|\uff08|\uff09|\u300a|\u300b|\u3008|\u3009|\u3010|\u3011|\u300e|\u300f|\u300c|\u300d|\ufe43|\ufe44|\u3014|\u3015|\u2026|\u2014|\uff5e|\ufe4f|\uffe5]/
+  if (value) {
+    if (/[\u4E00-\u9FA5]/g.test(value) || reg.test(value)) {
+      callback(new Error('不能输入中文以及中文标点符号!'))
+    } else {
+      callback()
+    }
+  }
+  callback()
+}
 const rules = {
   serialNo: [{ required: true, message: '设备序列号不能为空', trigger: 'blur' }],
   modelNo: [{ required: true, message: '设备型号不能为空', trigger: 'blur' }],
   dataOptions: [{ required: true, message: '维修类型不能为空', trigger: 'change' }],
   equipAddress: [{ required: true, message: '仪器地址不能为空', trigger: 'blur' }],
-  custDesc: [{ required: true, message: '客户名称不能为空', trigger: 'change' }],
+  custDesc: [{ required: true, message: '客户名称不能为空', trigger: 'blur' }],
   name: [{ required: true, message: '客户联系人不能为空', trigger: 'blur' }],
   lastName: [
     { required: true, message: '客户联系人拼音(姓)不能为空', trigger: 'blur' },
@@ -314,7 +325,7 @@ const rules = {
   ],
   content: [
     { required: true, message: '报修内容不能为空', trigger: 'blur' },
-    // { pattern: /((?=.*[a-z])(?=.*[A-Z])(?=.*[!@;:,?''""#$%&*()-=_+/]))/, message: '请输入英文与英文符号', trigger: ['change', 'blue'] }
+    { validator: checkContent, trigger: 'blur' },
   ],
   repairTime: [{ required: true, message: '报修时间不能为空', trigger: 'blur' }],
   fseName: [{ required: true, message: 'FSE工程师名称不能为空', trigger: 'blur' }],

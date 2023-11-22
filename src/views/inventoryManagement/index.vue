@@ -1,6 +1,6 @@
 <template>
   <div>
-    <CTable :page-conf="{ action: listData }" ref="tableRef" id="inventoryManagement">
+    <CTable :page-conf="{ action: '/st/list' }" ref="tableRef" id="inventoryManagement">
       <el-table-column label="SO订单编号" prop="soNo" />
       <el-table-column label="移库凭证号" prop="transferVoucherNo" :show-overflow-tooltip="true" />
       <el-table-column label="快递单号" prop="expressNo" />
@@ -48,8 +48,16 @@
         <el-form-item label="快递单号" prop="expressNo">
           <el-input v-model="form.expressNo" placeholder="请输入快递单号" clearable />
         </el-form-item>
-        <el-form-item label="时间" prop="params">
-          <range-picker v-model="form.params" value-format="YYYY-MM-DD" @change="getDatePicker" />
+        <el-form-item label="时间" prop="timeScope">
+          <el-date-picker
+            value-format="YYYY-MM-DD"
+            v-model="form.timeScope"
+            placeholder="请选择时间"
+            type="daterange"
+            range-separator="-"
+            start-placeholder="开始时间"
+            end-placeholder="结束时间"
+          />
         </el-form-item>
         <el-form-item label="是否有异常" prop="exceptionFlag">
           <el-select v-model="form.exceptionFlag" placeholder="请选择是否有异常" clearable>
@@ -75,21 +83,21 @@ const visible = reactive({
   form: false,
   permission: false,
 })
-const listData = params => {
-  delete params.params
-  return req.get('/st/list', { params }).then(res => {
-    return { data: res.data }
-  })
-}
-const getDatePicker = val => {
-  if (!val) {
-    tableRef.value.form.beginDate = ''
-    tableRef.value.form.endDate = ''
-  } else {
-    tableRef.value.form.beginDate = val[0]
-    tableRef.value.form.endDate = val[1]
-  }
-}
+// const listData = params => {
+//   // delete params.params
+//   return req.get('/st/list', { params }).then(res => {
+//     return { data: res.data }
+//   })
+// }
+// const getDatePicker = val => {
+//   if (!val) {
+//     tableRef.value.form.beginDate = ''
+//     tableRef.value.form.endDate = ''
+//   } else {
+//     tableRef.value.form.beginDate = val[0]
+//     tableRef.value.form.endDate = val[1]
+//   }
+// }
 
 const handleAdd = () => {
   current.value = null

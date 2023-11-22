@@ -61,8 +61,10 @@
       <el-table-column label="保修期" prop="warrantyTime" width="130" />
       <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="130">
         <template #default="{ row }">
-          <el-button v-if="row.status === 2" type="info" link @click="handleEdit(row)">修改</el-button>
-          <el-button type="primary" link @click="handleExamine(row)">取消申请</el-button>
+          <div v-if="row.status === 2">
+            <el-button type="info" link @click="handleEdit(row)">修改</el-button>
+            <el-button type="primary" link @click="handleExamine(row)">取消申请</el-button>
+          </div>
         </template>
       </el-table-column>
       <template #actions>
