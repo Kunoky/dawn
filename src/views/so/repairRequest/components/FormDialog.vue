@@ -409,7 +409,7 @@ const serialNoOptions = ref([])
 function getEquipment(s) {
   return req.get('/data/equipment', { params: { serialNo: s } }).then(res => {
     serialNoList.value = res.data.map(item => {
-      return { value: item, label: `${item.sernr}/${item.typbz}` }
+      return { value: item, label: `${item.sernr}_${item.typbz}` }
     })
   })
 }
@@ -450,7 +450,7 @@ const custDescOptions = ref([])
 async function getCustomer(v) {
   return req.get('/data/customer', { params: { name: v } }).then(res => {
     custDescList.value = res.data.map(item => {
-      return { value: item, label: `${item.name === '' ? item.enName : item.name}` }
+      return { value: item, label: `${item.customerId}_${item.name === '' ? item.enName : item.name}` }
     })
   })
 }
@@ -482,7 +482,7 @@ const engineerNameOptions = ref([])
 async function getEngineerName(v) {
   return req.get('/user/fse', { params: { fseName: v } }).then(res => {
     engineerNameList.value = res.data.map(item => {
-      return { value: item, label: `${item.fseWorkCenter} / ${item.fseName}` }
+      return { value: item, label: `${item.fseWorkCenter}_${item.fseName}` }
     })
   })
 }

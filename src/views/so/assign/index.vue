@@ -158,7 +158,7 @@ const engineerNameOptions = ref([])
 async function getEngineerName(v) {
   return req.get('/user/fse', { params: { fseName: v } }).then(res => {
     engineerNameList.value = res.data.map(item => {
-      return { value: item.fseWorkCenter, label: `${item.fseWorkCenter} / ${item.fseName}` }
+      return { value: item.fseWorkCenter, label: `${item.fseWorkCenter}_${item.fseName}` }
     })
   })
 }
@@ -231,7 +231,7 @@ const engineerNameOptions1 = ref([])
 async function getEngineerName1(v) {
   return req.get('/user/fse', { params: { fseName: v } }).then(res => {
     engineerNameList1.value = res.data.map(item => {
-      return { value: item, label: `${item.fseWorkCenter} / ${item.fseName}` }
+      return { value: item, label: `${item.fseWorkCenter}_${item.fseName}` }
     })
   })
 }
