@@ -253,7 +253,8 @@
       max-height="200px"
       :header-cell-style="{ background: '#f5f7fa' }"
     >
-      <el-table-column prop="custName" label="客户名称" width="150" fixed="left" />
+      <el-table-column prop="soNo" label="so No" width="100" fixed="left" />
+      <el-table-column prop="custName" label="客户名称" width="150" />
       <el-table-column prop="modelNo" label="状态">
         <template #default="{ row }">
           <span class="cs-p fw-b">{{ soStatus.kv[row.status] }}</span>
@@ -417,7 +418,7 @@ const remoteMethod = query => {
 const changeSeriaNo = val => {
   form.value.serialNo = val.sernr
   form.value.modelNo = val.typbz
-  form.value.eqId = val.matnr
+  form.value.eqId = val.equnr
   form.value.warrantyTime = val.validTo
 
   form.value.customerId = val.customer.customerId
@@ -451,8 +452,6 @@ const remoteMethodCustDesc = query => {
         return item.label.toLowerCase().includes(query.toLowerCase())
       })
     })
-    // setTimeout(() => {
-    // }, 200)
   } else {
     custDescOptions.value = []
   }
@@ -485,14 +484,11 @@ const remoteMethodEngineerName = query => {
         return item.label.toLowerCase().includes(query.toLowerCase())
       })
     })
-    // setTimeout(() => {
-    // }, 200)
   } else {
     engineerNameOptions.value = []
   }
 }
 const changeEngineerName = val => {
-  // form.value.engineerId = val.fseId
   form.value.fseName = val.fseName
   form.value.fseWorkCenter = val.fseWorkCenter
   form.value.fseStorageLocation = val.fseStorageLocation

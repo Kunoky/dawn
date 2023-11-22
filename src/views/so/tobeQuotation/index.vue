@@ -8,14 +8,19 @@
       id="quotation"
     >
       <el-table-column label="SO NO" prop="soNo" width="130" />
-      <el-table-column label="设备序列号" prop="serialNo" :show-overflow-tooltip="true" width="100" />
-      <el-table-column label="设备型号" prop="modelNo" :show-overflow-tooltip="true" width="100" />
+      <el-table-column label="设备序列号" prop="serialNo" width="140" />
+      <el-table-column label="设备型号" prop="modelNo" width="100" />
       <el-table-column label="仪器SAP Equip编号" prop="eqId" width="128" />
       <el-table-column label="维修类型" width="100">
         <template #default="{ row }">{{ row.orderType }} / {{ row.subType }}</template>
       </el-table-column>
       <el-table-column label="仪器地址" prop="equipAddress" width="100" />
-      <el-table-column label="客户名称" prop="custDesc" width="100" />
+      <el-table-column label="状态" prop="status" width="100">
+        <template #default="{ row }">
+          <span class="cs-p fw-b" style="color: #909399">{{ soStatus.kv[row.status] }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="客户名称" prop="custDesc" width="160" />
       <el-table-column label="客户编号" prop="customerId" width="100" />
       <el-table-column label="客户联系人" prop="name" width="100" />
       <el-table-column label="客户联系人电话" prop="mobile" width="120" />
@@ -32,11 +37,6 @@
       <el-table-column label="工程师名称" prop="fseName" width="100" />
       <el-table-column label="FSE work center" prop="fseWorkCenter" width="115" />
       <el-table-column label="FSE storage location" prop="fseStorageLocation" width="140" />
-      <el-table-column label="状态" prop="status" width="100">
-        <template #default="{ row }">
-          <span class="cs-p fw-b" style="color: #909399">{{ soStatus.kv[row.status] }}</span>
-        </template>
-      </el-table-column>
       <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="180">
         <template #default="{ row }">
           <div>
@@ -44,8 +44,11 @@
             <el-button type="info" link @click="handleUploadFile(row)">上传附件</el-button>
           </div>
           <div>
+            <el-button type="danger" link @click="handleQuotation(row)">修改报价</el-button>
+          </div>
+          <div>
             <el-button type="danger" link @click="handleAddRecord(row)">添加沟通记录</el-button>
-            <el-button type="primary" link @click="handleExamine(row)">发起流程</el-button>
+            <el-button type="danger" link @click="handleExamine(row)">发起流程</el-button>
           </div>
         </template>
       </el-table-column>
@@ -182,10 +185,14 @@
         </span>
       </template>
     </el-dialog>
+
+    <Quotation :data="currentQuotation" v-model="quotation.visible" @success="handleQuotationSuccess"></Quotation>
   </div>
 </template>
 
 <script setup>
+import Quotation from './components/quotation.vue'
+
 const tableRef = ref()
 const refresh = () => tableRef.value.refresh()
 const i18n = useI18n()
@@ -223,8 +230,6 @@ const remoteMethodEngineerName = query => {
         return item.label.toLowerCase().includes(query.toLowerCase())
       })
     })
-    // setTimeout(() => {
-    // }, 200)
   } else {
     engineerNameOptions.value = []
   }
@@ -336,6 +341,20 @@ const handleConfirmAddRecord = () => {
       })
     }
   })
+}
+
+const currentQuotation = ref(null)
+const quotation = reactive({
+  permission: false,
+  visible: false,
+})
+
+const handleQuotation = row => {
+  currentQuotation.value = row
+  quotation.visible = true
+}
+const handleQuotationSuccess = () => {
+  refresh()
 }
 </script>
 <style scoped>

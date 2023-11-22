@@ -8,10 +8,6 @@
     :close-on-click-modal="false"
   >
     <el-descriptions class="margin-top" :column="3" border size="small">
-      <!-- <el-descriptions-item>
-        <template #label>维修任务号</template>
-        {{ form.TaskID }}
-      </el-descriptions-item> -->
       <el-descriptions-item>
         <template #label>SO NO</template>
         {{ form.soNo }}

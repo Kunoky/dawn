@@ -25,11 +25,6 @@
       <el-table-column label="传真2" prop="taxNo2" width="130" />
       <el-table-column label="区域" prop="region" width="100" />
       <el-table-column label="电话" prop="tel" width="110" />
-      <!-- <el-table-column label="创建人" prop="ddd" width="100" />
-      <el-table-column label="县" prop="lll" width="100" />
-      <el-table-column label="税号1" prop="ooo" width="150" />
-      <el-table-column label="税号2" prop="ppp" width="100" />
-      <el-table-column label="公司" prop="qqq" width="100" /> -->
       <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="100">
         <template #default="{ row }">
           <el-button type="info" link @click="handleEdit(row)">修改</el-button>

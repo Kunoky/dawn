@@ -8,8 +8,8 @@
       id="repairRequest"
       row-key="repairRequestId"
     >
-      <el-table-column label="设备序列号" prop="serialNo" width="100" />
-      <el-table-column label="设备型号" prop="modelNo" width="100" />
+      <el-table-column label="设备序列号" prop="serialNo" width="130" />
+      <el-table-column label="设备型号" prop="modelNo" width="130" />
       <el-table-column label="仪器SAP Equip编号" prop="eqId" width="128" />
       <el-table-column label="维修类型" width="100">
         <template #default="{ row }">{{ row.orderType }} / {{ row.subType }}</template>
@@ -203,7 +203,8 @@
         max-height="190"
         :header-cell-style="{ background: '#f5f7fa' }"
       >
-        <el-table-column prop="custName" label="客户名称" width="150" fixed="left" />
+        <el-table-column prop="soNo" label="so No" width="100" fixed="left" />
+        <el-table-column prop="custName" label="客户名称" width="150" />
         <el-table-column prop="modelNo" label="状态">
           <template #default="{ row }">
             <span class="cs-p fw-b">{{ soStatus.kv[row.status] }}</span>
@@ -401,8 +402,6 @@ const remoteMethodEngineerName = query => {
         return item.label.toLowerCase().includes(query.toLowerCase())
       })
     })
-    // setTimeout(() => {
-    // }, 200)
   } else {
     engineerNameOptions.value = []
   }

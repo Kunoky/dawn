@@ -86,11 +86,6 @@
             <el-input v-model="form.postalCode" placeholder="请输入邮政编码" clearable />
           </el-form-item>
         </el-col>
-        <!-- <el-col :span="12">
-          <el-form-item label="县" prop="lll">
-            <el-input v-model="form.lll" placeholder="请输入县" clearable />
-          </el-form-item>
-        </el-col> -->
         <el-col :span="12">
           <el-form-item label="街道" prop="street">
             <el-input type="textarea" v-model="form.street" placeholder="请输入街道" clearable />

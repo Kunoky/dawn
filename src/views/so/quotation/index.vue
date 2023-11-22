@@ -8,14 +8,19 @@
       id="quotation"
     >
       <el-table-column label="SO NO" prop="soNo" width="130" />
-      <el-table-column label="设备序列号" prop="serialNo" :show-overflow-tooltip="true" width="100" />
-      <el-table-column label="设备型号" prop="modelNo" :show-overflow-tooltip="true" width="100" />
+      <el-table-column label="设备序列号" prop="serialNo" width="140" />
+      <el-table-column label="设备型号" prop="modelNo" width="100" />
       <el-table-column label="仪器SAP Equip编号" prop="eqId" width="128" />
       <el-table-column label="维修类型" width="100">
         <template #default="{ row }">{{ row.orderType }} / {{ row.subType }}</template>
       </el-table-column>
       <el-table-column label="仪器地址" prop="equipAddress" width="100" />
-      <el-table-column label="客户名称" prop="custDesc" width="100" />
+      <el-table-column label="状态" prop="status" width="100">
+        <template #default="{ row }">
+          <span class="cs-p fw-b" style="color: #909399">{{ soStatus.kv[row.status] }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="客户名称" prop="custDesc" width="160" />
       <el-table-column label="客户编号" prop="customerId" width="100" />
       <el-table-column label="客户联系人" prop="name" width="100" />
       <el-table-column label="客户联系人电话" prop="mobile" width="120" />
@@ -32,21 +37,16 @@
       <el-table-column label="工程师名称" prop="fseName" width="100" />
       <el-table-column label="FSE work center" prop="fseWorkCenter" width="115" />
       <el-table-column label="FSE storage location" prop="fseStorageLocation" width="140" />
-      <el-table-column label="状态" prop="status" width="100">
-        <template #default="{ row }">
-          <span class="cs-p fw-b" style="color: #909399">{{ soStatus.kv[row.status] }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="110">
+      <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="150">
         <template #default="{ row }">
           <div>
             <el-button type="info" link @click="handleDeatil(row)">详情</el-button>
             <el-button type="info" link @click="handleQuotation(row)">报价</el-button>
-          </div>
-          <div>
             <el-button type="danger" link @click="handleBack(row)">退回</el-button>
-            <el-button type="primary" link @click="handleExamine(row)">已报价</el-button>
           </div>
+          <!-- <div> -->
+          <!-- <el-button type="primary" link @click="handleExamine(row)">已报价</el-button> -->
+          <!-- </div> -->
         </template>
       </el-table-column>
       <template #form="{ form }">
@@ -152,7 +152,7 @@ const listData = params => {
 
 const tableRef = ref()
 const refresh = () => tableRef.value.refresh()
-const i18n = useI18n()
+// const i18n = useI18n()
 onMounted(() => {
   getMaintenanceType()
 })
@@ -183,21 +183,21 @@ const handleDeatil = row => {
   current.value = row
   visible.detail = true
 }
-const handleExamine = row => {
-  ElMessageBox.confirm('确定后无法修改，是否继续？', i18n.t('common.warning'), {
-    confirmButtonText: i18n.t('common.confirm'),
-    cancelButtonText: i18n.t('common.cancel'),
-    type: 'warning',
-  })
-    .then(() => {
-      return req.put(`/quote/quoteConfirm/${row.soNo}`)
-    })
-    .then(({ code }) => {
-      if (code === 200) {
-        refresh()
-      }
-    })
-}
+// const handleExamine = row => {
+//   ElMessageBox.confirm('确定后无法修改，是否继续？', i18n.t('common.warning'), {
+//     confirmButtonText: i18n.t('common.confirm'),
+//     cancelButtonText: i18n.t('common.cancel'),
+//     type: 'warning',
+//   })
+//     .then(() => {
+//       return req.put(`/quote/quoteConfirm/${row.soNo}`)
+//     })
+//     .then(({ code }) => {
+//       if (code === 200) {
+//         refresh()
+//       }
+//     })
+// }
 const handleFormSuccess = () => {
   refresh()
 }
@@ -269,8 +269,6 @@ const remoteMethodEngineerName = query => {
         return item.label.toLowerCase().includes(query.toLowerCase())
       })
     })
-    // setTimeout(() => {
-    // }, 200)
   } else {
     engineerNameOptions.value = []
   }

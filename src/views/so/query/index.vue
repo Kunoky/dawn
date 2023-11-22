@@ -8,25 +8,25 @@
       id="query"
     >
       <el-table-column label="SO NO" prop="soNo" width="130" />
-      <el-table-column label="设备序列号" prop="serialNo" :show-overflow-tooltip="true" width="100" />
-      <el-table-column label="设备型号" prop="modelNo" :show-overflow-tooltip="true" width="100" />
+      <el-table-column label="设备序列号" prop="serialNo" width="140" />
+      <el-table-column label="设备型号" prop="modelNo" width="100" />
       <el-table-column label="仪器SAP Equip编号" prop="eqId" width="128" />
       <el-table-column label="维修类型" width="100">
         <template #default="{ row }">{{ row.orderType }} / {{ row.subType }}</template>
       </el-table-column>
-      <el-table-column label="仪器地址" prop="equipAddress" width="120" />
+      <el-table-column label="仪器地址" prop="equipAddress" width="130" />
       <el-table-column label="创建人" prop="createByName" width="100" />
+      <el-table-column label="状态" prop="status" width="100">
+        <template #default="{ row }">
+          <span class="cs-p fw-b" style="color: #909399">{{ soStatus.kv[row.status] }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="客户名称" prop="custDesc" width="160" />
       <el-table-column label="客户编号" prop="customerId" width="100" />
       <el-table-column label="客户联系人" prop="name" width="100" />
       <el-table-column label="客户联系人电话" prop="mobile" width="120" />
       <el-table-column label="客户联系人邮箱" prop="email" width="130" />
       <el-table-column label="代理商" prop="vendor" width="100" />
-      <el-table-column label="状态" prop="status" width="100">
-        <template #default="{ row }">
-          <span class="cs-p fw-b" style="color: #909399">{{ soStatus.kv[row.status] }}</span>
-        </template>
-      </el-table-column>
       <el-table-column label="报修内容" prop="content" width="100" :show-overflow-tooltip="true" />
       <el-table-column label="报修来源" prop="source" width="120">
         <template #default="{ row }">
@@ -216,7 +216,6 @@ const formDetails = ref({
   soNo: '',
   closeStatus: '',
   reason: '',
-  // attachmentsList: []
 })
 const rules = {
   closeStatus: [{ required: true, message: '原因不能为空', trigger: 'change' }],
@@ -242,6 +241,9 @@ const handleConfirm = () => {
       req.put('/so/close', formDetails.value).then(() => {
         detailVisible.value = false
         refresh()
+        nextTick(() => {
+          formRefDetails.value.resetFields()
+        })
       })
     }
   })
@@ -267,8 +269,6 @@ const remoteMethodEngineerName = query => {
         return item.label.toLowerCase().includes(query.toLowerCase())
       })
     })
-    // setTimeout(() => {
-    // }, 200)
   } else {
     engineerNameOptions.value = []
   }

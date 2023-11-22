@@ -260,7 +260,8 @@
 
   <el-dialog title="未关闭SO数量" width="50%" v-model="visibleSo" :close-on-click-modal="false">
     <el-table size="small" :data="tableData" style="width: 100%" :header-cell-style="{ background: '#f5f7fa' }">
-      <el-table-column prop="custName" label="客户名称" width="150" fixed="left" />
+      <el-table-column prop="soNo" label="so No" width="100" fixed="left" />
+      <el-table-column prop="custName" label="客户名称" width="150" />
       <el-table-column prop="modelNo" label="状态">
         <template #default="{ row }">
           <span class="cs-p fw-b">{{ soStatus.kv[row.status] }}</span>
@@ -321,11 +322,11 @@ const rules = {
   ],
   content: [
     { required: true, message: '报修内容不能为空', trigger: 'blur' },
-    // {
-    //   pattern: /^((?=.*[a-z])(?=.*[A-Z])(?=.*[!@;:,?]))$/,
-    //   message: '请输入英文与英文符号',
-    //   trigger: ['blur', 'change'],
-    // },
+    {
+      pattern: /^[a-zA-Z0-9]+$/,
+      message: '请输入英文与英文符号',
+      trigger: ['blur', 'change'],
+    },
   ],
   repairTime: [{ required: true, message: '报修时间不能为空', trigger: 'blur' }],
   fseName: [{ required: true, message: 'FSE工程师名称不能为空', trigger: 'blur' }],
@@ -431,7 +432,7 @@ const remoteMethod = query => {
 const changeSeriaNo = val => {
   form.value.serialNo = val.sernr
   form.value.modelNo = val.typbz
-  form.value.eqId = val.matnr
+  form.value.eqId = val.equnr
   form.value.warrantyTime = val.validTo
 
   form.value.customerId = val.customer.customerId
@@ -465,8 +466,6 @@ const remoteMethodCustDesc = query => {
         return item.label.toLowerCase().includes(query.toLowerCase())
       })
     })
-    // setTimeout(() => {
-    // }, 200)
   } else {
     custDescOptions.value = []
   }
@@ -499,14 +498,11 @@ const remoteMethodEngineerName = query => {
         return item.label.toLowerCase().includes(query.toLowerCase())
       })
     })
-    // setTimeout(() => {
-    // }, 200)
   } else {
     engineerNameOptions.value = []
   }
 }
 const changeEngineerName = val => {
-  // form.value.engineerId = val.fseId
   form.value.fseName = val.fseName
   form.value.fseWorkCenter = val.fseWorkCenter
   form.value.fseStorageLocation = val.fseStorageLocation
@@ -565,7 +561,6 @@ const handleConfirm = () => {
           form.value.isConsistentSap = true
         }
       }
-      // console.log(form.value);
       loading.value = true
       req[form.value.id ? 'put' : 'post']('/request', form.value)
         .then(({ code }) => {

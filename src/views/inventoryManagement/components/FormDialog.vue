@@ -108,7 +108,6 @@ const rules = {
   expressNo: [{ required: true, message: '快递单号不能为空', trigger: 'blur' }],
 }
 
-// const loading = ref(false)
 const formRef = ref()
 const form = ref({})
 
@@ -146,10 +145,8 @@ const handleConfirm = () => {
         transferVoucherNo: form.value.transferVoucherNo,
         expressNo: form.value.expressNo,
       }
-      // console.log(data)
       req.post('/st', data).then(() => {
         emit('update:modelValue', false)
-        // refresh()
       })
     }
   })
@@ -157,7 +154,6 @@ const handleConfirm = () => {
 
 const attachmentType = useDict('attachmentType')
 const handleDownloadFile = row => {
-  // console.log(row,'row');
   let fileName = attachmentType.value.kv[row.type]
   if (row.path) {
     const link = document.createElement('a')

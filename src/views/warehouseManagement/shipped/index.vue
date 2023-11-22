@@ -8,7 +8,7 @@
       id="shipped"
     >
       <el-table-column label="SO NO" prop="soNo" width="130" />
-      <el-table-column label="设备序列号" prop="serialNo" width="110" />
+      <el-table-column label="设备序列号" prop="serialNo" width="140" />
       <el-table-column label="设备型号" prop="modelNo" width="110" />
       <el-table-column label="收货地址" prop="deliveryAddress" width="150" />
       <el-table-column label="联系人" prop="contactPerson" width="100" />
@@ -80,8 +80,6 @@ const remoteMethodEngineerName = query => {
         return item.label.toLowerCase().includes(query.toLowerCase())
       })
     })
-    // setTimeout(() => {
-    // }, 200)
   } else {
     engineerNameOptions.value = []
   }
