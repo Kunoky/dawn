@@ -24,6 +24,13 @@ service.interceptors.request.use(
       'Content-Type': 'application/json;charset=utf-8',
       ...config.headers,
     }
+    if (config.method === 'get' && config.params) {
+      for (let key in config.params) {
+        if (Array.isArray(config.params[key])) {
+          config.params[key] = config.params[key].toString()
+        }
+      }
+    }
     return config
   },
   error => {
