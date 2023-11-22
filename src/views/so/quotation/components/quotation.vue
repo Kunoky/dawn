@@ -173,6 +173,7 @@
 <script setup>
 import Big from 'big.js'
 const emit = defineEmits(['update:modelValue', 'success'])
+Big.RM = 0
 const props = defineProps({
   data: Object,
   modelValue: Boolean,
@@ -228,7 +229,7 @@ const onAddItem = () => {
     materialNo: '',
     unit: '',
     includeTaxPrice: '',
-    quantity: '',
+    quantity: 0,
     subTotal: '',
   })
 }
@@ -268,6 +269,7 @@ const changeMaterialNo = (val, row) => {
   row.includeTaxPrice = val.includeTaxPrice
   row.isBom = val.isBom
   row.itemName = val.itemName
+  row.itemType = val.itemType
 }
 function getTotal() {
   const total = tableData.value
@@ -350,16 +352,14 @@ const handelEditTotal = () => {
 }
 
 const handelPrice = row => {
-  let res = row.unitPrice * 1.13
-  row.includeTaxPrice = res.toFixed(2)
-  // console.log(row.includeTaxPrice,'res');
-  // row.includeTaxPrice = (parseInt(res * 100) / 100).toFixed(2)
+  const y = new Big(row.unitPrice)
+  row.includeTaxPrice = y.times(1.13).toFixed(2)
   handelCalculateTotalPrice(row)
 }
 const handelCalculateTotalPrice = row => {
-  let data = row.includeTaxPrice * row.quantity
-  row.subTotal = data.toFixed(2)
-  // row.subTotal = (parseInt(data * 100) / 100).toFixed(2)
+  const x = new Big(row.includeTaxPrice)
+  const y = new Big(row.quantity)
+  row.subTotal = x.times(y).toFixed(2)
   getTotal()
 }
 

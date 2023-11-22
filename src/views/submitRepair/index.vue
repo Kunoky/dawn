@@ -60,11 +60,15 @@
       </el-table-column>
       <el-table-column label="报修时间" prop="repairTime" width="140" />
       <el-table-column label="保修期" prop="warrantyTime" width="130" />
-      <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="130">
+      <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="100">
         <template #default="{ row }">
+          <!-- 已退回显示修改 -->
           <div v-if="row.status === 2">
             <el-button type="info" link @click="handleEdit(row)">修改</el-button>
-            <el-button type="primary" link @click="handleExamine(row)">取消申请</el-button>
+          </div>
+          <!-- 已提交与已退回显示取消申请 -->
+          <div v-if="row.status === 2 || row.status === 2">
+            <el-button type="primary" link @click="handleExamine(row)">取消维修申请</el-button>
           </div>
         </template>
       </el-table-column>
@@ -139,19 +143,19 @@ const handleFormSuccess = () => {
   refresh()
 }
 
-const handleExamine = () => {
+const handleExamine = row => {
   ElMessageBox.confirm('确定后无法修改，是否继续？', '警告', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning',
   })
-  // .then(() => {
-  //   return req.put(`/quote/quoteConfirm/${row.soNo}`)
-  // })
-  // .then(({ code }) => {
-  // if (code === 200) {
-  //   refresh()
-  // }
-  // })
+    .then(() => {
+      return req.put(`/request/cancel/${row.id}`)
+    })
+    .then(({ code }) => {
+      if (code === 200) {
+        refresh()
+      }
+    })
 }
 </script>
