@@ -8,6 +8,7 @@
       id="repairRequest"
       row-key="repairRequestId"
     >
+      <el-table-column label="维修申请号" prop="id" width="80" fixed="left" />
       <el-table-column label="设备序列号" prop="serialNo" width="130" />
       <el-table-column label="设备型号" prop="modelNo" width="130" />
       <el-table-column label="仪器SAP Equip编号" prop="eqId" width="128" />
@@ -130,7 +131,6 @@
             start-placeholder="开始时间"
             end-placeholder="结束时间"
           />
-          <!-- @change="getDatePicker" -->
         </el-form-item>
         <el-form-item label="SO类型" prop="options">
           <el-cascader
@@ -265,19 +265,6 @@ const changeOptions = val => {
     tableRef.value.form.subType = val[1]
   }
 }
-
-// 获取时间
-// const getDatePicker = val => {
-//   console.log(val);
-//   tableRef.value.form.timeScope = val+''
-// //   // if (!val) {
-// //   //   tableRef.value.form.beginDate = ''
-// //   //   tableRef.value.form.endDate = ''
-// //   // } else {
-// //   //   tableRef.value.form.beginDate = val[0]
-// //   //   tableRef.value.form.endDate = val[1]
-// //   // }
-// }
 
 const current = ref(null)
 const visible = reactive({

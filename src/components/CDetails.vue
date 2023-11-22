@@ -261,7 +261,8 @@
               placement="top"
             >
               <el-card>
-                <h4>审批人：{{ item.approve }}</h4>
+                <h4>类型：{{ item.type === 1 ? 'parts plan' : item.type === 2 ? '报价' : '报价收费确认单' }}</h4>
+                <p>审批人：{{ item.approve }}</p>
                 <p>审批状态：{{ item.approvalStatus }}</p>
               </el-card>
             </el-timeline-item>

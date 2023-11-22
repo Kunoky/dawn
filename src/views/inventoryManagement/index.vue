@@ -83,21 +83,6 @@ const visible = reactive({
   form: false,
   permission: false,
 })
-// const listData = params => {
-//   // delete params.params
-//   return req.get('/st/list', { params }).then(res => {
-//     return { data: res.data }
-//   })
-// }
-// const getDatePicker = val => {
-//   if (!val) {
-//     tableRef.value.form.beginDate = ''
-//     tableRef.value.form.endDate = ''
-//   } else {
-//     tableRef.value.form.beginDate = val[0]
-//     tableRef.value.form.endDate = val[1]
-//   }
-// }
 
 const handleAdd = () => {
   current.value = null

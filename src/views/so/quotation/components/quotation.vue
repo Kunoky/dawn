@@ -351,12 +351,15 @@ const handelEditTotal = () => {
 
 const handelPrice = row => {
   let res = row.unitPrice * 1.13
-  row.includeTaxPrice = (parseInt(res * 100) / 100).toFixed(2)
+  row.includeTaxPrice = res.toFixed(2)
+  // console.log(row.includeTaxPrice,'res');
+  // row.includeTaxPrice = (parseInt(res * 100) / 100).toFixed(2)
   handelCalculateTotalPrice(row)
 }
 const handelCalculateTotalPrice = row => {
   let data = row.includeTaxPrice * row.quantity
-  row.subTotal = (parseInt(data * 100) / 100).toFixed(2)
+  row.subTotal = data.toFixed(2)
+  // row.subTotal = (parseInt(data * 100) / 100).toFixed(2)
   getTotal()
 }
 
@@ -400,10 +403,12 @@ const handleConfirm = () => {
         // console.log(data);
         req.post('/quote/save', data).then(res => {
           if (res.data === '') {
+            emit('success')
             emit('update:modelValue', false)
           } else {
-            window.open(import.meta.env.VITE_SERVER_PATH + res.data, '_blank')
+            emit('success')
             emit('update:modelValue', false)
+            window.open(import.meta.env.VITE_SERVER_PATH + res.data, '_blank')
           }
         })
       }

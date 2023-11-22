@@ -7,6 +7,7 @@
       ref="tableRef"
       id="repairRequest"
     >
+      <el-table-column label="维修申请号" prop="id" width="80" fixed="left" />
       <el-table-column label="设备序列号" prop="serialNo" width="100" />
       <el-table-column label="设备型号" prop="modelNo" width="140" />
       <el-table-column label="仪器SAP Equip编号" prop="eqId" width="128" />
