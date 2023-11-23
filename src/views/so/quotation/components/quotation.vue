@@ -228,7 +228,7 @@ const onAddItem = () => {
     materialNo: '',
     unit: '',
     includeTaxPrice: '',
-    quantity: 0,
+    quantity: 1,
     subTotal: '',
   })
 }
@@ -243,7 +243,7 @@ const materialNoOptions = ref([])
 async function getEngineerName(v) {
   return req.get('/data/material', { params: { materialNo: v } }).then(res => {
     materialNoList.value = res.data.map(item => {
-      return { value: item, label: item.materialNo }
+      return { value: item, label: `${item.materialNo}_${item.itemName}` }
     })
   })
 }
