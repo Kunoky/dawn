@@ -112,9 +112,13 @@
               <template #label>promotionCode</template>
               {{ form.promotionCode }}
             </el-descriptions-item>
-            <el-descriptions-item>
+            <el-descriptions-item :span="2">
               <template #label>报修内容</template>
               {{ form.content }}
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>关联so</template>
+              <span style="color: red">{{ form.relationSo }}</span>
             </el-descriptions-item>
           </el-descriptions>
         </el-collapse-item>
