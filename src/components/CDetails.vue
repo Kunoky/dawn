@@ -3,7 +3,7 @@
     :model-value="modelValue"
     @close="handleClose"
     title="详情"
-    width="60%"
+    width="1000px"
     v-bind="$attrs"
     :close-on-click-modal="false"
     class="query-detail-dialog"
@@ -118,7 +118,7 @@
             </el-descriptions-item>
           </el-descriptions>
         </el-collapse-item>
-        <el-collapse-item v-if="itemList.length > 0" title="Parts Plan & Labor" name="2">
+        <el-collapse-item v-if="itemList !== null && itemList.length > 0" title="Parts Plan & Labor" name="2">
           <div>
             <el-table
               size="small"
@@ -137,7 +137,7 @@
             </el-table>
           </div>
         </el-collapse-item>
-        <el-collapse-item v-if="quoteData" title="报价信息" name="3">
+        <el-collapse-item v-if="quoteData !== null" title="报价信息" name="3">
           <div style="margin-bottom: 10px">报价编号：{{ quoteData.quoteNo }}</div>
           <el-table
             size="small"
@@ -180,7 +180,7 @@
               </el-table-column>
             </el-table>
           </div>
-          <p class="p">发票信息</p>
+          <p style="font-size: 14px; font-weight: bold; margin: 20px 0 0">发票信息</p>
           <el-descriptions class="margin-top" :column="3" border size="small">
             <el-descriptions-item>
               <template #label>发票类型</template>
@@ -264,13 +264,18 @@
                 <h4>类型：{{ item.type === 1 ? 'parts plan' : item.type === 2 ? '报价' : '报价收费确认单' }}</h4>
                 <p>审批人：{{ item.approve }}</p>
                 <p>审批状态：{{ item.approvalStatus }}</p>
+                <p>审批意见：{{ item.comment }}</p>
               </el-card>
             </el-timeline-item>
           </el-timeline>
         </el-collapse-item>
         <el-collapse-item v-if="serviceReport !== null && serviceReport.length > 0" title="服务报告信息" name="5">
           <div v-for="(item, index) in serviceReport" :key="index" class="workLogList">
-            <el-descriptions class="margin-top" :column="2" border size="small">
+            <el-descriptions class="margin-top" :column="3" border size="small">
+              <el-descriptions-item>
+                <template #label>报告ID</template>
+                {{ item.id }}
+              </el-descriptions-item>
               <el-descriptions-item>
                 <template #label>工程师名称</template>
                 {{ item.createByName }}
@@ -326,6 +331,37 @@
                 <el-table-column prop="subTotal" label="总价" />
               </el-table-column>
             </el-table>
+            <div v-if="item.signatureRecord !== null">
+              <p style="font-size: 14px; font-weight: bold; margin: 20px 0 0">电子签名信息</p>
+              <div class="img">
+                <div class="demo-image__preview">
+                  <p>工程师签名时间: {{ item.signatureRecord.fseSignatureTime }}</p>
+                  <el-image
+                    v-if="item.signatureRecord.fseSignature"
+                    :src="url + item.signatureRecord.fseSignature"
+                    :zoom-rate="1.2"
+                    :max-scale="7"
+                    :min-scale="0.2"
+                    :preview-src-list="[url + item.signatureRecord.fseSignature]"
+                    :initial-index="4"
+                    fit="contain"
+                  />
+                </div>
+                <div class="demo-image__preview">
+                  <p>客户签名时间: {{ item.signatureRecord.customerSignatureTime }}</p>
+                  <el-image
+                    v-if="item.signatureRecord.customerSignature"
+                    :src="url + item.signatureRecord.customerSignature"
+                    :zoom-rate="1.2"
+                    :max-scale="7"
+                    :min-scale="0.2"
+                    :preview-src-list="[url + item.signatureRecord.customerSignature]"
+                    :initial-index="4"
+                    fit="contain"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </el-collapse-item>
         <el-collapse-item v-if="attachmentList !== null && attachmentList.length > 0" title="附件信息" name="6">
@@ -418,6 +454,134 @@
             </el-table>
           </div>
         </el-collapse-item>
+        <el-collapse-item v-if="payDemandNoteData !== null" title="收费确认单信息" name="8">
+          <!-- <div style="margin-bottom: 10px">报价编号：{{ payDemandNoteData.quoteNo }}</div> -->
+          <el-table
+            size="small"
+            :data="payDemandNoteData.quoteDetailList"
+            style="width: 100%; margin-bottom: 20px"
+            max-height="190"
+            :header-cell-style="{ background: '#f5f7fa' }"
+            show-summary
+            :summary-method="getSummaries"
+          >
+            <el-table-column label="报价明细" align="center">
+              <el-table-column prop="materialNo" label="配件/Labor料号" />
+              <el-table-column prop="unit" label="单位" />
+              <el-table-column prop="includeTaxPrice" label="含税价格" />
+              <el-table-column prop="quantity" label="配件/Labor数量" />
+              <el-table-column prop="subTotal" label="总价" />
+            </el-table-column>
+          </el-table>
+          <div>
+            <el-table
+              size="small"
+              :data="payDemandNoteData.quoteSummary === null ? [] : [payDemandNoteData.quoteSummary]"
+              style="width: 100%; margin-bottom: 20px"
+              max-height="190"
+              :header-cell-style="{ background: '#f5f7fa' }"
+            >
+              <el-table-column label="汇总" align="center">
+                <el-table-column prop="quotePrice" label="配件总价" />
+                <el-table-column prop="finalPrice" label="最终价格" />
+                <el-table-column prop="discountRate" label="折扣率" />
+                <el-table-column prop="quoteName" label="报价人" />
+                <el-table-column prop="quoteTime" label="报价时间" />
+                <el-table-column prop="approveStatus" label="审批状态">
+                  <template #default="{ row }">
+                    <span>
+                      {{ row?.approveStatus === 0 ? '未审批' : row?.approveStatus === 1 ? '审批通过' : '审批拒绝' }}
+                    </span>
+                  </template>
+                </el-table-column>
+              </el-table-column>
+            </el-table>
+          </div>
+          <p style="font-size: 14px; font-weight: bold; margin: 20px 0 0">发票信息</p>
+          <el-descriptions class="margin-top" :column="3" border size="small">
+            <el-descriptions-item>
+              <template #label>发票类型</template>
+              {{
+                payDemandNoteData.invoiceInfo?.invoiceType === 1
+                  ? '普票'
+                  : payDemandNoteData.invoiceInfo?.invoiceType === 2
+                  ? '专票'
+                  : ''
+              }}
+            </el-descriptions-item>
+            <el-descriptions-item v-if="payDemandNoteData.invoiceInfo?.invoiceType === 1">
+              <template #label>邮箱</template>
+              {{ payDemandNoteData.invoiceInfo?.recipientEmail }}
+            </el-descriptions-item>
+            <el-descriptions-item v-if="payDemandNoteData.invoiceInfo?.invoiceType === 2">
+              <template #label>地址</template>
+              {{ payDemandNoteData.invoiceInfo?.mailingAddress }}
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>发票抬头</template>
+              {{ payDemandNoteData.invoiceInfo?.companyName }}
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>收件人</template>
+              {{ payDemandNoteData.invoiceInfo?.recipient }}
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>联系电话</template>
+              {{ payDemandNoteData.invoiceInfo?.tel }}
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>开户行</template>
+              {{ payDemandNoteData.invoiceInfo?.bankName }}
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>开户行账号</template>
+              {{ payDemandNoteData.invoiceInfo?.bankAccount }}
+            </el-descriptions-item>
+            <el-descriptions-item :span="2">
+              <template #label>税号</template>
+              {{ payDemandNoteData.invoiceInfo?.taxNo }}
+            </el-descriptions-item>
+            <el-descriptions-item :span="3">
+              <template #label>注册地址及电话</template>
+              {{ payDemandNoteData.invoiceInfo?.registeredAddress }}
+            </el-descriptions-item>
+            <el-descriptions-item :span="3">
+              <template #label>特殊要求</template>
+              {{ payDemandNoteData.invoiceInfo?.remark }}
+            </el-descriptions-item>
+          </el-descriptions>
+          <div v-if="payDemandNoteData.signatureRecord !== null">
+            <p style="font-size: 14px; font-weight: bold; margin: 20px 0 0">电子签名信息</p>
+            <div class="img">
+              <div class="demo-image__preview">
+                <p>工程师签名时间: {{ payDemandNoteData.signatureRecord.fseSignatureTime }}</p>
+                <el-image
+                  v-if="payDemandNoteData.signatureRecord.fseSignature"
+                  :src="url + payDemandNoteData.signatureRecord.fseSignature"
+                  :zoom-rate="1.2"
+                  :max-scale="7"
+                  :min-scale="0.2"
+                  :preview-src-list="[url + payDemandNoteData.signatureRecord.fseSignature]"
+                  :initial-index="4"
+                  fit="contain"
+                />
+              </div>
+              <div class="demo-image__preview">
+                <p>客户签名时间: {{ payDemandNoteData.signatureRecord.customerSignatureTime }}</p>
+                <el-image
+                  v-if="payDemandNoteData.signatureRecord.customerSignature"
+                  :src="url + payDemandNoteData.signatureRecord.customerSignature"
+                  :zoom-rate="1.2"
+                  :max-scale="7"
+                  :min-scale="0.2"
+                  :preview-src-list="[url + payDemandNoteData.signatureRecord.customerSignature]"
+                  :initial-index="4"
+                  fit="contain"
+                />
+              </div>
+            </div>
+          </div>
+        </el-collapse-item>
       </el-collapse>
     </div>
     <template #footer>
@@ -454,6 +618,8 @@ const transferLogList = ref([]) //流转信息
 const serviceReport = ref([])
 const attachmentList = ref([])
 const workLogList = ref([])
+const payDemandNoteData = ref({})
+const url = import.meta.env.VITE_SERVER_PATH
 
 watch(
   () => props.modelValue,
@@ -477,6 +643,7 @@ const { run: getInfo, loading: dataLoading } = useAsync(
       serviceReport.value = res.data.serviceReport
       attachmentList.value = res.data.attachmentList
       workLogList.value = res.data.workLogList
+      payDemandNoteData.value = res.data.payDemandNoteData
     },
   }
 )
@@ -548,9 +715,11 @@ const handleDel = row => {
 .margin-top {
   margin-bottom: 20px;
 }
+
 .margin-top :deep(.el-descriptions__label) {
   width: 130px;
 }
+
 .workLogList {
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -561,10 +730,31 @@ const handleDel = row => {
 .workLogList .title {
   font-size: 12px;
 }
+
 .timeline :deep(.el-timeline-item__content) .el-card__body {
   padding: 10px 20px;
 }
+
 .timeline :deep(.el-timeline-item__content) .el-card__body p {
   margin: 5px 0 0;
+}
+
+.img {
+  display: flex;
+}
+
+.img .demo-image__preview {
+  width: 50%;
+}
+
+.img .demo-image__preview .el-image {
+  width: 360px;
+  height: 160px;
+  box-shadow: 0px 2px 10px #888888;
+  border-radius: 5px;
+}
+
+.img :deep(.el-image-viewer__wrapper) .el-image-viewer__img {
+  background-color: #fff;
 }
 </style>

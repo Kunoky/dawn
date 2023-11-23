@@ -68,7 +68,7 @@ watch(
   { immediate: true }
 )
 const { run: getPayDemandNote, loading: dataLoading } = useAsync(async () => {
-  return req.get(`/lockSo/getInfo/${props.data.id}`).then(res => {
+  return req.get(`/lockSo/getInfo/${props.data.soNo}`).then(res => {
     rpaLockMaterialList.value = res.data.rpaLockMaterialList
     rpaLockLaborList.value = res.data.rpaLockLaborList
     return res

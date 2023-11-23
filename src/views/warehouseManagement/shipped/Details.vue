@@ -21,13 +21,13 @@
           <el-table-column prop="materialNo" label="物料号" />
           <el-table-column prop="itemName" label="配件名称" />
           <el-table-column prop="quantity" label="数量" />
-          <el-table-column prop="status" label="状态">
+          <!-- <el-table-column prop="status" label="状态">
             <template #default="{ row }">
               <span>
                 {{ row.status === 1 ? '领用' : '收货' }}
               </span>
             </template>
-          </el-table-column>
+          </el-table-column> -->
         </el-table>
       </div>
     </div>
