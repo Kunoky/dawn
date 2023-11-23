@@ -17,7 +17,6 @@
               placeholder="请输入设备序列号"
               filterable
               remote
-              reserve-keyword
               :remote-method="remoteMethod"
               :loading="selectlLoading"
               @change="changeSeriaNo"
@@ -50,7 +49,7 @@
               placeholder="请输入客户名称"
               filterable
               remote
-              reserve-keyword
+              @keyup.ctrl.c="hanelCopy(form.custDesc)"
               :remote-method="remoteMethodCustDesc"
               :loading="custDescLoading"
               @change="changeCustDesc"
@@ -131,7 +130,6 @@
               placeholder="请输入FSE工程师名称"
               filterable
               remote
-              reserve-keyword
               :remote-method="remoteMethodEngineerName"
               :loading="engineerNameLoading"
               @change="changeEngineerName"
@@ -559,6 +557,10 @@ const handleConfirm = () => {
         })
     }
   })
+}
+
+function hanelCopy(val) {
+  utils.copy(val)
 }
 </script>
 <style scoped>

@@ -76,7 +76,6 @@
             placeholder="请输入FSE工程师名称"
             filterable
             remote
-            reserve-keyword
             :remote-method="remoteMethodEngineerName"
             :loading="engineerNameLoading"
           >
@@ -109,7 +108,6 @@
             placeholder="请输入FSE工程师名称"
             filterable
             remote
-            reserve-keyword
             :remote-method="remoteMethodEngineerName1"
             :loading="engineerNameLoading1"
             @change="changeEngineerName"
