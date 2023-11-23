@@ -216,3 +216,17 @@ export function exportCSV(data, name) {
   link.click()
   URL.revokeObjectURL(url)
 }
+
+/**
+ * @description 复制文本
+ * @author kuroky <1048413674@qq.com>
+ * @date 2023-11-23
+ * @param {String} txt
+ */
+export function copy(txt) {
+  ElMessage({
+    message: '复制成功',
+    type: 'success',
+  })
+  navigator.clipboard.writeText(txt)
+}
