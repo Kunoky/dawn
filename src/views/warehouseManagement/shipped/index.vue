@@ -20,7 +20,7 @@
       <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="140">
         <template #default="{ row }">
           <el-button type="info" link @click="handleDeatil(row)">领用详情</el-button>
-          <el-button type="primary" link @click="handleDeatil(row)">已发货</el-button>
+          <!-- <el-button type="primary" link @click="handleDeatil(row)">已发货</el-button> -->
         </template>
       </el-table-column>
       <template #form="{ form }">
