@@ -110,7 +110,7 @@ const handleDelivery = row => {
     type: 'warning',
   })
     .then(() => {
-      return req.put('/spareParts/delivery', { soNo: row.soNo })
+      return req.put(`/spareParts/delivery/${row.soNo}`)
     })
     .then(({ code }) => {
       if (code === 200) {
