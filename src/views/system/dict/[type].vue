@@ -11,6 +11,11 @@
       <el-table-column label="字典标签" prop="label" />
       <el-table-column label="字典键值" prop="value" />
       <el-table-column label="字典排序" prop="orderNum" />
+      <el-table-column label="状态" prop="status">
+        <template #default="{ row }">
+          <span>{{ row.status ? '启用' : '禁用' }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="备注" prop="remark" :show-overflow-tooltip="true" />
       <el-table-column label="创建时间" prop="createTime" width="180">
         <template #default="{ row }">

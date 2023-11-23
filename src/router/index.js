@@ -120,8 +120,9 @@ router.scrollBehavior = (to, from, savedPosition) => {
 }
 
 router.onError(error => {
-  console.error(error)
-  const pattern = /Loading chunk (\d) + failed/g
+  console.error('Router Error: ', error)
+  const pattern =
+    /(Loading chunk (\d) + failed)|(Failed to load module script)|(Failed to fetch dynamically imported module)/g
   const isChunkLoadFailed = error.message.match(pattern)
   if (isChunkLoadFailed) {
     location.reload()

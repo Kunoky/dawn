@@ -18,7 +18,7 @@ app.use(pinia)
 app.use(i18n)
 
 app.config.errorHandler = err => {
-  console.error(err)
+  console.error('App Error: ', err)
 }
 
 app.config.globalProperties.$baseUrl = import.meta.env.VITE_SERVER_PATH
