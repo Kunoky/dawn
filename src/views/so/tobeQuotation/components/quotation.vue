@@ -25,7 +25,6 @@
             placeholder="请输入配件/Labor料号"
             filterable
             remote
-            reserve-keyword
             :remote-method="remoteMethodMaterialNo"
             :loading="materialNoLoading"
             @change="changeMaterialNo($event, row)"

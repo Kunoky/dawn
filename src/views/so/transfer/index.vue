@@ -76,7 +76,6 @@
             placeholder="请输入FSE工程师名称"
             filterable
             remote
-            reserve-keyword
             :remote-method="remoteMethodEngineerName"
             :loading="engineerNameLoading"
           >
@@ -164,7 +163,7 @@ const refresh = () => tableRef.value.refresh()
 
 const listData = params => {
   delete params.options
-  params.transferStatus = 1 // TODO: 待转移
+  params.transferStatus = true // TODO: 待转移
   return req.get('/so/page', { params }).then(res => {
     return { data: res.data }
   })

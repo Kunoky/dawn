@@ -20,7 +20,7 @@
       <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="140">
         <template #default="{ row }">
           <el-button type="info" link @click="handleDeatil(row)">领用详情</el-button>
-          <!-- <el-button type="primary" link @click="handleDeatil(row)">已发货</el-button> -->
+          <el-button type="primary" link @click="handleDelivery(row)">已发货</el-button>
         </template>
       </el-table-column>
       <template #form="{ form }">
@@ -40,7 +40,6 @@
             placeholder="请输入FSE工程师名称"
             filterable
             remote
-            reserve-keyword
             :remote-method="remoteMethodEngineerName"
             :loading="engineerNameLoading"
           >
@@ -102,5 +101,21 @@ const handleDeatil = row => {
 }
 const handleFormSuccess = () => {
   refresh()
+}
+
+const handleDelivery = row => {
+  ElMessageBox.confirm('确定发货后无法修改，是否继续？', '警告', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
+  })
+    .then(() => {
+      return req.put(`/spareParts/delivery/${row.soNo}`)
+    })
+    .then(({ code }) => {
+      if (code === 200) {
+        refresh()
+      }
+    })
 }
 </script>

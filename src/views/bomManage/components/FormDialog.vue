@@ -17,7 +17,6 @@
               placeholder="请输入物料号"
               filterable
               remote
-              reserve-keyword
               :remote-method="remoteMethodMaterialNo"
               :loading="materialNoLoading"
               @change="changeMaterialNo"

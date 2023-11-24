@@ -38,9 +38,14 @@
       <el-table-column label="工程师名称" prop="fseName" width="100" />
       <el-table-column label="FSE work center" prop="fseWorkCenter" width="115" />
       <el-table-column label="FSE storage location" prop="fseStorageLocation" width="140" />
-      <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="100">
+      <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="120">
         <template #default="{ row }">
-          <el-button type="info" link @click="handleDeatil(row)">详情</el-button>
+          <div>
+            <el-button type="info" link @click="handleDeatil(row)">详情</el-button>
+            <el-button type="primary" link @click="handleOperateSO(row)">
+              {{ row.relationSo ? '解绑SO' : '关联SO' }}
+            </el-button>
+          </div>
           <el-button v-if="row.status !== 0 && row.status !== 12" type="primary" link @click="handleClose(row)">
             关闭
           </el-button>
@@ -88,7 +93,6 @@
             placeholder="请输入FSE工程师名称"
             filterable
             remote
-            reserve-keyword
             :remote-method="remoteMethodEngineerName"
             :loading="engineerNameLoading"
           >
@@ -146,6 +150,27 @@
         <span class="dialog-footer">
           <el-button @click="handleCloseDetail">取消</el-button>
           <el-button type="primary" @click="handleConfirm">确定</el-button>
+        </span>
+      </template>
+    </el-dialog>
+
+    <el-dialog :title="title" width="30%" v-model="visibleSO" :close-on-click-modal="false">
+      <el-form :model="formDetailsSO" ref="formRefSO" label-width="80" :rules="rulesSO">
+        <el-form-item label="关联so号" prop="relationSo">
+          <el-input
+            :disabled="title === '解绑SO'"
+            v-model="formDetailsSO.relationSo"
+            placeholder="请输入关联so"
+            clearable
+          />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="handleCloseDetailSO">取消</el-button>
+          <el-button type="primary" @click="handleConfirmSO">
+            确定{{ title === '关联SO' ? '关联SO' : '解绑SO' }}
+          </el-button>
         </span>
       </template>
     </el-dialog>
@@ -287,6 +312,61 @@ const handelFile = () => {
       document.body.appendChild(elink)
       elink.click()
       document.body.removeChild(elink)
+    }
+  })
+}
+
+// 操作so关联与解除
+const title = ref('')
+const visibleSO = ref(false)
+const formRefSO = ref(null)
+const formDetailsSO = ref({
+  soNo: '',
+  relationSo: '',
+})
+const rulesSO = {
+  relationSo: [{ required: true, message: '关联so不能为空', trigger: 'blur' }],
+}
+const handleOperateSO = row => {
+  if (row.relationSo) {
+    title.value = '解绑SO'
+  } else {
+    title.value = '关联SO'
+  }
+  formDetailsSO.value.soNo = row.soNo
+  formDetailsSO.value.relationSo = row.relationSo
+  visibleSO.value = true
+}
+const handleCloseDetailSO = () => {
+  visibleSO.value = false
+  nextTick(() => {
+    formRefSO.value.resetFields()
+  })
+}
+const handleConfirmSO = () => {
+  formRefSO.value.validate(valid => {
+    if (valid) {
+      if (title.value === '关联SO') {
+        req.put('/so/relation', formDetailsSO.value).then(({ code }) => {
+          if (code === 200) {
+            refresh()
+            visibleSO.value = false
+            nextTick(() => {
+              formRefSO.value.resetFields()
+            })
+          }
+        })
+      } else {
+        req.put(`/so/unRelation/${formDetailsSO.value.soNo}`).then(({ code }) => {
+          if (code === 200) {
+            refresh()
+            visibleSO.value = false
+            nextTick(() => {
+              formRefSO.value.resetFields()
+            })
+          }
+        })
+      }
     }
   })
 }

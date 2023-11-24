@@ -33,10 +33,10 @@
       <el-table-column label="工程师名称" prop="fseName" width="100" />
       <el-table-column label="FSE work center" prop="fseWorkCenter" width="115" />
       <el-table-column label="FSE storage location" prop="fseStorageLocation" width="140" />
-      <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="130">
+      <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="60">
         <template #default="{ row }">
           <el-button type="info" link @click="handleEdit(row)">详情</el-button>
-          <el-button type="danger" link @click="handleAssign(row)">指派FSE</el-button>
+          <!-- <el-button type="danger" link @click="handleAssign(row)">指派FSE</el-button> width="130"-->
         </template>
       </el-table-column>
       <template #actions></template>
@@ -76,7 +76,6 @@
             placeholder="请输入FSE工程师名称"
             filterable
             remote
-            reserve-keyword
             :remote-method="remoteMethodEngineerName"
             :loading="engineerNameLoading"
           >
@@ -109,7 +108,6 @@
             placeholder="请输入FSE工程师名称"
             filterable
             remote
-            reserve-keyword
             :remote-method="remoteMethodEngineerName1"
             :loading="engineerNameLoading1"
             @change="changeEngineerName"
@@ -219,10 +217,10 @@ const formDetails = ref({})
 const rules = {
   fseName: [{ required: true, message: 'FSE工程师名称不能为空', trigger: 'blur' }],
 }
-const handleAssign = row => {
-  formDetails.value.soNo = row.soNo
-  detailVisible.value = true
-}
+// const handleAssign = row => {
+//   formDetails.value.soNo = row.soNo
+//   detailVisible.value = true
+// }
 
 // 指派FSE工程师名称
 const engineerNameLoading1 = ref(false)

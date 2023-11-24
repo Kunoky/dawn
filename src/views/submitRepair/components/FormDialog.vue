@@ -16,7 +16,6 @@
               placeholder="请输入设备序列号"
               filterable
               remote
-              reserve-keyword
               :remote-method="remoteMethod"
               :loading="selectlLoading"
               @change="changeSeriaNo"
@@ -71,20 +70,30 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="客户名称" prop="custDesc">
+          <el-form-item label="客户名称" prop="custDesc" class="form_flex">
             <el-select
+              v-show="show"
               v-model="form.custDesc"
               placeholder="请输入客户名称"
               filterable
               remote
-              reserve-keyword
               :remote-method="remoteMethodCustDesc"
               :loading="custDescLoading"
               @change="changeCustDesc"
-              style="width: 100%"
+              style="width: 83%"
             >
               <el-option v-for="item in custDescOptions" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
+            <el-input
+              v-show="!show"
+              v-model="form.custDesc"
+              placeholder="请输入客户名称"
+              clearable
+              style="width: 83%"
+            />
+            <el-button style="width: 11%" type="primary" @click="handleCustDesc">
+              {{ show ? '新建' : '搜索' }}
+            </el-button>
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -146,7 +155,6 @@
               placeholder="请输入FSE工程师名称"
               filterable
               remote
-              reserve-keyword
               :remote-method="remoteMethodEngineerName"
               :loading="engineerNameLoading"
               @change="changeEngineerName"
@@ -402,7 +410,7 @@ const { run: getRequestInfo, loading: dataLoading } = useAsync(
 
       // 暂存用做数据对比
       staging.value.aaa = res.data.custDesc
-      staging.value.bbb = res.data.equipAddress
+      // staging.value.bbb = res.data.equipAddress
       nextTick(() => {
         formRef.value.clearValidate()
       })
@@ -412,7 +420,7 @@ const { run: getRequestInfo, loading: dataLoading } = useAsync(
 // 暂存数据，为提交校验数据
 const staging = ref({
   aaa: '',
-  bbb: '',
+  // bbb: '',
 })
 // 查询设备序列号
 const selectlLoading = ref(false)
@@ -438,12 +446,17 @@ const remoteMethod = query => {
     serialNoOptions.value = []
   }
 }
+const show = ref(true)
 const changeSeriaNo = val => {
   form.value.serialNo = val.sernr
   form.value.modelNo = val.typbz
   form.value.eqId = val.equnr
   form.value.warrantyTime = val.validTo
 
+  if (val.customer.customerId === null || show === false) {
+    form.value.isConsistentSap = false
+  }
+  show.value = true
   form.value.customerId = val.customer.customerId
   form.value.custDesc = val.customer.name === '' ? val.customer.enName : val.customer.name
   form.value.equipAddress = val.customer.address === '' ? val.customer.enAddress : val.customer.address
@@ -452,7 +465,12 @@ const changeSeriaNo = val => {
 
   // 暂存用做数据对比
   staging.value.aaa = val.customer.name === '' ? val.customer.enName : val.customer.name
-  staging.value.bbb = val.customer.address === '' ? val.customer.enAddress : val.customer.address
+  // staging.value.bbb = val.customer.address === '' ? val.customer.enAddress : val.customer.address
+}
+
+const handleCustDesc = () => {
+  show.value = !show.value
+  form.value.custDesc = ''
 }
 
 // 客户名称
@@ -563,13 +581,16 @@ const handleConfirm = () => {
       delete form.value.fseStorageLocation
       delete form.value.dataOptions
       form.value.attaIds = attachmentsList.value.map(item => item.id)
-      if (form.value.id) {
-        if (staging.value.aaa !== form.value.custDesc || staging.value.bbb !== form.value.equipAddress) {
-          form.value.isConsistentSap = false
-        } else {
-          form.value.isConsistentSap = true
-        }
+      if (staging.value.aaa !== form.value.custDesc) {
+        form.value.isConsistentSap = false
+      } else {
+        form.value.isConsistentSap = true
       }
+      // 客户名称是新建的时候id为-1
+      if (show.value === false) {
+        form.value.customerId = -1
+      }
+      // console.log(form.value);
       loading.value = true
       req[form.value.id ? 'put' : 'post']('/request', form.value)
         .then(({ code }) => {
