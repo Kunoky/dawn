@@ -22,6 +22,7 @@ app.config.errorHandler = err => {
 }
 
 app.config.globalProperties.$baseUrl = import.meta.env.VITE_SERVER_PATH
+app.config.globalProperties.$utils = utils
 
 // router.beforeEach中权限判断需要在userStore初始化后
 const userStore = useUserStore()

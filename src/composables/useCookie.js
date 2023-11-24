@@ -13,6 +13,7 @@ export function useCookie() {
     document.cookie.split(';').forEach(i => {
       i = i.trim()
       const [k, v] = i.split('=')
+      if (!k) return
       c[k] = v
     })
     cookie.value = c
@@ -21,9 +22,9 @@ export function useCookie() {
     get() {
       return cookie.value
     },
-    set(v = {}) {
-      cookie.value = v
-      Object.entries(v).map(([k, v]) => (document.cookie = k + '=' + v))
+    set(val = {}) {
+      cookie.value = val
+      Object.entries(val).map(([k, v = '']) => (document.cookie = k + '=' + v))
     },
   })
   return value
