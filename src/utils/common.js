@@ -230,3 +230,8 @@ export function copy(txt) {
   })
   navigator.clipboard.writeText(txt)
 }
+
+export const regexp = {
+  // eslint-disable-next-line
+  en: /^[a-zA-Z0-9\,\.\?\-\=\+\!\%\$\@\#\*\&\^\<\>\_\'\"\;\:\(\)\{\}\[\]]*$/,
+}
