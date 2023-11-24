@@ -435,6 +435,11 @@
                   <template #default="{ row }">{{ MaterialConsumptionType.kv[row.itemType] }}</template>
                 </el-table-column>
                 <el-table-column prop="subTotal" label="总价" />
+                <el-table-column prop="lockFlag" label="Lock状态">
+                  <template #default="{ row }">
+                    {{ row.lockFlag === 1 ? '成功' : row.lockFlag === 2 ? '失败' : '' }}
+                  </template>
+                </el-table-column>
               </el-table-column>
             </el-table>
             <el-table
@@ -454,6 +459,11 @@
                   </template>
                 </el-table-column>
                 <el-table-column prop="workHour" label="工作时长(小时)" />
+                <el-table-column prop="lockFlag" label="Lock状态">
+                  <template #default="{ row }">
+                    {{ row.lockFlag === 1 ? '成功' : row.lockFlag === 2 ? '失败' : '' }}
+                  </template>
+                </el-table-column>
               </el-table-column>
             </el-table>
           </div>

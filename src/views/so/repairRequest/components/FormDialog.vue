@@ -251,7 +251,8 @@
       max-height="200px"
       :header-cell-style="{ background: '#f5f7fa' }"
     >
-      <el-table-column prop="soNo" label="so No" width="100" fixed="left" />
+      <el-table-column prop="soNo" label="SO NO" width="100" fixed="left" />
+      <el-table-column label="维修内容" prop="content" width="120" :show-overflow-tooltip="true" />
       <el-table-column prop="custName" label="客户名称" width="150" />
       <el-table-column prop="modelNo" label="状态">
         <template #default="{ row }">
@@ -261,7 +262,7 @@
       <el-table-column label="维修类型">
         <template #default="{ row }">{{ row.orderType }} / {{ row.subType }}</template>
       </el-table-column>
-      <el-table-column prop="createByName" label="创建人" />
+      <el-table-column prop="createByName" label="申请人" width="130" />
       <el-table-column prop="createTime" label="创建时间" width="130" />
       <el-table-column prop="repairTime" label="报修时间" width="130" />
       <el-table-column prop="fseName" label="工程师名称" width="120" />
@@ -287,11 +288,9 @@ const props = defineProps({
 const repairSource = useDict('repairSource') // 报修来源
 const regionalStatus = useDict('regionalStatus') // 区域
 const checkContent = (rule, value, callback) => {
-  var reg =
-    /[\u3002|\uff1f|\uff01|\uff0c|\u3001|\uff1b|\uff1a|\u201c|\u201d|\u2018|\u2019|\uff08|\uff09|\u300a|\u300b|\u3008|\u3009|\u3010|\u3011|\u300e|\u300f|\u300c|\u300d|\ufe43|\ufe44|\u3014|\u3015|\u2026|\u2014|\uff5e|\ufe4f|\uffe5]/
   if (value) {
-    if (/[\u4E00-\u9FA5]/g.test(value) || reg.test(value)) {
-      callback(new Error('不能输入中文以及中文标点符号!'))
+    if (!utils.regexp.en.test(value)) {
+      callback(new Error('只能输入英文与英文符号!'))
     } else {
       callback()
     }

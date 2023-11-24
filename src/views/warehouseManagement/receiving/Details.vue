@@ -17,7 +17,7 @@
           max-height="190"
           :header-cell-style="{ background: '#f5f7fa' }"
         >
-          <el-table-column prop="soNo" label="so No" />
+          <el-table-column prop="soNo" label="SO NO" />
           <el-table-column prop="materialNo" label="物料号" />
           <el-table-column prop="itemName" label="配件名称" />
           <el-table-column prop="quantity" label="数量" />
