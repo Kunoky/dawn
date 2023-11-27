@@ -174,13 +174,13 @@
                 <el-table-column prop="discountRate" label="折扣率" />
                 <el-table-column prop="quoteName" label="报价人" />
                 <el-table-column prop="quoteTime" label="报价时间" />
-                <el-table-column prop="approveStatus" label="审批状态">
+                <!-- <el-table-column prop="approveStatus" label="审批状态">
                   <template #default="{ row }">
                     <span>
                       {{ row?.approveStatus === 0 ? '未审批' : row?.approveStatus === 1 ? '审批通过' : '审批拒绝' }}
                     </span>
                   </template>
-                </el-table-column>
+                </el-table-column> -->
               </el-table-column>
             </el-table>
           </div>
@@ -501,13 +501,13 @@
                 <el-table-column prop="discountRate" label="折扣率" />
                 <el-table-column prop="quoteName" label="报价人" />
                 <el-table-column prop="quoteTime" label="报价时间" />
-                <el-table-column prop="approveStatus" label="审批状态">
+                <!-- <el-table-column prop="approveStatus" label="审批状态">
                   <template #default="{ row }">
                     <span>
                       {{ row?.approveStatus === 0 ? '未审批' : row?.approveStatus === 1 ? '审批通过' : '审批拒绝' }}
                     </span>
                   </template>
-                </el-table-column>
+                </el-table-column> -->
               </el-table-column>
             </el-table>
           </div>
