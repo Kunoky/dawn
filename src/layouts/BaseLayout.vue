@@ -131,7 +131,7 @@ const setComponentName = (c, name) => {
             <CDropdown v-if="user.userId" @update:modelValue="handleUserCommand" :options="userOptions">
               <span class="cs-p">{{ user.userName }}</span>
             </CDropdown>
-            <router-link v-else to="/login" class="fs-5 cl-8 mgl-s">{{ $t('common.login') }}</router-link>
+            <el-button v-else class="mgl-s" @click="userStore.goLogin" text>{{ $t('common.login') }}</el-button>
           </div>
         </div>
         <TagsView />

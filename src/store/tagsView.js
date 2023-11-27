@@ -1,8 +1,10 @@
 import { defineStore } from 'pinia'
 
 export const useTagsViewStore = defineStore('tagsView', () => {
-  const list = ref([{ name: 'Home', meta: { title: '首页', affix: true } }])
-  const names = ref(['Home'])
+  // const list = ref([{ name: 'Home', meta: { title: '首页', affix: true } }])
+  // const names = ref(['Home'])
+  const list = ref([])
+  const names = ref([])
   watch(
     () => list.value.length,
     () => {

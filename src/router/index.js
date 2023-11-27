@@ -1,7 +1,7 @@
 // import { h } from 'vue'
 import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router/auto'
 // import { ElLoading, ElMessage } from 'element-plus'
-import { getToken, ssoLogin } from '@/utils/auth'
+import { getToken } from '@/utils/auth'
 import { useUserStore } from '../store/user'
 
 const baseRoutes = [
@@ -60,13 +60,15 @@ router.beforeEach(async (to, from) => {
       // return false
     }
   }
+  const userStore = useUserStore()
+  if (to.path === '/home') {
+    return { name: userStore.menu[0].routeName }
+  }
   if (to.meta.public) return
   if (!hasToken) {
-    ssoLogin()
+    userStore.goLogin()
     return false
-    // return '/login'
   }
-  const userStore = useUserStore()
   if (userStore.user.roles.length === 1 && userStore.user.roles[0] === 'fse') {
     location.href = '/mobile/'
     return
