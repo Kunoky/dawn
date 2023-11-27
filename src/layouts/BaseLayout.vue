@@ -83,6 +83,7 @@ const handleUserCommand = e => {
 
 // 懒加载组件外面裹了一层，导致keepAlive无法获取到name进行缓存
 const setComponentName = (c, name) => {
+  if (!c?.type) return
   c.type.name = name
   return c
 }

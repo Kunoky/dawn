@@ -8,7 +8,7 @@
         :data-index="index"
         class="tag-link"
       >
-        <el-tag :closable="!i.meta.affix" type="info" size="large" @close.prevent="store.close(index)">
+        <el-tag :closable="!i.meta.affix && !!index" type="info" size="large" @close.prevent="store.close(index)">
           {{ i.meta.title }}
         </el-tag>
       </router-link>
