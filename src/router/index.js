@@ -31,6 +31,12 @@ export const dynamicRoutes = [
   // { path: 'path7', pName: 'layout', component: h('h1', 'path7') },
 ]
 
+function getFistRoute(menu) {
+  if (menu.children?.length) {
+    return getFistRoute(menu.children[0])
+  }
+  return menu
+}
 const router = createRouter({
   history: import.meta.env.DEV
     ? createWebHashHistory(import.meta.env.VITE_BASE_URL)
@@ -61,8 +67,11 @@ router.beforeEach(async (to, from) => {
     }
   }
   const userStore = useUserStore()
+  console.warn('userStore: ', userStore.menuTree)
   if (to.path === '/home') {
-    return { name: userStore.menu[0].routeName }
+    if (!userStore.menuTree[0]) return
+    const first = getFistRoute(userStore.menuTree[0])
+    return { name: first.name }
   }
   if (to.meta.public) return
   if (!hasToken) {
