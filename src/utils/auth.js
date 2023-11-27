@@ -23,3 +23,7 @@ export function removeToken() {
 export function ssoLogin() {
   location.href = import.meta.env.VITE_SERVER_PATH + '/sso/login'
 }
+
+export function ssoLogout() {
+  location.href = import.meta.env.VITE_SERVER_PATH + '/sso/logout'
+}
