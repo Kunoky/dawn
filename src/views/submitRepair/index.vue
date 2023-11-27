@@ -16,7 +16,7 @@
       </el-table-column>
       <el-table-column label="仪器地址" prop="equipAddress" width="130" />
       <el-table-column label="创建人" prop="createByName" width="100" />
-      <el-table-column label="创建时间" prop="updateTime" width="140" />
+      <el-table-column label="创建时间" prop="createTime" width="140" />
       <el-table-column label="状态" prop="status" width="100">
         <template #default="{ row }">
           <el-popover

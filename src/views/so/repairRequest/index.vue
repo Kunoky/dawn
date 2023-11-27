@@ -17,7 +17,7 @@
       </el-table-column>
       <el-table-column label="仪器地址" prop="equipAddress" width="130" />
       <el-table-column label="创建人" prop="createByName" width="100" />
-      <el-table-column label="创建时间" prop="updateTime" width="100" />
+      <el-table-column label="创建时间" prop="createTime" width="100" />
       <el-table-column label="未关闭so数量" width="100">
         <template #default="{ row }">
           <span class="cs-p fw-b" style="color: #1890ff" @click="handleNum(row)">{{ row.soNum + row.mrNum }}</span>
