@@ -67,7 +67,7 @@ export const useUserStore = defineStore('user', {
       this.menuTree = []
       const route = router.currentRoute
       if (go2login || !route.value.meta?.public) {
-        this.login()
+        this.goLogin()
       }
     },
     hasPermission(permissions) {
