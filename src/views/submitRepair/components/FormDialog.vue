@@ -46,7 +46,7 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="所属区域" prop="area">
-            <el-select v-model="form.area" disabled placeholder="自动填入" style="width: 100%" clearable>
+            <el-select v-model="form.area" placeholder="请选择所属区域" style="width: 100%" clearable>
               <el-option
                 v-for="(item, index) in regionalStatus.options"
                 :key="index"
@@ -81,8 +81,15 @@
               :loading="custDescLoading"
               @change="changeCustDesc"
               style="width: 83%"
+              :title="getTitle(form.custDesc)"
             >
-              <el-option v-for="item in custDescOptions" :key="item.value" :label="item.label" :value="item.value" />
+              <el-option
+                v-for="item in custDescOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+                :title="item.label"
+              />
             </el-select>
             <el-input
               v-show="!show"
@@ -106,12 +113,12 @@
             <el-input v-model="form.name" placeholder="请输入客户联系人" clearable />
           </el-form-item>
         </el-col>
-        <el-col :span="7">
+        <el-col :span="8">
           <el-form-item label="客户联系人拼音" prop="lastName" class="form_flex">
             <el-input v-model="form.lastName" placeholder="请输入客户联系人拼音(姓)" clearable />
           </el-form-item>
         </el-col>
-        <el-col :span="5">
+        <el-col :span="4">
           <el-form-item prop="firstName" class="item">
             <el-input v-model="form.firstName" placeholder="请输入客户联系人拼音(名)" clearable />
           </el-form-item>
@@ -253,6 +260,7 @@
               :params="params"
               v-model="attachmentsList"
               accept="image/png,image/jpg,image/jpeg,application/pdf"
+              ref="upload"
             ></CUpload>
           </el-form-item>
         </el-col>
@@ -309,7 +317,7 @@ const regionalStatus = useDict('regionalStatus') // 区域
 const checkContent = (rule, value, callback) => {
   if (value) {
     if (!utils.regexp.en.test(value)) {
-      callback(new Error('只能输入英文与英文符号!'))
+      callback(new Error('只能输入英文与英文符号'))
     } else {
       callback()
     }
@@ -325,11 +333,11 @@ const rules = {
   custDesc: [{ required: true, message: '客户名称不能为空', trigger: 'blur' }],
   name: [{ required: true, message: '客户联系人不能为空', trigger: 'blur' }],
   lastName: [
-    { required: true, message: '客户联系人拼音(姓)不能为空', trigger: 'blur' },
+    { required: true, message: '拼音姓不能为空', trigger: 'blur' },
     { pattern: /^[A-Za-z]*$/, message: '请输入拼音', trigger: 'blur' },
   ],
   firstName: [
-    { required: true, message: '客户联系人拼音(名)不能为空', trigger: 'blur' },
+    { required: true, message: '拼音名不能为空', trigger: 'blur' },
     { pattern: /^[A-Za-z]*$/, message: '请输入拼音', trigger: 'blur' },
   ],
   mobile: [
@@ -570,8 +578,10 @@ const params = {
   type: 5,
 }
 // 取消
+const upload = ref()
 const handleClose = () => {
   emit('update:modelValue', false)
+  upload.value.say()
 }
 const handleConfirm = () => {
   formRef.value.validate(valid => {
@@ -596,6 +606,7 @@ const handleConfirm = () => {
           if (code === 200) {
             emit('success')
             emit('update:modelValue', false)
+            upload.value.say()
           }
         })
         .finally(() => {
@@ -603,6 +614,13 @@ const handleConfirm = () => {
         })
     }
   })
+}
+
+//下拉框鼠标移上显示提示文字
+const getTitle = val => {
+  if (val !== '') {
+    return val
+  }
 }
 </script>
 <style scoped>
@@ -614,7 +632,6 @@ const handleConfirm = () => {
   display: flex;
   justify-content: space-between;
 }
-
 .item :deep(.el-form-item__content) {
   margin-left: 10px !important;
 }

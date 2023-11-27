@@ -143,6 +143,7 @@
             :params="params"
             v-model="attachmentsList"
             accept="image/png,image/jpg,image/jpeg,application/pdf"
+            ref="upload"
           ></CUpload>
         </el-form-item>
       </el-form>
@@ -251,10 +252,12 @@ const handleClose = row => {
   params.value.relationId = row.soNo
   detailVisible.value = true
 }
+const upload = ref()
 const handleCloseDetail = () => {
   detailVisible.value = false
   nextTick(() => {
     formRefDetails.value.resetFields()
+    upload.value.say()
   })
 }
 const handleConfirm = () => {
@@ -268,6 +271,7 @@ const handleConfirm = () => {
         refresh()
         nextTick(() => {
           formRefDetails.value.resetFields()
+          upload.value.say()
         })
       })
     }

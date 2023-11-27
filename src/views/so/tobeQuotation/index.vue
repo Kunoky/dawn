@@ -132,13 +132,14 @@
     <CDetails :data="current" v-model="visible.detail" @success="handleFormSuccess"></CDetails>
 
     <el-dialog title="上传附件" width="30%" v-model="detailVisible" :close-on-click-modal="false">
-      <el-form ref="formRefDetails" label-width="80" class="item">
+      <el-form label-width="80" class="item">
         <el-form-item prop="attaIds">
           <CUpload
             style="width: 100%"
             :params="params"
             v-model="list"
             accept="image/png,image/jpg,image/jpeg,application/pdf"
+            ref="upload"
           ></CUpload>
         </el-form-item>
       </el-form>
@@ -285,7 +286,6 @@ const handleFormSuccess = () => {
 
 // 上传附件
 const detailVisible = ref(false)
-const formRefDetails = ref(null)
 // 上传附件参数
 const list = ref([])
 const params = ref({
@@ -296,12 +296,10 @@ const handleUploadFile = row => {
   params.value.relationId = row.soNo
   detailVisible.value = true
 }
+const upload = ref()
 const handleCloseDetail = () => {
   detailVisible.value = false
-  list.value = []
-  nextTick(() => {
-    formRefDetails.value.clearValidate()
-  })
+  upload.value.say()
 }
 
 // 添加沟通记录

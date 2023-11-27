@@ -12,6 +12,7 @@
     :accept="accept"
     v-bind="$attrs"
     v-model:file-list="fileList"
+    @click="say"
   >
     <template #trigger>
       <slot name="trigger">
@@ -27,7 +28,9 @@
       <slot name="file"></slot>
     </template>
     <template #tip>
-      <slot name="tip"><div class="el-upload__tip">只能上传图片与PDF，文件大小不超过10MB</div></slot>
+      <slot name="tip">
+        <div class="el-upload__tip">只能上传图片与PDF，文件大小不超过10MB</div>
+      </slot>
     </template>
   </el-upload>
 </template>
@@ -105,7 +108,13 @@ function handleSuccess(res) {
     ElMessage.success('上传成功!')
   }
 }
+
+// 清除附件列表
+const say = () => {
+  upload.value.clearFiles()
+}
 defineExpose({
   upload,
+  say,
 })
 </script>
