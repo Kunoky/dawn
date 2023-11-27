@@ -67,7 +67,7 @@ router.beforeEach(async (to, from) => {
   if (to.meta.public) return
   if (!hasToken) {
     userStore.goLogin()
-    return false
+    return
   }
   if (userStore.user.roles.length === 1 && userStore.user.roles[0] === 'fse') {
     location.href = '/mobile/'
