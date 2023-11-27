@@ -61,9 +61,10 @@ router.beforeEach(async (to, from) => {
     }
   }
   const userStore = useUserStore()
-  if (to.path === '/home') {
-    return { name: userStore.menu[0].routeName }
-  }
+  console.warn('userStore: ', userStore)
+  // if (to.path === '/home') {
+  //   return { name: userStore.menu[0]?.routeName }
+  // }
   if (to.meta.public) return
   if (!hasToken) {
     userStore.goLogin()
