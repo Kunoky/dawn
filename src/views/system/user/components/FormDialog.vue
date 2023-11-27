@@ -51,7 +51,7 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row v-if="!form.userId">
+      <!-- <el-row v-if="!form.userId">
         <el-col :span="12">
           <el-form-item label="登录名称" prop="loginName">
             <el-input v-model="form.loginName" placeholder="请输入登录名称" maxlength="30" />
@@ -68,7 +68,7 @@
             />
           </el-form-item>
         </el-col>
-      </el-row>
+      </el-row> -->
       <el-row>
         <el-col :span="12">
           <el-form-item label="角色">
