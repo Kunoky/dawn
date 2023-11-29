@@ -3,12 +3,12 @@
     :model-value="modelValue"
     @close="handleClose"
     title="完善信息"
-    width="60%"
+    width="80%"
     v-bind="$attrs"
     :close-on-click-modal="false"
   >
     <p v-if="!form.isConsistentSap" style="font-size: 12px; color: #e71316; margin: 0 50px 10px">与SAP信息不一致</p>
-    <el-form :model="form" ref="formRef" label-width="155" :rules="rules" v-loading="dataLoading">
+    <el-form :model="form" ref="formRef" label-width="120" :rules="rules" v-loading="dataLoading">
       <el-row>
         <el-col :span="12">
           <el-form-item label="设备序列号" prop="serialNo">
@@ -33,7 +33,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="仪器SAP Equip编号" prop="eqId">
+          <el-form-item label="仪器编号" prop="eqId">
             <el-input v-model="form.eqId" disabled placeholder="自动填入" clearable />
           </el-form-item>
         </el-col>
@@ -43,50 +43,15 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="客户名称" prop="custDesc">
-            <el-select
-              v-model="form.custDesc"
-              placeholder="请输入客户名称"
-              filterable
-              remote
-              @keyup.ctrl.c="hanelCopy(form.custDesc)"
-              :remote-method="remoteMethodCustDesc"
-              :loading="custDescLoading"
-              @change="changeCustDesc"
-              style="width: 100%"
-            >
-              <el-option v-for="item in custDescOptions" :key="item.value" :label="item.label" :value="item.value" />
+          <el-form-item label="所属区域" prop="area">
+            <el-select v-model="form.area" placeholder="请选择所属区域" style="width: 100%" clearable>
+              <el-option
+                v-for="(item, index) in regionalStatus.options"
+                :key="index"
+                :label="item.label"
+                :value="item.value"
+              />
             </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="客户锁信息" prop="blockFlag">
-            <el-input disabled v-model="form.blockFlag" placeholder="自动填入" clearable />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="客户联系人" prop="name">
-            <el-input v-model="form.name" placeholder="请输入客户联系人" clearable />
-          </el-form-item>
-        </el-col>
-        <el-col :span="7">
-          <el-form-item label="客户联系人拼音" prop="lastName" class="form_flex">
-            <el-input v-model="form.lastName" placeholder="请输入客户联系人拼音(姓)" clearable />
-          </el-form-item>
-        </el-col>
-        <el-col :span="5">
-          <el-form-item prop="firstName" class="item">
-            <el-input v-model="form.firstName" placeholder="请输入客户联系人拼音(名)" clearable />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="客户联系人电话" prop="mobile">
-            <el-input v-model="form.mobile" placeholder="请输入客户联系人电话" clearable />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="客户联系人邮箱" prop="email">
-            <el-input v-model="form.email" placeholder="请输入客户联系人邮箱" clearable />
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -100,6 +65,91 @@
               style="width: 100%"
               clearabl
             />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="客户" prop="custDesc" class="form_flex">
+            <el-input v-model="form.customerId" disabled placeholder="自动填入" style="width: 30%" />
+            <el-select
+              v-model="form.custDesc"
+              placeholder="请输入客户名称"
+              filterable
+              remote
+              @keyup.ctrl.c="hanelCopy(form.custDesc)"
+              :remote-method="remoteMethodCustDesc"
+              :loading="custDescLoading"
+              @change="changeCustDesc"
+              style="width: 68%"
+              :title="getTitle(form.custDesc)"
+            >
+              <el-option
+                v-for="item in custDescOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+                :title="item.label"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="客户锁" prop="blockFlag">
+            <el-input disabled v-model="form.blockFlag" placeholder="自动填入" clearable />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="payer客户" prop="payerName" class="form_flex">
+            <el-input v-model="form.payer" disabled placeholder="自动填入" style="width: 30%" />
+            <el-select
+              v-model="form.payerName"
+              placeholder="请输入payer客户名称"
+              filterable
+              remote
+              @keyup.ctrl.c="hanelCopy(form.payerName)"
+              :remote-method="remoteMethodCustDesc1"
+              :loading="custDescLoading1"
+              @change="changeCustDesc1"
+              style="width: 68%"
+              :title="getTitle(form.payerName)"
+            >
+              <el-option
+                v-for="item in custDescOptions1"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+                :title="item.label"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="payer客户锁" prop="payerBlockFlag">
+            <el-input disabled v-model="form.payerBlockFlag" placeholder="自动填入" clearable />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="联系人" prop="name">
+            <el-input v-model="form.name" placeholder="请输入联系人" clearable />
+          </el-form-item>
+        </el-col>
+        <el-col :span="7">
+          <el-form-item label="联系人拼音" prop="lastName" class="form_flex">
+            <el-input v-model="form.lastName" placeholder="拼音(姓)" clearable />
+          </el-form-item>
+        </el-col>
+        <el-col :span="5">
+          <el-form-item prop="firstName" class="item">
+            <el-input v-model="form.firstName" placeholder="拼音(名)" clearable />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="联系人电话" prop="mobile">
+            <el-input v-model="form.mobile" placeholder="请输入联系人电话" clearable />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="联系人邮箱" prop="email">
+            <el-input v-model="form.email" placeholder="请输入联系人邮箱" clearable />
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -145,12 +195,12 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="FSE work center" prop="fseWorkCenter">
+          <el-form-item label="work center" prop="fseWorkCenter">
             <el-input v-model="form.fseWorkCenter" disabled placeholder="自动填入" clearable />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="FSE storage location" prop="fseStorageLocation">
+          <el-form-item label="storage location" prop="fseStorageLocation">
             <el-input v-model="form.fseStorageLocation" disabled placeholder="自动填入" clearable />
           </el-form-item>
         </el-col>
@@ -185,19 +235,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="所属区域" prop="area">
-            <el-select v-model="form.area" placeholder="请选择所属区域" style="width: 100%" clearable>
-              <el-option
-                v-for="(item, index) in regionalStatus.options"
-                :key="index"
-                :label="item.label"
-                :value="item.value"
-              />
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="是否CRC" prop="isCrc">
+          <el-form-item label="CRC" prop="isCrc">
             <el-switch
               v-model="form.isCrc"
               class="ml-2"
@@ -213,7 +251,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="是否Promotion" prop="isPromotion">
+          <el-form-item label="Promotion" prop="isPromotion">
             <el-switch
               v-model="form.isPromotion"
               class="ml-2"
@@ -229,8 +267,8 @@
           </el-form-item>
         </el-col>
         <el-col :span="24">
-          <el-form-item label="报修内容(填写英文)" prop="content">
-            <el-input type="textarea" v-model="form.content" placeholder="请输入报修内容" clearable />
+          <el-form-item label="报修内容" prop="content">
+            <el-input type="textarea" v-model="form.content" placeholder="请输入报修内容(填写英文)" clearable />
           </el-form-item>
         </el-col>
         <el-col :span="24">
@@ -238,22 +276,16 @@
             <el-input type="textarea" v-model="form.remark" placeholder="请输入备注" clearable />
           </el-form-item>
         </el-col>
-        <el-col :span="24">
-          <el-form-item label="上传附件" prop="attaIds">
+        <el-col :span="12">
+          <el-form-item label="上传附件" prop="attaIds" class="CUpload">
             <CUpload
-              style="width: 100%"
+              style="width: 60%"
               :params="params"
               v-model="attachmentsList"
               accept="image/png,image/jpg,image/jpeg,application/pdf"
               ref="upload"
             ></CUpload>
           </el-form-item>
-          <!-- <el-form-item label="附件信息" prop="remark">
-            <div class="files" v-for="(item,index) in form.attachments" :key="index">
-              <el-icon class="ep_files"><i-ep-Files /></el-icon>
-              <span @click="handleDownloadFile(item.path)">浏览</span>
-            </div>
-          </el-form-item> -->
         </el-col>
       </el-row>
     </el-form>
@@ -325,6 +357,7 @@ const rules = {
   dataOptions: [{ required: true, message: '维修类型不能为空', trigger: 'change' }],
   equipAddress: [{ required: true, message: '仪器地址不能为空', trigger: 'blur' }],
   custDesc: [{ required: true, message: '客户名称不能为空', trigger: 'blur' }],
+  payerName: [{ required: true, message: 'payer客户名称不能为空', trigger: 'blur' }],
   name: [{ required: true, message: '客户联系人不能为空', trigger: 'blur' }],
   lastName: [
     { required: true, message: '客户联系人拼音(姓)不能为空', trigger: 'blur' },
@@ -371,7 +404,10 @@ watch(
         equipAddress: '',
         custDesc: '',
         customerId: '',
+        payerName: '',
+        payer: '',
         blockFlag: '',
+        payerBlockFlag: '',
         name: '',
         lastName: '',
         firstName: '',
@@ -414,11 +450,11 @@ const { run: getRequestInfo, loading: dataLoading } = useAsync(
     onSuccess(res) {
       form.value = res.data
       form.value.dataOptions = [res.data.orderType, res.data.subType]
-      attachmentsList.value = res.data.attachments.map((val, idx) => {
+      attachmentsList.value = res.data.attachments.map(val => {
         val.url = import.meta.env.VITE_SERVER_PATH + val.path
         val.name = val.fileName
-        val.uid = idx
-        val.status = 'success'
+        // val.uid = idx
+        // val.status = 'success'
         return val
       })
       // 暂存用做数据对比
@@ -471,6 +507,10 @@ const changeSeriaNo = val => {
   form.value.area = val.customer.region
   form.value.blockFlag = val.customer.blockFlag !== null ? val.customer.blockFlag : '无'
 
+  form.value.payer = val.payer.customerId
+  form.value.payerName = val.payer.name === '' ? val.payer.enName : val.payer.name
+  form.value.payerBlockFlag = val.payer.blockFlag !== null ? val.payer.blockFlag : '无'
+
   // 暂存用做数据对比
   // staging.value.aaa = val.customer.name === '' ? val.customer.enName : val.customer.name
   // staging.value.bbb = val.customer.address === '' ? val.customer.enAddress : val.customer.address
@@ -481,7 +521,7 @@ const custDescLoading = ref(false)
 const custDescList = ref([])
 const custDescOptions = ref([])
 async function getCustomer(v) {
-  return req.get('/data/customer', { params: { name: v } }).then(res => {
+  return req.get('/data/customer', { params: { name: v, type: 'WE' } }).then(res => {
     custDescList.value = res.data.map(item => {
       return { value: item, label: `${item.customerId}_${item.name === '' ? item.enName : item.name}` }
     })
@@ -506,6 +546,43 @@ const changeCustDesc = val => {
   form.value.equipAddress = val.address === '' ? val.enAddress : val.address
   form.value.area = val.region
   form.value.blockFlag = val.blockFlag !== null ? val.blockFlag : '无'
+}
+
+//下拉框鼠标移上显示提示文字
+const getTitle = val => {
+  if (val !== '') {
+    return val
+  }
+}
+
+// paye客户名称
+const custDescLoading1 = ref(false)
+const custDescList1 = ref([])
+const custDescOptions1 = ref([])
+async function getCustomer1(v) {
+  return req.get('/data/customer', { params: { name: v, type: 'RG' } }).then(res => {
+    custDescList1.value = res.data.map(item => {
+      return { value: item, label: `${item.customerId}_${item.name === '' ? item.enName : item.name}` }
+    })
+  })
+}
+const remoteMethodCustDesc1 = query => {
+  if (query) {
+    custDescLoading1.value = true
+    getCustomer1(query).then(() => {
+      custDescLoading1.value = false
+      custDescOptions1.value = custDescList1.value.filter(item => {
+        return item.label.toLowerCase().includes(query.toLowerCase())
+      })
+    })
+  } else {
+    custDescOptions1.value = []
+  }
+}
+const changeCustDesc1 = val => {
+  form.value.payer = val.customerId
+  form.value.payerName = val.customerId + val.name === '' ? val.enName : val.name
+  form.value.payerBlockFlag = val.blockFlag !== null ? val.blockFlag : '无'
 }
 
 // 工程师名称
@@ -636,5 +713,15 @@ function hanelCopy(val) {
   color: #e71316;
   cursor: pointer;
   text-decoration: underline;
+}
+.CUpload :deep(.el-upload-dragger) {
+  height: 100px;
+  padding-top: 10px;
+}
+.CUpload :deep(.el-upload-dragger) .el-icon.el-icon--upload {
+  font-size: 30px;
+}
+.CUpload :deep(.el-upload-dragger) .el-upload__text {
+  font-size: 12px;
 }
 </style>

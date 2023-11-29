@@ -28,7 +28,7 @@
     </template>
     <template #tip>
       <slot name="tip">
-        <div class="el-upload__tip">只能上传图片与PDF，文件大小不超过10MB</div>
+        <div class="el-upload__tip">文件大小不超过10MB</div>
       </slot>
     </template>
   </el-upload>
@@ -107,6 +107,7 @@ function beforeUpload(file) {
 }
 
 function handleRemove(file) {
+  // console.log(file.id)
   file.id && req.delete('attachment/' + file.id)
 }
 function handleSuccess(res) {

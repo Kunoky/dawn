@@ -33,20 +33,32 @@
               {{ form.orderType }} / {{ form.subType }}
             </el-descriptions-item>
             <el-descriptions-item>
-              <template #label>客户名称</template>
-              {{ form.custDesc }}
+              <template #label>仪器地址</template>
+              {{ form.equipAddress }}
             </el-descriptions-item>
             <el-descriptions-item>
               <template #label>客户编号</template>
               {{ form.customerId }}
             </el-descriptions-item>
             <el-descriptions-item>
+              <template #label>客户名称</template>
+              {{ form.custDesc }}
+            </el-descriptions-item>
+            <el-descriptions-item>
               <template #label>客户锁信息</template>
               {{ form.customerLockName }}
             </el-descriptions-item>
             <el-descriptions-item>
-              <template #label>仪器地址</template>
-              {{ form.equipAddress }}
+              <template #label>payer客户编号</template>
+              {{ form.payer }}
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>payer客户名称</template>
+              {{ form.payerName }}
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>payer客户锁信息</template>
+              {{ form.payerLockName }}
             </el-descriptions-item>
             <el-descriptions-item>
               <template #label>客户联系人</template>

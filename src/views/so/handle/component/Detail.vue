@@ -62,7 +62,7 @@ watch(
   () => props.modelValue,
   v => {
     if (v) {
-      props.data?.id && getPayDemandNote()
+      props.data?.soNo && getPayDemandNote()
     }
   },
   { immediate: true }
