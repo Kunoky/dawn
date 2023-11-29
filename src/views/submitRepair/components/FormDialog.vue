@@ -253,6 +253,11 @@
             <el-input type="textarea" v-model="form.content" placeholder="请输入报修内容" clearable />
           </el-form-item>
         </el-col>
+        <el-col :span="24">
+          <el-form-item label="备注" prop="remark">
+            <el-input type="textarea" v-model="form.remark" placeholder="请输入备注" clearable />
+          </el-form-item>
+        </el-col>
         <el-col :span="12">
           <el-form-item label="上传附件" prop="attaIds">
             <CUpload
@@ -379,6 +384,7 @@ watch(
         email: '',
         vendor: '',
         content: '',
+        remark: '',
         source: '',
         repairTime: '',
         warrantyTime: '',

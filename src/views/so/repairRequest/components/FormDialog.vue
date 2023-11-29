@@ -233,6 +233,28 @@
             <el-input type="textarea" v-model="form.content" placeholder="请输入报修内容" clearable />
           </el-form-item>
         </el-col>
+        <el-col :span="24">
+          <el-form-item label="备注" prop="remark">
+            <el-input type="textarea" v-model="form.remark" placeholder="请输入备注" clearable />
+          </el-form-item>
+        </el-col>
+        <el-col :span="24">
+          <el-form-item label="上传附件" prop="attaIds">
+            <CUpload
+              style="width: 100%"
+              :params="params"
+              v-model="attachmentsList"
+              accept="image/png,image/jpg,image/jpeg,application/pdf"
+              ref="upload"
+            ></CUpload>
+          </el-form-item>
+          <!-- <el-form-item label="附件信息" prop="remark">
+            <div class="files" v-for="(item,index) in form.attachments" :key="index">
+              <el-icon class="ep_files"><i-ep-Files /></el-icon>
+              <span @click="handleDownloadFile(item.path)">浏览</span>
+            </div>
+          </el-form-item> -->
+        </el-col>
       </el-row>
     </el-form>
     <template #footer>
@@ -330,6 +352,12 @@ const rules = {
 const loading = ref(false)
 const formRef = ref()
 const form = ref({})
+// 上传附件参数
+const attachmentsList = ref([])
+const params = {
+  type: 5,
+  relationId: props.data?.id,
+}
 watch(
   () => props.modelValue,
   v => {
@@ -351,6 +379,7 @@ watch(
         email: '',
         vendor: '',
         content: '',
+        remark: '',
         source: '',
         repairTime: '',
         warrantyTime: '',
@@ -366,6 +395,7 @@ watch(
         isConsistentSap: false,
         isPromotion: false,
         promotionCode: '',
+        // attaIds: ''
       }
       nextTick(() => {
         formRef.value.clearValidate()
@@ -384,10 +414,16 @@ const { run: getRequestInfo, loading: dataLoading } = useAsync(
     onSuccess(res) {
       form.value = res.data
       form.value.dataOptions = [res.data.orderType, res.data.subType]
-
+      attachmentsList.value = res.data.attachments.map((val, idx) => {
+        val.url = import.meta.env.VITE_SERVER_PATH + val.path
+        val.name = val.fileName
+        val.uid = idx
+        val.status = 'success'
+        return val
+      })
       // 暂存用做数据对比
-      staging.value.aaa = res.data.custDesc
-      staging.value.bbb = res.data.equipAddress
+      // staging.value.aaa = res.data.custDesc
+      // staging.value.bbb = res.data.equipAddress
       nextTick(() => {
         formRef.value.clearValidate()
       })
@@ -395,10 +431,10 @@ const { run: getRequestInfo, loading: dataLoading } = useAsync(
   }
 )
 // 暂存数据，为提交校验数据
-const staging = ref({
-  aaa: '',
-  bbb: '',
-})
+// const staging = ref({
+//   aaa: '',
+//   bbb: '',
+// })
 // 查询设备序列号
 const selectlLoading = ref(false)
 const serialNoList = ref([])
@@ -436,8 +472,8 @@ const changeSeriaNo = val => {
   form.value.blockFlag = val.customer.blockFlag !== null ? val.customer.blockFlag : '无'
 
   // 暂存用做数据对比
-  staging.value.aaa = val.customer.name === '' ? val.customer.enName : val.customer.name
-  staging.value.bbb = val.customer.address === '' ? val.customer.enAddress : val.customer.address
+  // staging.value.aaa = val.customer.name === '' ? val.customer.enName : val.customer.name
+  // staging.value.bbb = val.customer.address === '' ? val.customer.enAddress : val.customer.address
 }
 
 // 客户名称
@@ -540,9 +576,11 @@ const handleClose = () => {
 const handleConfirm = () => {
   formRef.value.validate(valid => {
     if (valid) {
-      delete form.value.blockFlag
-      delete form.value.fseStorageLocation
-      delete form.value.dataOptions
+      // delete form.value.blockFlag
+      // delete form.value.fseStorageLocation
+      // delete form.value.dataOptions
+      // form.value.attaIds = attachmentsList.value.map(item => item.id)
+      // console.log(form.value)
       loading.value = true
       req[form.value.id ? 'put' : 'post']('/request', form.value)
         .then(({ code }) => {
@@ -558,9 +596,17 @@ const handleConfirm = () => {
   })
 }
 
+// 复制客户名称
 function hanelCopy(val) {
   utils.copy(val)
 }
+
+// 浏览
+// const handleDownloadFile = row => {
+//   if (row) {
+//     window.open(import.meta.env.VITE_SERVER_PATH + row, '_blank')
+//   }
+// }
 </script>
 <style scoped>
 .date-box :deep(.el-input__wrapper) {
@@ -574,5 +620,21 @@ function hanelCopy(val) {
 
 .item :deep(.el-form-item__content) {
   margin-left: 10px !important;
+}
+
+.files {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.files .ep_files {
+  font-size: 40px;
+}
+
+.files span {
+  color: #e71316;
+  cursor: pointer;
+  text-decoration: underline;
 }
 </style>

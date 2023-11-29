@@ -384,9 +384,9 @@
               <el-table-column label="操作" class-name="small-padding fixed-width" width="100">
                 <template #default="{ row }">
                   <el-button type="primary" link @click="handleDownloadFile(row)">下载</el-button>
-                  <el-button type="primary" v-if="row.createBy === user.userId" link @click="handleDel(row)">
+                  <!-- <el-button type="primary" v-if="row.createBy === user.userId" link @click="handleDel(row)">
                     删除
-                  </el-button>
+                  </el-button> -->
                 </template>
               </el-table-column>
             </el-table>
@@ -607,9 +607,9 @@
 </template>
 
 <script setup>
-import { useUserStore } from '@/store/user'
-const userStore = useUserStore()
-const { user } = storeToRefs(userStore)
+// import { useUserStore } from '@/store/user'
+// const userStore = useUserStore()
+// const { user } = storeToRefs(userStore)
 const emit = defineEmits(['update:modelValue', 'success'])
 const props = defineProps({
   data: Object,
@@ -710,11 +710,11 @@ const handleDownloadFile = row => {
     document.body.removeChild(link) // 下载完成移除元素
   }
 }
-const handleDel = row => {
-  req.delete('attachment/' + row.id).then(() => {
-    getInfo()
-  })
-}
+// const handleDel = row => {
+//   req.delete('attachment/' + row.id).then(() => {
+//     getInfo()
+//   })
+// }
 </script>
 <style scoped>
 .demo-collapse :deep(.el-collapse-item__header) {

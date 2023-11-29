@@ -12,7 +12,6 @@
     :accept="accept"
     v-bind="$attrs"
     v-model:file-list="fileList"
-    @click="say"
   >
     <template #trigger>
       <slot name="trigger">
@@ -67,12 +66,19 @@ watch(
   v => {
     v.forEach(i => {
       if (i.status === 'success') {
-        Object.assign(i, i.response.data)
+        Object.assign(i, i.response?.data)
       }
     })
     emit('update:modelValue', v)
   },
   { deep: true }
+)
+
+watch(
+  () => props.modelValue,
+  v => {
+    fileList.value = v
+  }
 )
 function handleError(e) {
   let msg = e.message

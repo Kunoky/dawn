@@ -8,6 +8,7 @@
       id="query"
     >
       <el-table-column label="SO NO" prop="soNo" width="130" />
+      <el-table-column label="维修任务编号" prop="soTaskNo" width="130" />
       <el-table-column label="设备序列号" prop="serialNo" width="140" />
       <el-table-column label="设备型号" prop="modelNo" width="100" />
       <el-table-column label="仪器SAP Equip编号" prop="eqId" width="128" />

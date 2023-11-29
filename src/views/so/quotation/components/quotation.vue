@@ -296,7 +296,7 @@ const remoteMethodMaterialNo = query => {
 const changeMaterialNo = (val, row) => {
   row.materialNo = val.materialNo
   row.unit = val.unit
-  row.unitPrice = val.unitPrice
+  row.unitPrice = val.unitPrice === null ? '0.00' : val.unitPrice === '' ? '0.00' : val.unitPrice
   row.includeTaxPrice = val.includeTaxPrice
   row.isBom = val.isBom
   row.itemName = val.itemName
@@ -385,6 +385,9 @@ const handelEditTotal = () => {
 }
 
 const handelPrice = row => {
+  if (row.unitPrice !== null || row.unitPrice !== '') {
+    row.unitPrice = '0.00'
+  }
   const y = new Big(row.unitPrice)
   row.includeTaxPrice = y.times(1.13).toFixed(2)
   handelCalculateTotalPrice(row)
@@ -431,8 +434,9 @@ const handleConfirm = async () => {
       invoiceInfo.value.soNo = props.data.soNo
       formData.value.soNo = props.data.soNo
       formData.value.discountRate = formData2.value.discountRate
+      let quoteDetailList = [...tableDataCopy.value, ...tableData.value]
       let data = {
-        quoteDetailList: [...tableDataCopy.value, ...tableData.value],
+        quoteDetailList: quoteDetailList.filter(item => item.id || !item.delFlag),
         invoiceInfo: invoiceInfo.value,
         quoteSummary: formData.value,
       }

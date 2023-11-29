@@ -60,7 +60,7 @@
       </el-table-column>
       <el-table-column label="报修时间" prop="repairTime" width="140" />
       <el-table-column label="保修期" prop="warrantyTime" width="130" />
-      <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="100">
+      <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="50">
         <template #default="{ row }">
           <!-- 已退回显示修改 -->
           <div v-if="row.status === 2">
@@ -68,7 +68,7 @@
           </div>
           <!-- 已提交与已退回显示取消申请 -->
           <div v-if="row.status === 2 || row.status === 2">
-            <el-button type="primary" link @click="handleExamine(row)">取消维修申请</el-button>
+            <el-button type="primary" link @click="handleExamine(row)">取消</el-button>
           </div>
         </template>
       </el-table-column>

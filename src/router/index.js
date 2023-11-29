@@ -67,7 +67,7 @@ router.beforeEach(async (to, from) => {
     }
   }
   const userStore = useUserStore()
-  console.warn('userStore: ', userStore.menuTree)
+  // console.warn('userStore: ', userStore.menuTree)
   if (to.path === '/home') {
     if (!userStore.menuTree[0]) return
     const first = getFistRoute(userStore.menuTree[0])
