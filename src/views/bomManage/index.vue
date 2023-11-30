@@ -38,6 +38,14 @@
           <el-button type="primary">导入</el-button>
         </el-upload>
       </template>
+      <template #form="{ form }">
+        <el-form-item label="物料号" prop="material">
+          <el-input v-model="form.material" placeholder="请输入物料号" clearable />
+        </el-form-item>
+        <el-form-item label="描述" prop="description">
+          <el-input v-model="form.description" placeholder="请输入描述" clearable />
+        </el-form-item>
+      </template>
     </CTable>
     <FormDialog v-model="visible.form" @success="handleFormSuccess"></FormDialog>
     <AddChild :data="current" v-model="visible.addChildForm"></AddChild>
