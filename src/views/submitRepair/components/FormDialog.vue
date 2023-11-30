@@ -106,7 +106,6 @@
         <el-col :span="12">
           <el-form-item label="payer客户" prop="payerName" class="form_flex">
             <el-input v-model="form.payer" disabled placeholder="自动填入" style="width: 30%" />
-            {{ form.payerName }}
             <el-select
               v-show="show1"
               v-model="form.payerName"
