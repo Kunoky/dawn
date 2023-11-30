@@ -208,18 +208,23 @@
                   : ''
               }}
             </el-descriptions-item>
-            <el-descriptions-item v-if="quoteData.invoiceInfo?.invoiceType === 1">
-              <template #label>邮箱</template>
-              {{ quoteData.invoiceInfo?.recipientEmail }}
-            </el-descriptions-item>
-            <el-descriptions-item v-if="quoteData.invoiceInfo?.invoiceType === 2">
-              <template #label>地址</template>
-              {{ quoteData.invoiceInfo?.mailingAddress }}
-            </el-descriptions-item>
             <el-descriptions-item>
               <template #label>发票抬头</template>
               {{ quoteData.invoiceInfo?.companyName }}
             </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>税号</template>
+              {{ quoteData.invoiceInfo?.taxNo }}
+            </el-descriptions-item>
+
+            <el-descriptions-item>
+              <template #label>邮箱</template>
+              {{ quoteData.invoiceInfo?.recipientEmail }}
+            </el-descriptions-item>
+            <!-- <el-descriptions-item v-if="quoteData.invoiceInfo?.invoiceType === 2">
+              <template #label>地址</template>
+              {{ quoteData.invoiceInfo?.mailingAddress }}
+            </el-descriptions-item> -->
             <el-descriptions-item>
               <template #label>收件人</template>
               {{ quoteData.invoiceInfo?.recipient }}
@@ -232,13 +237,9 @@
               <template #label>开户行</template>
               {{ quoteData.invoiceInfo?.bankName }}
             </el-descriptions-item>
-            <el-descriptions-item>
+            <el-descriptions-item :span="2">
               <template #label>开户行账号</template>
               {{ quoteData.invoiceInfo?.bankAccount }}
-            </el-descriptions-item>
-            <el-descriptions-item :span="2">
-              <template #label>税号</template>
-              {{ quoteData.invoiceInfo?.taxNo }}
             </el-descriptions-item>
             <el-descriptions-item :span="3">
               <template #label>注册地址及电话</template>
@@ -535,18 +536,23 @@
                   : ''
               }}
             </el-descriptions-item>
-            <el-descriptions-item v-if="payDemandNoteData.invoiceInfo?.invoiceType === 1">
-              <template #label>邮箱</template>
-              {{ payDemandNoteData.invoiceInfo?.recipientEmail }}
-            </el-descriptions-item>
-            <el-descriptions-item v-if="payDemandNoteData.invoiceInfo?.invoiceType === 2">
-              <template #label>地址</template>
-              {{ payDemandNoteData.invoiceInfo?.mailingAddress }}
-            </el-descriptions-item>
+
             <el-descriptions-item>
               <template #label>发票抬头</template>
               {{ payDemandNoteData.invoiceInfo?.companyName }}
             </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>税号</template>
+              {{ payDemandNoteData.invoiceInfo?.taxNo }}
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>邮箱</template>
+              {{ payDemandNoteData.invoiceInfo?.recipientEmail }}
+            </el-descriptions-item>
+            <!-- <el-descriptions-item v-if="payDemandNoteData.invoiceInfo?.invoiceType === 2">
+              <template #label>地址</template>
+              {{ payDemandNoteData.invoiceInfo?.mailingAddress }}
+            </el-descriptions-item> -->
             <el-descriptions-item>
               <template #label>收件人</template>
               {{ payDemandNoteData.invoiceInfo?.recipient }}
@@ -559,13 +565,9 @@
               <template #label>开户行</template>
               {{ payDemandNoteData.invoiceInfo?.bankName }}
             </el-descriptions-item>
-            <el-descriptions-item>
+            <el-descriptions-item :span="2">
               <template #label>开户行账号</template>
               {{ payDemandNoteData.invoiceInfo?.bankAccount }}
-            </el-descriptions-item>
-            <el-descriptions-item :span="2">
-              <template #label>税号</template>
-              {{ payDemandNoteData.invoiceInfo?.taxNo }}
             </el-descriptions-item>
             <el-descriptions-item :span="3">
               <template #label>注册地址及电话</template>

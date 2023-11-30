@@ -79,7 +79,13 @@ const rules = {
   deptName: [{ required: true, message: '部门名称不能为空', trigger: 'blur' }],
   orderNum: [{ required: true, message: '显示排序不能为空', trigger: 'blur' }],
   email: [{ type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }],
-  phone: [{ pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/, message: '请输入正确的手机号码', trigger: 'blur' }],
+  phone: [
+    {
+      pattern: /^((0\d{2,3}(-)?\d{7,8})|(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8})$/,
+      message: '请输入正确的电话格式',
+      trigger: 'blur',
+    },
+  ],
 }
 
 const loading = ref(false)

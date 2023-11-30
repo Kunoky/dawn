@@ -5,7 +5,7 @@
         action: '/request/myList',
       }"
       ref="tableRef"
-      id="repairRequest"
+      id="submitRepair"
     >
       <el-table-column label="维修申请号" prop="id" width="80" fixed="left" />
       <el-table-column label="设备序列号" prop="serialNo" width="100" />

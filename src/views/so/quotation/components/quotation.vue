@@ -4,7 +4,7 @@
       :model-value="modelValue"
       @close="handleClose"
       title="生成报价"
-      width="800px"
+      width="1000px"
       v-bind="$attrs"
       :close-on-click-modal="false"
     >
@@ -34,12 +34,9 @@
             </el-select>
           </template>
         </el-table-column>
-        <el-table-column prop="unit" label="单位">
-          <template #default="{ row }">
-            <div class="txt">{{ row.unit }}</div>
-          </template>
-        </el-table-column>
-        <el-table-column prop="unitPrice" label="单价" width="120">
+        <el-table-column prop="unit" label="单位" />
+        <el-table-column prop="itemName" label="描述" width="100" :show-overflow-tooltip="true" />
+        <el-table-column prop="unitPrice" label="单价" width="130">
           <template #default="{ row }">
             <el-input v-model="row.unitPrice" placeholder="请输入" @blur="handelPrice(row)"></el-input>
           </template>
@@ -117,20 +114,25 @@
             </el-col>
             <el-col :span="12">
               <el-form-item label="发票抬头" prop="companyName" class="form_flex">
-                <el-input v-model="invoiceInfo.companyName" placeholder="请输入发票抬头" clearable style="width: 83%" />
-                <el-button type="primary" @click="handelQuery" style="width: 15%">查询</el-button>
+                <el-input v-model="invoiceInfo.companyName" placeholder="请输入发票抬头" clearable style="width: 82%" />
+                <el-button type="primary" @click="handelQuery" style="width: 17%">查询锁</el-button>
               </el-form-item>
             </el-col>
-            <el-col :span="12" v-if="invoiceInfo.invoiceType === 1">
+            <el-col :span="12">
+              <el-form-item label="税号" prop="taxNo">
+                <el-input v-model="invoiceInfo.taxNo" placeholder="请输入税号" clearable />
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
               <el-form-item label="邮箱" prop="recipientEmail">
                 <el-input v-model="invoiceInfo.recipientEmail" placeholder="请输入邮箱" clearable />
               </el-form-item>
             </el-col>
-            <el-col :span="12" v-if="invoiceInfo.invoiceType === 2">
+            <!-- <el-col :span="12" v-if="invoiceInfo.invoiceType === 2">
               <el-form-item label="地址" prop="mailingAddress">
                 <el-input v-model="invoiceInfo.mailingAddress" placeholder="请输入地址" clearable />
               </el-form-item>
-            </el-col>
+            </el-col> -->
             <el-col :span="12">
               <el-form-item label="收件人" prop="recipient">
                 <el-input v-model="invoiceInfo.recipient" placeholder="请输入收件人" clearable />
@@ -151,11 +153,7 @@
                 <el-input v-model="invoiceInfo.bankAccount" placeholder="请输入开户行账号" clearable />
               </el-form-item>
             </el-col>
-            <el-col :span="12">
-              <el-form-item label="税号" prop="taxNo">
-                <el-input v-model="invoiceInfo.taxNo" placeholder="请输入税号" clearable />
-              </el-form-item>
-            </el-col>
+
             <el-col :span="24">
               <el-form-item label="注册地址及电话" prop="registeredAddress">
                 <el-input v-model="invoiceInfo.registeredAddress" placeholder="请输入注册地址及电话" clearable />
@@ -208,7 +206,7 @@ const loading = ref(false)
 const tableData = ref([])
 const tableDataCopy = ref([])
 const invoiceInfo = ref({
-  invoiceType: 1,
+  invoiceType: null,
   recipientEmail: '',
   mailingAddress: '',
   companyName: '',
@@ -250,7 +248,13 @@ const { run: getPayDemandNote, loading: dataLoading } = useAsync(async () => {
 
 const rulesInvoiceInfo = {
   recipientEmail: [{ type: 'email', message: '请输入正确的邮箱格式', trigger: 'blur' }],
-  tel: [{ pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/, message: '请输入正确的电话格式', trigger: 'blur' }],
+  tel: [
+    {
+      pattern: /^((0\d{2,3}(-)?\d{7,8})|(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8})$/,
+      message: '请输入正确的电话格式',
+      trigger: 'blur',
+    },
+  ],
 }
 
 const onAddItem = () => {
@@ -301,6 +305,7 @@ const changeMaterialNo = (val, row) => {
   row.isBom = val.isBom
   row.itemName = val.itemName
   row.itemType = val.itemType
+  row.subTotal = val.includeTaxPrice * row.quantity
 }
 function getTotal() {
   const total = tableData.value
@@ -355,7 +360,7 @@ function getFinalPrice(a) {
   }
   return Number(b.toFixed(2))
 }
-// 修改折扣
+// 计算最终价格
 const handelEditDiscount = () => {
   formRef2.value.validate(valid => {
     if (valid) {
@@ -371,6 +376,8 @@ const handelEditDiscount = () => {
     }
   })
 }
+
+//计算折扣率
 const handelEditTotal = () => {
   formRef.value.validate(valid => {
     if (valid) {
@@ -385,7 +392,7 @@ const handelEditTotal = () => {
 }
 
 const handelPrice = row => {
-  if (row.unitPrice !== null || row.unitPrice !== '') {
+  if (row.unitPrice === null || row.unitPrice === '') {
     row.unitPrice = '0.00'
   }
   const y = new Big(row.unitPrice)

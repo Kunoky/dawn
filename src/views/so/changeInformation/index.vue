@@ -5,7 +5,7 @@
         action: '/ic/list',
       }"
       ref="tableRef"
-      id="query"
+      id="changeInformation"
     >
       <el-table-column label="SO NO" prop="soNo" />
       <el-table-column label="客户名称" prop="custName" />

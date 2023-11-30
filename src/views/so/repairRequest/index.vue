@@ -31,7 +31,7 @@
             title="创建失败"
             :width="200"
             trigger="hover"
-            :content="row.backReason"
+            :content="row.failReason"
           >
             <template #reference>
               <span class="cs-p fw-b" style="color: #e71316">{{ request_status.kv[row.status] }}</span>

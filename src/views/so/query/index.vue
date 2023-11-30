@@ -8,7 +8,7 @@
       id="query"
     >
       <el-table-column label="SO NO" prop="soNo" width="130" />
-      <el-table-column label="维修任务编号" prop="soTaskNo" width="130" />
+      <el-table-column label="维修任务编号" prop="soTaskNo" width="100" />
       <el-table-column label="设备序列号" prop="serialNo" width="140" />
       <el-table-column label="设备型号" prop="modelNo" width="100" />
       <el-table-column label="仪器SAP Equip编号" prop="eqId" width="128" />
@@ -17,9 +17,16 @@
       </el-table-column>
       <el-table-column label="仪器地址" prop="equipAddress" width="130" />
       <el-table-column label="创建人" prop="createByName" width="100" />
-      <el-table-column label="状态" prop="status" width="100">
+      <el-table-column label="状态" prop="status" width="150">
         <template #default="{ row }">
-          <span class="cs-p fw-b" style="color: #909399">{{ soStatus.kv[row.status] }}</span>
+          <!-- TODO SO状态 -->
+          <span v-if="row.status === 4">
+            {{ soStatus.kv[row.status] }} / {{ pendingStatus.kv[row.quoteConfirmPending] }}
+          </span>
+          <span v-else-if="row.status === 8">
+            {{ soStatus.kv[row.status] }} / {{ invoiceStatus.kv[row.invoicePending] }}
+          </span>
+          <span v-else class="cs-p fw-b" style="color: #909399">{{ soStatus.kv[row.status] }}</span>
         </template>
       </el-table-column>
       <el-table-column label="客户编号" prop="customerId" width="100" />
@@ -187,6 +194,8 @@ const soStatus = useDict('soStatus')
 const closedState = useDict('closedState')
 const repairSource = useDict('repairSource')
 const regionalStatus = useDict('regionalStatus') // 区域
+const pendingStatus = useDict('pendingStatus')
+const invoiceStatus = useDict('invoiceStatus')
 
 const tableRef = ref()
 

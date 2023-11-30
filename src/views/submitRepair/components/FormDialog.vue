@@ -383,7 +383,11 @@ const rules = {
   ],
   mobile: [
     { required: true, message: '客户联系人电话不能为空', trigger: 'blur' },
-    { pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/, message: '请输入正确的电话格式', trigger: 'blur' },
+    {
+      pattern: /^((0\d{2,3}(-)?\d{7,8})|(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8})$/,
+      message: '请输入正确的电话格式',
+      trigger: 'blur',
+    },
   ],
   email: [
     { required: true, message: '客户联系人邮箱不能为空', trigger: 'blur' },
