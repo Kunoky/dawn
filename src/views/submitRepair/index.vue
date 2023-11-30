@@ -46,7 +46,6 @@
           <span v-else class="cs-p fw-b" style="color: #909399">{{ request_status.kv[row.status] }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="客户名称" prop="custDesc" width="160" />
       <el-table-column label="客户编号" prop="customerId" width="100" />
       <el-table-column label="客户名称" prop="custDesc" width="160" />
       <el-table-column label="payer客户编号" prop="payer" width="100" />

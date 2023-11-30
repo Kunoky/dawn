@@ -68,11 +68,11 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="客户" prop="custDesc" class="form_flex">
+          <el-form-item label="Ship to客户" prop="custDesc" class="form_flex">
             <el-input v-model="form.customerId" disabled placeholder="自动填入" style="width: 30%" />
             <el-select
               v-model="form.custDesc"
-              placeholder="请输入客户名称"
+              placeholder="请输入Ship to客户"
               filterable
               remote
               @keyup.ctrl.c="hanelCopy(form.custDesc)"
@@ -102,7 +102,7 @@
             <el-input v-model="form.payer" disabled placeholder="自动填入" style="width: 30%" />
             <el-select
               v-model="form.payerName"
-              placeholder="请输入payer客户名称"
+              placeholder="请输入payer客户"
               filterable
               remote
               @keyup.ctrl.c="hanelCopy(form.payerName)"
@@ -356,7 +356,7 @@ const rules = {
   modelNo: [{ required: true, message: '设备型号不能为空', trigger: 'blur' }],
   dataOptions: [{ required: true, message: '维修类型不能为空', trigger: 'change' }],
   equipAddress: [{ required: true, message: '仪器地址不能为空', trigger: 'blur' }],
-  custDesc: [{ required: true, message: '客户名称不能为空', trigger: 'blur' }],
+  custDesc: [{ required: true, message: 'Ship to客户名称不能为空', trigger: 'blur' }],
   payerName: [{ required: true, message: 'payer客户名称不能为空', trigger: 'blur' }],
   name: [{ required: true, message: '客户联系人不能为空', trigger: 'blur' }],
   lastName: [

@@ -450,7 +450,7 @@
                 <el-table-column prop="subTotal" label="总价" />
                 <el-table-column prop="lockFlag" label="Lock状态">
                   <template #default="{ row }">
-                    {{ row.lockFlag === 1 ? '成功' : row.lockFlag === 2 ? '失败' : '' }}
+                    {{ lockStatus.kv[row.lockFlag] }}
                   </template>
                 </el-table-column>
               </el-table-column>
@@ -474,7 +474,7 @@
                 <el-table-column prop="workHour" label="工作时长(小时)" />
                 <el-table-column prop="lockFlag" label="Lock状态">
                   <template #default="{ row }">
-                    {{ row.lockFlag === 1 ? '成功' : row.lockFlag === 2 ? '失败' : '' }}
+                    {{ lockStatus.kv[row.lockFlag] }}
                   </template>
                 </el-table-column>
               </el-table-column>
@@ -636,6 +636,7 @@ const laborType = useDict('laborType')
 const MaterialConsumptionType = useDict('MaterialConsumptionType')
 const pendingStatus = useDict('pendingStatus')
 const regionalStatus = useDict('regionalStatus') // 区域
+const lockStatus = useDict('lockStatus') // 区域
 const bool = useDict('bool')
 
 const activeNames = ref(['1'])

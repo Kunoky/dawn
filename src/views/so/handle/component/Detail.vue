@@ -9,6 +9,7 @@
   >
     <div v-loading="dataLoading">
       <el-table
+        v-if="props.data.lockType === 2"
         size="small"
         :data="rpaLockMaterialList"
         style="width: 100%; margin-bottom: 20px"
@@ -23,7 +24,9 @@
           <el-table-column prop="rpaUpdateTime" label="RPA执行的时间" />
         </el-table-column>
       </el-table>
+      <!-- 工时 -->
       <el-table
+        v-else
         size="small"
         :data="rpaLockLaborList"
         style="width: 100%; margin-bottom: 20px"
@@ -62,13 +65,13 @@ watch(
   () => props.modelValue,
   v => {
     if (v) {
-      props.data?.soNo && getPayDemandNote()
+      props.data?.id && getPayDemandNote()
     }
   },
   { immediate: true }
 )
 const { run: getPayDemandNote, loading: dataLoading } = useAsync(async () => {
-  return req.get(`/lockSo/getInfo/${props.data.soNo}`).then(res => {
+  return req.get(`/lockSo/getInfo/${props.data.id}`, { params: { lockType: props.data.lockType } }).then(res => {
     rpaLockMaterialList.value = res.data.rpaLockMaterialList
     rpaLockLaborList.value = res.data.rpaLockLaborList
     return res
