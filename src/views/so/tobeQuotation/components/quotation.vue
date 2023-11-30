@@ -100,13 +100,7 @@
             </el-col>
             <el-col :span="12">
               <el-form-item label="发票类型" prop="invoiceType">
-                <el-select
-                  v-model="invoiceInfo.invoiceType"
-                  style="width: 100%"
-                  @change="handelInvoiceType"
-                  placeholder="请选择发票类型"
-                  clearable
-                >
+                <el-select v-model="invoiceInfo.invoiceType" style="width: 100%" placeholder="请选择发票类型" clearable>
                   <el-option label="普票" :value="1" />
                   <el-option label="专票" :value="2" />
                 </el-select>
@@ -208,7 +202,7 @@ const tableDataCopy = ref([])
 const invoiceInfo = ref({
   invoiceType: null,
   recipientEmail: '',
-  mailingAddress: '',
+  // mailingAddress: '',
   companyName: '',
   recipient: '',
   tel: '',
@@ -396,7 +390,8 @@ const handelPrice = row => {
     row.unitPrice = '0.00'
   }
   const y = new Big(row.unitPrice)
-  row.includeTaxPrice = y.times(1.13).toFixed(2)
+  const x = new Big(1.13)
+  row.includeTaxPrice = y.times(x).toFixed(2)
   handelCalculateTotalPrice(row)
 }
 const handelCalculateTotalPrice = row => {
@@ -404,14 +399,6 @@ const handelCalculateTotalPrice = row => {
   const y = new Big(row.quantity)
   row.subTotal = x.times(y).toFixed(2)
   getTotal()
-}
-
-function handelInvoiceType(val) {
-  if (val === 1) {
-    invoiceInfo.value.mailingAddress = ''
-  } else {
-    invoiceInfo.value.recipientEmail = ''
-  }
 }
 
 const formRef = ref(null)
