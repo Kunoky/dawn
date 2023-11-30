@@ -64,7 +64,7 @@
       </el-table>
 
       <div style="margin-top: 20px">
-        <div style="display: flex">
+        <div style="display: flex; justify-content: space-between">
           <el-form ref="formRef" :model="formData" :rules="rules" label-width="112px">
             <el-form-item label="最终价格" prop="finalPrice" class="form_flex">
               <el-input
@@ -72,9 +72,9 @@
                 v-model="formData.finalPrice"
                 @blur="handelEditTotal"
                 placeholder="请输入最终价格"
-                style="width: 185px"
+                style="width: 275px"
               />
-              <el-button style="padding: 0 3px" @click="handelEditTotal">计算折扣率</el-button>
+              <el-button style="padding: 0 5px" @click="handelEditTotal">计算折扣率</el-button>
             </el-form-item>
           </el-form>
 
@@ -85,6 +85,7 @@
                 v-model="formData2.discountRate"
                 @blur="handelEditDiscount"
                 placeholder="请输入折扣"
+                style="width: 280px"
               >
                 <template #append>%</template>
               </el-input>
@@ -190,7 +191,7 @@
 <script setup>
 import Big from 'big.js'
 const emit = defineEmits(['update:modelValue', 'success'])
-Big.RM = 0.5
+Big.RM = 0
 const props = defineProps({
   data: Object,
   modelValue: Boolean,
