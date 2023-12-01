@@ -11,7 +11,7 @@
       <el-table-column label="维修类型" width="160">
         <template #default="{ row }">{{ row.orderType }} / {{ row.subType }}</template>
       </el-table-column>
-      <el-table-column label="失败原因" prop="rpaErrorMessage" width="200" />
+      <el-table-column label="失败原因" prop="rpaErrorMessage" width="350" />
       <el-table-column label="工程师名称" prop="fseName" />
       <el-table-column label="FSE work center" prop="fseWorkCenter" width="140" />
       <el-table-column label="FSE storage location" prop="fseStorageLocation" width="140" />

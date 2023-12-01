@@ -12,7 +12,6 @@
     :accept="accept"
     v-bind="$attrs"
     v-model:file-list="fileList"
-    @click="say"
   >
     <template #trigger>
       <slot name="trigger">
@@ -29,7 +28,7 @@
     </template>
     <template #tip>
       <slot name="tip">
-        <div class="el-upload__tip">只能上传图片与PDF，文件大小不超过10MB</div>
+        <div class="el-upload__tip">文件大小不超过10MB</div>
       </slot>
     </template>
   </el-upload>
@@ -67,12 +66,19 @@ watch(
   v => {
     v.forEach(i => {
       if (i.status === 'success') {
-        Object.assign(i, i.response.data)
+        Object.assign(i, i.response?.data)
       }
     })
     emit('update:modelValue', v)
   },
   { deep: true }
+)
+
+watch(
+  () => props.modelValue,
+  v => {
+    fileList.value = v
+  }
 )
 function handleError(e) {
   let msg = e.message
@@ -101,6 +107,7 @@ function beforeUpload(file) {
 }
 
 function handleRemove(file) {
+  // console.log(file.id)
   file.id && req.delete('attachment/' + file.id)
 }
 function handleSuccess(res) {

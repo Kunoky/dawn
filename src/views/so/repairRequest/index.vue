@@ -8,7 +8,7 @@
       id="repairRequest"
       row-key="repairRequestId"
     >
-      <el-table-column label="维修申请号" prop="id" width="80" fixed="left" />
+      <el-table-column label="维修任务编号" prop="id" width="100" fixed="left" />
       <el-table-column label="设备序列号" prop="serialNo" width="130" />
       <el-table-column label="设备型号" prop="modelNo" width="130" />
       <el-table-column label="仪器SAP Equip编号" prop="eqId" width="128" />
@@ -31,7 +31,7 @@
             title="创建失败"
             :width="200"
             trigger="hover"
-            :content="row.backReason"
+            :content="row.failReason"
           >
             <template #reference>
               <span class="cs-p fw-b" style="color: #e71316">{{ request_status.kv[row.status] }}</span>
@@ -40,8 +40,10 @@
           <span v-else class="cs-p fw-b" style="color: #909399">{{ request_status.kv[row.status] }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="客户名称" prop="custDesc" width="160" />
       <el-table-column label="客户编号" prop="customerId" width="100" />
+      <el-table-column label="客户名称" prop="custDesc" width="160" />
+      <el-table-column label="payer客户编号" prop="payer" width="100" />
+      <el-table-column label="payer客户名称" prop="payerName" width="160" />
       <el-table-column label="客户联系人" prop="name" width="100" />
       <el-table-column label="客户联系人电话" prop="mobile" width="120" />
       <el-table-column label="客户联系人邮箱" prop="email" width="130" />

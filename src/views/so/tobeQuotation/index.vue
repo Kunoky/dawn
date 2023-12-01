@@ -5,7 +5,7 @@
         action: listData,
       }"
       ref="tableRef"
-      id="quotation"
+      id="tobeQuotation"
     >
       <el-table-column label="SO NO" prop="soNo" width="130" />
       <el-table-column label="设备序列号" prop="serialNo" width="140" />
@@ -14,14 +14,19 @@
       <el-table-column label="维修类型" width="100">
         <template #default="{ row }">{{ row.orderType }} / {{ row.subType }}</template>
       </el-table-column>
-      <el-table-column label="仪器地址" prop="equipAddress" width="100" />
-      <el-table-column label="状态" prop="status" width="100">
+      <el-table-column label="仪器地址" prop="equipAddress" width="130" />
+      <el-table-column label="状态" prop="status" width="150" style="color: #909399">
         <template #default="{ row }">
-          <span class="cs-p fw-b" style="color: #909399">{{ soStatus.kv[row.status] }}</span>
+          <span class="cs-p">
+            {{ soStatus.kv[row.status] }}
+            <a v-if="row.quoteConfirmPendin">/ {{ pendingStatus.kv[row.quoteConfirmPending] }}</a>
+          </span>
         </template>
       </el-table-column>
-      <el-table-column label="客户名称" prop="custDesc" width="160" />
       <el-table-column label="客户编号" prop="customerId" width="100" />
+      <el-table-column label="客户名称" prop="custDesc" width="160" />
+      <el-table-column label="payer客户编号" prop="payer" width="100" />
+      <el-table-column label="payer客户名称" prop="payerName" width="160" />
       <el-table-column label="客户联系人" prop="name" width="100" />
       <el-table-column label="客户联系人电话" prop="mobile" width="120" />
       <el-table-column label="客户联系人邮箱" prop="email" width="130" />

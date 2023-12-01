@@ -5,7 +5,7 @@
         action: '/request/myList',
       }"
       ref="tableRef"
-      id="repairRequest"
+      id="submitRepair"
     >
       <el-table-column label="维修申请号" prop="id" width="80" fixed="left" />
       <el-table-column label="设备序列号" prop="serialNo" width="100" />
@@ -46,9 +46,10 @@
           <span v-else class="cs-p fw-b" style="color: #909399">{{ request_status.kv[row.status] }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="客户名称" prop="custDesc" width="160" />
       <el-table-column label="客户编号" prop="customerId" width="100" />
-      <el-table-column label="客户联系人" prop="name" width="100" />
+      <el-table-column label="客户名称" prop="custDesc" width="160" />
+      <el-table-column label="payer客户编号" prop="payer" width="100" />
+      <el-table-column label="payer客户名称" prop="payerName" width="160" />
       <el-table-column label="客户联系人电话" prop="mobile" width="120" />
       <el-table-column label="客户联系人邮箱" prop="email" width="130" />
       <el-table-column label="代理商" prop="vendor" width="100" />
@@ -60,7 +61,7 @@
       </el-table-column>
       <el-table-column label="报修时间" prop="repairTime" width="140" />
       <el-table-column label="保修期" prop="warrantyTime" width="130" />
-      <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="100">
+      <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="50">
         <template #default="{ row }">
           <!-- 已退回显示修改 -->
           <div v-if="row.status === 2">
@@ -68,7 +69,7 @@
           </div>
           <!-- 已提交与已退回显示取消申请 -->
           <div v-if="row.status === 2 || row.status === 2">
-            <el-button type="primary" link @click="handleExamine(row)">取消维修申请</el-button>
+            <el-button type="primary" link @click="handleExamine(row)">取消</el-button>
           </div>
         </template>
       </el-table-column>

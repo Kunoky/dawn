@@ -3,11 +3,11 @@
     :model-value="modelValue"
     @close="handleClose"
     :title="title"
-    width="60%"
+    width="80%"
     v-bind="$attrs"
     :close-on-click-modal="false"
   >
-    <el-form :model="form" ref="formRef" label-width="155" :rules="rules" v-loading="dataLoading">
+    <el-form :model="form" ref="formRef" label-width="120" :rules="rules" v-loading="dataLoading">
       <el-row>
         <el-col :span="12">
           <el-form-item label="设备序列号" prop="serialNo">
@@ -35,7 +35,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="仪器SAP Equip编号" prop="eqId">
+          <el-form-item label="仪器编号" prop="eqId">
             <el-input v-model="form.eqId" disabled placeholder="自动填入" clearable />
           </el-form-item>
         </el-col>
@@ -70,17 +70,18 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="客户名称" prop="custDesc" class="form_flex">
+          <el-form-item label="Ship to客户" prop="custDesc" class="form_flex">
+            <el-input v-model="form.customerId" disabled placeholder="自动填入" style="width: 30%" />
             <el-select
               v-show="show"
               v-model="form.custDesc"
-              placeholder="请输入客户名称"
+              placeholder="请输入Ship to客户"
               filterable
               remote
               :remote-method="remoteMethodCustDesc"
               :loading="custDescLoading"
               @change="changeCustDesc"
-              style="width: 83%"
+              style="width: 59%"
               :title="getTitle(form.custDesc)"
             >
               <el-option
@@ -94,43 +95,83 @@
             <el-input
               v-show="!show"
               v-model="form.custDesc"
-              placeholder="请输入客户名称"
+              placeholder="请输入Ship to客户"
               clearable
-              style="width: 83%"
+              style="width: 59%"
             />
-            <el-button style="width: 11%" type="primary" @click="handleCustDesc">
+            <el-button style="width: 10%" type="primary" @click="handleCustDesc">
               {{ show ? '新建' : '搜索' }}
             </el-button>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="客户锁信息" prop="blockFlag">
+          <el-form-item label="Ship to客户锁" prop="blockFlag">
             <el-input disabled v-model="form.blockFlag" placeholder="自动填入" clearable />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="客户联系人" prop="name">
-            <el-input v-model="form.name" placeholder="请输入客户联系人" clearable />
+          <el-form-item label="payer客户" prop="payerName" class="form_flex">
+            <el-input v-model="form.payer" disabled placeholder="自动填入" style="width: 30%" />
+            <el-select
+              v-show="show1"
+              v-model="form.payerName"
+              placeholder="请输入payer客户"
+              filterable
+              remote
+              :remote-method="remoteMethodCustDesc1"
+              :loading="custDescLoading1"
+              @change="changeCustDesc1"
+              style="width: 59%"
+              :title="getTitle(form.payerName)"
+            >
+              <el-option
+                v-for="item in custDescOptions1"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+                :title="item.label"
+              />
+            </el-select>
+            <el-input
+              v-show="!show1"
+              v-model="form.payerName"
+              placeholder="请输入payer客户"
+              clearable
+              style="width: 59%"
+            />
+            <el-button style="width: 10%" type="primary" @click="handleCustDesc1">
+              {{ show1 ? '新建' : '搜索' }}
+            </el-button>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="payer客户锁" prop="payerBlockFlag">
+            <el-input disabled v-model="form.payerBlockFlag" placeholder="自动填入" clearable />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="联系人" prop="name">
+            <el-input v-model="form.name" placeholder="请输入联系人" clearable />
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="客户联系人拼音" prop="lastName" class="form_flex">
-            <el-input v-model="form.lastName" placeholder="请输入客户联系人拼音(姓)" clearable />
+          <el-form-item label="联系人拼音" prop="lastName" class="form_flex">
+            <el-input v-model="form.lastName" placeholder="拼音(姓)" clearable />
           </el-form-item>
         </el-col>
         <el-col :span="4">
           <el-form-item prop="firstName" class="item">
-            <el-input v-model="form.firstName" placeholder="请输入客户联系人拼音(名)" clearable />
+            <el-input v-model="form.firstName" placeholder="拼音(名)" clearable />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="客户联系人电话" prop="mobile">
-            <el-input v-model="form.mobile" placeholder="请输入客户联系人电话" clearable />
+          <el-form-item label="联系人电话" prop="mobile">
+            <el-input v-model="form.mobile" placeholder="请输入联系人电话" clearable />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="客户联系人邮箱" prop="email">
-            <el-input v-model="form.email" placeholder="请输入客户联系人邮箱" clearable />
+          <el-form-item label="联系人邮箱" prop="email">
+            <el-input v-model="form.email" placeholder="请输入联系人邮箱" clearable />
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -177,12 +218,12 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="FSE work center" prop="fseWorkCenter">
+          <el-form-item label="work center" prop="fseWorkCenter">
             <el-input v-model="form.fseWorkCenter" disabled placeholder="自动填入" clearable />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="FSE storage location" prop="fseStorageLocation">
+          <el-form-item label="storage location" prop="fseStorageLocation">
             <el-input v-model="form.fseStorageLocation" disabled placeholder="自动填入" clearable />
           </el-form-item>
         </el-col>
@@ -217,7 +258,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="是否CRC" prop="isCrc">
+          <el-form-item label="CRC" prop="isCrc">
             <el-switch
               v-model="form.isCrc"
               class="ml-2"
@@ -233,7 +274,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="是否Promotion" prop="isPromotion">
+          <el-form-item label="Promotion" prop="isPromotion">
             <el-switch
               v-model="form.isPromotion"
               class="ml-2"
@@ -249,14 +290,19 @@
           </el-form-item>
         </el-col>
         <el-col :span="24">
-          <el-form-item label="报修内容(填写英文)" prop="content">
-            <el-input type="textarea" v-model="form.content" placeholder="请输入报修内容" clearable />
+          <el-form-item label="报修内容" prop="content">
+            <el-input type="textarea" v-model="form.content" placeholder="请输入报修内容(填写英文)" clearable />
+          </el-form-item>
+        </el-col>
+        <el-col :span="24">
+          <el-form-item label="备注" prop="remark">
+            <el-input type="textarea" v-model="form.remark" placeholder="请输入备注" clearable />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="上传附件" prop="attaIds">
+          <el-form-item label="上传附件" prop="attaIds" class="CUpload">
             <CUpload
-              style="width: 100%"
+              style="width: 60%"
               :params="params"
               v-model="attachmentsList"
               accept="image/png,image/jpg,image/jpeg,application/pdf"
@@ -330,7 +376,8 @@ const rules = {
   modelNo: [{ required: true, message: '设备型号不能为空', trigger: 'blur' }],
   dataOptions: [{ required: true, message: '维修类型不能为空', trigger: 'change' }],
   equipAddress: [{ required: true, message: '仪器地址不能为空', trigger: 'blur' }],
-  custDesc: [{ required: true, message: '客户名称不能为空', trigger: 'blur' }],
+  custDesc: [{ required: true, message: 'Ship to客户名称不能为空', trigger: 'blur' }],
+  payerName: [{ required: true, message: 'payer客户名称不能为空', trigger: 'blur' }],
   name: [{ required: true, message: '客户联系人不能为空', trigger: 'blur' }],
   lastName: [
     { required: true, message: '拼音姓不能为空', trigger: 'blur' },
@@ -342,7 +389,11 @@ const rules = {
   ],
   mobile: [
     { required: true, message: '客户联系人电话不能为空', trigger: 'blur' },
-    { pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/, message: '请输入正确的电话格式', trigger: 'blur' },
+    {
+      pattern: /^((0\d{2,3}(-)?\d{7,8})|(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8})$/,
+      message: '请输入正确的电话格式',
+      trigger: 'blur',
+    },
   ],
   email: [
     { required: true, message: '客户联系人邮箱不能为空', trigger: 'blur' },
@@ -372,6 +423,9 @@ watch(
         custDesc: '',
         customerId: '',
         blockFlag: '',
+        payerName: '',
+        payer: '',
+        payerBlockFlag: '',
         name: '',
         lastName: '',
         firstName: '',
@@ -379,6 +433,7 @@ watch(
         email: '',
         vendor: '',
         content: '',
+        remark: '',
         source: '',
         repairTime: '',
         warrantyTime: '',
@@ -417,6 +472,7 @@ const { run: getRequestInfo, loading: dataLoading } = useAsync(
 
       // 暂存用做数据对比
       staging.value.aaa = res.data.custDesc
+      staging.value.bbb = res.data.payerName
       // staging.value.bbb = res.data.equipAddress
       nextTick(() => {
         formRef.value.clearValidate()
@@ -427,7 +483,7 @@ const { run: getRequestInfo, loading: dataLoading } = useAsync(
 // 暂存数据，为提交校验数据
 const staging = ref({
   aaa: '',
-  // bbb: '',
+  bbb: '',
 })
 // 查询设备序列号
 const selectlLoading = ref(false)
@@ -454,6 +510,7 @@ const remoteMethod = query => {
   }
 }
 const show = ref(true)
+const show1 = ref(true)
 const changeSeriaNo = val => {
   form.value.serialNo = val.sernr
   form.value.modelNo = val.typbz
@@ -463,21 +520,32 @@ const changeSeriaNo = val => {
   if (val.customer.customerId === null || show === false) {
     form.value.isConsistentSap = false
   }
+  if (val.payer.customerId === null || show1 === false) {
+    form.value.isConsistentSap = false
+  }
   show.value = true
+  show1.value = true
   form.value.customerId = val.customer.customerId
   form.value.custDesc = val.customer.name === '' ? val.customer.enName : val.customer.name
   form.value.equipAddress = val.customer.address === '' ? val.customer.enAddress : val.customer.address
   form.value.area = val.customer.region
   form.value.blockFlag = val.customer.blockFlag !== null ? val.customer.blockFlag : '无'
 
+  form.value.payer = val.payer.customerId
+  form.value.payerName = val.payer.name === '' ? val.payer.enName : val.payer.name
+  form.value.payerBlockFlag = val.payer.blockFlag !== null ? val.payer.blockFlag : '无'
   // 暂存用做数据对比
   staging.value.aaa = val.customer.name === '' ? val.customer.enName : val.customer.name
-  // staging.value.bbb = val.customer.address === '' ? val.customer.enAddress : val.customer.address
+  staging.value.bbb = val.payer.name === '' ? val.payer.enName : val.payer.name
 }
 
 const handleCustDesc = () => {
   show.value = !show.value
   form.value.custDesc = ''
+}
+const handleCustDesc1 = () => {
+  show1.value = !show1.value
+  form.value.payerName = ''
 }
 
 // 客户名称
@@ -485,7 +553,7 @@ const custDescLoading = ref(false)
 const custDescList = ref([])
 const custDescOptions = ref([])
 async function getCustomer(v) {
-  return req.get('/data/customer', { params: { name: v } }).then(res => {
+  return req.get('/data/customer', { params: { name: v, type: 'WE' } }).then(res => {
     custDescList.value = res.data.map(item => {
       return { value: item, label: `${item.customerId}_${item.name === '' ? item.enName : item.name}` }
     })
@@ -510,6 +578,36 @@ const changeCustDesc = val => {
   form.value.equipAddress = val.address === '' ? val.enAddress : val.address
   form.value.area = val.region
   form.value.blockFlag = val.blockFlag !== null ? val.blockFlag : '无'
+}
+
+// paye客户名称
+const custDescLoading1 = ref(false)
+const custDescList1 = ref([])
+const custDescOptions1 = ref([])
+async function getCustomer1(v) {
+  return req.get('/data/customer', { params: { name: v, type: 'RG' } }).then(res => {
+    custDescList1.value = res.data.map(item => {
+      return { value: item, label: `${item.customerId}_${item.name === '' ? item.enName : item.name}` }
+    })
+  })
+}
+const remoteMethodCustDesc1 = query => {
+  if (query) {
+    custDescLoading1.value = true
+    getCustomer1(query).then(() => {
+      custDescLoading1.value = false
+      custDescOptions1.value = custDescList1.value.filter(item => {
+        return item.label.toLowerCase().includes(query.toLowerCase())
+      })
+    })
+  } else {
+    custDescOptions1.value = []
+  }
+}
+const changeCustDesc1 = val => {
+  form.value.payer = val.customerId
+  form.value.payerName = val.name === '' ? val.enName : val.name
+  form.value.payerBlockFlag = val.blockFlag !== null ? val.blockFlag : '无'
 }
 
 // 工程师名称
@@ -586,11 +684,11 @@ const handleClose = () => {
 const handleConfirm = () => {
   formRef.value.validate(valid => {
     if (valid) {
-      delete form.value.blockFlag
-      delete form.value.fseStorageLocation
-      delete form.value.dataOptions
+      // delete form.value.blockFlag
+      // delete form.value.fseStorageLocation
+      // delete form.value.dataOptions
       form.value.attaIds = attachmentsList.value.map(item => item.id)
-      if (staging.value.aaa !== form.value.custDesc) {
+      if (staging.value.aaa !== form.value.custDesc || staging.value.bbb !== form.value.payerName) {
         form.value.isConsistentSap = false
       } else {
         form.value.isConsistentSap = true
@@ -598,6 +696,8 @@ const handleConfirm = () => {
       // 客户名称是新建的时候id为-1
       if (show.value === false) {
         form.value.customerId = -1
+      } else if (show1.value === false) {
+        form.value.payer = -1
       }
       // console.log(form.value);
       loading.value = true
@@ -634,5 +734,15 @@ const getTitle = val => {
 }
 .item :deep(.el-form-item__content) {
   margin-left: 10px !important;
+}
+.CUpload :deep(.el-upload-dragger) {
+  height: 100px;
+  padding-top: 10px;
+}
+.CUpload :deep(.el-upload-dragger) .el-icon.el-icon--upload {
+  font-size: 30px;
+}
+.CUpload :deep(.el-upload-dragger) .el-upload__text {
+  font-size: 12px;
 }
 </style>

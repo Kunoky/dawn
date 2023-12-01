@@ -4,7 +4,7 @@
       :model-value="modelValue"
       @close="handleClose"
       title="生成报价"
-      width="800px"
+      width="1000px"
       v-bind="$attrs"
       :close-on-click-modal="false"
     >
@@ -34,12 +34,9 @@
             </el-select>
           </template>
         </el-table-column>
-        <el-table-column prop="unit" label="单位">
-          <template #default="{ row }">
-            <div class="txt">{{ row.unit }}</div>
-          </template>
-        </el-table-column>
-        <el-table-column prop="unitPrice" label="单价" width="120">
+        <el-table-column prop="unit" label="单位" />
+        <el-table-column prop="itemName" label="描述" width="100" :show-overflow-tooltip="true" />
+        <el-table-column prop="unitPrice" label="单价" width="130">
           <template #default="{ row }">
             <el-input v-model="row.unitPrice" placeholder="请输入" @blur="handelPrice(row)"></el-input>
           </template>
@@ -67,7 +64,7 @@
       </el-table>
 
       <div style="margin-top: 20px">
-        <div style="display: flex">
+        <div style="display: flex; justify-content: space-between">
           <el-form ref="formRef" :model="formData" :rules="rules" label-width="112px">
             <el-form-item label="最终价格" prop="finalPrice" class="form_flex">
               <el-input
@@ -75,9 +72,9 @@
                 v-model="formData.finalPrice"
                 @blur="handelEditTotal"
                 placeholder="请输入最终价格"
-                style="width: 185px"
+                style="width: 275px"
               />
-              <el-button style="padding: 0 3px" @click="handelEditTotal">计算折扣率</el-button>
+              <el-button style="padding: 0 5px" @click="handelEditTotal">计算折扣率</el-button>
             </el-form-item>
           </el-form>
 
@@ -88,6 +85,7 @@
                 v-model="formData2.discountRate"
                 @blur="handelEditDiscount"
                 placeholder="请输入折扣"
+                style="width: 280px"
               >
                 <template #append>%</template>
               </el-input>
@@ -103,13 +101,7 @@
             </el-col>
             <el-col :span="12">
               <el-form-item label="发票类型" prop="invoiceType">
-                <el-select
-                  v-model="invoiceInfo.invoiceType"
-                  style="width: 100%"
-                  @change="handelInvoiceType"
-                  placeholder="请选择发票类型"
-                  clearable
-                >
+                <el-select v-model="invoiceInfo.invoiceType" style="width: 100%" placeholder="请选择发票类型" clearable>
                   <el-option label="普票" :value="1" />
                   <el-option label="专票" :value="2" />
                 </el-select>
@@ -117,20 +109,25 @@
             </el-col>
             <el-col :span="12">
               <el-form-item label="发票抬头" prop="companyName" class="form_flex">
-                <el-input v-model="invoiceInfo.companyName" placeholder="请输入发票抬头" clearable style="width: 83%" />
-                <el-button type="primary" @click="handelQuery" style="width: 15%">查询</el-button>
+                <el-input v-model="invoiceInfo.companyName" placeholder="请输入发票抬头" clearable style="width: 82%" />
+                <el-button type="primary" @click="handelQuery" style="width: 17%">查询锁</el-button>
               </el-form-item>
             </el-col>
-            <el-col :span="12" v-if="invoiceInfo.invoiceType === 1">
+            <el-col :span="12">
+              <el-form-item label="税号" prop="taxNo">
+                <el-input v-model="invoiceInfo.taxNo" placeholder="请输入税号" clearable />
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
               <el-form-item label="邮箱" prop="recipientEmail">
                 <el-input v-model="invoiceInfo.recipientEmail" placeholder="请输入邮箱" clearable />
               </el-form-item>
             </el-col>
-            <el-col :span="12" v-if="invoiceInfo.invoiceType === 2">
+            <!-- <el-col :span="12" v-if="invoiceInfo.invoiceType === 2">
               <el-form-item label="地址" prop="mailingAddress">
                 <el-input v-model="invoiceInfo.mailingAddress" placeholder="请输入地址" clearable />
               </el-form-item>
-            </el-col>
+            </el-col> -->
             <el-col :span="12">
               <el-form-item label="收件人" prop="recipient">
                 <el-input v-model="invoiceInfo.recipient" placeholder="请输入收件人" clearable />
@@ -151,11 +148,7 @@
                 <el-input v-model="invoiceInfo.bankAccount" placeholder="请输入开户行账号" clearable />
               </el-form-item>
             </el-col>
-            <el-col :span="12">
-              <el-form-item label="税号" prop="taxNo">
-                <el-input v-model="invoiceInfo.taxNo" placeholder="请输入税号" clearable />
-              </el-form-item>
-            </el-col>
+
             <el-col :span="24">
               <el-form-item label="注册地址及电话" prop="registeredAddress">
                 <el-input v-model="invoiceInfo.registeredAddress" placeholder="请输入注册地址及电话" clearable />
@@ -208,17 +201,17 @@ const loading = ref(false)
 const tableData = ref([])
 const tableDataCopy = ref([])
 const invoiceInfo = ref({
-  invoiceType: 1,
-  recipientEmail: '',
-  mailingAddress: '',
-  companyName: '',
-  recipient: '',
-  tel: '',
-  bankName: '',
-  bankAccount: '',
-  taxNo: '',
-  registeredAddress: '',
-  type: 1,
+  // invoiceType: null,
+  // recipientEmail: '',
+  // // mailingAddress: '',
+  // companyName: '',
+  // recipient: '',
+  // tel: '',
+  // bankName: '',
+  // bankAccount: '',
+  // taxNo: '',
+  // registeredAddress: '',
+  // type: 1,
 })
 const formData = ref({
   type: 1,
@@ -250,7 +243,13 @@ const { run: getPayDemandNote, loading: dataLoading } = useAsync(async () => {
 
 const rulesInvoiceInfo = {
   recipientEmail: [{ type: 'email', message: '请输入正确的邮箱格式', trigger: 'blur' }],
-  tel: [{ pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/, message: '请输入正确的电话格式', trigger: 'blur' }],
+  tel: [
+    {
+      pattern: /^((0\d{2,3}(-)?\d{7,8})|(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8})$/,
+      message: '请输入正确的电话格式',
+      trigger: 'blur',
+    },
+  ],
 }
 
 const onAddItem = () => {
@@ -296,11 +295,13 @@ const remoteMethodMaterialNo = query => {
 const changeMaterialNo = (val, row) => {
   row.materialNo = val.materialNo
   row.unit = val.unit
-  row.unitPrice = val.unitPrice
+  row.unitPrice = val.unitPrice === null ? '0.00' : val.unitPrice === '' ? '0.00' : val.unitPrice
   row.includeTaxPrice = val.includeTaxPrice
   row.isBom = val.isBom
   row.itemName = val.itemName
   row.itemType = val.itemType
+  row.subTotal = val.includeTaxPrice * row.quantity
+  handelCalculateTotalPrice(row)
 }
 function getTotal() {
   const total = tableData.value
@@ -355,7 +356,7 @@ function getFinalPrice(a) {
   }
   return Number(b.toFixed(2))
 }
-// 修改折扣
+// 计算最终价格
 const handelEditDiscount = () => {
   formRef2.value.validate(valid => {
     if (valid) {
@@ -371,6 +372,8 @@ const handelEditDiscount = () => {
     }
   })
 }
+
+//计算折扣率
 const handelEditTotal = () => {
   formRef.value.validate(valid => {
     if (valid) {
@@ -385,8 +388,12 @@ const handelEditTotal = () => {
 }
 
 const handelPrice = row => {
+  if (row.unitPrice === null || row.unitPrice === '') {
+    row.unitPrice = '0.00'
+  }
   const y = new Big(row.unitPrice)
-  row.includeTaxPrice = y.times(1.13).toFixed(2)
+  const x = new Big(1.13)
+  row.includeTaxPrice = y.times(x).toFixed(2)
   handelCalculateTotalPrice(row)
 }
 const handelCalculateTotalPrice = row => {
@@ -394,14 +401,6 @@ const handelCalculateTotalPrice = row => {
   const y = new Big(row.quantity)
   row.subTotal = x.times(y).toFixed(2)
   getTotal()
-}
-
-function handelInvoiceType(val) {
-  if (val === 1) {
-    invoiceInfo.value.mailingAddress = ''
-  } else {
-    invoiceInfo.value.recipientEmail = ''
-  }
 }
 
 const formRef = ref(null)
@@ -428,15 +427,20 @@ const handleConfirm = async () => {
       ElMessage.error('单价与配件/Labor数量不能为空!')
     } else {
       // 数组中不存在空值，返回 true
-      invoiceInfo.value.soNo = props.data.soNo
+      if (JSON.stringify(invoiceInfo.value) === '{}') {
+        invoiceInfo.value = {}
+      } else {
+        invoiceInfo.value.soNo = props.data.soNo
+        invoiceInfo.value.type = 1
+      }
       formData.value.soNo = props.data.soNo
       formData.value.discountRate = formData2.value.discountRate
+      let quoteDetailList = [...tableDataCopy.value, ...tableData.value]
       let data = {
-        quoteDetailList: [...tableDataCopy.value, ...tableData.value],
+        quoteDetailList: quoteDetailList.filter(item => item.id || !item.delFlag),
         invoiceInfo: invoiceInfo.value,
         quoteSummary: formData.value,
       }
-
       // console.log(data);
       req.post('/quote/save', data).then(res => {
         if (res.data === '') {

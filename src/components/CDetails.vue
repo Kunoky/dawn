@@ -33,20 +33,32 @@
               {{ form.orderType }} / {{ form.subType }}
             </el-descriptions-item>
             <el-descriptions-item>
-              <template #label>客户名称</template>
-              {{ form.custDesc }}
+              <template #label>仪器地址</template>
+              {{ form.equipAddress }}
             </el-descriptions-item>
             <el-descriptions-item>
               <template #label>客户编号</template>
               {{ form.customerId }}
             </el-descriptions-item>
             <el-descriptions-item>
+              <template #label>客户名称</template>
+              {{ form.custDesc }}
+            </el-descriptions-item>
+            <el-descriptions-item>
               <template #label>客户锁信息</template>
               {{ form.customerLockName }}
             </el-descriptions-item>
             <el-descriptions-item>
-              <template #label>仪器地址</template>
-              {{ form.equipAddress }}
+              <template #label>payer客户编号</template>
+              {{ form.payer }}
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>payer客户名称</template>
+              {{ form.payerName }}
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>payer客户锁信息</template>
+              {{ form.payerLockName }}
             </el-descriptions-item>
             <el-descriptions-item>
               <template #label>客户联系人</template>
@@ -196,18 +208,23 @@
                   : ''
               }}
             </el-descriptions-item>
-            <el-descriptions-item v-if="quoteData.invoiceInfo?.invoiceType === 1">
-              <template #label>邮箱</template>
-              {{ quoteData.invoiceInfo?.recipientEmail }}
-            </el-descriptions-item>
-            <el-descriptions-item v-if="quoteData.invoiceInfo?.invoiceType === 2">
-              <template #label>地址</template>
-              {{ quoteData.invoiceInfo?.mailingAddress }}
-            </el-descriptions-item>
             <el-descriptions-item>
               <template #label>发票抬头</template>
               {{ quoteData.invoiceInfo?.companyName }}
             </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>税号</template>
+              {{ quoteData.invoiceInfo?.taxNo }}
+            </el-descriptions-item>
+
+            <el-descriptions-item>
+              <template #label>邮箱</template>
+              {{ quoteData.invoiceInfo?.recipientEmail }}
+            </el-descriptions-item>
+            <!-- <el-descriptions-item v-if="quoteData.invoiceInfo?.invoiceType === 2">
+              <template #label>地址</template>
+              {{ quoteData.invoiceInfo?.mailingAddress }}
+            </el-descriptions-item> -->
             <el-descriptions-item>
               <template #label>收件人</template>
               {{ quoteData.invoiceInfo?.recipient }}
@@ -220,13 +237,9 @@
               <template #label>开户行</template>
               {{ quoteData.invoiceInfo?.bankName }}
             </el-descriptions-item>
-            <el-descriptions-item>
+            <el-descriptions-item :span="2">
               <template #label>开户行账号</template>
               {{ quoteData.invoiceInfo?.bankAccount }}
-            </el-descriptions-item>
-            <el-descriptions-item :span="2">
-              <template #label>税号</template>
-              {{ quoteData.invoiceInfo?.taxNo }}
             </el-descriptions-item>
             <el-descriptions-item :span="3">
               <template #label>注册地址及电话</template>
@@ -384,9 +397,9 @@
               <el-table-column label="操作" class-name="small-padding fixed-width" width="100">
                 <template #default="{ row }">
                   <el-button type="primary" link @click="handleDownloadFile(row)">下载</el-button>
-                  <el-button type="primary" v-if="row.createBy === user.userId" link @click="handleDel(row)">
+                  <!-- <el-button type="primary" v-if="row.createBy === user.userId" link @click="handleDel(row)">
                     删除
-                  </el-button>
+                  </el-button> -->
                 </template>
               </el-table-column>
             </el-table>
@@ -437,7 +450,7 @@
                 <el-table-column prop="subTotal" label="总价" />
                 <el-table-column prop="lockFlag" label="Lock状态">
                   <template #default="{ row }">
-                    {{ row.lockFlag === 1 ? '成功' : row.lockFlag === 2 ? '失败' : '' }}
+                    {{ lockStatus.kv[row.lockFlag] }}
                   </template>
                 </el-table-column>
               </el-table-column>
@@ -461,7 +474,7 @@
                 <el-table-column prop="workHour" label="工作时长(小时)" />
                 <el-table-column prop="lockFlag" label="Lock状态">
                   <template #default="{ row }">
-                    {{ row.lockFlag === 1 ? '成功' : row.lockFlag === 2 ? '失败' : '' }}
+                    {{ lockStatus.kv[row.lockFlag] }}
                   </template>
                 </el-table-column>
               </el-table-column>
@@ -523,18 +536,23 @@
                   : ''
               }}
             </el-descriptions-item>
-            <el-descriptions-item v-if="payDemandNoteData.invoiceInfo?.invoiceType === 1">
-              <template #label>邮箱</template>
-              {{ payDemandNoteData.invoiceInfo?.recipientEmail }}
-            </el-descriptions-item>
-            <el-descriptions-item v-if="payDemandNoteData.invoiceInfo?.invoiceType === 2">
-              <template #label>地址</template>
-              {{ payDemandNoteData.invoiceInfo?.mailingAddress }}
-            </el-descriptions-item>
+
             <el-descriptions-item>
               <template #label>发票抬头</template>
               {{ payDemandNoteData.invoiceInfo?.companyName }}
             </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>税号</template>
+              {{ payDemandNoteData.invoiceInfo?.taxNo }}
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>邮箱</template>
+              {{ payDemandNoteData.invoiceInfo?.recipientEmail }}
+            </el-descriptions-item>
+            <!-- <el-descriptions-item v-if="payDemandNoteData.invoiceInfo?.invoiceType === 2">
+              <template #label>地址</template>
+              {{ payDemandNoteData.invoiceInfo?.mailingAddress }}
+            </el-descriptions-item> -->
             <el-descriptions-item>
               <template #label>收件人</template>
               {{ payDemandNoteData.invoiceInfo?.recipient }}
@@ -547,13 +565,9 @@
               <template #label>开户行</template>
               {{ payDemandNoteData.invoiceInfo?.bankName }}
             </el-descriptions-item>
-            <el-descriptions-item>
+            <el-descriptions-item :span="2">
               <template #label>开户行账号</template>
               {{ payDemandNoteData.invoiceInfo?.bankAccount }}
-            </el-descriptions-item>
-            <el-descriptions-item :span="2">
-              <template #label>税号</template>
-              {{ payDemandNoteData.invoiceInfo?.taxNo }}
             </el-descriptions-item>
             <el-descriptions-item :span="3">
               <template #label>注册地址及电话</template>
@@ -607,9 +621,9 @@
 </template>
 
 <script setup>
-import { useUserStore } from '@/store/user'
-const userStore = useUserStore()
-const { user } = storeToRefs(userStore)
+// import { useUserStore } from '@/store/user'
+// const userStore = useUserStore()
+// const { user } = storeToRefs(userStore)
 const emit = defineEmits(['update:modelValue', 'success'])
 const props = defineProps({
   data: Object,
@@ -622,6 +636,7 @@ const laborType = useDict('laborType')
 const MaterialConsumptionType = useDict('MaterialConsumptionType')
 const pendingStatus = useDict('pendingStatus')
 const regionalStatus = useDict('regionalStatus') // 区域
+const lockStatus = useDict('lockStatus') // 区域
 const bool = useDict('bool')
 
 const activeNames = ref(['1'])
@@ -710,11 +725,11 @@ const handleDownloadFile = row => {
     document.body.removeChild(link) // 下载完成移除元素
   }
 }
-const handleDel = row => {
-  req.delete('attachment/' + row.id).then(() => {
-    getInfo()
-  })
-}
+// const handleDel = row => {
+//   req.delete('attachment/' + row.id).then(() => {
+//     getInfo()
+//   })
+// }
 </script>
 <style scoped>
 .demo-collapse :deep(.el-collapse-item__header) {
