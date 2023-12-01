@@ -201,17 +201,17 @@ const loading = ref(false)
 const tableData = ref([])
 const tableDataCopy = ref([])
 const invoiceInfo = ref({
-  invoiceType: null,
-  recipientEmail: '',
-  // mailingAddress: '',
-  companyName: '',
-  recipient: '',
-  tel: '',
-  bankName: '',
-  bankAccount: '',
-  taxNo: '',
-  registeredAddress: '',
-  type: 1,
+  // invoiceType: null,
+  // recipientEmail: '',
+  // // mailingAddress: '',
+  // companyName: '',
+  // recipient: '',
+  // tel: '',
+  // bankName: '',
+  // bankAccount: '',
+  // taxNo: '',
+  // registeredAddress: '',
+  // type: 1,
 })
 const formData = ref({
   type: 1,
@@ -301,6 +301,7 @@ const changeMaterialNo = (val, row) => {
   row.itemName = val.itemName
   row.itemType = val.itemType
   row.subTotal = val.includeTaxPrice * row.quantity
+  handelCalculateTotalPrice(row)
 }
 function getTotal() {
   const total = tableData.value
@@ -426,7 +427,12 @@ const handleConfirm = async () => {
       ElMessage.error('单价与配件/Labor数量不能为空!')
     } else {
       // 数组中不存在空值，返回 true
-      invoiceInfo.value.soNo = props.data.soNo
+      if (JSON.stringify(invoiceInfo.value) === '{}') {
+        invoiceInfo.value = {}
+      } else {
+        invoiceInfo.value.soNo = props.data.soNo
+        invoiceInfo.value.type = 1
+      }
       formData.value.soNo = props.data.soNo
       formData.value.discountRate = formData2.value.discountRate
       let quoteDetailList = [...tableDataCopy.value, ...tableData.value]
@@ -435,7 +441,6 @@ const handleConfirm = async () => {
         invoiceInfo: invoiceInfo.value,
         quoteSummary: formData.value,
       }
-
       // console.log(data);
       req.post('/quote/save', data).then(res => {
         if (res.data === '') {

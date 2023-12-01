@@ -17,16 +17,18 @@
       </el-table-column>
       <el-table-column label="仪器地址" prop="equipAddress" width="130" />
       <el-table-column label="创建人" prop="createByName" width="100" />
-      <el-table-column label="状态" prop="status" width="150">
+      <el-table-column label="状态" prop="status" width="150" style="color: #909399">
         <template #default="{ row }">
           <!-- TODO SO状态 -->
           <span v-if="row.status === 4">
-            {{ soStatus.kv[row.status] }} / {{ pendingStatus.kv[row.quoteConfirmPending] }}
+            {{ soStatus.kv[row.status] }}
+            <a v-if="row.quoteConfirmPending">/ {{ pendingStatus.kv[row.quoteConfirmPending] }}</a>
           </span>
           <span v-else-if="row.status === 8">
-            {{ soStatus.kv[row.status] }} / {{ invoiceStatus.kv[row.invoicePending] }}
+            {{ soStatus.kv[row.status] }}
+            <a v-if="row.invoicePending">/ {{ invoiceStatus.kv[row.invoicePending] }}</a>
           </span>
-          <span v-else class="cs-p fw-b" style="color: #909399">{{ soStatus.kv[row.status] }}</span>
+          <span v-else class="cs-p">{{ soStatus.kv[row.status] }}</span>
         </template>
       </el-table-column>
       <el-table-column label="客户编号" prop="customerId" width="100" />

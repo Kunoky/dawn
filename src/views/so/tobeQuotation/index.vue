@@ -15,10 +15,11 @@
         <template #default="{ row }">{{ row.orderType }} / {{ row.subType }}</template>
       </el-table-column>
       <el-table-column label="仪器地址" prop="equipAddress" width="130" />
-      <el-table-column label="状态" prop="status" width="150">
+      <el-table-column label="状态" prop="status" width="150" style="color: #909399">
         <template #default="{ row }">
-          <span class="cs-p fw-b" style="color: #909399">
-            {{ soStatus.kv[row.status] }} / {{ pendingStatus.kv[row.quoteConfirmPending] }}
+          <span class="cs-p">
+            {{ soStatus.kv[row.status] }}
+            <a v-if="row.quoteConfirmPendin">/ {{ pendingStatus.kv[row.quoteConfirmPending] }}</a>
           </span>
         </template>
       </el-table-column>
