@@ -1,31 +1,19 @@
-const cookie = ref()
-
-/**
- * @description cookie对象
- * @author kuroky <1048413674@qq.com>
- * @date 2023-11-14
- * @returns {VueElement.ref} 响应式缓存数据
- */
-
-export function useCookie() {
-  if (!cookie.value) {
-    const c = {}
+let handler = {
+  get: function (target, key) {
+    let val
     document.cookie.split(';').forEach(i => {
       i = i.trim()
       const [k, v] = i.split('=')
-      if (!k) return
-      c[k] = v
+      if (k === key) val = v
     })
-    cookie.value = c
-  }
-  const value = computed({
-    get() {
-      return cookie.value
-    },
-    set(val = {}) {
-      cookie.value = val
-      Object.entries(val).map(([k, v = '']) => (document.cookie = k + '=' + v))
-    },
-  })
-  return value
+    return val
+  },
+  set: function (target, key, value) {
+    document.cookie = key + '=' + value
+  },
+}
+let cookie = new Proxy({}, handler)
+
+export function useCookie() {
+  return cookie
 }

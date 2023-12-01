@@ -1,22 +1,16 @@
 const c = useCookie()
 export function getToken() {
-  const token = c.value[__TOKEN_KEY__] || localStorage.getItem(__TOKEN_KEY__)
+  const token = c[__TOKEN_KEY__] || localStorage.getItem(__TOKEN_KEY__)
   return token
 }
 
 export function setToken(token) {
-  c.value = {
-    ...c.value,
-    [__TOKEN_KEY__]: token,
-  }
+  c[__TOKEN_KEY__] = token
   return localStorage.setItem(__TOKEN_KEY__, token)
 }
 
 export function removeToken() {
-  c.value = {
-    ...c.value,
-    [__TOKEN_KEY__]: '',
-  }
+  c[__TOKEN_KEY__] = ''
   return localStorage.removeItem(__TOKEN_KEY__)
 }
 
