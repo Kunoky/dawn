@@ -5,7 +5,7 @@
         action: '/spareParts/toBeReceived',
       }"
       ref="tableRef"
-      id="shipped"
+      id="receiving"
     >
       <el-table-column label="SO NO" prop="soNo" width="130" />
       <el-table-column label="设备序列号" prop="serialNo" width="140" />
@@ -20,9 +20,9 @@
       <el-table-column label="FSE work center" prop="fseWorkCenter" width="120" />
       <el-table-column label="FSE storage location" prop="fseStorageLocation" width="140" />
       <el-table-column label="备注" prop="remark" :show-overflow-tooltip="true" width="150" />
-      <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="160">
+      <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="140">
         <template #default="{ row }">
-          <el-button type="info" link @click="handleDeatil(row)">还库详情</el-button>
+          <el-button type="info" link @click="handleDeatil(row)">详情</el-button>
           <el-button type="primary" link @click="handleConfirm(row)">确认收货</el-button>
         </template>
       </el-table-column>

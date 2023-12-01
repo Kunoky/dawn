@@ -8,7 +8,7 @@ import { i18n } from '@/i18nSetup'
 const service = axios.create({
   baseURL: import.meta.env.VITE_SERVER_PATH, // url = base url + request url
   // withCredentials: true, // send cookies when cross-domain requests
-  timeout: 15000, // request timeout
+  timeout: 60000, // request timeout
   // adapter: ['http'], // polyfill tauri
   // adapter: axiosTauriApiAdapter， // polyfill tauri
 })

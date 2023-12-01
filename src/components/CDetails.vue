@@ -245,10 +245,10 @@
               <template #label>注册地址及电话</template>
               {{ quoteData.invoiceInfo?.registeredAddress }}
             </el-descriptions-item>
-            <el-descriptions-item :span="3">
+            <!-- <el-descriptions-item :span="3">
               <template #label>特殊要求</template>
               {{ quoteData.invoiceInfo?.remark }}
-            </el-descriptions-item>
+            </el-descriptions-item> -->
           </el-descriptions>
           <el-table
             size="small"
@@ -352,27 +352,27 @@
               <p style="font-size: 14px; font-weight: bold; margin: 20px 0 0">电子签名信息</p>
               <div class="img">
                 <div class="demo-image__preview">
-                  <p>工程师签名时间: {{ item.signatureRecord.fseSignatureTime }}</p>
+                  <p>工程师签名时间: {{ item.signatureRecord?.fseSignatureTime }}</p>
                   <el-image
-                    v-if="item.signatureRecord.fseSignature"
-                    :src="url + item.signatureRecord.fseSignature"
+                    v-if="item.signatureRecord?.fseSignature"
+                    :src="url + item.signatureRecord?.fseSignature"
                     :zoom-rate="1.2"
                     :max-scale="7"
                     :min-scale="0.2"
-                    :preview-src-list="[url + item.signatureRecord.fseSignature]"
+                    :preview-src-list="[url + item.signatureRecord?.fseSignature]"
                     :initial-index="4"
                     fit="contain"
                   />
                 </div>
                 <div class="demo-image__preview">
-                  <p>客户签名时间: {{ item.signatureRecord.customerSignatureTime }}</p>
+                  <p>客户签名时间: {{ item.signatureRecord?.customerSignatureTime }}</p>
                   <el-image
-                    v-if="item.signatureRecord.customerSignature"
-                    :src="url + item.signatureRecord.customerSignature"
+                    v-if="item.signatureRecord?.customerSignature"
+                    :src="url + item.signatureRecord?.customerSignature"
                     :zoom-rate="1.2"
                     :max-scale="7"
                     :min-scale="0.2"
-                    :preview-src-list="[url + item.signatureRecord.customerSignature]"
+                    :preview-src-list="[url + item.signatureRecord?.customerSignature]"
                     :initial-index="4"
                     fit="contain"
                   />
@@ -573,36 +573,36 @@
               <template #label>注册地址及电话</template>
               {{ payDemandNoteData.invoiceInfo?.registeredAddress }}
             </el-descriptions-item>
-            <el-descriptions-item :span="3">
+            <!-- <el-descriptions-item :span="3">
               <template #label>特殊要求</template>
               {{ payDemandNoteData.invoiceInfo?.remark }}
-            </el-descriptions-item>
+            </el-descriptions-item> -->
           </el-descriptions>
           <div v-if="payDemandNoteData.signatureRecord !== null">
             <p style="font-size: 14px; font-weight: bold; margin: 20px 0 0">电子签名信息</p>
             <div class="img">
               <div class="demo-image__preview">
-                <p>工程师签名时间: {{ payDemandNoteData.signatureRecord.fseSignatureTime }}</p>
+                <p>工程师签名时间: {{ payDemandNoteData.signatureRecord?.fseSignatureTime }}</p>
                 <el-image
-                  v-if="payDemandNoteData.signatureRecord.fseSignature"
-                  :src="url + payDemandNoteData.signatureRecord.fseSignature"
+                  v-if="payDemandNoteData.signatureRecord?.fseSignature"
+                  :src="url + payDemandNoteData.signatureRecord?.fseSignature"
                   :zoom-rate="1.2"
                   :max-scale="7"
                   :min-scale="0.2"
-                  :preview-src-list="[url + payDemandNoteData.signatureRecord.fseSignature]"
+                  :preview-src-list="[url + payDemandNoteData.signatureRecord?.fseSignature]"
                   :initial-index="4"
                   fit="contain"
                 />
               </div>
               <div class="demo-image__preview">
-                <p>客户签名时间: {{ payDemandNoteData.signatureRecord.customerSignatureTime }}</p>
+                <p>客户签名时间: {{ payDemandNoteData.signatureRecord?.customerSignatureTime }}</p>
                 <el-image
-                  v-if="payDemandNoteData.signatureRecord.customerSignature"
-                  :src="url + payDemandNoteData.signatureRecord.customerSignature"
+                  v-if="payDemandNoteData.signatureRecord?.customerSignature"
+                  :src="url + payDemandNoteData.signatureRecord?.customerSignature"
                   :zoom-rate="1.2"
                   :max-scale="7"
                   :min-scale="0.2"
-                  :preview-src-list="[url + payDemandNoteData.signatureRecord.customerSignature]"
+                  :preview-src-list="[url + payDemandNoteData.signatureRecord?.customerSignature]"
                   :initial-index="4"
                   fit="contain"
                 />
@@ -610,11 +610,84 @@
             </div>
           </div>
         </el-collapse-item>
+        <el-collapse-item v-if="invoiceInfo !== null" title="申请开票信息" name="9">
+          <el-descriptions class="margin-top" :column="3" border size="small">
+            <el-descriptions-item>
+              <template #label>发票类型</template>
+              {{ invoiceInfo?.invoiceType === 1 ? '普票' : invoiceInfo?.invoiceType === 2 ? '专票' : '' }}
+            </el-descriptions-item>
+
+            <el-descriptions-item>
+              <template #label>发票抬头</template>
+              <div class="invoiceInfoName">
+                {{ invoiceInfo?.companyName }}
+                <el-button type="primary" size="small" @click="handelQuery(invoiceInfo?.companyName)">查询锁</el-button>
+              </div>
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>税号</template>
+              {{ invoiceInfo?.taxNo }}
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>邮箱</template>
+              {{ invoiceInfo?.recipientEmail }}
+            </el-descriptions-item>
+            <!-- <el-descriptions-item v-if="invoiceInfo?.invoiceType === 2">
+              <template #label>地址</template>
+              {{ invoiceInfo?.mailingAddress }}
+            </el-descriptions-item> -->
+            <el-descriptions-item>
+              <template #label>收件人</template>
+              {{ invoiceInfo?.recipient }}
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>联系电话</template>
+              {{ invoiceInfo?.tel }}
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>开户行</template>
+              {{ invoiceInfo?.bankName }}
+            </el-descriptions-item>
+            <el-descriptions-item :span="2">
+              <template #label>开户行账号</template>
+              {{ invoiceInfo?.bankAccount }}
+            </el-descriptions-item>
+            <el-descriptions-item :span="3">
+              <template #label>注册地址及电话</template>
+              {{ invoiceInfo?.registeredAddress }}
+            </el-descriptions-item>
+            <el-descriptions-item :span="3">
+              <template #label>特殊要求</template>
+              {{ invoiceInfo?.remark }}
+            </el-descriptions-item>
+          </el-descriptions>
+        </el-collapse-item>
       </el-collapse>
     </div>
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="handleClose">{{ $t('common.cancel') }}</el-button>
+      </span>
+    </template>
+  </el-dialog>
+  <el-dialog title="锁信息" width="600px" v-model="backVisible" :close-on-click-modal="false">
+    <el-table
+      v-loading="dataLoadingData"
+      :data="formBackData"
+      :summary-method="getSummaries"
+      border
+      style="width: 100%"
+      :header-cell-style="{ background: '#f5f7fa' }"
+      show-summary
+    >
+      <el-table-column width="100px" prop="customerId" label="客户编码" />
+      <el-table-column prop="blockFlag" label="客户锁信息" />
+      <el-table-column prop="name" width="250px" label="客户名称" />
+      <el-table-column width="100px" prop="city" label="城市" />
+    </el-table>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="handleCloseBack">{{ $t('common.cancel') }}</el-button>
       </span>
     </template>
   </el-dialog>
@@ -648,6 +721,7 @@ const serviceReport = ref([])
 const attachmentList = ref([])
 const workLogList = ref([])
 const payDemandNoteData = ref({})
+const invoiceInfo = ref({})
 const url = import.meta.env.VITE_SERVER_PATH
 
 watch(
@@ -673,6 +747,7 @@ const { run: getInfo, loading: dataLoading } = useAsync(
       attachmentList.value = res.data.attachmentList
       workLogList.value = res.data.workLogList
       payDemandNoteData.value = res.data.payDemandNoteData
+      invoiceInfo.value = res.data.invoiceInfo
     },
   }
 )
@@ -730,6 +805,25 @@ const handleDownloadFile = row => {
 //     getInfo()
 //   })
 // }
+
+//查询客户锁信息
+const backVisible = ref(false)
+const dataLoadingData = ref(false)
+const formBackData = ref([])
+const handelQuery = companyName => {
+  backVisible.value = true
+  dataLoadingData.value = true
+  req.get('/block/list', { params: { customerName: companyName } }).then(res => {
+    if (res.code === 200) {
+      formBackData.value = res.data.records
+    }
+    dataLoadingData.value = false
+  })
+}
+
+const handleCloseBack = () => {
+  backVisible.value = false
+}
 </script>
 <style scoped>
 .demo-collapse :deep(.el-collapse-item__header) {
@@ -785,5 +879,10 @@ const handleDownloadFile = row => {
 
 .img :deep(.el-image-viewer__wrapper) .el-image-viewer__img {
   background-color: #fff;
+}
+
+.invoiceInfoName {
+  display: flex;
+  justify-content: space-between;
 }
 </style>

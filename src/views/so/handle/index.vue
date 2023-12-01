@@ -11,6 +11,9 @@
       <el-table-column label="维修类型" width="160">
         <template #default="{ row }">{{ row.orderType }} / {{ row.subType }}</template>
       </el-table-column>
+      <el-table-column label="Lock类型" width="160">
+        <template #default="{ row }">{{ row.lockType === '1' ? '工时' : '备件' }}</template>
+      </el-table-column>
       <el-table-column label="失败原因" prop="rpaErrorMessage" width="350" />
       <el-table-column label="工程师名称" prop="fseName" />
       <el-table-column label="FSE work center" prop="fseWorkCenter" width="140" />
@@ -18,7 +21,7 @@
       <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="110">
         <template #default="{ row }">
           <el-button type="info" link @click="handleEdit(row)">详情</el-button>
-          <el-button type="primary" link @click="handleClose(row)">已处理</el-button>
+          <el-button type="primary" link @click="handleClose(row)">处理</el-button>
         </template>
       </el-table-column>
       <template #actions></template>
@@ -192,6 +195,7 @@ const formDetails = ref({
   remark: '',
   id: '',
   soNo: '',
+  lockType: '',
 })
 
 const rules = {
@@ -201,12 +205,13 @@ const rules = {
 const handleClose = row => {
   formDetails.value.id = row.id
   formDetails.value.soNo = row.soNo
+  formDetails.value.lockType = row.lockType
   detailVisible.value = true
 }
 const handleCloseDetail = () => {
   detailVisible.value = false
   nextTick(() => {
-    formRefDetails.value.clearValidate()
+    formRefDetails.value.resetFields()
   })
 }
 const handleConfirm = () => {
@@ -216,6 +221,9 @@ const handleConfirm = () => {
         if (code === 200) {
           detailVisible.value = false
           refresh()
+          nextTick(() => {
+            formRefDetails.value.resetFields()
+          })
         }
       })
     }

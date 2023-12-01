@@ -5,7 +5,7 @@
         action: '/region/page',
       }"
       ref="tableRef"
-      id="repairRequest"
+      id="provincialManagement"
     >
       <el-table-column label="省份编码" prop="reg" />
       <el-table-column label="省份" prop="province" />

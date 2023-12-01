@@ -650,9 +650,11 @@ const handleCloseSo = () => {
   visibleSo.value = false
 }
 
+const upload = ref()
 // 取消
 const handleClose = () => {
   emit('update:modelValue', false)
+  upload.value.say()
 }
 const handleConfirm = () => {
   formRef.value.validate(valid => {
@@ -668,6 +670,7 @@ const handleConfirm = () => {
           if (code === 200) {
             emit('success')
             emit('update:modelValue', false)
+            upload.value.say()
           }
         })
         .finally(() => {

@@ -10,7 +10,7 @@
       <el-table-column label="SO NO" prop="soNo" width="130" />
       <el-table-column label="设备序列号" prop="serialNo" width="140" />
       <el-table-column label="设备型号" prop="modelNo" width="110" />
-      <el-table-column label="收货地址" prop="deliveryAddress" width="150" />
+      <el-table-column label="收货地址" prop="deliveryAddress" width="200" />
       <el-table-column label="联系人" prop="contactPerson" width="100" />
       <el-table-column label="联系人电话" prop="contactTel" width="120" />
       <el-table-column label="领用时间" prop="createTime" width="140" />
@@ -19,8 +19,8 @@
       <el-table-column label="FSE storage location" prop="fseStorageLocation" width="140" />
       <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="140">
         <template #default="{ row }">
-          <el-button type="info" link @click="handleDeatil(row)">领用详情</el-button>
-          <el-button type="primary" link @click="handleDelivery(row)">已发货</el-button>
+          <el-button type="info" link @click="handleDeatil(row)">详情</el-button>
+          <el-button type="primary" link @click="handleDelivery(row)">确认发货</el-button>
         </template>
       </el-table-column>
       <template #form="{ form }">

@@ -266,6 +266,9 @@ const handleConfirm = () => {
       req.put('/so/assign', formDetails.value).then(() => {
         detailVisible.value = false
         refresh()
+        nextTick(() => {
+          formRefDetails.value.resetFields()
+        })
       })
     }
   })

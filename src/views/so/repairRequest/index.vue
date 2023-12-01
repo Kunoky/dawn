@@ -365,6 +365,9 @@ const handleConfirm = () => {
       req.put('/request/close', formDetails.value).then(() => {
         detailVisible.value = false
         refresh()
+        nextTick(() => {
+          formRefDetails.value.resetFields()
+        })
       })
     }
   })

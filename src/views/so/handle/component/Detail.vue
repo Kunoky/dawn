@@ -9,7 +9,7 @@
   >
     <div v-loading="dataLoading">
       <el-table
-        v-if="props.data.lockType === 2"
+        v-if="props.data.lockType === '2'"
         size="small"
         :data="rpaLockMaterialList"
         style="width: 100%; margin-bottom: 20px"

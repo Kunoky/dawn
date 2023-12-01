@@ -271,6 +271,9 @@ const handleConfirm = () => {
       req.post('/so/transfer/reject', formDetails.value).then(() => {
         detailVisible.value = false
         refresh()
+        nextTick(() => {
+          formRefDetails.value.resetFields()
+        })
       })
     }
   })
