@@ -317,7 +317,7 @@ const handleCloseBack = () => {
   backVisible.value = false
   formBack.value.reason = ''
   nextTick(() => {
-    formRefBack.value.clearValidate()
+    formRefBack.value.resetFields()
   })
 }
 const handleBackConfirm = () => {
@@ -326,6 +326,9 @@ const handleBackConfirm = () => {
       req.put('/request/rollback', formBack.value).then(() => {
         backVisible.value = false
         refresh()
+        nextTick(() => {
+          formRefBack.value.resetFields()
+        })
       })
     }
   })
