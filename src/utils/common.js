@@ -224,13 +224,37 @@ export function exportCSV(data, name) {
  * @param {String} txt
  */
 export function copy(txt) {
-  ElMessage({
-    message: '复制成功',
-    type: 'success',
-  })
-  navigator.clipboard.writeText(txt)
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard
+      .writeText(txt)
+      .then(() => {
+        ElMessage.success('复制成功')
+      })
+      .catch(() => {
+        ElMessage.error('复制失败')
+      })
+  } else {
+    // 创建text area
+    const textArea = document.createElement('textarea')
+    textArea.value = txt
+    // 使text area不在viewport，同时设置不可见
+    document.body.appendChild(textArea)
+    textArea.focus()
+    textArea.select()
+    return new Promise((resolve, reject) => {
+      // 执行复制命令并移除文本框
+      document.execCommand('copy') ? resolve() : reject(new Error('出错了'))
+      textArea.remove()
+    }).then(
+      () => {
+        ElMessage.success('复制成功')
+      },
+      () => {
+        ElMessage.error('复制失败')
+      }
+    )
+  }
 }
-
 export const regexp = {
   // eslint-disable-next-line
   en: /^[a-zA-Z0-9\`\~\!\@\#\$\%\^\&\*\(\)\_\+\-\=\[\]\\\;\'\,\.\/\{\}\|\:\"\>\?\"' '\t\n]*$/,
