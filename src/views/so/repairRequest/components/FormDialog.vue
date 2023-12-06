@@ -24,7 +24,7 @@
             >
               <el-option v-for="item in serialNoOptions" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
-            <el-button style="width: 12%" type="info" @click="hanelCopy(form.serialNo)">复制</el-button>
+            <el-button style="width: 12%" type="primary" @click="hanelCopy(form.serialNo)">复制</el-button>
           </el-form-item>
         </el-col>
         <el-col :span="12">

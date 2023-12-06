@@ -5,6 +5,8 @@
     :headers="headers"
     drag
     :on-error="handleError"
+    :limit="limit"
+    :on-exceed="handleExceed"
     :on-preview="handlePreview"
     :before-upload="beforeUpload"
     :on-remove="handleRemove"
@@ -47,6 +49,10 @@ const props = defineProps({
   },
   accept: {
     type: String,
+  },
+  limit: {
+    type: Number,
+    default: 5,
   },
 })
 
@@ -114,6 +120,9 @@ function handleSuccess(res) {
   if (res.code === 200) {
     ElMessage.success('上传成功!')
   }
+}
+function handleExceed() {
+  ElMessage.error(`只能上传${props.limit} 个文件!`)
 }
 
 // 清除附件列表

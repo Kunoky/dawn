@@ -660,6 +660,18 @@
               <template #label>特殊要求</template>
               {{ invoiceInfo?.remark }}
             </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>创建人</template>
+              {{ invoiceInfo?.createByName }}
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>开票申请时间</template>
+              {{ invoiceInfo?.createTime }}
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>税率</template>
+              {{ invoiceInfo?.taxRate }}
+            </el-descriptions-item>
           </el-descriptions>
         </el-collapse-item>
       </el-collapse>

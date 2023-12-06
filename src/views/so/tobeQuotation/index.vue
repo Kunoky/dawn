@@ -152,6 +152,7 @@
             style="width: 100%"
             :params="params"
             v-model="list"
+            :limit="1"
             accept="image/png,image/jpg,image/jpeg,application/pdf"
             ref="upload"
           ></CUpload>
@@ -159,7 +160,8 @@
       </el-form>
       <template #footer>
         <span class="dialog-footer">
-          <el-button @click="handleCloseDetail">确认</el-button>
+          <el-button @click="handleCloseDetail">取消</el-button>
+          <el-button type="primary" @click="handleFlile">确认</el-button>
         </span>
       </template>
     </el-dialog>
@@ -308,18 +310,29 @@ const handleFormSuccess = () => {
 const detailVisible = ref(false)
 // 上传附件参数
 const list = ref([])
+const relationId = ref('')
 const params = ref({
   type: 4,
-  relationId: '',
 })
 const handleUploadFile = row => {
-  params.value.relationId = row.soNo
+  relationId.value = row.soNo
   detailVisible.value = true
 }
 const upload = ref()
 const handleCloseDetail = () => {
   detailVisible.value = false
   upload.value.say()
+}
+const handleFlile = () => {
+  let data = list.value[0].response.data
+  data.relationId = relationId.value
+  req.put('/attachment/update', data).then(({ code }) => {
+    if (code === 200) {
+      refresh()
+    }
+    detailVisible.value = false
+    upload.value.say()
+  })
 }
 
 // 添加沟通记录
