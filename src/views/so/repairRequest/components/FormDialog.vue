@@ -17,6 +17,7 @@
               placeholder="请输入设备序列号"
               filterable
               remote
+              @keyup.ctrl.c="hanelCopy(form.serialNo)"
               :remote-method="remoteMethod"
               :loading="selectlLoading"
               @change="changeSeriaNo"

@@ -17,10 +17,15 @@
       <el-table-column label="工程师名称" prop="fseName" />
       <el-table-column label="FSE work center" prop="fseWorkCenter" width="145" />
       <el-table-column label="FSE storage location" prop="fseStorageLocation" width="140" />
-      <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="140">
+      <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="130">
         <template #default="{ row }">
-          <el-button type="info" link @click="handleDeatil(row)">详情</el-button>
-          <el-button type="primary" link @click="handleDelivery(row)">确认发货</el-button>
+          <div>
+            <el-button type="info" link @click="handleDeatil(row)">详情</el-button>
+            <el-button type="primary" link @click="handleDelivery(row)">确认发货</el-button>
+          </div>
+          <div>
+            <el-button type="primary" link @click="handleAdd(row)">新建移库单</el-button>
+          </div>
         </template>
       </el-table-column>
       <template #form="{ form }">
@@ -49,6 +54,32 @@
       </template>
     </CTable>
     <Details :data="current" v-model="visible.detail" @success="handleFormSuccess"></Details>
+
+    <el-dialog
+      title="新建移库单"
+      width="30%"
+      v-model="detailVisible"
+      :close-on-click-modal="false"
+      @close="handleClose"
+    >
+      <el-form :model="form" ref="formRef" label-width="155" :rules="rules">
+        <el-form-item label="SO订单编号" prop="soNo">
+          <el-input v-model="form.soNo" placeholder="请输入SO订单编号" />
+        </el-form-item>
+        <el-form-item label="移库凭证号" prop="transferVoucherNo">
+          <el-input v-model="form.transferVoucherNo" placeholder="请输入移库凭证号" />
+        </el-form-item>
+        <el-form-item label="快递单号" prop="expressNo">
+          <el-input v-model="form.expressNo" placeholder="请输入快递单号" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="handleClose">取消</el-button>
+          <el-button type="primary" @click="handleConfirm">确定</el-button>
+        </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -117,5 +148,37 @@ const handleDelivery = row => {
         refresh()
       }
     })
+}
+
+// 新建移库单
+const detailVisible = ref(false)
+const formRef = ref(null)
+const form = ref({})
+const rules = {
+  soNo: [{ required: true, message: 'SO订单编号不能为空', trigger: 'blur' }],
+  transferVoucherNo: [{ required: true, message: '移库凭证号不能为空', trigger: 'blur' }],
+  expressNo: [{ required: true, message: '快递单号不能为空', trigger: 'blur' }],
+}
+
+const handleAdd = row => {
+  form.value.soNo = row.soNo
+  detailVisible.value = true
+}
+
+const handleClose = () => {
+  detailVisible.value = false
+  formRef.value.resetFields()
+}
+const handleConfirm = () => {
+  formRef.value.validate(valid => {
+    if (valid) {
+      req.post('/st', form.value).then(({ code }) => {
+        if (code === 200) {
+          detailVisible.value = false
+        }
+        formRef.value.resetFields()
+      })
+    }
+  })
 }
 </script>

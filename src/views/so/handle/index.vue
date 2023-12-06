@@ -42,7 +42,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="所属区域" prop="area">
-          <el-select v-model="form.area" placeholder="请选择所属区域" style="width: 100%" clearable>
+          <el-select v-model="form.area" placeholder="请选择所属区域" style="width: 100%" multiple clearable>
             <el-option
               v-for="(item, index) in regionalStatus.options"
               :key="index"

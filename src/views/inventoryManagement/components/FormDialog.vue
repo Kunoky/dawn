@@ -8,11 +8,11 @@
     :close-on-click-modal="false"
   >
     <el-form v-if="title !== '移库单详情'" :model="form" ref="formRef" label-width="155" :rules="rules">
-      <el-form-item label="移库凭证号" prop="transferVoucherNo">
-        <el-input v-model="form.transferVoucherNo" placeholder="请输入移库凭证号" />
-      </el-form-item>
       <el-form-item label="SO订单编号" prop="soNo">
         <el-input v-model="form.soNo" placeholder="请输入SO订单编号" />
+      </el-form-item>
+      <el-form-item label="移库凭证号" prop="transferVoucherNo">
+        <el-input v-model="form.transferVoucherNo" placeholder="请输入移库凭证号" />
       </el-form-item>
       <el-form-item label="快递单号" prop="expressNo">
         <el-input v-model="form.expressNo" placeholder="请输入快递单号" />

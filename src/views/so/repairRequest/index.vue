@@ -44,7 +44,11 @@
       <el-table-column label="客户名称" prop="custDesc" width="160" />
       <el-table-column label="payer客户编号" prop="payer" width="100" />
       <el-table-column label="payer客户名称" prop="payerName" width="160" />
-      <el-table-column label="客户联系人" prop="name" width="100" />
+      <el-table-column label="客户联系人" prop="name" width="100">
+        <template #default="{ row }">
+          {{ row.name === null || row.name === '' ? row.lastName + row.firstName : row.name }}
+        </template>
+      </el-table-column>
       <el-table-column label="客户联系人电话" prop="mobile" width="120" />
       <el-table-column label="客户联系人邮箱" prop="email" width="130" />
       <el-table-column label="代理商" prop="vendor" width="100" />
@@ -87,7 +91,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="所属区域" prop="area">
-          <el-select v-model="form.area" placeholder="请选择所属区域" style="width: 100%" clearable>
+          <el-select v-model="form.area" placeholder="请选择所属区域" style="width: 100%" multiple clearable>
             <el-option
               v-for="(item, index) in regionalStatus.options"
               :key="index"

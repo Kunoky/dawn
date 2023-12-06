@@ -62,7 +62,7 @@
             </el-descriptions-item>
             <el-descriptions-item>
               <template #label>客户联系人</template>
-              {{ form.name }}
+              {{ form.name === null ? form.lastName + form.firstName : form.name }}
             </el-descriptions-item>
             <el-descriptions-item>
               <template #label>客户联系人拼音</template>

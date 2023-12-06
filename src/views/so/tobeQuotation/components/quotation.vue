@@ -38,12 +38,12 @@
         <el-table-column prop="itemName" label="描述" width="100" :show-overflow-tooltip="true" />
         <el-table-column prop="unitPrice" label="单价" width="130">
           <template #default="{ row }">
-            <el-input v-model="row.unitPrice" placeholder="请输入" @blur="handelPrice(row)"></el-input>
+            <div>{{ row.unitPrice }}</div>
           </template>
         </el-table-column>
         <el-table-column prop="includeTaxPrice" label="含税价格">
           <template #default="{ row }">
-            <div class="txt">{{ row.includeTaxPrice === null ? handelPrice(row) : row.includeTaxPrice }}</div>
+            <el-input v-model="row.includeTaxPrice" placeholder="请输入" @blur="handelPrice(row)"></el-input>
           </template>
         </el-table-column>
         <el-table-column prop="quantity" label="配件/Labor数量" width="100">
@@ -101,7 +101,13 @@
             </el-col>
             <el-col :span="12">
               <el-form-item label="发票类型" prop="invoiceType">
-                <el-select v-model="invoiceInfo.invoiceType" style="width: 100%" placeholder="请选择发票类型" clearable>
+                <el-select
+                  v-model="invoiceInfo.invoiceType"
+                  style="width: 100%"
+                  placeholder="请选择发票类型"
+                  clearable
+                  @change="invoiceTypeChange"
+                >
                   <el-option label="普票" :value="1" />
                   <el-option label="专票" :value="2" />
                 </el-select>
@@ -113,7 +119,7 @@
                 <el-button type="primary" @click="handelQuery" style="width: 17%">查询锁</el-button>
               </el-form-item>
             </el-col>
-            <el-col :span="12">
+            <el-col :span="12" v-if="invoiceInfo.invoiceType === 2">
               <el-form-item label="税号" prop="taxNo">
                 <el-input v-model="invoiceInfo.taxNo" placeholder="请输入税号" clearable />
               </el-form-item>
@@ -143,7 +149,7 @@
                 <el-input v-model="invoiceInfo.bankName" placeholder="请输入开户行" clearable />
               </el-form-item>
             </el-col>
-            <el-col :span="12">
+            <el-col :span="12" v-if="invoiceInfo.invoiceType === 2">
               <el-form-item label="开户行账号" prop="bankAccount">
                 <el-input v-model="invoiceInfo.bankAccount" placeholder="请输入开户行账号" clearable />
               </el-form-item>
@@ -391,9 +397,9 @@ const handelPrice = row => {
   if (row.unitPrice === null || row.unitPrice === '') {
     row.unitPrice = '0.00'
   }
-  const y = new Big(row.unitPrice)
+  const y = new Big(row.includeTaxPrice)
   const x = new Big(1.13)
-  row.includeTaxPrice = y.times(x).toFixed(2)
+  row.unitPrice = y.div(x).toFixed(2)
   handelCalculateTotalPrice(row)
 }
 const handelCalculateTotalPrice = row => {
@@ -479,6 +485,13 @@ const handelQuery = () => {
 
 const handleCloseBack = () => {
   backVisible.value = false
+}
+
+const invoiceTypeChange = val => {
+  if (val === 1) {
+    invoiceInfo.value.taxNo = ''
+    invoiceInfo.value.bankAccount = ''
+  }
 }
 </script>
 

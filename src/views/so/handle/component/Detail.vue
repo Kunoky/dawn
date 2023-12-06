@@ -17,6 +17,8 @@
         :header-cell-style="{ background: '#f5f7fa' }"
       >
         <el-table-column label="配件消耗情况" align="center">
+          <el-table-column prop="so" label="SO NO" />
+          <el-table-column prop="storage" label="FSE storage location" width="140" />
           <el-table-column prop="material" label="物料号" />
           <el-table-column prop="batchNo" label="批次号" />
           <el-table-column prop="count" label="数量" />
@@ -34,6 +36,8 @@
         :header-cell-style="{ background: '#f5f7fa' }"
       >
         <el-table-column label="工时" align="center">
+          <el-table-column prop="ordernumber" label="SO NO" />
+          <el-table-column prop="workCtr" label="FSE work center" width="120" />
           <el-table-column prop="aty" label="工时种类" />
           <el-table-column prop="actWork" label="时长" />
           <el-table-column prop="errormessage" label="异常信息" width="200" :show-overflow-tooltip="true" />

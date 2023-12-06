@@ -14,12 +14,13 @@
           size="small"
           :data="itemList"
           style="width: 100%; margin-bottom: 20px"
-          max-height="190"
+          max-height="250"
           :header-cell-style="{ background: '#f5f7fa' }"
         >
           <el-table-column prop="soNo" label="SO NO" />
+          <el-table-column prop="storage" label="FSE storage location" width="140" />
           <el-table-column prop="materialNo" label="物料号" />
-          <el-table-column prop="itemName" label="配件名称" />
+          <el-table-column prop="itemName" label="配件名称" width="150" />
           <el-table-column prop="quantity" label="数量" />
           <el-table-column prop="batchNo" label="批次号" />
         </el-table>
@@ -57,6 +58,9 @@ const { run: getInfo, loading: dataLoading } = useAsync(
   {
     onSuccess(res) {
       itemList.value = res.data
+      itemList.value.map(val => {
+        val.storage = props.data.fseStorageLocation
+      })
     },
   }
 )
