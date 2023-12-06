@@ -15,34 +15,39 @@
       </el-form-item>
     </el-form>
     <div class="c-table__main">
-      <div v-if="!hideToolbar" class="c-table__toolbar">
-        <div class="c-table__title">
+      <div v-if="toolStatus.bar" class="c-table__toolbar">
+        <div v-if="toolStatus.title" class="c-table__title">
           <slot name="title">{{ title }}</slot>
         </div>
         <div class="c-table__actions">
           <slot name="actions"></slot>
-          <el-tooltip v-if="$slots.form" :content="$t('common.query')" placement="top">
+          <el-tooltip v-if="toolStatus.title && $slots.form" :content="$t('common.query')" placement="top">
             <el-button link @click="showQuery = !showQuery" :aria-description="$t('common.query')">
               <template #icon>
                 <i-ep-search />
               </template>
             </el-button>
           </el-tooltip>
-          <el-tooltip v-if="$slots.form" :content="$t('common.export')" placement="top">
+          <el-tooltip v-if="toolStatus.download" :content="$t('common.export')" placement="top">
             <el-button link @click="handleExport" :aria-description="$t('common.export')">
               <template #icon>
                 <i-ep-download />
               </template>
             </el-button>
           </el-tooltip>
-          <el-tooltip :content="$t('common.refresh')" placement="top">
+          <el-tooltip v-if="toolStatus.refresh" :content="$t('common.refresh')" placement="top">
             <el-button link @click="refresh" :aria-description="$t('common.refresh')">
               <template #icon>
                 <i-ep-refresh />
               </template>
             </el-button>
           </el-tooltip>
-          <CDropdown v-model="tableSize" :options="$tm('component.CTable.sizes')" trigger="click">
+          <CDropdown
+            v-if="toolStatus.size"
+            v-model="tableSize"
+            :options="$tm('component.CTable.sizes')"
+            trigger="click"
+          >
             <el-button link :aria-description="$t('component.CTable.size')">
               <template #icon>
                 <el-tooltip :content="$t('component.CTable.size')" placement="top">
@@ -51,14 +56,14 @@
               </template>
             </el-button>
           </CDropdown>
-          <el-tooltip v-if="id" :content="$t('component.CTable.save')" placement="top">
+          <el-tooltip v-if="toolStatus.save && id" :content="$t('component.CTable.save')" placement="top">
             <el-button link @click="handleSave" :aria-description="$t('component.CTable.save')">
               <template #icon>
                 <CIcon icon="ant-design:save-outlined" />
               </template>
             </el-button>
           </el-tooltip>
-          <el-popover trigger="click" width="240" popper-class="c-table__setting">
+          <el-popover v-if="toolStatus.setting" trigger="click" width="240" popper-class="c-table__setting">
             <template #reference>
               <el-button link :aria-description="$t('component.CTable.setting')">
                 <template #icon>
@@ -250,12 +255,11 @@ const props = defineProps({
     default: 'small',
   },
   title: String, // 标题
-  // 隐藏toolbar
-  hideToolbar: {
-    type: Boolean,
-    default: false,
-  },
   id: String, // 组件id，提供时可以对form，columnSetting数据进行缓存
+  // 工具栏状态
+  toolStatus: {
+    type: Object,
+  },
 })
 const emit = defineEmits(['update:modelValue', 'query', 'reset'])
 
@@ -267,6 +271,7 @@ const pageRef = ref()
 const tableRef = ref()
 const tableSize = ref(props.size)
 const refresh = () => pageRef.value.refresh()
+const refreshCurrent = () => pageRef.value.run()
 
 let cachedData = {
   value: {
@@ -542,7 +547,7 @@ const exportData = () => {
       columns.forEach(i => {
         if (i.props?.label && i.props?.prop) {
           csvData[0].push(i.props.label)
-          getText.push(row => row[i.props.prop])
+          getText.push(i.props.formatter || (row => row[i.props.prop]))
         }
       })
       res.forEach(i => {
@@ -553,12 +558,29 @@ const exportData = () => {
     })
     .finally(() => (exportFrom.loading = false))
 }
+
+// 0：隐藏，1：正常
+const defaultToolStatus = {
+  bar: 1,
+  title: 1,
+  search: 1,
+  download: 1,
+  refresh: 1,
+  size: 1,
+  save: 1,
+  setting: 1,
+}
+const toolStatus = computed(() => ({
+  ...defaultToolStatus,
+  ...props.toolStatus,
+}))
 defineExpose({
   pageRef,
   tableRef,
   form,
   columnsSetting,
   refresh,
+  refreshCurrent,
   handleQuery,
   handleColReset,
   handleQueryReset,
