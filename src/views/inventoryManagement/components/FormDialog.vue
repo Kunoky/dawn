@@ -17,6 +17,9 @@
       <el-form-item label="快递单号" prop="expressNo">
         <el-input v-model="form.expressNo" placeholder="请输入快递单号" />
       </el-form-item>
+      <el-form-item label="备注" prop="remark">
+        <el-input type="textarea" v-model="form.remark" placeholder="请输入备注" clearable />
+      </el-form-item>
     </el-form>
     <div v-if="title === '移库单详情'" v-loading="dataLoading">
       <div style="margin-bottom: 20px">
@@ -36,6 +39,10 @@
           <el-descriptions-item>
             <template #label>是否有异常情况</template>
             {{ form.exceptionFlag ? '是' : '否' }}
+          </el-descriptions-item>
+          <el-descriptions-item>
+            <template #label>备注</template>
+            {{ form.remark }}
           </el-descriptions-item>
         </el-descriptions>
       </div>
@@ -106,6 +113,7 @@ const rules = {
   soNo: [{ required: true, message: 'SO订单编号不能为空', trigger: 'blur' }],
   transferVoucherNo: [{ required: true, message: '移库凭证号不能为空', trigger: 'blur' }],
   expressNo: [{ required: true, message: '快递单号不能为空', trigger: 'blur' }],
+  remark: [{ required: true, message: '备注不能为空', trigger: 'blur' }],
 }
 
 const formRef = ref()

@@ -255,6 +255,7 @@
               placeholder="请选择报修时间"
               clearable
             />
+            <span class="spanTitle">注：安装申请，此处填写终端报装日期</span>
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -297,6 +298,9 @@
         <el-col :span="24">
           <el-form-item label="备注" prop="remark">
             <el-input type="textarea" v-model="form.remark" placeholder="请输入备注" clearable />
+            <span class="spanTitle">
+              注：安装申请请提供安装完成日期（如有）、医院科室(医院客户必填）、已安装软件（如有）
+            </span>
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -744,5 +748,10 @@ const getTitle = val => {
 }
 .CUpload :deep(.el-upload-dragger) .el-upload__text {
   font-size: 12px;
+}
+.spanTitle {
+  color: #e71316;
+  font-size: 12px;
+  line-height: 20px;
 }
 </style>

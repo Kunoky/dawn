@@ -11,26 +11,26 @@
     <el-form :model="form" ref="formRef" label-width="120" :rules="rules" v-loading="dataLoading">
       <el-row>
         <el-col :span="12">
-          <el-form-item label="设备序列号" prop="serialNo">
+          <el-form-item label="设备序列号" prop="serialNo" class="form_flex">
             <el-select
               v-model="form.serialNo"
               placeholder="请输入设备序列号"
               filterable
               remote
-              @keyup.ctrl.c="hanelCopy(form.serialNo)"
               :remote-method="remoteMethod"
               :loading="selectlLoading"
               @change="changeSeriaNo"
-              style="width: 100%"
+              style="width: 86%"
             >
               <el-option v-for="item in serialNoOptions" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
+            <el-button style="width: 12%" type="info" @click="hanelCopy(form.serialNo)">复制</el-button>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="设备型号" prop="modelNo" class="form_flex">
-            <el-input v-model="form.modelNo" disabled placeholder="自动填入" style="width: 83%" />
-            <el-button style="width: 11%" type="primary" @click="handleNum">查询</el-button>
+            <el-input v-model="form.modelNo" disabled placeholder="自动填入" style="width: 86%" />
+            <el-button style="width: 12%" type="primary" @click="handleNum">查询</el-button>
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -392,10 +392,11 @@ const formRef = ref()
 const form = ref({})
 // 上传附件参数
 const attachmentsList = ref([])
-const params = {
+const params = ref({
   type: 5,
-  relationId: props.data?.id,
-}
+  relationId: '',
+})
+
 watch(
   () => props.modelValue,
   v => {
@@ -462,6 +463,7 @@ const { run: getRequestInfo, loading: dataLoading } = useAsync(
         // val.status = 'success'
         return val
       })
+      params.value.relationId = props.data.id
       // 暂存用做数据对比
       // staging.value.aaa = res.data.custDesc
       // staging.value.bbb = res.data.equipAddress
@@ -471,6 +473,7 @@ const { run: getRequestInfo, loading: dataLoading } = useAsync(
     },
   }
 )
+
 // 暂存数据，为提交校验数据
 // const staging = ref({
 //   aaa: '',

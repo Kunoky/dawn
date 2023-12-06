@@ -94,7 +94,6 @@
             :options="options"
             filterable
             clearable
-            @change="changeOptions"
             :props="{
               label: 'name',
               value: 'name',
@@ -106,7 +105,13 @@
     </CTable>
     <FormDialog :data="current" v-model="visible.form" @success="handleFormSuccess"></FormDialog>
 
-    <el-dialog title="指派FSE" width="30%" v-model="detailVisible" :close-on-click-modal="false">
+    <el-dialog
+      title="指派FSE"
+      width="30%"
+      v-model="detailVisible"
+      :close-on-click-modal="false"
+      @close="handleCloseDetail"
+    >
       <el-form :model="formDetails" ref="formRefDetails" label-width="150" :rules="rules">
         <el-form-item label="工程师名称" prop="fseName">
           <el-select
@@ -148,11 +153,20 @@ const tableRef = ref()
 const refresh = () => tableRef.value.refresh()
 
 const listData = params => {
-  delete params.options
+  // delete params.options
   params.assignStatus = true // TODO: 待指派
-  return req.get('/so/page', { params }).then(res => {
-    return { data: res.data }
-  })
+  return req
+    .get('/so/page', {
+      params: {
+        ...params,
+        orderType: params.options?.[0],
+        subType: params.options?.[1],
+        options: null,
+      },
+    })
+    .then(res => {
+      return { data: res.data }
+    })
 }
 
 // 工程师名称
@@ -189,16 +203,6 @@ const getMaintenanceType = async () => {
     const [tree] = utils.arr2tree(res.data, 'id', 'pid')
     options.value = tree
   })
-}
-
-const changeOptions = val => {
-  if (!val) {
-    tableRef.value.form.orderType = ''
-    tableRef.value.form.subType = ''
-  } else {
-    tableRef.value.form.orderType = val[0]
-    tableRef.value.form.subType = val[1]
-  }
 }
 
 const current = ref(null)

@@ -143,7 +143,6 @@
             :options="options"
             filterable
             clearable
-            @change="changeOptions"
             :props="{
               label: 'name',
               value: 'name',
@@ -155,7 +154,13 @@
     </CTable>
     <FormDialog :data="current" v-model="visible.form" @success="handleFormSuccess" :options="options"></FormDialog>
 
-    <el-dialog title="手工处理" width="30%" v-model="detailVisible" :close-on-click-modal="false">
+    <el-dialog
+      title="手工处理"
+      width="30%"
+      v-model="detailVisible"
+      :close-on-click-modal="false"
+      @close="handleCloseDetail"
+    >
       <el-form :model="formDetails" ref="formRefDetails" label-width="80" :rules="rules">
         <el-form-item label="处理方式" prop="status">
           <el-select
@@ -185,7 +190,7 @@
       </template>
     </el-dialog>
 
-    <el-dialog title="退回" width="30%" v-model="backVisible" :close-on-click-modal="false">
+    <el-dialog title="退回" width="30%" v-model="backVisible" :close-on-click-modal="false" @close="handleCloseBack">
       <el-form :model="formBack" ref="formRefBack" label-width="80" :rules="backRules">
         <el-form-item label="退回原因" prop="reason">
           <el-input type="textarea" v-model="formBack.reason" placeholder="请输入退回原因" clearable />
@@ -246,10 +251,19 @@ const refresh = () => tableRef.value.refresh()
 
 const listData = params => {
   // delete params.params
-  delete params.options
-  return req.get('/request/toBeCreatedList', { params }).then(res => {
-    return { data: res.data }
-  })
+  // delete params.options
+  return req
+    .get('/request/toBeCreatedList', {
+      params: {
+        ...params,
+        orderType: params.options?.[0],
+        subType: params.options?.[1],
+        options: null,
+      },
+    })
+    .then(res => {
+      return { data: res.data }
+    })
 }
 
 onMounted(() => {
@@ -261,15 +275,6 @@ const getMaintenanceType = async () => {
     const [tree] = utils.arr2tree(res.data, 'id', 'pid')
     options.value = tree
   })
-}
-const changeOptions = val => {
-  if (!val) {
-    tableRef.value.form.orderType = ''
-    tableRef.value.form.subType = ''
-  } else {
-    tableRef.value.form.orderType = val[0]
-    tableRef.value.form.subType = val[1]
-  }
 }
 
 const current = ref(null)

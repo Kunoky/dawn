@@ -65,6 +65,16 @@
           <el-button v-if="row.status !== 0 && row.status !== 12" type="primary" link @click="handleClose(row)">
             关闭
           </el-button>
+          <div>
+            <el-button
+              v-if="row.billingNo !== null && row.billingNo !== ''"
+              type="primary"
+              link
+              @click="handleBilling(row)"
+            >
+              修改Billing号
+            </el-button>
+          </div>
         </template>
       </el-table-column>
       <template #actions>
@@ -121,7 +131,6 @@
             :options="options"
             filterable
             clearable
-            @change="changeOptions"
             :props="{
               label: 'name',
               value: 'name',
@@ -203,6 +212,26 @@
         </span>
       </template>
     </el-dialog>
+
+    <el-dialog
+      title="修改Billing号"
+      width="30%"
+      v-model="detailVisibleb"
+      :close-on-click-modal="false"
+      @close="handleCloseDetailb"
+    >
+      <el-form :model="formDetailsb" ref="formRefDetailsb" label-width="80" :rules="rulesb">
+        <el-form-item label="Billing号" prop="billingNo">
+          <el-input v-model="formDetailsb.billingNo" placeholder="请输入Billing号" clearable />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="handleCloseDetailb">取消</el-button>
+          <el-button type="primary" @click="handleConfirmb">确定</el-button>
+        </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -218,10 +247,18 @@ const invoiceStatus = useDict('invoiceStatus')
 const tableRef = ref()
 
 const listData = params => {
-  delete params.options
-  return req.get('/so/page', { params }).then(res => {
-    return { data: res.data }
-  })
+  return req
+    .get('/so/page', {
+      params: {
+        ...params,
+        orderType: params.options?.[0],
+        subType: params.options?.[1],
+        options: null,
+      },
+    })
+    .then(res => {
+      return { data: res.data }
+    })
 }
 
 const refresh = () => tableRef.value.refresh()
@@ -236,15 +273,15 @@ const getMaintenanceType = async () => {
   })
 }
 // 获取so类型
-const changeOptions = val => {
-  if (!val) {
-    tableRef.value.form.orderType = ''
-    tableRef.value.form.subType = ''
-  } else {
-    tableRef.value.form.orderType = val[0]
-    tableRef.value.form.subType = val[1]
-  }
-}
+// const changeOptions = val => {
+//   if (!val) {
+//     tableRef.value.form.orderType = ''
+//     tableRef.value.form.subType = ''
+//   } else {
+//     tableRef.value.form.orderType = val[0]
+//     tableRef.value.form.subType = val[1]
+//   }
+// }
 const current = ref(null)
 const visible = reactive({
   form: false,
@@ -401,6 +438,43 @@ const handleConfirmSO = () => {
           }
         })
       }
+    }
+  })
+}
+
+// 修改billing
+const detailVisibleb = ref(false)
+const formRefDetailsb = ref(null)
+const formDetailsb = ref({
+  soNo: '',
+  billingNo: '',
+})
+const rulesb = {
+  billingNo: [{ required: true, message: 'Billing号不能为空', trigger: 'blur' }],
+}
+const handleBilling = row => {
+  formDetailsb.value.soNo = row.soNo
+  formDetailsb.value.billingNo = row.billingNo
+  detailVisibleb.value = true
+}
+const handleCloseDetailb = () => {
+  detailVisibleb.value = false
+  nextTick(() => {
+    formRefDetailsb.value.resetFields()
+  })
+}
+const handleConfirmb = () => {
+  formRefDetailsb.value.validate(valid => {
+    if (valid) {
+      req.put('/so/updateBillingNo', formDetailsb.value).then(({ code }) => {
+        if (code === 200) {
+          detailVisibleb.value = false
+          refresh()
+          nextTick(() => {
+            formRefDetailsb.value.resetFields()
+          })
+        }
+      })
     }
   })
 }

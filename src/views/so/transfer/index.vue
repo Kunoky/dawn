@@ -94,7 +94,6 @@
             :options="options"
             filterable
             clearable
-            @change="changeOptions"
             :props="{
               label: 'name',
               value: 'name',
@@ -144,7 +143,13 @@
       </template>
     </el-dialog>
 
-    <el-dialog title="拒绝" width="30%" v-model="detailVisible" :close-on-click-modal="false">
+    <el-dialog
+      title="拒绝"
+      width="30%"
+      v-model="detailVisible"
+      :close-on-click-modal="false"
+      @close="handleCloseDetail"
+    >
       <el-form :model="formDetails" ref="formRefDetails" label-width="80" :rules="rules">
         <el-form-item label="拒绝原因" prop="reason">
           <el-input type="textarea" v-model="formDetails.reason" placeholder="请输入拒绝原因" clearable />
@@ -168,11 +173,20 @@ const tableRef = ref()
 const refresh = () => tableRef.value.refresh()
 
 const listData = params => {
-  delete params.options
+  // delete params.options
   params.transferStatus = true // TODO: 待转移
-  return req.get('/so/page', { params }).then(res => {
-    return { data: res.data }
-  })
+  return req
+    .get('/so/page', {
+      params: {
+        ...params,
+        orderType: params.options?.[0],
+        subType: params.options?.[1],
+        options: null,
+      },
+    })
+    .then(res => {
+      return { data: res.data }
+    })
 }
 
 // 工程师名称
@@ -209,16 +223,6 @@ const getMaintenanceType = async () => {
     const [tree] = utils.arr2tree(res.data, 'id', 'pid')
     options.value = tree
   })
-}
-
-const changeOptions = val => {
-  if (!val) {
-    tableRef.value.form.orderType = ''
-    tableRef.value.form.subType = ''
-  } else {
-    tableRef.value.form.orderType = val[0]
-    tableRef.value.form.subType = val[1]
-  }
 }
 
 // 转移

@@ -98,7 +98,6 @@
             :options="options"
             filterable
             clearable
-            @change="changeOptions"
             :props="{
               label: 'name',
               value: 'name',
@@ -121,7 +120,13 @@
     </CTable>
     <CDetails :data="current" v-model="visible.formDialog" @success="handleFormSuccess"></CDetails>
 
-    <el-dialog title="添加Billing号" width="30%" v-model="detailVisible" :close-on-click-modal="false">
+    <el-dialog
+      title="添加Billing号"
+      width="30%"
+      v-model="detailVisible"
+      :close-on-click-modal="false"
+      @close="handleCloseDetail"
+    >
       <el-form :model="formDetails" ref="formRefDetails" label-width="80" :rules="rules">
         <el-form-item label="Billing号" prop="billingNo">
           <el-input v-model="formDetails.billingNo" placeholder="请输入Billing号" clearable />
@@ -135,7 +140,7 @@
       </template>
     </el-dialog>
 
-    <el-dialog title="退回" width="30%" v-model="backVisible" :close-on-click-modal="false">
+    <el-dialog title="退回" width="30%" v-model="backVisible" :close-on-click-modal="false" @close="handleCloseBack">
       <el-form :model="formBack" ref="formRefBack" label-width="120" :rules="backRules">
         <el-form-item label="Billing退回原因" prop="reason">
           <el-select
@@ -173,11 +178,20 @@ const repairSource = useDict('repairSource')
 const tableRef = ref()
 const refresh = () => tableRef.value.refresh()
 const listData = params => {
-  delete params.options
+  // delete params.options
   params.soStatus = 9 // TODO: SO状态 待billing
-  return req.get('/so/page', { params }).then(res => {
-    return { data: res.data }
-  })
+  return req
+    .get('/so/page', {
+      params: {
+        ...params,
+        orderType: params.options?.[0],
+        subType: params.options?.[1],
+        options: null,
+      },
+    })
+    .then(res => {
+      return { data: res.data }
+    })
 }
 
 // 工程师名称
@@ -214,16 +228,6 @@ const getMaintenanceType = async () => {
     const [tree] = utils.arr2tree(res.data, 'id', 'pid')
     options.value = tree
   })
-}
-
-const changeOptions = val => {
-  if (!val) {
-    tableRef.value.form.orderType = ''
-    tableRef.value.form.subType = ''
-  } else {
-    tableRef.value.form.orderType = val[0]
-    tableRef.value.form.subType = val[1]
-  }
 }
 
 const current = ref(null)

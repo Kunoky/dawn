@@ -24,7 +24,7 @@
             <el-button type="primary" link @click="handleDelivery(row)">确认发货</el-button>
           </div>
           <div>
-            <el-button type="primary" link @click="handleAdd(row)">新建移库单</el-button>
+            <el-button type="primary" link @click="handleAdd(row)">新增移库单</el-button>
           </div>
         </template>
       </el-table-column>
@@ -56,7 +56,7 @@
     <Details :data="current" v-model="visible.detail" @success="handleFormSuccess"></Details>
 
     <el-dialog
-      title="新建移库单"
+      title="新增移库单"
       width="30%"
       v-model="detailVisible"
       :close-on-click-modal="false"
@@ -71,6 +71,9 @@
         </el-form-item>
         <el-form-item label="快递单号" prop="expressNo">
           <el-input v-model="form.expressNo" placeholder="请输入快递单号" />
+        </el-form-item>
+        <el-form-item label="备注" prop="remark">
+          <el-input type="textarea" v-model="form.remark" placeholder="请输入备注" clearable />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -150,7 +153,7 @@ const handleDelivery = row => {
     })
 }
 
-// 新建移库单
+// 新增移库单
 const detailVisible = ref(false)
 const formRef = ref(null)
 const form = ref({})
@@ -158,6 +161,7 @@ const rules = {
   soNo: [{ required: true, message: 'SO订单编号不能为空', trigger: 'blur' }],
   transferVoucherNo: [{ required: true, message: '移库凭证号不能为空', trigger: 'blur' }],
   expressNo: [{ required: true, message: '快递单号不能为空', trigger: 'blur' }],
+  remark: [{ required: true, message: '备注不能为空', trigger: 'blur' }],
 }
 
 const handleAdd = row => {

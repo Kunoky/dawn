@@ -348,7 +348,7 @@
                 <el-table-column prop="subTotal" label="总价" />
               </el-table-column>
             </el-table>
-            <div v-if="item.signatureRecord !== null">
+            <div>
               <p style="font-size: 14px; font-weight: bold; margin: 20px 0 0">电子签名信息</p>
               <div class="img">
                 <div class="demo-image__preview">
@@ -578,7 +578,7 @@
               {{ payDemandNoteData.invoiceInfo?.remark }}
             </el-descriptions-item> -->
           </el-descriptions>
-          <div v-if="payDemandNoteData.signatureRecord !== null">
+          <div>
             <p style="font-size: 14px; font-weight: bold; margin: 20px 0 0">电子签名信息</p>
             <div class="img">
               <div class="demo-image__preview">

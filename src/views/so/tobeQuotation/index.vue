@@ -109,7 +109,6 @@
             :options="options"
             filterable
             clearable
-            @change="changeOptions"
             :props="{
               label: 'name',
               value: 'name',
@@ -140,7 +139,13 @@
     </CTable>
     <CDetails :data="current" v-model="visible.detail" @success="handleFormSuccess"></CDetails>
 
-    <el-dialog title="上传附件" width="30%" v-model="detailVisible" :close-on-click-modal="false">
+    <el-dialog
+      title="上传附件"
+      width="30%"
+      v-model="detailVisible"
+      :close-on-click-modal="false"
+      @close="handleCloseDetail"
+    >
       <el-form label-width="80" class="item">
         <el-form-item prop="attaIds">
           <CUpload
@@ -159,7 +164,13 @@
       </template>
     </el-dialog>
 
-    <el-dialog title="添加沟通记录" width="30%" v-model="addRecordVisible" :close-on-click-modal="false">
+    <el-dialog
+      title="添加沟通记录"
+      width="30%"
+      v-model="addRecordVisible"
+      :close-on-click-modal="false"
+      @close="handleCloseAddRecord"
+    >
       <el-form :model="addForm" ref="addRefForm" label-width="130" :rules="AddRules">
         <el-form-item label="沟通人" prop="custName">
           <el-input v-model="addForm.custName" placeholder="请输入沟通人" clearable />
@@ -212,11 +223,20 @@ const pendingStatus = useDict('pendingStatus')
 const regionalStatus = useDict('regionalStatus') // 区域
 
 const listData = params => {
-  delete params.options
+  // delete params.options
   params.soStatus = 4 // TODO:SO状态 报价待确认
-  return req.get('/so/page', { params }).then(res => {
-    return { data: res.data }
-  })
+  return req
+    .get('/so/page', {
+      params: {
+        ...params,
+        orderType: params.options?.[0],
+        subType: params.options?.[1],
+        options: null,
+      },
+    })
+    .then(res => {
+      return { data: res.data }
+    })
 }
 
 // 工程师名称
@@ -253,15 +273,6 @@ const getMaintenanceType = async () => {
     const [tree] = utils.arr2tree(res.data, 'id', 'pid')
     options.value = tree
   })
-}
-const changeOptions = val => {
-  if (!val) {
-    tableRef.value.form.orderType = ''
-    tableRef.value.form.subType = ''
-  } else {
-    tableRef.value.form.orderType = val[0]
-    tableRef.value.form.subType = val[1]
-  }
 }
 const current = ref(null)
 const visible = reactive({

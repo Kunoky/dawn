@@ -101,13 +101,7 @@
             </el-col>
             <el-col :span="12">
               <el-form-item label="发票类型" prop="invoiceType">
-                <el-select
-                  v-model="invoiceInfo.invoiceType"
-                  style="width: 100%"
-                  placeholder="请选择发票类型"
-                  clearable
-                  @change="invoiceTypeChange"
-                >
+                <el-select v-model="invoiceInfo.invoiceType" style="width: 100%" placeholder="请选择发票类型" clearable>
                   <el-option label="普票" :value="1" />
                   <el-option label="专票" :value="2" />
                 </el-select>
@@ -119,7 +113,7 @@
                 <el-button type="primary" @click="handelQuery" style="width: 17%">查询锁</el-button>
               </el-form-item>
             </el-col>
-            <el-col :span="12" v-if="invoiceInfo.invoiceType === 2">
+            <el-col :span="12">
               <el-form-item label="税号" prop="taxNo">
                 <el-input v-model="invoiceInfo.taxNo" placeholder="请输入税号" clearable />
               </el-form-item>
@@ -149,7 +143,7 @@
                 <el-input v-model="invoiceInfo.bankName" placeholder="请输入开户行" clearable />
               </el-form-item>
             </el-col>
-            <el-col :span="12" v-if="invoiceInfo.invoiceType === 2">
+            <el-col :span="12">
               <el-form-item label="开户行账号" prop="bankAccount">
                 <el-input v-model="invoiceInfo.bankAccount" placeholder="请输入开户行账号" clearable />
               </el-form-item>
@@ -485,13 +479,6 @@ const handelQuery = () => {
 
 const handleCloseBack = () => {
   backVisible.value = false
-}
-
-const invoiceTypeChange = val => {
-  if (val === 1) {
-    invoiceInfo.value.taxNo = ''
-    invoiceInfo.value.bankAccount = ''
-  }
 }
 </script>
 

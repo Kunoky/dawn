@@ -73,7 +73,6 @@
             :options="options"
             filterable
             clearable
-            @change="changeOptions"
             :props="{
               label: 'name',
               value: 'name',
@@ -88,7 +87,13 @@
     </CTable>
     <Detail :data="current" v-model="visible.detail" @success="handleFormSuccess" />
 
-    <el-dialog title="已处理" width="30%" v-model="detailVisible" :close-on-click-modal="false">
+    <el-dialog
+      title="已处理"
+      width="30%"
+      v-model="detailVisible"
+      :close-on-click-modal="false"
+      @close="handleCloseDetail"
+    >
       <el-form :model="formDetails" ref="formRefDetails" label-width="80" :rules="rules">
         <el-form-item label="处理方式" prop="processType">
           <el-select v-model="formDetails.processType" placeholder="请选择处理方式" style="width: 100%" clearable>
@@ -123,10 +128,19 @@ const tableRef = ref()
 const refresh = () => tableRef.value.refresh()
 
 const listData = params => {
-  delete params.options
-  return req.get('/lockSo/page', { params }).then(res => {
-    return { data: res.data }
-  })
+  // delete params.options
+  return req
+    .get('/lockSo/page', {
+      params: {
+        ...params,
+        orderType: params.options?.[0],
+        subType: params.options?.[1],
+        options: null,
+      },
+    })
+    .then(res => {
+      return { data: res.data }
+    })
 }
 
 // 工程师名称
@@ -165,15 +179,6 @@ const getMaintenanceType = async () => {
   })
 }
 
-const changeOptions = val => {
-  if (!val) {
-    tableRef.value.form.orderType = ''
-    tableRef.value.form.subType = ''
-  } else {
-    tableRef.value.form.orderType = val[0]
-    tableRef.value.form.subType = val[1]
-  }
-}
 const current = ref(null)
 const visible = reactive({
   detail: false,
