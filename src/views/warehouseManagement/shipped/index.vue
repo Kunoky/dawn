@@ -57,14 +57,14 @@
 
     <el-dialog
       title="新增移库单"
-      width="30%"
+      width="40%"
       v-model="detailVisible"
       :close-on-click-modal="false"
       @close="handleClose"
     >
-      <el-form :model="form" ref="formRef" label-width="155" :rules="rules">
+      <el-form :model="form" ref="formRef" label-width="100" :rules="rules">
         <el-form-item label="SO订单编号" prop="soNo">
-          <el-input v-model="form.soNo" placeholder="请输入SO订单编号" />
+          <el-input v-model="form.soNo" disabled placeholder="请输入SO订单编号" />
         </el-form-item>
         <el-form-item label="移库凭证号" prop="transferVoucherNo">
           <el-input v-model="form.transferVoucherNo" placeholder="请输入移库凭证号" />
@@ -161,7 +161,7 @@ const rules = {
   soNo: [{ required: true, message: 'SO订单编号不能为空', trigger: 'blur' }],
   transferVoucherNo: [{ required: true, message: '移库凭证号不能为空', trigger: 'blur' }],
   expressNo: [{ required: true, message: '快递单号不能为空', trigger: 'blur' }],
-  remark: [{ required: true, message: '备注不能为空', trigger: 'blur' }],
+  // remark: [{ required: true, message: '备注不能为空', trigger: 'blur' }],
 }
 
 const handleAdd = row => {

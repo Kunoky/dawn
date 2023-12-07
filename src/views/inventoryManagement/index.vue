@@ -2,7 +2,7 @@
   <div>
     <CTable :page-conf="{ action: '/st/list' }" ref="tableRef" id="inventoryManagement">
       <el-table-column label="SO订单编号" prop="soNo" />
-      <el-table-column label="移库凭证号" prop="transferVoucherNo" :show-overflow-tooltip="true" />
+      <el-table-column label="移库凭证号" prop="transferVoucherNo" />
       <el-table-column label="快递单号" prop="expressNo" />
       <el-table-column label="是否有异常" prop="exceptionFlag">
         <template #default="{ row }">
@@ -11,6 +11,7 @@
       </el-table-column>
       <el-table-column label="创建人" prop="createByName" />
       <el-table-column label="创建时间" prop="createTime" />
+      <!-- <el-table-column label="备注" prop="remark" :show-overflow-tooltip="true" width='150' /> -->
       <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="120">
         <template #default="{ row }">
           <el-button type="info" link @click="handleDeatil(row)">详情</el-button>
@@ -21,6 +22,10 @@
         <el-button type="primary" plain @click="handleAdd">
           <i-ep-plus />
           新增
+        </el-button>
+        <el-button type="warning" plain @click="handleTemplate">
+          <!-- <i-ep-plus /> -->
+          下载模板
         </el-button>
         <el-upload
           ref="upload"
@@ -87,6 +92,16 @@ const visible = reactive({
 const handleAdd = () => {
   current.value = null
   visible.form = true
+}
+
+// 下载模板
+const handleTemplate = () => {
+  const link = document.createElement('a')
+  link.href = import.meta.env.VITE_SERVER_PATH + '/file/template/移库单.xls'
+  link.setAttribute('download', '移库单模板') // 下载文件的名称及文件类型后缀
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link) // 下载完成移除元素
 }
 const handleDeatil = row => {
   current.value = row

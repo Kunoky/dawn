@@ -3,11 +3,11 @@
     :model-value="modelValue"
     @close="handleClose"
     :title="title"
-    width="50%"
+    :width="title !== '移库单详情' ? '40%' : '60%'"
     v-bind="$attrs"
     :close-on-click-modal="false"
   >
-    <el-form v-if="title !== '移库单详情'" :model="form" ref="formRef" label-width="155" :rules="rules">
+    <el-form v-if="title !== '移库单详情'" :model="form" ref="formRef" label-width="100" :rules="rules">
       <el-form-item label="SO订单编号" prop="soNo">
         <el-input v-model="form.soNo" placeholder="请输入SO订单编号" />
       </el-form-item>
@@ -83,7 +83,7 @@
         <el-table-column prop="createTime" label="上传时间" />
         <el-table-column label="操作" class-name="small-padding fixed-width" width="100">
           <template #default="{ row }">
-            <el-button type="primary" link @click="handleDownloadFile(row)">下载</el-button>
+            <el-button type="primary" link @click="handleDownloadFile(row)">查看</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -113,7 +113,7 @@ const rules = {
   soNo: [{ required: true, message: 'SO订单编号不能为空', trigger: 'blur' }],
   transferVoucherNo: [{ required: true, message: '移库凭证号不能为空', trigger: 'blur' }],
   expressNo: [{ required: true, message: '快递单号不能为空', trigger: 'blur' }],
-  remark: [{ required: true, message: '备注不能为空', trigger: 'blur' }],
+  // remark: [{ required: true, message: '备注不能为空', trigger: 'blur' }],
 }
 
 const formRef = ref()
@@ -152,24 +152,19 @@ const handleConfirm = () => {
         soNo: form.value.soNo,
         transferVoucherNo: form.value.transferVoucherNo,
         expressNo: form.value.expressNo,
+        remark: form.value.remark,
       }
       req.post('/st', data).then(() => {
+        emit('success')
         emit('update:modelValue', false)
       })
     }
   })
 }
 
-const attachmentType = useDict('attachmentType')
 const handleDownloadFile = row => {
-  let fileName = attachmentType.value.kv[row.type]
   if (row.path) {
-    const link = document.createElement('a')
-    link.href = import.meta.env.VITE_SERVER_PATH + row.path
-    link.setAttribute('download', fileName) // 下载文件的名称及文件类型后缀
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link) // 下载完成移除元素
+    window.open(import.meta.env.VITE_SERVER_PATH + row.path, '_blank')
   }
 }
 </script>
