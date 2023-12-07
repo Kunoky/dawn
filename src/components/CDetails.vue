@@ -396,7 +396,7 @@
               <el-table-column prop="createByName" label="上传人" />
               <el-table-column label="操作" class-name="small-padding fixed-width" width="100">
                 <template #default="{ row }">
-                  <el-button type="primary" link @click="handleDownloadFile(row)">下载</el-button>
+                  <el-button type="primary" link @click="handleDownloadFile(row)">查看</el-button>
                   <!-- <el-button type="primary" v-if="row.createBy === user.userId" link @click="handleDel(row)">
                     删除
                   </el-button> -->
@@ -800,16 +800,17 @@ const handleClose = () => {
 }
 
 const handleDownloadFile = row => {
-  let fileName = attachmentType.value.kv[row.type]
+  // let fileName = attachmentType.value.kv[row.type]
   if (row.path) {
-    const link = document.createElement('a')
-    //_blank表示在新窗口打开链接
-    // link.target = '_blank'
-    link.href = import.meta.env.VITE_SERVER_PATH + row.path
-    link.setAttribute('download', fileName) // 下载文件的名称及文件类型后缀
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link) // 下载完成移除元素
+    // const link = document.createElement('a')
+    // //_blank表示在新窗口打开链接
+    // // link.target = '_blank'
+    // link.href = import.meta.env.VITE_SERVER_PATH + row.path
+    // link.setAttribute('download', fileName) // 下载文件的名称及文件类型后缀
+    // document.body.appendChild(link)
+    // link.click()
+    // document.body.removeChild(link) // 下载完成移除元素
+    window.open(import.meta.env.VITE_SERVER_PATH + row.path, '_blank')
   }
 }
 // const handleDel = row => {

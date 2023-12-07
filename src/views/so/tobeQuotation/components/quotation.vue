@@ -4,7 +4,7 @@
       :model-value="modelValue"
       @close="handleClose"
       title="生成报价"
-      width="1000px"
+      width="1100px"
       v-bind="$attrs"
       :close-on-click-modal="false"
     >
@@ -35,8 +35,8 @@
           </template>
         </el-table-column>
         <el-table-column prop="unit" label="单位" />
-        <el-table-column prop="itemName" label="描述" width="100" :show-overflow-tooltip="true" />
-        <el-table-column prop="unitPrice" label="单价" width="130">
+        <el-table-column prop="itemName" label="描述" width="140" :show-overflow-tooltip="true" />
+        <el-table-column prop="unitPrice" label="单价" width="110">
           <template #default="{ row }">
             <div>{{ row.unitPrice }}</div>
           </template>
@@ -420,11 +420,11 @@ const handleConfirm = async () => {
     await formRef.value.validate()
     await formRef2.value.validate()
     const hasEmptyNum = tableData.value.some(
-      obj => obj.unitPrice === null || obj.unitPrice === '' || obj.quantity === null || obj.quantity === ''
+      obj => obj.includeTaxPrice === null || obj.includeTaxPrice === '' || obj.quantity === null || obj.quantity === ''
     )
     if (hasEmptyNum) {
       // 数组中存在空值，返回 false
-      ElMessage.error('单价与配件/Labor数量不能为空!')
+      ElMessage.error('含税价格与配件/Labor数量不能为空!')
     } else {
       // 数组中不存在空值，返回 true
       if (JSON.stringify(invoiceInfo.value) === '{}') {
