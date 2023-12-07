@@ -10,6 +10,7 @@ let handler = {
   },
   set: function (target, key, value) {
     document.cookie = key + '=' + value
+    return true
   },
 }
 let cookie = new Proxy({}, handler)
