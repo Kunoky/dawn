@@ -152,8 +152,10 @@ const handleConfirm = () => {
         soNo: form.value.soNo,
         transferVoucherNo: form.value.transferVoucherNo,
         expressNo: form.value.expressNo,
+        remark: form.value.remark,
       }
       req.post('/st', data).then(() => {
+        emit('success')
         emit('update:modelValue', false)
       })
     }
