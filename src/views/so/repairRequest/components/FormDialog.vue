@@ -303,7 +303,7 @@
       size="small"
       :data="tableData"
       style="width: 100%"
-      max-height="200px"
+      max-height="240px"
       :header-cell-style="{ background: '#f5f7fa' }"
     >
       <el-table-column prop="soNo" label="SO NO" width="100" fixed="left" />

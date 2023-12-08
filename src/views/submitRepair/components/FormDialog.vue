@@ -325,7 +325,13 @@
   </el-dialog>
 
   <el-dialog title="未关闭SO数量" width="50%" v-model="visibleSo" :close-on-click-modal="false">
-    <el-table size="small" :data="tableData" style="width: 100%" :header-cell-style="{ background: '#f5f7fa' }">
+    <el-table
+      size="small"
+      max-height="240px"
+      :data="tableData"
+      style="width: 100%"
+      :header-cell-style="{ background: '#f5f7fa' }"
+    >
       <el-table-column prop="soNo" label="SO NO" width="100" fixed="left" />
       <el-table-column label="维修内容" prop="content" width="120" :show-overflow-tooltip="true" />
       <el-table-column prop="custName" label="客户名称" width="150" />

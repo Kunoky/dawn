@@ -66,12 +66,12 @@
       <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="180">
         <template #default="{ row }">
           <div v-if="row.status !== 3">
-            <div>
+            <div v-if="row.status !== 8">
               <el-button type="info" link @click="handleEdit(row)">完善信息</el-button>
               <el-button type="danger" link @click="handleRPA(row)">RPA创建SO</el-button>
             </div>
             <div>
-              <el-button type="danger" link @click="handleBack(row)">退回</el-button>
+              <el-button v-if="row.status !== 8" type="danger" link @click="handleBack(row)">退回</el-button>
               <el-button type="danger" link @click="handleClose(row)">手工处理</el-button>
             </div>
           </div>
@@ -210,7 +210,7 @@
         size="small"
         :data="tableData"
         style="width: 100%; margin-bottom: 20px"
-        max-height="190"
+        max-height="240px"
         :header-cell-style="{ background: '#f5f7fa' }"
       >
         <el-table-column prop="soNo" label="SO NO" width="100" fixed="left" />
@@ -346,8 +346,10 @@ const handleBackConfirm = () => {
 // 手工处理
 const formRefDetails = ref(null)
 const detailVisible = ref(false)
+const temp = ref('')
 const handleClose = row => {
   formDetails.value.id = row.id
+  temp.value = row.soNo
   detailVisible.value = true
 }
 const formDetails = ref({
@@ -361,9 +363,12 @@ const rules = {
   soNo: [{ required: true, message: 'SO NO不能为空', trigger: 'blur' }],
   reason: [{ required: true, message: '关闭原因不能为空', trigger: 'blur' }],
 }
-const handelA = () => {
+const handelA = val => {
   formDetails.value.soNo = ''
   formDetails.value.reason = ''
+  if (val === '1') {
+    formDetails.value.soNo = temp.value
+  }
 }
 const handleCloseDetail = () => {
   detailVisible.value = false
