@@ -63,6 +63,13 @@
         </el-table-column>
       </el-table>
 
+      <el-descriptions class="margin-top" :column="3" border size="small">
+        <el-descriptions-item>
+          <template #label>备注</template>
+          {{ partsPlanRemark }}
+        </el-descriptions-item>
+      </el-descriptions>
+
       <div style="margin-top: 20px">
         <div style="display: flex; justify-content: space-between">
           <el-form ref="formRef" :model="formData" :rules="rules" label-width="112px">
@@ -221,6 +228,7 @@ const formData = ref({
 const formData2 = ref({
   discountRate: 100,
 })
+const partsPlanRemark = ref('')
 watch(
   () => props.modelValue,
   v => {
@@ -236,6 +244,7 @@ const { run: getPayDemandNote, loading: dataLoading } = useAsync(async () => {
     formData.value = res.data.quoteSummary === null ? formData.value : res.data.quoteSummary
     formData2.value = res.data.quoteSummary === null ? formData2.value : res.data.quoteSummary
     invoiceInfo.value = res.data.invoiceInfo === null ? invoiceInfo.value : res.data.invoiceInfo
+    partsPlanRemark.value = res.data.partsPlanRemark
     getTotal()
     return res
   })
@@ -487,5 +496,13 @@ const handleCloseBack = () => {
   display: flex;
   flex-flow: inherit;
   justify-content: space-between;
+}
+
+.margin-top {
+  margin-top: 20px;
+}
+
+.margin-top :deep(.el-descriptions__label) {
+  width: 130px;
 }
 </style>

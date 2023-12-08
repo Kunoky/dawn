@@ -151,6 +151,12 @@
               <el-table-column prop="quantity" label="配件/Labor数量" />
               <el-table-column prop="subTotal" label="总价" />
             </el-table>
+            <el-descriptions class="margin-top" :column="3" border size="small">
+              <el-descriptions-item>
+                <template #label>备注</template>
+                {{ form.partsPlanRemark }}
+              </el-descriptions-item>
+            </el-descriptions>
           </div>
         </el-collapse-item>
         <el-collapse-item v-if="quoteData !== null" title="报价信息" name="3">

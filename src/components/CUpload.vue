@@ -1,5 +1,6 @@
 <template>
   <el-upload
+    class="uploadList"
     ref="upload"
     :action="url + obj2params(params)"
     :headers="headers"
@@ -134,3 +135,9 @@ defineExpose({
   say,
 })
 </script>
+
+<style scoped>
+.uploadList :deep(.el-upload-list__item.is-success) .el-icon--close-tip {
+  display: none !important;
+}
+</style>
