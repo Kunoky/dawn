@@ -62,9 +62,19 @@
               {{ row.relationSo ? '解绑SO' : '关联SO' }}
             </el-button>
           </div>
-          <el-button v-if="row.status !== 0 && row.status !== 12" type="primary" link @click="handleClose(row)">
-            关闭
-          </el-button>
+          <div>
+            <el-button v-if="row.status !== 0 && row.status !== 12" type="primary" link @click="handleClose(row)">
+              关闭
+            </el-button>
+            <el-button
+              v-if="row.fseWorkCenter === null || row.fseWorkCenter === ''"
+              type="primary"
+              link
+              @click="handleDel(row)"
+            >
+              删除
+            </el-button>
+          </div>
           <div>
             <el-button
               v-if="row.billingNo !== null && row.billingNo !== ''"
@@ -78,8 +88,24 @@
         </template>
       </el-table-column>
       <template #actions>
+        <el-upload
+          ref="upload"
+          v-model:file-list="fileList"
+          class="upload-demo"
+          :action="url"
+          :show-file-list="false"
+          :headers="headers"
+          multiple
+          accept=".xls,.xlsx"
+          :on-error="handleError"
+          :before-upload="beforeUpload"
+          :on-success="handleSuccess"
+        >
+          <el-button type="warning" plain @click="handleTemplate">下载模板</el-button>
+          <el-button type="primary">导入</el-button>
+        </el-upload>
         <el-button type="primary" plain @click="handelFile">
-          <i-ep-bottom />
+          <!-- <i-ep-Download /> -->
           导出
         </el-button>
       </template>
@@ -236,6 +262,7 @@
 </template>
 
 <script setup>
+import { getToken } from '@/utils/auth'
 // 状态字典
 const soStatus = useDict('soStatus')
 const closedState = useDict('closedState')
@@ -324,8 +351,8 @@ const handleCloseDetail = () => {
   detailVisible.value = false
   nextTick(() => {
     formRefDetails.value.resetFields()
-    upload.value.say()
   })
+  upload.value.say()
 }
 const handleConfirm = () => {
   formRefDetails.value.validate(valid => {
@@ -478,4 +505,85 @@ const handleConfirmb = () => {
     }
   })
 }
+
+// 下载模板
+const handleTemplate = () => {
+  const link = document.createElement('a')
+  link.href = import.meta.env.VITE_SERVER_PATH + '/file/template/SO导入模板.xls'
+  link.setAttribute('download', 'SO导入模板') // 下载文件的名称及文件类型后缀
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link) // 下载完成移除元素
+}
+
+// 导入
+const headers = {
+  Authorization: 'Bearer ' + getToken(),
+  'Call-Source': 'WEB',
+  'Api-Version': 1.0,
+}
+
+const url = import.meta.env.VITE_SERVER_PATH + '/so/import'
+const fileList = ref([])
+function handleError(e) {
+  let msg = e.message
+  try {
+    msg = JSON.parse(e.message).msg
+  } catch (e) {
+    console.error(e)
+  }
+  ElMessage.error(msg)
+}
+
+function beforeUpload(file) {
+  const isLt2M = file.size / 1024 / 1024 < 10
+  const isStyle =
+    file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
+    // .excel
+    file.type === 'application/vnd.ms-excel'
+  // .xls
+  if (!isStyle) {
+    ElMessage.error('文件只能是 EXCEL/XLS格式!')
+    return false
+  }
+  if (!isLt2M) {
+    ElMessage.error('上传图片大小不能超过 10MB！')
+    return false
+  }
+  return isLt2M && isStyle
+}
+
+function handleSuccess(res) {
+  if (res.code === 200) {
+    ElMessage.success({
+      dangerouslyUseHTMLString: true,
+      message: `上传成功：${res.data.successCount}条<br/>上传失败：${res.data.failedCount}条`,
+    })
+    refresh()
+  }
+}
+
+//删除
+const handleDel = row => {
+  ElMessageBox.confirm('数据删除后无法恢复，确定继续？', '警告', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
+  })
+    .then(() => {
+      return req.delete(`/so/${row.soNo}`)
+    })
+    .then(({ code }) => {
+      if (code === 200) {
+        refresh()
+      }
+    })
+}
 </script>
+
+<style scoped>
+.upload-demo {
+  display: inline-block;
+  margin: 0 10px;
+}
+</style>
