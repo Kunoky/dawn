@@ -46,7 +46,9 @@
       <el-table-column label="payer客户名称" prop="payerName" width="160" />
       <el-table-column label="客户联系人" prop="name" width="100">
         <template #default="{ row }">
-          {{ row.name === null || row.name === '' ? row.lastName + row.firstName : row.name }}
+          <span v-if="row.name">{{ row.name }}</span>
+          <span v-else-if="row.lastName + row.firstName === 0"></span>
+          <span v-else>{{ row.lastName + row.firstName }}</span>
         </template>
       </el-table-column>
       <el-table-column label="客户联系人电话" prop="mobile" width="120" />

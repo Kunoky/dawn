@@ -37,7 +37,9 @@
       <el-table-column label="payer客户名称" prop="payerName" width="160" />
       <el-table-column label="客户联系人" prop="name" width="100">
         <template #default="{ row }">
-          {{ row.name === null || row.name === '' ? row.lastName + row.firstName : row.name }}
+          <span v-if="row.name">{{ row.name }}</span>
+          <span v-else-if="row.lastName + row.firstName === 0"></span>
+          <span v-else>{{ row.lastName + row.firstName }}</span>
         </template>
       </el-table-column>
       <el-table-column label="客户联系人电话" prop="mobile" width="120" />
@@ -88,6 +90,7 @@
         </template>
       </el-table-column>
       <template #actions>
+        <el-button type="warning" plain @click="handleTemplate">下载模板</el-button>
         <el-upload
           ref="upload"
           v-model:file-list="fileList"
@@ -101,13 +104,9 @@
           :before-upload="beforeUpload"
           :on-success="handleSuccess"
         >
-          <el-button type="warning" plain @click="handleTemplate">下载模板</el-button>
           <el-button type="primary">导入</el-button>
         </el-upload>
-        <el-button type="primary" plain @click="handelFile">
-          <!-- <i-ep-Download /> -->
-          导出
-        </el-button>
+        <el-button type="primary" plain @click="handelFile">导出</el-button>
       </template>
       <template #form="{ form }">
         <el-form-item label="SO NO" prop="soNo">

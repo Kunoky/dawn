@@ -46,7 +46,9 @@
       </el-descriptions-item>
       <el-descriptions-item>
         <template #label>客户联系人</template>
-        {{ form.name === null ? form.lastName + form.firstName : form.name }}
+        <span v-if="form.name">{{ form.name }}</span>
+        <span v-else-if="form.lastName + form.firstName === 0"></span>
+        <span v-else>{{ form.lastName + form.firstName }}</span>
       </el-descriptions-item>
       <el-descriptions-item>
         <template #label>客户联系人拼音</template>

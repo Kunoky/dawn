@@ -62,7 +62,9 @@
             </el-descriptions-item>
             <el-descriptions-item>
               <template #label>客户联系人</template>
-              {{ form.name === null ? form.lastName + form.firstName : form.name }}
+              <span v-if="form.name">{{ form.name }}</span>
+              <span v-else-if="form.lastName + form.firstName === 0"></span>
+              <span v-else>{{ form.lastName + form.firstName }}</span>
             </el-descriptions-item>
             <el-descriptions-item>
               <template #label>客户联系人拼音</template>
@@ -147,7 +149,14 @@
             >
               <el-table-column prop="materialNo" label="配件/Labor料号" />
               <el-table-column prop="unit" label="单位" />
-              <el-table-column prop="unitPrice" label="单价" />
+              <el-table-column prop="itemName" label="名称" width="220">
+                <template #default="{ row }">
+                  {{
+                    row.isBom ? 'BOM 大类：' + row.itemName : row.isBomItem ? 'BOM 子项：' + row.itemName : row.itemName
+                  }}
+                </template>
+              </el-table-column>
+              <el-table-column prop="unitPrice" label="单价" width="100" />
               <el-table-column prop="quantity" label="配件/Labor数量" />
               <el-table-column prop="subTotal" label="总价" />
             </el-table>
@@ -348,7 +357,7 @@
             >
               <el-table-column label="Labor消耗情况" align="center">
                 <el-table-column prop="materialNo" label="料号" />
-                <el-table-column prop="unit" label="单位" />
+                <!-- <el-table-column prop="unit" label="单位" /> -->
                 <el-table-column prop="unitPrice" label="单价" />
                 <el-table-column prop="quantity" label="实际消耗数量" />
                 <el-table-column prop="subTotal" label="总价" />
