@@ -324,6 +324,10 @@
                 <template #label>维修描述</template>
                 {{ item.content }}
               </el-descriptions-item>
+              <el-descriptions-item>
+                <template #label>联系人</template>
+                {{ item.contactName }}
+              </el-descriptions-item>
               <el-descriptions-item :span="2">
                 <template #label>是否草稿标识</template>
                 {{ item.draftFlag ? '是' : '否' }}
