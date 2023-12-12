@@ -150,14 +150,8 @@
     >
       <el-form label-width="80" class="item">
         <el-form-item prop="attaIds">
-          <CUpload
-            style="width: 100%"
-            :params="params"
-            v-model="list"
-            :limit="1"
-            accept="image/png,image/jpg,image/jpeg,application/pdf"
-            ref="upload"
-          ></CUpload>
+          <CUpload style="width: 100%" :params="params" v-model="list" :limit="1" ref="upload"></CUpload>
+          <!-- accept="image/png,image/jpg,image/jpeg,application/pdf" -->
         </el-form-item>
       </el-form>
       <template #footer>
@@ -323,7 +317,9 @@ const handleUploadFile = row => {
 const upload = ref()
 const handleCloseDetail = () => {
   detailVisible.value = false
-  upload.value.say()
+  if (list.value.length > 0) {
+    upload.value.say()
+  }
 }
 const handleFlile = () => {
   let data = list.value[0].response.data
@@ -333,7 +329,9 @@ const handleFlile = () => {
       refresh()
     }
     detailVisible.value = false
-    upload.value.say()
+    if (list.value.length > 0) {
+      upload.value.say()
+    }
   })
 }
 

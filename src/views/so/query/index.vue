@@ -17,7 +17,7 @@
       </el-table-column>
       <el-table-column label="仪器地址" prop="equipAddress" width="130" />
       <el-table-column label="创建时间" prop="createTime" width="130" />
-      <el-table-column label="状态" prop="status" width="150" style="color: #909399">
+      <el-table-column label="状态" prop="status" width="150" style="color: #909399" :show-overflow-tooltip="true">
         <template #default="{ row }">
           <!-- TODO SO状态 -->
           <span v-if="row.status === 4">
@@ -27,6 +27,11 @@
           <span v-else-if="row.status === 8">
             {{ soStatus.kv[row.status] }}
             <a v-if="row.invoicePending">/ {{ invoiceStatus.kv[row.invoicePending] }}</a>
+          </span>
+          <span v-else-if="row.status === 12">
+            {{ soStatus.kv[row.status] }}
+            <a v-if="row.closeStatus === 9">/ {{ row.closeReason }}</a>
+            <a v-else>/ {{ closedState.kv[row.closeStatus] }}</a>
           </span>
           <span v-else class="cs-p">{{ soStatus.kv[row.status] }}</span>
         </template>
@@ -190,17 +195,12 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item v-if="formDetails.closeStatus === '9'" label="其他原因" prop="reason">
+        <el-form-item v-if="formDetails.closeStatus === 9" label="其他原因" prop="reason">
           <el-input type="textarea" v-model="formDetails.reason" placeholder="请输入其他原因" clearable />
         </el-form-item>
         <el-form-item label="上传附件" prop="attaIds">
-          <CUpload
-            style="width: 100%"
-            :params="params"
-            v-model="attachmentsList"
-            accept="image/png,image/jpg,image/jpeg,application/pdf"
-            ref="upload"
-          ></CUpload>
+          <CUpload style="width: 100%" :params="params" v-model="attachmentsList" ref="upload"></CUpload>
+          <!-- accept="image/png,image/jpg,image/jpeg,application/pdf" -->
         </el-form-item>
       </el-form>
       <template #footer>
@@ -351,12 +351,14 @@ const handleCloseDetail = () => {
   nextTick(() => {
     formRefDetails.value.resetFields()
   })
-  upload.value.say()
+  if (attachmentsList.value.length > 0) {
+    upload.value.say()
+  }
 }
 const handleConfirm = () => {
   formRefDetails.value.validate(valid => {
     if (valid) {
-      if (formDetails.value.closeStatus !== '9') {
+      if (formDetails.value.closeStatus !== 9) {
         delete formDetails.value.reason
       }
       req.put('/so/close', formDetails.value).then(() => {
@@ -364,8 +366,10 @@ const handleConfirm = () => {
         refresh()
         nextTick(() => {
           formRefDetails.value.resetFields()
-          upload.value.say()
         })
+        if (attachmentsList.value.length > 0) {
+          upload.value.say()
+        }
       })
     }
   })

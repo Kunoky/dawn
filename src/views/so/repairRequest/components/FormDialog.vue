@@ -279,13 +279,8 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="上传附件" prop="attaIds" class="CUpload">
-            <CUpload
-              style="width: 60%"
-              :params="params"
-              v-model="attachmentsList"
-              accept="image/png,image/jpg,image/jpeg,application/pdf"
-              ref="upload"
-            ></CUpload>
+            <CUpload style="width: 60%" :params="params" v-model="attachmentsList" ref="upload"></CUpload>
+            <!-- accept="image/png,image/jpg,image/jpeg,application/pdf" -->
           </el-form-item>
         </el-col>
       </el-row>
@@ -658,7 +653,9 @@ const upload = ref()
 // 取消
 const handleClose = () => {
   emit('update:modelValue', false)
-  upload.value.say()
+  if (attachmentsList.value.length > 0) {
+    upload.value.say()
+  }
 }
 const handleConfirm = () => {
   formRef.value.validate(valid => {
@@ -674,7 +671,9 @@ const handleConfirm = () => {
           if (code === 200) {
             emit('success')
             emit('update:modelValue', false)
-            upload.value.say()
+            if (attachmentsList.value.length > 0) {
+              upload.value.say()
+            }
           }
         })
         .finally(() => {

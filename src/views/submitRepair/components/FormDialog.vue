@@ -305,13 +305,8 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="上传附件" prop="attaIds" class="CUpload">
-            <CUpload
-              style="width: 60%"
-              :params="params"
-              v-model="attachmentsList"
-              accept="image/png,image/jpg,image/jpeg,application/pdf"
-              ref="upload"
-            ></CUpload>
+            <CUpload style="width: 60%" :params="params" v-model="attachmentsList" ref="upload"></CUpload>
+            <!-- accept="image/png,image/jpg,image/jpeg,application/pdf" -->
           </el-form-item>
         </el-col>
       </el-row>
@@ -689,14 +684,13 @@ const params = {
 const upload = ref()
 const handleClose = () => {
   emit('update:modelValue', false)
-  upload.value.say()
+  if (attachmentsList.value.length > 0) {
+    upload.value.say()
+  }
 }
 const handleConfirm = () => {
   formRef.value.validate(valid => {
     if (valid) {
-      // delete form.value.blockFlag
-      // delete form.value.fseStorageLocation
-      // delete form.value.dataOptions
       form.value.attaIds = attachmentsList.value.map(item => item.id)
       if (staging.value.aaa !== form.value.custDesc || staging.value.bbb !== form.value.payerName) {
         form.value.isConsistentSap = false
@@ -716,7 +710,9 @@ const handleConfirm = () => {
           if (code === 200) {
             emit('success')
             emit('update:modelValue', false)
-            upload.value.say()
+            if (attachmentsList.value.length > 0) {
+              upload.value.say()
+            }
           }
         })
         .finally(() => {

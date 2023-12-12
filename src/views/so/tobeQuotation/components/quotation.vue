@@ -198,7 +198,7 @@
 <script setup>
 import Big from 'big.js'
 const emit = defineEmits(['update:modelValue', 'success'])
-Big.RM = 0
+// Big.RM = 0
 const props = defineProps({
   data: Object,
   modelValue: Boolean,
@@ -382,6 +382,14 @@ const handelEditDiscount = () => {
   })
 }
 
+// 计算小数点的第一位≤4取整 ≥5 整数+1 取整
+function round(value) {
+  let base_int = Number(value.toString().split('.')[0])
+  if (base_int + 0.5 > value) {
+    return base_int
+  }
+  return base_int + 1
+}
 //计算折扣率
 const handelEditTotal = () => {
   formRef.value.validate(valid => {
@@ -389,8 +397,11 @@ const handelEditTotal = () => {
       if (formData.value.finalPrice !== '' || formData.value.totalVa !== undefined) {
         const x = new Big(formData.value.finalPrice)
         const y = new Big(formData.value.quotePrice)
+        let discountRate = ref(null)
+        // formData2.value.discountRate = Math.floor(x.div(y).times(100))
         // (最终价格 / 总金额) * 100
-        formData2.value.discountRate = Math.floor(x.div(y).times(100))
+        discountRate.value = x.div(y).times(100)
+        formData2.value.discountRate = round(discountRate.value)
       }
     }
   })
@@ -402,13 +413,18 @@ const handelPrice = row => {
   }
   const y = new Big(row.includeTaxPrice)
   const x = new Big(1.13)
-  row.unitPrice = y.div(x).toFixed(2)
+  const temp = ref(null)
+  temp.value = y.div(x)
+  row.unitPrice = getFinalPrice(temp.value)
   handelCalculateTotalPrice(row)
 }
 const handelCalculateTotalPrice = row => {
   const x = new Big(row.includeTaxPrice)
   const y = new Big(row.quantity)
-  row.subTotal = x.times(y).toFixed(2)
+  // row.subTotal = x.times(y).toFixed(2)
+  const sss = ref(null)
+  sss.value = x.times(y)
+  row.subTotal = getFinalPrice(sss.value)
   getTotal()
 }
 

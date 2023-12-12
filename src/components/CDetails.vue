@@ -527,8 +527,8 @@
                 <el-table-column prop="quotePrice" label="配件总价" />
                 <el-table-column prop="finalPrice" label="最终价格" />
                 <el-table-column prop="discountRate" label="折扣率" />
-                <el-table-column prop="quoteName" label="报价人" />
-                <el-table-column prop="quoteTime" label="报价时间" />
+                <el-table-column prop="quoteName" label="申请人" />
+                <el-table-column prop="quoteTime" label="申请时间" />
                 <!-- <el-table-column prop="approveStatus" label="审批状态">
                   <template #default="{ row }">
                     <span>
