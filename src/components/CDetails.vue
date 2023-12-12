@@ -136,6 +136,52 @@
             </el-descriptions-item>
           </el-descriptions>
         </el-collapse-item>
+        <el-collapse-item v-if="telSolveList !== null && telSolveList.length > 0" title="电话解决记录" name="10">
+          <div v-for="(item, index) in telSolveList" :key="index" class="workLogList">
+            <el-descriptions class="margin-top" :column="3" border size="small">
+              <el-descriptions-item>
+                <template #label>开始时间</template>
+                {{ item.startTime }}
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template #label>结束时间</template>
+                {{ item.endTime }}
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template #label>服务结果</template>
+                {{ complete.kv[item.status] }}
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template #label>工作内容</template>
+                {{ item.content }}
+              </el-descriptions-item>
+            </el-descriptions>
+            <el-table
+              size="small"
+              :data="[item?.lockLabor]"
+              style="width: 100%; margin-bottom: 20px"
+              max-height="200"
+              :header-cell-style="{ background: '#f5f7fa' }"
+            >
+              <el-table-column label="工时" align="center">
+                <el-table-column prop="aty" label="工时种类" />
+                <el-table-column prop="materialNo" label="物料号" />
+                <el-table-column prop="itemName" label="描述" />
+                <el-table-column prop="itemName" label="Labor类型">
+                  <template #default="{ row }">
+                    {{ laborType.kv[row.laborType] }}
+                  </template>
+                </el-table-column>
+                <el-table-column prop="workHour" label="工作时长(小时)" />
+                <el-table-column prop="lockFlag" label="Lock状态">
+                  <template #default="{ row }">
+                    {{ lockStatus.kv[row.lockFlag] }}
+                  </template>
+                </el-table-column>
+              </el-table-column>
+            </el-table>
+          </div>
+        </el-collapse-item>
         <el-collapse-item v-if="itemList !== null && itemList.length > 0" title="Parts Plan & Labor" name="2">
           <div>
             <el-table
@@ -742,6 +788,7 @@ const pendingStatus = useDict('pendingStatus')
 const regionalStatus = useDict('regionalStatus') // 区域
 const lockStatus = useDict('lockStatus') // 区域
 const bool = useDict('bool')
+const complete = useDict('complete')
 
 const activeNames = ref(['1'])
 const form = ref({})
@@ -753,6 +800,7 @@ const attachmentList = ref([])
 const workLogList = ref([])
 const payDemandNoteData = ref({})
 const invoiceInfo = ref({})
+const telSolveList = ref([])
 const url = import.meta.env.VITE_SERVER_PATH
 
 watch(
@@ -779,6 +827,7 @@ const { run: getInfo, loading: dataLoading } = useAsync(
       workLogList.value = res.data.workLogList
       payDemandNoteData.value = res.data.payDemandNoteData
       invoiceInfo.value = res.data.invoiceInfo
+      telSolveList.value = res.data.telSolveList
     },
   }
 )

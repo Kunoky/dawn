@@ -12,7 +12,7 @@
       <el-table-column label="子项物料号" prop="component" width="110" />
       <el-table-column label="描述" prop="description" />
       <el-table-column label="数量" prop="quantity" width="80" />
-      <el-table-column label="创建人" prop="createBy" width="80" />
+      <el-table-column label="创建人" prop="createByName" width="80" />
       <el-table-column label="创建时间" prop="createTime" width="160" />
       <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="100">
         <template #default="{ row }">
