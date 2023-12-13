@@ -19,7 +19,7 @@
         <template #default="{ row }">
           <span class="cs-p">
             {{ soStatus.kv[row.status] }}
-            <a v-if="row.quoteConfirmPendin">/ {{ pendingStatus.kv[row.quoteConfirmPending] }}</a>
+            <a v-if="row.quoteConfirmPending">/ {{ pendingStatus.kv[row.quoteConfirmPending] }}</a>
           </span>
         </template>
       </el-table-column>
