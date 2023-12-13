@@ -18,7 +18,7 @@
       </el-table-column>
       <el-table-column label="仪器地址" prop="equipAddress" width="130" />
       <el-table-column label="创建时间" prop="createTime" width="130" />
-      <el-table-column label="状态" prop="status" width="150" style="color: #909399" :show-overflow-tooltip="true">
+      <el-table-column label="状态" prop="status" width="150" style="color: #909399">
         <template #default="{ row }">
           <!-- TODO SO状态 -->
           <span v-if="row.status === 4">
@@ -31,8 +31,7 @@
           </span>
           <span v-else-if="row.status === 12">
             {{ soStatus.kv[row.status] }}
-            <a v-if="row.closeStatus === 9">/ {{ row.closeReason }}</a>
-            <a v-else>/ {{ closedState.kv[row.closeStatus] }}</a>
+            <a v-if="row.closeStatus">/ {{ closedState.kv[row.closeStatus] }}</a>
           </span>
           <span v-else class="cs-p">{{ soStatus.kv[row.status] }}</span>
         </template>
