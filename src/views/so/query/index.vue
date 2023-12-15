@@ -6,8 +6,8 @@
       }"
       ref="tableRef"
       id="query"
+      :toolStatus="{ download: 0 }"
     >
-      <!-- :toolStatus="{download:0}" -->
       <el-table-column label="SO NO" prop="soNo" width="130" />
       <el-table-column label="维修任务编号" prop="soTaskNo" width="100" />
       <el-table-column label="设备序列号" prop="serialNo" width="140" />

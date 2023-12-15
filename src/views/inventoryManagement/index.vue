@@ -11,10 +11,12 @@
       </el-table-column>
       <el-table-column label="创建人" prop="createByName" />
       <el-table-column label="创建时间" prop="createTime" />
-      <!-- <el-table-column label="备注" prop="remark" :show-overflow-tooltip="true" width='150' /> -->
-      <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="120">
+      <el-table-column label="操作" fixed="right" class-name="small-padding fixed-width" width="100">
         <template #default="{ row }">
-          <el-button type="info" link @click="handleDeatil(row)">详情</el-button>
+          <div>
+            <el-button type="primary" link @click="handleModify(row)">修改</el-button>
+            <el-button type="info" link @click="handleDeatil(row)">详情</el-button>
+          </div>
           <el-button type="primary" link @click="handleDel(row)">删除</el-button>
         </template>
       </el-table-column>
@@ -23,10 +25,7 @@
           <i-ep-plus />
           新增
         </el-button>
-        <el-button type="warning" plain @click="handleTemplate">
-          <!-- <i-ep-plus /> -->
-          下载模板
-        </el-button>
+        <el-button type="warning" plain @click="handleTemplate">下载模板</el-button>
         <el-upload
           ref="upload"
           v-model:file-list="fileList"
@@ -72,20 +71,24 @@
       </template>
     </CTable>
     <FormDialog :data="current" v-model="visible.form" @success="handleFormSuccess"></FormDialog>
+    <Detali :data="current1" v-model="visible.form1"></Detali>
   </div>
 </template>
 
 <script setup>
 import { getToken } from '@/utils/auth'
 import FormDialog from './components/FormDialog.vue'
+import Detali from './components/Detail.vue'
 const bool = useDict('bool')
 const i18n = useI18n()
 const tableRef = ref()
 const refresh = () => tableRef.value.refresh()
 
 const current = ref(null)
+const current1 = ref(null)
 const visible = reactive({
   form: false,
+  form1: false,
   permission: false,
 })
 
@@ -104,6 +107,10 @@ const handleTemplate = () => {
   document.body.removeChild(link) // 下载完成移除元素
 }
 const handleDeatil = row => {
+  current1.value = row
+  visible.form1 = true
+}
+const handleModify = row => {
   current.value = row
   visible.form = true
 }
@@ -122,6 +129,7 @@ const handleDel = row => {
         refresh()
       }
     })
+    .catch(() => {})
 }
 const handleFormSuccess = () => {
   refresh()

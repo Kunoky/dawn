@@ -3,11 +3,11 @@
     :model-value="modelValue"
     @close="handleClose"
     :title="title"
-    width="60%"
+    width="50%"
     v-bind="$attrs"
     :close-on-click-modal="false"
   >
-    <el-form :model="form" ref="formRef" label-width="155" :rules="rules">
+    <el-form :model="form" ref="formRef" label-width="100" :rules="rules">
       <el-row>
         <el-col :span="12">
           <el-form-item label="客户编码" prop="customerId">
@@ -24,7 +24,7 @@
             <el-input v-model="form.blockFlag" placeholder="请输入客户锁信息" clearable />
           </el-form-item>
         </el-col>
-        <el-col :span="12">
+        <!-- <el-col :span="12">
           <el-form-item label="创建来源" prop="creator">
             <el-input v-model="form.creator" placeholder="请输入创建人" clearable />
           </el-form-item>
@@ -45,7 +45,7 @@
           <el-form-item label="分组" prop="group" class="data-box">
             <el-input-number v-model="form.group" :min="1" style="width: 100%" />
           </el-form-item>
-        </el-col>
+        </el-col> -->
         <el-col :span="12">
           <el-form-item label="名称一" prop="name">
             <el-input v-model="form.name" placeholder="请输入名称一" clearable />
@@ -56,7 +56,7 @@
             <el-input v-model="form.name2" placeholder="请输入名称二" clearable />
           </el-form-item>
         </el-col>
-        <el-col :span="12">
+        <!-- <el-col :span="12">
           <el-form-item label="名称三" prop="name3">
             <el-input v-model="form.name3" placeholder="请输入名称三" clearable />
           </el-form-item>
@@ -111,7 +111,7 @@
           <el-form-item label="电话" prop="tel">
             <el-input v-model="form.tel" placeholder="请输入电话" clearable />
           </el-form-item>
-        </el-col>
+        </el-col> -->
       </el-row>
     </el-form>
     <template #footer>

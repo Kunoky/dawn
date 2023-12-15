@@ -79,6 +79,9 @@
           </div>
         </template>
       </el-table-column>
+      <template #actions>
+        <!-- <el-button type="primary" plain @click="handelFile">导出</el-button> -->
+      </template>
       <template #form="{ form }">
         <el-form-item label="设备序列号" prop="serialNo">
           <el-input v-model="form.serialNo" placeholder="请输入设备型号" clearable />
@@ -442,4 +445,20 @@ const handleNum = row => {
 const handleCloseSo = () => {
   visibleSo.value = false
 }
+
+// const handelFile = () => {
+//   req.post('/so/export', tableRef.value.form, { responseType: 'blob' }).then(response => {
+//     if (response) {
+//       const elink = document.createElement('a')
+//       elink.style.display = 'none'
+//       const blob = new Blob([response], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+//       const blobUrl = URL.createObjectURL(blob)
+//       elink.href = blobUrl
+//       elink.download = 'so数据'
+//       document.body.appendChild(elink)
+//       elink.click()
+//       document.body.removeChild(elink)
+//     }
+//   })
+// }
 </script>

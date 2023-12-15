@@ -760,7 +760,7 @@
       <el-table-column width="100px" prop="customerId" label="客户编码" />
       <el-table-column prop="blockFlag" label="客户锁信息" />
       <el-table-column prop="name" width="250px" label="客户名称" />
-      <el-table-column width="100px" prop="city" label="城市" />
+      <!-- <el-table-column width="100px" prop="city" label="城市" /> -->
     </el-table>
     <template #footer>
       <span class="dialog-footer">

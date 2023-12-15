@@ -6,6 +6,7 @@
       }"
       ref="tableRef"
       id="tobeQuotation"
+      :toolStatus="{ download: 0 }"
     >
       <el-table-column label="SO NO" prop="soNo" width="130" />
       <el-table-column label="设备序列号" prop="serialNo" width="140" />
@@ -63,6 +64,9 @@
           </div>
         </template>
       </el-table-column>
+      <template #actions>
+        <el-button type="primary" plain @click="handelFile">导出</el-button>
+      </template>
       <template #form="{ form }">
         <el-form-item label="SO NO" prop="soNo">
           <el-input v-model="form.soNo" placeholder="请输入SO NO" clearable />
@@ -385,6 +389,25 @@ const handleQuotation = row => {
 }
 const handleQuotationSuccess = () => {
   refresh()
+}
+
+// 导出
+const handelFile = () => {
+  let data = tableRef.value.form
+  data.soStatus = [4]
+  req.post('/so/export', data, { responseType: 'blob' }).then(response => {
+    if (response) {
+      const elink = document.createElement('a')
+      elink.style.display = 'none'
+      const blob = new Blob([response], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+      const blobUrl = URL.createObjectURL(blob)
+      elink.href = blobUrl
+      elink.download = 'so数据'
+      document.body.appendChild(elink)
+      elink.click()
+      document.body.removeChild(elink)
+    }
+  })
 }
 </script>
 <style scoped>
