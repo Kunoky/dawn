@@ -555,7 +555,7 @@ const exportData = () => {
           getText.map(j => {
             let v = j(i)
             if (/,/.test(v)) {
-              v = JSON.stringify(v)
+              v = '"' + v + '"'
             }
             return v
           })
