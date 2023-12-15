@@ -551,7 +551,15 @@ const exportData = () => {
         }
       })
       res.forEach(i => {
-        csvData.push(getText.map(j => j(i)))
+        csvData.push(
+          getText.map(j => {
+            let v = j(i)
+            if (/,/.test(v)) {
+              v = '"' + v + '"'
+            }
+            return v
+          })
+        )
       })
       utils.exportCSV(csvData, props.title)
       visible.export = false
