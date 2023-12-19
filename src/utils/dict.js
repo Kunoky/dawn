@@ -2,6 +2,21 @@ export const source = ref([])
 
 export const dict = ref({})
 
+export const _dict = new Proxy(
+  {},
+  {
+    get(t, k) {
+      return (
+        dict.value[k] || {
+          kv: {},
+          ko: {},
+          options: [],
+        }
+      )
+    },
+  }
+)
+
 const loading = ref(false)
 export async function init() {
   if (loading.value) return
