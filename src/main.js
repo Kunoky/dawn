@@ -3,13 +3,13 @@ import router from './router'
 import { i18n } from './i18nSetup'
 import { createPinia } from 'pinia'
 import App from './App.vue'
-// import { init as initDict } from './utils/dict'
+import { _dict, init as initDict } from './utils/dict'
 import Permission from '@/plugins/permission'
 import { useUserStore } from './store/user'
 import 'oocss/src/index.css'
 import './styles/index.scss'
 
-// initDict()
+initDict()
 
 const pinia = createPinia()
 const app = createApp(App)
@@ -23,6 +23,7 @@ app.config.errorHandler = err => {
 
 app.config.globalProperties.$baseUrl = import.meta.env.VITE_SERVER_PATH
 app.config.globalProperties.$utils = utils
+app.config.globalProperties.$dict = _dict
 
 // router.beforeEach中权限判断需要在userStore初始化后
 const userStore = useUserStore()
