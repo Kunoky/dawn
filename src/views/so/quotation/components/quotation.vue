@@ -444,39 +444,44 @@ const handleConfirm = async () => {
   try {
     await formRef.value.validate()
     await formRef2.value.validate()
-    const hasEmptyNum = tableData.value.some(
-      obj => obj.includeTaxPrice === null || obj.includeTaxPrice === '' || obj.quantity === null || obj.quantity === ''
-    )
-    if (hasEmptyNum) {
-      // 数组中存在空值，返回 false
-      ElMessage.error('含税价格与配件/Labor数量不能为空!')
+    if (tableData.value.length === 0) {
+      ElMessage.error('报价列表不能为空!')
     } else {
-      // 数组中不存在空值，返回 true
-      if (JSON.stringify(invoiceInfo.value) === '{}') {
-        invoiceInfo.value = {}
+      const hasEmptyNum = tableData.value.some(
+        obj =>
+          obj.includeTaxPrice === null || obj.includeTaxPrice === '' || obj.quantity === null || obj.quantity === ''
+      )
+      if (hasEmptyNum) {
+        // 数组中存在空值，返回 false
+        ElMessage.error('含税价格与配件/Labor数量不能为空!')
       } else {
-        invoiceInfo.value.soNo = props.data.soNo
-        invoiceInfo.value.type = 1
-      }
-      formData.value.soNo = props.data.soNo
-      formData.value.discountRate = formData2.value.discountRate
-      let quoteDetailList = [...tableDataCopy.value, ...tableData.value]
-      let data = {
-        quoteDetailList: quoteDetailList.filter(item => item.id || !item.delFlag),
-        invoiceInfo: invoiceInfo.value,
-        quoteSummary: formData.value,
-      }
-      // console.log(data);
-      req.post('/quote/save', data).then(res => {
-        if (res.data === '') {
-          emit('success')
-          emit('update:modelValue', false)
+        // 数组中不存在空值，返回 true
+        if (JSON.stringify(invoiceInfo.value) === '{}') {
+          invoiceInfo.value = {}
         } else {
-          emit('success')
-          emit('update:modelValue', false)
-          window.open(import.meta.env.VITE_SERVER_PATH + res.data, '_blank')
+          invoiceInfo.value.soNo = props.data.soNo
+          invoiceInfo.value.type = 1
         }
-      })
+        formData.value.soNo = props.data.soNo
+        formData.value.discountRate = formData2.value.discountRate
+        let quoteDetailList = [...tableDataCopy.value, ...tableData.value]
+        let data = {
+          quoteDetailList: quoteDetailList.filter(item => item.id || !item.delFlag),
+          invoiceInfo: invoiceInfo.value,
+          quoteSummary: formData.value,
+        }
+        // console.log(data);
+        req.post('/quote/save', data).then(res => {
+          if (res.data === '') {
+            emit('success')
+            emit('update:modelValue', false)
+          } else {
+            emit('success')
+            emit('update:modelValue', false)
+            window.open(import.meta.env.VITE_SERVER_PATH + res.data, '_blank')
+          }
+        })
+      }
     }
   } catch (error) {
     console.error('表单校验失败', error)
