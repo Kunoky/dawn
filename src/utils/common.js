@@ -255,7 +255,105 @@ export function copy(txt) {
     )
   }
 }
+
+/**
+ * 判断时间是否是过去的
+ * @param {String | Date} date
+ * @returns {Boolean}
+ */
+export function isBeforeNow(date) {
+  if (typeof date === 'string') date = new Date(date)
+  if (date <= Date.now()) return true
+  return false
+}
+
+/**
+ * @description base64转File
+ * @author kuroky <1048413674@qq.com>
+ * @date 2023-11-23
+ * @param {String} base64
+ * @param {String} name
+ * @returns {File}
+ */
+export function base642file(base64, name = Date.now()) {
+  const [h, b] = base64.split(',')
+  const type = h.match(/^data:([^;]+);base64/)[1]
+  const buf = atob(b)
+  let len = buf.length
+  const u8arr = new Uint8Array(len)
+  while (len--) {
+    u8arr[len] = buf.charCodeAt(len)
+  }
+  return new File([u8arr], name, { type })
+}
+
 export const regexp = {
   // eslint-disable-next-line
   en: /^[a-zA-Z0-9\`\~\!\@\#\$\%\^\&\*\(\)\_\+\-\=\[\]\\\;\'\,\.\/\{\}\|\:\"\>\?\"' '\t\n]*$/,
+  telephone: /^((0\d{2,3}(-)?\d{7,8})|(1[3-9]\d{9}))$/,
+  email:
+    /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,
+  phone: /^1[3-9]\d{9}$/,
+}
+
+export const validator = {
+  en: v => !v || regexp.en.test(v) || '请输入英文',
+  telephone: v => !v || regexp.telephone.test(v) || '请输入正确的电话号码',
+  email: v => !v || regexp.email.test(v) || '请输入正确的邮箱',
+  phone: v => !v || regexp.phone.test(v) || '请输入正确的手机号码',
+  beforeNow: v => !v || isBeforeNow(v) || '请选择过去的时间',
+}
+
+/**
+ * @description 服务器文件预览
+ * @author kuroky <1048413674@qq.com>
+ * @date 2023-12-07
+ * @param {String} path
+ */
+export function previewFile(path) {
+  window.open(import.meta.env.VITE_SERVER_PATH + path)
+}
+
+/**
+ * @description 字符串拼接
+ * @author kuroky <1048413674@qq.com>
+ * @date 2023-12-11
+ * @param {Array} values
+ * @param {String} separator
+ * @returns
+ */
+export function strConcat(values, separator = '') {
+  return values.filter(i => i || i !== 0).join(separator)
+}
+
+/**
+ * @description 解析query
+ * @author kuroky <1048413674@qq.com>
+ * @date 2023-12-12
+ * @param {String} q
+ */
+export function parseQuery(q) {
+  const params = {}
+  q &&
+    q.split('&').forEach(i => {
+      const [k, v] = i.split('=')
+      params[k] = v
+    })
+  return params
+}
+
+/**
+ * @description 解析url
+ * @author kuroky <1048413674@qq.com>
+ * @date 2023-12-12
+ * @param {*} url
+ * @returns
+ */
+export function parseURL(url) {
+  const [path, q] = url.split('?')
+  const query = parseQuery(q)
+  return {
+    path,
+    query,
+  }
 }
