@@ -1,6 +1,11 @@
 import { defineStore } from 'pinia'
 import * as service from '@/services/user'
-import { setToken, getToken, removeToken, ssoLogin, ssoLogout } from '@/utils/auth'
+import {
+  setToken,
+  getToken,
+  removeToken,
+  // ssoLogin, ssoLogout
+} from '@/utils/auth'
 import router, { dynamicRoutes } from '@/router'
 
 const menuCache = useStorageC('menu', [])
@@ -53,11 +58,12 @@ export const useUserStore = defineStore('user', {
       return this.user
     },
     goLogin() {
-      ssoLogin()
-      // router.push({
-      //   path: '/login',
-      //   query: { redirect: route.value.fullPath },
-      // })
+      // ssoLogin()
+      const route = router.currentRoute
+      router.push({
+        path: '/login',
+        query: { redirect: route.value.fullPath },
+      })
     },
     async logout(go2login) {
       removeToken()
@@ -67,8 +73,8 @@ export const useUserStore = defineStore('user', {
       this.menuTree = []
       const route = router.currentRoute
       if (go2login || !route.value.meta?.public) {
-        // this.goLogin()
-        ssoLogout()
+        this.goLogin()
+        // ssoLogout()
       }
     },
     hasPermission(permissions) {

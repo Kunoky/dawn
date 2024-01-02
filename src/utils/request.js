@@ -57,24 +57,22 @@ service.interceptors.response.use(
     const code = data?.code || status
     const msg = i18n.global.t('httpCode.' + code)
     // 业务异常
-    // if (code === 401) {
-    // useUserStore().logout(true)
-    // }
     if (code === 401) {
       useUserStore().logout(true)
-      location.href = import.meta.env.VITE_SERVER_PATH + '/sso/login'
-    } else if (code !== 200) {
-      ElMessage({
-        message: data.msg || msg || '操作失败',
-        type: 'warning',
-        duration: 5 * 1000,
-      })
-    } else if (config.method !== 'get') {
-      ElMessage({
-        message: data.msg || msg || '操作成功',
-        type: 'success',
-        duration: 5 * 1000,
-      })
+    } else if (!config.silent) {
+      if (code !== 200) {
+        ElMessage({
+          message: data.msg || msg || '操作失败',
+          type: 'warning',
+          duration: 5 * 1000,
+        })
+      } else if (config.method !== 'get') {
+        ElMessage({
+          message: data.msg || msg || '操作成功',
+          type: 'success',
+          duration: 5 * 1000,
+        })
+      }
     }
     return data
   },
@@ -91,11 +89,12 @@ service.interceptors.response.use(
         default:
       }
     }
-    ElMessage({
-      message: msg,
-      type: 'error',
-      duration: 5 * 1000,
-    })
+    error.config.silent ||
+      ElMessage({
+        message: msg,
+        type: 'error',
+        duration: 5 * 1000,
+      })
     return Promise.reject(error)
   }
 )

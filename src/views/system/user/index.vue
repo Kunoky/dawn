@@ -31,16 +31,16 @@
       <el-table-column label="用户编号" prop="userId" />
       <el-table-column label="用户名称" prop="userName" :show-overflow-tooltip="true" />
       <el-table-column label="登录名称" prop="loginName" :show-overflow-tooltip="true" />
-      <el-table-column label="区域" prop="area">
-        <template #default="{ row }">
+      <el-table-column label="区域" prop="area" :formatter="$dictFormatter('regionalStatus')">
+        <!-- <template #default="{ row }">
           {{ regionalStatus.kv[row.area] }}
-        </template>
+        </template> -->
       </el-table-column>
       <el-table-column label="手机号码" prop="phoneNumber" width="120" />
       <el-table-column label="状态" prop="status">
         <template #default="{ row }">
           <el-switch
-            v-if="!row.isSuperAdmin"
+            v-show="!row.isSuperAdmin"
             v-model="row.status"
             :active-value="true"
             :inactive-value="false"
@@ -115,7 +115,7 @@ const visible = reactive({
 })
 
 const status = useDict('status')
-const regionalStatus = useDict('regionalStatus')
+// const regionalStatus = useDict('regionalStatus')
 
 const orgTree = ref([])
 req.get('/organization/list').then(res => {

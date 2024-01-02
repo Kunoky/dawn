@@ -212,6 +212,7 @@ import PageWrapper from './PageWrapper.vue'
 import CDropdown from './CDropdown.vue'
 import FW from './FW.jsx'
 import Draggable from 'vuedraggable'
+import { cloneDeep } from 'lodash-es'
 
 const props = defineProps({
   // 选中数据, 添加modelValue即进入选择模式
@@ -260,6 +261,10 @@ const props = defineProps({
   toolStatus: {
     type: Object,
   },
+  defaultForm: {
+    type: Object,
+    default: () => ({}),
+  }, // 表单默认值
 })
 const emit = defineEmits(['update:modelValue', 'query', 'reset'])
 
@@ -275,7 +280,7 @@ const refreshCurrent = () => pageRef.value.run()
 
 let cachedData = {
   value: {
-    form: {},
+    form: cloneDeep(props.defaultForm),
     columnsSetting: {},
     defaultSize: props.pageConf?.defaultSize || 10,
     showQuery: null,
@@ -306,6 +311,7 @@ const handleQueryReset = () => {
   for (let k in form) {
     form[k] = null
   }
+  Object.assign(form, cloneDeep(props.defaultForm))
   emit('reset')
   handleQuery()
 }
@@ -403,7 +409,6 @@ const handleSyncColumns = runTimeColumns => {
   })
 }
 
-let columns
 const getColumns = () => {
   let cols = useSlots().default()
   handleSyncColumns(cols)
@@ -418,7 +423,6 @@ const getColumns = () => {
     return true
   })
   cols.sort((a, b) => a.order - b.order)
-  columns = cols
   return cols
 }
 const handleDragUpdate = ({ target }) => {
@@ -544,10 +548,11 @@ const exportData = () => {
     .then(res => {
       const csvData = [[]]
       const getText = []
-      columns.forEach(i => {
-        if (i.props?.label && i.props?.prop) {
-          csvData[0].push(i.props.label)
-          getText.push(i.props.formatter || (row => row[i.props.prop]))
+      const columns = tableRef.value.store.states.columns.value
+      columns.forEach((i, idx) => {
+        if (i.label && i.property) {
+          csvData[0].push(i.label)
+          getText.push(i.formatter ? row => i.formatter(row, i, row[i.property], idx) : row => row[i.property])
         }
       })
       res.forEach(i => {
