@@ -66,20 +66,15 @@ router.beforeEach(async (to, from) => {
       // return false
     }
   }
+  if (to.meta.public) return
   const userStore = useUserStore()
+  if (!userStore.initialized) {
+    await userStore.init()
+  }
   if (to.path === '/home') {
     if (!userStore.menuTree[0]) return '/401'
     const first = getFistRoute(userStore.menuTree[0])
     return { name: first.name }
-  }
-  if (to.meta.public) return
-  if (!hasToken) {
-    userStore.goLogin()
-    return
-  }
-  if (userStore.user.roles.length === 1 && userStore.user.roles[0] === 'fse') {
-    location.href = '/mobile/'
-    return
   }
   const meta = userStore.keyMenu[to.name]?.meta
   to.meta = {

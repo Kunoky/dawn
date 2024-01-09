@@ -24,6 +24,7 @@ export const useUserStore = defineStore('user', {
       idMenu: {},
       keyMenu: {},
       permission: [],
+      initialized: false,
     }
   },
   actions: {
@@ -31,6 +32,7 @@ export const useUserStore = defineStore('user', {
       if (!getToken()) return this.goLogin()
       await Promise.all([this.getUser(), this.listMenu()])
       this.genMenu()
+      this.initialized = true
     },
     async login(user) {
       try {
@@ -71,6 +73,7 @@ export const useUserStore = defineStore('user', {
       menuCache.value = []
       this.user = {}
       this.menuTree = []
+      this.initialized = false
       const route = router.currentRoute
       if (go2login || !route.value.meta?.public) {
         this.goLogin()

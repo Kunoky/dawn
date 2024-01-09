@@ -35,7 +35,7 @@ const userStore = useUserStore()
 app.use(Permission, {
   hasPermission: userStore.hasPermission,
 })
-userStore.init().then(() => {
-  app.use(router)
-  app.mount('#app')
-})
+// userStore.init().then(() => {
+app.use(router)
+app.mount('#app')
+// })
