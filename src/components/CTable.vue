@@ -410,7 +410,19 @@ const handleSyncColumns = runTimeColumns => {
 }
 
 const getColumns = () => {
-  let cols = useSlots().default()
+  let cols = []
+  useSlots()
+    .default()
+    .forEach(i => {
+      if (typeof i.type === 'symbol') {
+        if (Array.isArray(i.children)) {
+          cols.push(...i.children)
+        }
+      } else {
+        cols.push(i)
+      }
+    })
+
   handleSyncColumns(cols)
   cols = cols.filter(i => {
     if (i.props?.prop) {
@@ -419,7 +431,7 @@ const getColumns = () => {
       Object.assign(i.props, conf.props)
       i.order = conf.order
     }
-    if (typeof i.type === 'symbol') return false
+    // if (typeof i.type === 'symbol') return false
     return true
   })
   cols.sort((a, b) => a.order - b.order)
