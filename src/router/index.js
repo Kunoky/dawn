@@ -66,7 +66,7 @@ router.beforeEach(async (to, from) => {
       // return false
     }
   }
-  if (to.meta.public) return
+  if (to.path !== '/home' && to.meta.public) return
   const userStore = useUserStore()
   if (!userStore.initialized) {
     await userStore.init()
