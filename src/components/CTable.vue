@@ -21,11 +21,7 @@
         </div>
         <div class="c-table__actions">
           <slot name="actions"></slot>
-          <el-tooltip
-            v-if="toolStatus.title && $slots.form && toolStatus.search"
-            :content="$t('common.query')"
-            placement="top"
-          >
+          <el-tooltip v-if="toolStatus.search && $slots.form" :content="$t('common.query')" placement="top">
             <el-button link @click="showQuery = !showQuery" :aria-description="$t('common.query')">
               <template #icon>
                 <i-ep-search />
