@@ -10,7 +10,7 @@ export function setToken(token) {
 }
 
 export function removeToken() {
-  c[__TOKEN_KEY__] = ''
+  c[__TOKEN_KEY__] = '0;path=/;expires=' + new Date(0).toUTCString()
   return localStorage.removeItem(__TOKEN_KEY__)
 }
 

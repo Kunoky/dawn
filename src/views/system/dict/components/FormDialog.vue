@@ -12,7 +12,7 @@
         <el-input v-model="form.label" placeholder="请输入字典名称" />
       </el-form-item>
       <el-form-item label="字典类型" prop="type">
-        <el-input v-model="form.type" placeholder="请输入字典类型" />
+        <el-input v-model="form.type" placeholder="请输入字典类型" :disabled="!!data" />
       </el-form-item>
       <el-form-item label="序号" prop="orderNum">
         <el-input-number v-model="form.orderNum" :min="0" />

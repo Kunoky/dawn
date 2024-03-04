@@ -5,6 +5,7 @@
         action: listData,
         hidePager: true,
         dataKey: 'data',
+        totalKey: 'total',
       }"
       ref="tableRef"
       id="systemOrg"
@@ -73,7 +74,7 @@ const listData = params =>
       }
     })
     allExpandKeys.value = keys
-    return { data: list }
+    return { data: list, total: list.length }
   })
 const isExpandAll = ref(false)
 const toggleExpand = () => {

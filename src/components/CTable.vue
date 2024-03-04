@@ -21,7 +21,11 @@
         </div>
         <div class="c-table__actions">
           <slot name="actions"></slot>
-          <el-tooltip v-if="toolStatus.title && $slots.form" :content="$t('common.query')" placement="top">
+          <el-tooltip
+            v-if="toolStatus.title && $slots.form && toolStatus.search"
+            :content="$t('common.query')"
+            placement="top"
+          >
             <el-button link @click="showQuery = !showQuery" :aria-description="$t('common.query')">
               <template #icon>
                 <i-ep-search />
@@ -179,7 +183,7 @@
             :size="tableSize"
             @sort-change="handleSortChange"
           >
-            <el-table-column v-if="modelValue" width="40">
+            <el-table-column v-if="modelValue" width="40" fixed="left">
               <template #header>
                 <el-checkbox
                   :modelValue="isSelectAll"
@@ -422,7 +426,7 @@ const getColumns = () => {
         cols.push(i)
       }
     })
-
+  if (!toolStatus.value.setting) return cols
   handleSyncColumns(cols)
   cols = cols.filter(i => {
     if (i.props?.prop) {
@@ -624,6 +628,23 @@ defineExpose({
     .btns {
       float: right;
       margin-right: 0;
+    }
+    .el-form-item {
+      display: inline-block;
+      position: relative;
+      padding-top: 0.5em;
+      .el-form-item__label {
+        position: absolute;
+        z-index: 9;
+        top: 0;
+        left: 8px;
+        font-size: 0.7em;
+        height: fit-content;
+        line-height: unset;
+        background: var(--gray-1);
+        color: var(--gray-7);
+        padding: 0 4px;
+      }
     }
   }
   &__toolbar {

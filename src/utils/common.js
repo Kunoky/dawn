@@ -215,6 +215,33 @@ export function exportCSV(data, name) {
   link.download = name + '.csv'
   link.click()
   URL.revokeObjectURL(url)
+  link.remove()
+}
+
+/**
+ * @description 下载
+ * @author kuroky <1048413674@qq.com>
+ * @date 2024-02-01
+ * @param {*} url
+ * @param {*} name
+ */
+export function download(url, name) {
+  let link = document.createElement('a')
+  link.href = url
+  link.download = name
+  link.click()
+  link.remove()
+}
+
+export function downloadFile(file, name, type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+  const blob = new Blob([file], { type })
+  const url = URL.createObjectURL(blob)
+  let link = document.createElement('a')
+  link.href = url
+  link.download = name
+  link.click()
+  URL.revokeObjectURL(url)
+  link.remove()
 }
 
 /**
@@ -296,13 +323,25 @@ export const regexp = {
   phone: /^1[3-9]\d{9}$/,
 }
 
-export const validator = {
+export const elValidator = {
+  en: (_, v, cb) => cb(!v || regexp.en.test(v) ? undefined : new Error('请输入英文')),
+  telephone: (_, v, cb) => cb(!v || regexp.telephone.test(v) ? undefined : new Error('请输入正确的电话号码')),
+  email: (_, v, cb) => cb(!v || regexp.email.test(v) ? undefined : new Error('请输入正确的邮箱')),
+  phone: (_, v, cb) => cb(!v || regexp.phone.test(v) ? undefined : new Error('请输入正确的手机号码')),
+  beforeNow: (_, v, cb) => cb(!v || regexp.beforeNow.test(v) ? undefined : new Error('请选择过去的时间')),
+  select: { required: true, message: '请选择', trigger: 'blur' },
+  input: { required: true, message: '请输入', trigger: 'blur' },
+}
+
+export const varValidator = {
   en: v => !v || regexp.en.test(v) || '请输入英文',
   telephone: v => !v || regexp.telephone.test(v) || '请输入正确的电话号码',
   email: v => !v || regexp.email.test(v) || '请输入正确的邮箱',
   phone: v => !v || regexp.phone.test(v) || '请输入正确的手机号码',
   beforeNow: v => !v || isBeforeNow(v) || '请选择过去的时间',
 }
+
+export const validator = elValidator
 
 /**
  * @description 服务器文件预览

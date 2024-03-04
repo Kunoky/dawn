@@ -14,10 +14,10 @@ const handleLoad = () => {
   loadingInstance.close()
 }
 </script>
-<sytle lang="scss">
+<style>
 .c-iframe {
   border: none;
   width: 100%;
   display: block;
 }
-</sytle>
+</style>
