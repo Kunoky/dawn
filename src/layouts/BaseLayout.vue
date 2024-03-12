@@ -10,23 +10,38 @@ const tagsViewStore = useTagsViewStore()
 const route = useRoute()
 const router = useRouter()
 const i18n = useI18n()
-const appName = __APP_NAME__
 const active = ref('')
 const isCollapse = ref(false)
 const { lang, langs, loading } = storeToRefs(appStore)
-const { user, menuTree } = storeToRefs(userStore)
+const { user, menuTree, keyMenu } = storeToRefs(userStore)
+const breadcrumb = ref([])
 watch(
   route,
-  async () => {
+  async v => {
     await nextTick()
     const activeLink = document.querySelector('.el-menu .router-link-active')
     if (activeLink) {
       active.value = activeLink.dataset.id
     }
+    let menuPath = []
+    if (v.name) {
+      let menu = keyMenu.value[v.name]
+      if (menu) {
+        menuPath = getBreadcrumb(menu)
+      }
+    }
+    breadcrumb.value = menuPath
   },
   { immediate: true }
 )
 
+function getBreadcrumb(menu, menus = []) {
+  menus.unshift(menu)
+  if (menu.pName) {
+    getBreadcrumb(keyMenu.value[menu.pName], menus)
+  }
+  return menus
+}
 const handleLangChange = v => {
   appStore.setLang(v)
 }
@@ -57,6 +72,7 @@ const { isDark, toggle } = useTheme()
 
 // 懒加载组件外面裹了一层，导致keepAlive无法获取到name进行缓存
 const setComponentName = (c, name) => {
+  if (!c?.type) return
   c.type.name = name
   return c
 }
@@ -84,10 +100,9 @@ const setComponentName = (c, name) => {
     <el-container class="ht-100vh">
       <el-header class="base-layout_header">
         <div class="main base-layout_header dp-f jc-sb">
-          <div>
-            <span>{{ appName }}</span>
-          </div>
-
+          <el-breadcrumb>
+            <el-breadcrumb-item v-for="i in breadcrumb" :key="i.name">{{ i.meta.title }}</el-breadcrumb-item>
+          </el-breadcrumb>
           <div class="">
             <el-button link @click="toggle()" :aria-description="isDark ? $t('theme.light') : $t('theme.dark')">
               <i-ep-sunny v-if="isDark"></i-ep-sunny>
@@ -96,22 +111,10 @@ const setComponentName = (c, name) => {
             <CDropdown :modelValue="lang" @update:modelValue="handleLangChange" :options="langs">
               <span v-loading="loading.lang" class="mgl-s">{{ $t('lang') }}</span>
             </CDropdown>
-            <CDropdown v-if="user" @update:modelValue="handleUserCommand" :options="userOptions">
-              <span>{{ user?.nickName }}</span>
+            <CDropdown v-if="user.userId" @update:modelValue="handleUserCommand" :options="userOptions">
+              <span class="cs-p">{{ user.nickName }}</span>
             </CDropdown>
-            <!-- <el-dropdown v-if="user" @command="handleUserCommand">
-              <span class="mgl-s">
-                <span>{{ user?.nickName }}</span>
-                <i-ep-arrow-down />
-              </span>
-              <template #dropdown>
-                <el-dropdown-menu>
-                  <el-dropdown-item command="logout">{{ $t('common.logout') }}</el-dropdown-item>
-                  <el-dropdown-item command="logout">{{ $t('view.layout.userProfile') }}</el-dropdown-item>
-                </el-dropdown-menu>
-              </template>
-            </el-dropdown> -->
-            <router-link v-else to="/login" class="fs-5 cl-8 mgl-s">{{ $t('common.login') }}</router-link>
+            <el-button v-else class="mgl-s" @click="userStore.goLogin" text>{{ $t('common.login') }}</el-button>
           </div>
         </div>
         <TagsView />
@@ -148,11 +151,21 @@ const setComponentName = (c, name) => {
         }
       }
     }
+    .el-breadcrumb {
+      line-height: unset;
+    }
   }
   &_aside {
     transition: width 0.3s;
     box-shadow: 2px 0 8px 0 rgb(29 35 41 / 5%);
     overflow: hidden;
+    .logo {
+      height: 60px;
+      color: #fff;
+      img {
+        height: 22px;
+      }
+    }
   }
   &_menu {
     border-right: none;

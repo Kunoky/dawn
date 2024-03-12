@@ -54,7 +54,7 @@ const props = defineProps({
   // 分页水平位置，同justify-content
   justifyContent: {
     type: String,
-    default: 'end',
+    default: 'right',
   },
   // 隐藏分页
   hidePager: {
@@ -70,21 +70,20 @@ const size = ref(props.defaultSize)
 const total = ref(0)
 
 const load = typeof props.action === 'function' ? props.action : params => req.get(props.action, { params })
-const { data, loading, run, error } = useAsync(
-  () =>
-    load({
-      [props.pageKey]: page.value,
-      [props.sizeKey]: size.value,
-      ...props.params,
-    }).then(res => {
-      total.value = getNestProp(res, props.totalKey) || 0
-      if (props.dataKey) return getNestProp(res, props.dataKey)
-      return res
-    }),
-  {
-    delay: props.delay,
-  }
-)
+const listData = params =>
+  load({
+    [props.pageKey]: page.value,
+    [props.sizeKey]: size.value,
+    ...props.params,
+    ...params,
+  }).then(res => {
+    total.value = getNestProp(res, props.totalKey) || 0
+    if (props.dataKey) return getNestProp(res, props.dataKey)
+    return res
+  })
+const { data, loading, run, error } = useAsync(listData, {
+  delay: props.delay,
+})
 
 const refresh = () => {
   if (page.value !== 1) {
@@ -94,7 +93,7 @@ const refresh = () => {
   }
 }
 
-watch([page, size], run, { immediate: true })
+watch([page, size], () => run(), { immediate: true })
 
 watch(() => props.params, refresh, { deep: true })
 
@@ -107,5 +106,6 @@ defineExpose({
   page,
   size,
   error,
+  listData,
 })
 </script>

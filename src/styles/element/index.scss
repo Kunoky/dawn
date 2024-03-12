@@ -40,3 +40,7 @@ $--colors: (
 
 // custom dark variables
 @use './dark.scss';
+
+.el-icon.el-cascader-node__prefix {
+  position: absolute;
+}

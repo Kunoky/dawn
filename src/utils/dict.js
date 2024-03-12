@@ -1,6 +1,18 @@
 import { cloneDeep } from 'lodash-es'
 
-const source = ref([])
+export const source = ref([])
+
+export const dict = ref({})
+
+export const _dict = new Proxy(
+  {},
+  {
+    get(t, k) {
+      return (dict.value[k] ??= useDict(k))
+    },
+  }
+)
+
 const loading = {}
 // ,
 //   CACHE_KEY = 'dict_source'

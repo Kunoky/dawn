@@ -8,9 +8,9 @@ import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import Icons from 'unplugin-icons/vite'
 import IconsResolver from 'unplugin-icons/resolver'
-import purgecss from '@mojojoejo/vite-plugin-purgecss'
 import { VueRouterAutoImports, getPascalCaseRouteName } from 'unplugin-vue-router'
 import VueRouter from 'unplugin-vue-router/vite'
+import DepsCache from './plugin/optimizeDepsCache'
 
 const plugins = [
   // https://www.npmjs.com/package/unplugin-vue-router
@@ -21,6 +21,7 @@ const plugins = [
   }),
   vue(),
   vueJsx(),
+  DepsCache(),
   AutoImport({
     resolvers: [
       ElementPlusResolver({
@@ -46,6 +47,9 @@ const plugins = [
       {
         '@/utils/request': [['default', 'req']],
       },
+      {
+        dayjs: [['default', 'dayjs']],
+      },
     ],
     dirs: ['./src/composables', './src/store'],
     eslintrc: {
@@ -66,10 +70,6 @@ const plugins = [
     autoInstall: true,
   }),
   {
-    ...purgecss(),
-    apply: 'build',
-  },
-  {
     ...visualizer(),
     apply: () => process.env.stats,
   },
@@ -82,7 +82,7 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: '8000',
-    strictPort: true,
+    // strictPort: true,
     proxy: {
       '^/api': {
         target: 'http://vue.ruoyi.vip/prod-api',
@@ -99,7 +99,7 @@ export default defineConfig({
   },
   define: {
     __APP_NAME__: '"Dawn"', // 项目名
-    __TOKEN_KEY__: '"satoken"', // token键名，localStorage
+    __TOKEN_KEY__: '"satoken"', // token键名，localStorage和axios的header均使用此名
   },
   test: {
     globals: true,

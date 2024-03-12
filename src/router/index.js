@@ -54,30 +54,30 @@ router.beforeEach(async (to, from) => {
   if (to.path === '/login') {
     if (hasToken) {
       return '/'
+    } else {
+      return
+      // ssoLogin()
+      // return false
     }
   }
+  if (to.path !== '/home' && to.meta.public) return
   const userStore = useUserStore()
+  if (!userStore.initialized) {
+    const res = await userStore.init()
+    if (res !== true) return false
+  }
   const meta = userStore.keyMenu[to.name]?.meta
   to.meta = {
     ...to.meta,
     ...meta,
   }
-  if (to.meta.public) return
   const hasAuth = userStore.keyMenu[to.name] || userStore.hasPermission(to.meta.permission)
   // const hasAuth = userStore.hasPermission(to.name)
   if (hasAuth) return
-  if (hasToken) {
-    if (from.name === 'Login') return '/'
-    ElMessage({
-      message: '权限不足',
-      type: 'error',
-      duration: 5 * 1000,
-    })
-    return false
-  }
-  return {
-    path: '/login',
-    query: { redirect: to.fullPath },
+  if (from.name === 'Login') {
+    return '/'
+  } else {
+    return '/401'
   }
 })
 
@@ -115,8 +115,9 @@ router.scrollBehavior = (to, from, savedPosition) => {
 }
 
 router.onError(error => {
-  console.error(error)
-  const pattern = /Loading chunk (\d) + failed/g
+  console.error('Router Error: ', error)
+  const pattern =
+    /(Loading chunk (\d) + failed)|(Failed to load module script)|(Failed to fetch dynamically imported module)/g
   const isChunkLoadFailed = error.message.match(pattern)
   if (isChunkLoadFailed) {
     location.reload()

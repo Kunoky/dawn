@@ -8,7 +8,7 @@ import { i18n } from '@/i18nSetup'
 const service = axios.create({
   baseURL: import.meta.env.VITE_SERVER_PATH, // url = base url + request url
   // withCredentials: true, // send cookies when cross-domain requests
-  timeout: 5000, // request timeout
+  timeout: 60000, // request timeout
   // adapter: ['http'], // polyfill tauri
   // adapter: axiosTauriApiAdapter， // polyfill tauri
 })
@@ -23,6 +23,13 @@ service.interceptors.request.use(
       'Api-Version': 1.0,
       'Content-Type': 'application/json;charset=utf-8',
       ...config.headers,
+    }
+    if (config.method === 'get' && config.params) {
+      for (let key in config.params) {
+        if (Array.isArray(config.params[key])) {
+          config.params[key] = config.params[key].toString()
+        }
+      }
     }
     return config
   },
@@ -52,18 +59,20 @@ service.interceptors.response.use(
     // 业务异常
     if (code === 401) {
       useUserStore().logout(true)
-    } else if (code !== 200) {
-      ElMessage({
-        message: data.msg || msg || '操作失败',
-        type: 'warning',
-        duration: 5 * 1000,
-      })
-    } else if (config.method !== 'get') {
-      ElMessage({
-        message: data.msg || msg || '操作成功',
-        type: 'success',
-        duration: 5 * 1000,
-      })
+    } else if (!config.silent) {
+      if (code !== 200) {
+        ElMessage({
+          message: data.msg || msg || '操作失败',
+          type: 'warning',
+          duration: 5 * 1000,
+        })
+      } else if (config.method !== 'get') {
+        ElMessage({
+          message: data.msg || msg || '操作成功',
+          type: 'success',
+          duration: 5 * 1000,
+        })
+      }
     }
     return data
   },
@@ -72,23 +81,20 @@ service.interceptors.response.use(
     let msg = error.message
     if (error.response) {
       const { status, data } = error.response
-      const code = data?.code || status
-
-      msg = code + ' ' + i18n.global.t('httpCode.' + code)
-      let store
-      switch (code) {
+      msg = data?.msg || status + ' ' + i18n.global.t('httpCode.' + status)
+      switch (status) {
         case 401:
-          store = useUserStore()
-          store.logout(true)
+          useUserStore().logout(true)
           break
         default:
       }
     }
-    ElMessage({
-      message: msg,
-      type: 'error',
-      duration: 5 * 1000,
-    })
+    error.config.silent ||
+      ElMessage({
+        message: msg,
+        type: 'error',
+        duration: 5 * 1000,
+      })
     return Promise.reject(error)
   }
 )

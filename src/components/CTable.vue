@@ -15,27 +15,39 @@
       </el-form-item>
     </el-form>
     <div class="c-table__main">
-      <div v-if="!hideToolbar" class="c-table__toolbar">
-        <div class="c-table__title">
+      <div v-if="toolStatus.bar" class="c-table__toolbar">
+        <div v-if="toolStatus.title" class="c-table__title">
           <slot name="title">{{ title }}</slot>
         </div>
         <div class="c-table__actions">
           <slot name="actions"></slot>
-          <el-tooltip v-if="$slots.form" :content="$t('common.query')" placement="top">
+          <el-tooltip v-if="toolStatus.search && $slots.form" :content="$t('common.query')" placement="top">
             <el-button link @click="showQuery = !showQuery" :aria-description="$t('common.query')">
               <template #icon>
                 <i-ep-search />
               </template>
             </el-button>
           </el-tooltip>
-          <el-tooltip :content="$t('common.refresh')" placement="top">
+          <el-tooltip v-if="toolStatus.download" :content="$t('common.export')" placement="top">
+            <el-button link @click="handleExport" :aria-description="$t('common.export')">
+              <template #icon>
+                <i-ep-download />
+              </template>
+            </el-button>
+          </el-tooltip>
+          <el-tooltip v-if="toolStatus.refresh" :content="$t('common.refresh')" placement="top">
             <el-button link @click="refresh" :aria-description="$t('common.refresh')">
               <template #icon>
                 <i-ep-refresh />
               </template>
             </el-button>
           </el-tooltip>
-          <CDropdown v-model="tableSize" :options="$tm('component.CTable.sizes')" trigger="click">
+          <CDropdown
+            v-if="toolStatus.size"
+            v-model="tableSize"
+            :options="$tm('component.CTable.sizes')"
+            trigger="click"
+          >
             <el-button link :aria-description="$t('component.CTable.size')">
               <template #icon>
                 <el-tooltip :content="$t('component.CTable.size')" placement="top">
@@ -44,14 +56,14 @@
               </template>
             </el-button>
           </CDropdown>
-          <el-tooltip v-if="id" :content="$t('component.CTable.save')" placement="top">
+          <el-tooltip v-if="toolStatus.save && id" :content="$t('component.CTable.save')" placement="top">
             <el-button link @click="handleSave" :aria-description="$t('component.CTable.save')">
               <template #icon>
                 <CIcon icon="ant-design:save-outlined" />
               </template>
             </el-button>
           </el-tooltip>
-          <el-popover trigger="click" width="200px" popper-class="c-table__setting">
+          <el-popover v-if="toolStatus.setting" trigger="click" width="240" popper-class="c-table__setting">
             <template #reference>
               <el-button link :aria-description="$t('component.CTable.setting')">
                 <template #icon>
@@ -91,7 +103,7 @@
                   >
                     <template #item="{ element }">
                       <li>
-                        <span>
+                        <span class="left">
                           <CIcon v-if="i.children.length > 1" icon="ant-design:bars-outlined" class="handle" />
                           <el-checkbox v-model="element.isShow">{{ element.label }}</el-checkbox>
                         </span>
@@ -135,6 +147,26 @@
             </div>
           </el-popover>
         </div>
+        <el-dialog v-model="visible.export" :title="$t('common.export')">
+          <div>
+            {{ $t('common.total') }}:
+            <span class="cl-p">{{ exportFrom.total }}</span>
+          </div>
+          <div class="mgt-s">
+            {{ $t('common.page') }}:
+            <el-input-number v-model="exportFrom.page" :min="1" :precision="0" />
+          </div>
+          <div class="mgt-s">
+            {{ $t('common.size') }}:
+            <el-input-number v-model="exportFrom.size" :min="1" :max="exportFrom.total" :precision="0" />
+          </div>
+          <template #footer>
+            <span class="dialog-footer">
+              <el-button @click="visible.export = false">{{ $t('common.cancel') }}</el-button>
+              <el-button type="primary" @click="exportData">{{ $t('common.confirm') }}</el-button>
+            </span>
+          </template>
+        </el-dialog>
       </div>
       <PageWrapper ref="pageRef" v-bind="pageConf" :params="mergedParams" :default-size="defaultSize">
         <template v-slot="{ data, loading }">
@@ -147,7 +179,7 @@
             :size="tableSize"
             @sort-change="handleSortChange"
           >
-            <el-table-column v-if="modelValue" width="40">
+            <el-table-column v-if="modelValue" width="40" fixed="left">
               <template #header>
                 <el-checkbox
                   :modelValue="isSelectAll"
@@ -180,6 +212,7 @@ import PageWrapper from './PageWrapper.vue'
 import CDropdown from './CDropdown.vue'
 import FW from './FW.jsx'
 import Draggable from 'vuedraggable'
+import { cloneDeep } from 'lodash-es'
 
 const props = defineProps({
   // 选中数据, 添加modelValue即进入选择模式
@@ -223,24 +256,31 @@ const props = defineProps({
     default: 'small',
   },
   title: String, // 标题
-  // 隐藏toolbar
-  hideToolbar: {
-    type: Boolean,
-    default: false,
-  },
   id: String, // 组件id，提供时可以对form，columnSetting数据进行缓存
+  // 工具栏状态
+  toolStatus: {
+    type: Object,
+  },
+  defaultForm: {
+    type: Object,
+    default: () => ({}),
+  }, // 表单默认值
 })
 const emit = defineEmits(['update:modelValue', 'query', 'reset'])
 
+const visible = reactive({
+  export: false,
+})
 const i18n = useI18n()
 const pageRef = ref()
 const tableRef = ref()
 const tableSize = ref(props.size)
 const refresh = () => pageRef.value.refresh()
+const refreshCurrent = () => pageRef.value.run()
 
 let cachedData = {
   value: {
-    form: {},
+    form: cloneDeep(props.defaultForm),
     columnsSetting: {},
     defaultSize: props.pageConf?.defaultSize || 10,
     showQuery: null,
@@ -250,7 +290,7 @@ let cachedData = {
 }
 const CACHE_KEY = 'c-table__' + props.id
 if (props.id) {
-  cachedData = useStorage(CACHE_KEY, cachedData.value)
+  cachedData = useStorageC(CACHE_KEY, cachedData.value)
 }
 const defaultSize = ref(cachedData.value.defaultSize)
 
@@ -271,6 +311,7 @@ const handleQueryReset = () => {
   for (let k in form) {
     form[k] = null
   }
+  Object.assign(form, cloneDeep(props.defaultForm))
   emit('reset')
   handleQuery()
 }
@@ -367,8 +408,21 @@ const handleSyncColumns = runTimeColumns => {
     }
   })
 }
+
 const getColumns = () => {
-  let cols = useSlots().default()
+  let cols = []
+  useSlots()
+    .default()
+    .forEach(i => {
+      if (typeof i.type === 'symbol') {
+        if (Array.isArray(i.children)) {
+          cols.push(...i.children)
+        }
+      } else {
+        cols.push(i)
+      }
+    })
+  if (!toolStatus.value.setting) return cols
   handleSyncColumns(cols)
   cols = cols.filter(i => {
     if (i.props?.prop) {
@@ -376,8 +430,8 @@ const getColumns = () => {
       if (!conf?.isShow) return false
       Object.assign(i.props, conf.props)
       i.order = conf.order
+      i.key ??= i.props.prop
     }
-    if (typeof i.type === 'symbol') return false
     return true
   })
   cols.sort((a, b) => a.order - b.order)
@@ -483,16 +537,80 @@ const handleSelectAll = v => {
 
 const isSelectAll = computed(() => allKeys.value.length && allKeys.value.every(i => modelValueKeys.value.includes(i)))
 
+// 导出
+const exportFrom = reactive({
+  page: 1,
+  size: 10,
+  total: 0,
+  loading: false,
+})
+function handleExport() {
+  exportFrom.size = pageRef.value.total
+  exportFrom.total = pageRef.value.total
+  visible.export = true
+}
+const exportData = () => {
+  const { sizeKey = 'pageSize', pageKey = 'pageNum' } = props.pageConf
+  exportFrom.loading = true
+  pageRef.value
+    .listData({
+      [pageKey]: exportFrom.page,
+      [sizeKey]: exportFrom.size,
+    })
+    .then(res => {
+      const csvData = [[]]
+      const getText = []
+      const columns = tableRef.value.store.states.columns.value
+      columns.forEach((i, idx) => {
+        if (i.label && i.property) {
+          csvData[0].push(i.label)
+          getText.push(i.formatter ? row => i.formatter(row, i, row[i.property], idx) : row => row[i.property])
+        }
+      })
+      res.forEach(i => {
+        csvData.push(
+          getText.map(j => {
+            let v = j(i)
+            if (/,/.test(v)) {
+              v = '"' + v + '"'
+            }
+            return v
+          })
+        )
+      })
+      utils.exportCSV(csvData, props.title)
+      visible.export = false
+    })
+    .finally(() => (exportFrom.loading = false))
+}
+
+// 0：隐藏，1：正常
+const defaultToolStatus = {
+  bar: 1,
+  title: 1,
+  search: 1,
+  download: 1,
+  refresh: 1,
+  size: 1,
+  save: 1,
+  setting: 1,
+}
+const toolStatus = computed(() => ({
+  ...defaultToolStatus,
+  ...props.toolStatus,
+}))
 defineExpose({
   pageRef,
   tableRef,
   form,
   columnsSetting,
   refresh,
+  refreshCurrent,
   handleQuery,
   handleColReset,
   handleQueryReset,
   handleSave,
+  handleExport,
 })
 </script>
 <style lang="scss">
@@ -505,7 +623,24 @@ defineExpose({
     }
     .btns {
       float: right;
-      margin: 0;
+      margin-right: 0;
+    }
+    .el-form-item {
+      display: inline-block;
+      position: relative;
+      padding-top: 0.5em;
+      .el-form-item__label {
+        position: absolute;
+        z-index: 9;
+        top: 0;
+        left: 8px;
+        font-size: 0.7em;
+        height: fit-content;
+        line-height: unset;
+        background: var(--gray-1);
+        color: var(--gray-7);
+        padding: 0 4px;
+      }
     }
   }
   &__toolbar {
@@ -560,6 +695,11 @@ defineExpose({
         margin-left: 2px;
         cursor: grab;
       }
+      .left {
+        flex: 1 1;
+        display: flex;
+        align-items: center;
+      }
       .right {
         color: var(--primary-color);
         cursor: pointer;
@@ -571,9 +711,14 @@ defineExpose({
       }
       .el-checkbox {
         margin-left: 16px;
+        flex: 1 1;
       }
       .el-checkbox__input.is-checked + .el-checkbox__label {
         color: var(--gray-9);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: 0;
+        flex: 1 1;
       }
       &:hover {
         background-color: #1890ff22;

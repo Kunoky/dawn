@@ -1,47 +1,47 @@
 <template>
-  <el-row v-loading="loading" :gutter="16">
+  <el-row :gutter="16" v-loading="loading">
     <el-col :span="6">
       <el-card>
         <template #header>个人信息</template>
         <ul>
           <li class="dp-f lh-1 bdb">
             <span class="cl-7">
-              <IconFont icon="user" />
+              <CIcon icon="ep:user" />
               用户名称
             </span>
             <span class="fx-1 ta-r">{{ data?.data.nickName }}</span>
           </li>
           <li class="dp-f lh-1 bdb">
             <span class="cl-7">
-              <i-ep-cellphone class="fs-6" />
+              <i-ep-cellphone />
               手机号码
             </span>
             <span class="fx-1 ta-r">{{ data?.data.phonenumber }}</span>
           </li>
           <li class="dp-f lh-1 bdb">
             <span class="cl-7">
-              <IconFont icon="mail" />
+              <CIcon icon="ep:message" />
               用户邮箱
             </span>
             <span class="fx-1 ta-r">{{ data?.data.email }}</span>
           </li>
           <li class="dp-f lh-1 bdb">
             <span class="cl-7">
-              <IconFont icon="fenzhi" />
+              <CIcon icon="ant-design:apartment-outlined" />
               所属部门
             </span>
             <span class="fx-1 ta-r">{{ data?.data.dept.deptName }}</span>
           </li>
           <li class="dp-f lh-1 bdb">
             <span class="cl-7">
-              <IconFont icon="shenfenshibierenzheng" />
+              <CIcon icon="ant-design:idcard-outlined" />
               所属角色
             </span>
             <span class="fx-1 ta-r">{{ data?.roleGroup }}</span>
           </li>
           <li class="dp-f lh-1 bdb">
             <span class="cl-7">
-              <i-ep-calendar class="fs-6" />
+              <i-ep-calendar />
               创建日期
             </span>
             <span class="fx-1 ta-r">{{ data?.data.createTime }}</span>

@@ -8,12 +8,12 @@
           <b class="bt-m pt-r">Permissions:</b>
           <div class="permission-group">
             <span><el-button v-permission type="primary">logged in</el-button></span>
-            <span><el-button v-permission:demo type="primary">demo</el-button></span>
-            <span><el-button v-permission:demo="0" type="primary">create</el-button></span>
-            <span><el-button v-permission:demo="1" type="primary">update</el-button></span>
-            <span><el-button v-permission:demo="2" type="primary">delete</el-button></span>
+            <span><el-button v-permission:Demo type="primary">demo</el-button></span>
+            <span><el-button v-permission:Demo="0" type="primary">create</el-button></span>
+            <span><el-button v-permission:Demo="1" type="primary">update</el-button></span>
+            <span><el-button v-permission:Demo="2" type="primary">delete</el-button></span>
             <span><el-button v-if="hasP(3)" type="primary">custom 1</el-button></span>
-            <span><el-button v-if="$hasPermission('demo', 4)" type="primary">custom 2</el-button></span>
+            <span><el-button v-if="$hasPermission('Demo', 4)" type="primary">custom 2</el-button></span>
           </div>
         </div>
       </div>
@@ -47,7 +47,7 @@ export default {
     }
   },
   setup() {
-    const hasP = usePermission('demo')
+    const hasP = usePermi('Demo')
     return {
       hasP,
     }

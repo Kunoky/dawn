@@ -1,13 +1,13 @@
 <template>
   <div class="pd-l ta-c">
-    <h2>404</h2>
-    <p>你要找的资源不存在</p>
+    <h2>401</h2>
+    <p>你无权访问</p>
     <RouterLink class="cl-p" to="/">回到首页</RouterLink>
   </div>
 </template>
 <script setup>
 definePage({
-  name: 'NotFound',
+  name: 'Unauthorized',
   meta: {
     public: true,
   },

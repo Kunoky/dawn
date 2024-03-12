@@ -1,47 +1,48 @@
 import { defineStore } from 'pinia'
 import * as service from '@/services/user'
-import { setToken, getToken, removeToken } from '@/utils/auth'
+import {
+  setToken,
+  getToken,
+  removeToken,
+  // ssoLogin, ssoLogout
+} from '@/utils/auth'
 import router, { dynamicRoutes } from '@/router'
 
+const menuCache = useStorageC('menu', [])
+const userCache = useStorageC('user', {})
 // 选项式样例
 export const useUserStore = defineStore('user', {
   state() {
-    const userStr = localStorage.getItem('user')
-    let user = null
-    if (userStr) {
-      user = JSON.parse(userStr)
-    }
     return {
-      user: user,
+      user: userCache.value,
       loading: {
         login: false,
         get: false,
       },
-      menu: [],
+      menu: menuCache.value,
       menuTree: [],
       keyMenu: {},
+      initialized: false,
     }
   },
   getters: {
     permission() {
-      // return this.user?.permission || {}
       return this.user?.permissions || []
     },
   },
   actions: {
     async init() {
-      // if (!this.user) return
-      if (!getToken()) return
+      if (!getToken()) return this.goLogin()
       await Promise.all([this.getUser(), this.listMenu()])
       this.genMenu()
+      this.initialized = true
+      return true
     },
     async login(user) {
       try {
         this.loading.login = true
         const res = await service.login(user)
         if (res.code === 200) {
-          // this.user = res.data
-          // localStorage.setItem('user', JSON.stringify(res.data))
           setToken(res.token)
           await this.init()
         }
@@ -52,8 +53,8 @@ export const useUserStore = defineStore('user', {
         this.loading.login = false
       }
     },
-    async getUser() {
-      if (this.user?.permissions) return this.user
+    async getUser(force) {
+      if (!force && this.user?.userId) return this.user
       this.loading.get = true
       const { user, roles, permissions, code } = await service.getUser()
       this.loading.get = false
@@ -63,37 +64,41 @@ export const useUserStore = defineStore('user', {
         permissions,
         roles,
       }
-      localStorage.setItem('user', JSON.stringify(this.user))
+      userCache.value = this.user
       return this.user
     },
-    logout(go2login) {
+    goLogin() {
+      // ssoLogin()
+      const route = router.currentRoute
+      router.push({
+        path: '/login',
+        query: { redirect: route.value.fullPath },
+      })
+    },
+    async logout(go2login) {
       removeToken()
-      localStorage.removeItem('user')
-      localStorage.removeItem('menu')
-      this.user = null
+      userCache.value = null
+      menuCache.value = []
+      this.user = {}
       this.menuTree = []
+      this.initialized = false
       const route = router.currentRoute
       if (go2login || !route.value.meta?.public) {
-        router.push({
-          path: '/login',
-          query: { redirect: route.value.fullPath },
-        })
+        this.goLogin()
+        // ssoLogout()
       }
     },
-    // hasPermission(name, num) {
-    //   if (!Object.hasOwnProperty.call(this.permission, name)) return false
-    //   if (num && !utils.hasBit(this.permission[name], num)) return false
-    //   return true
-    // },
     hasPermission(permissions) {
-      return this.permission.some(i => i === '*:*:*' || permissions?.includes(i))
+      return this.permission.some(i => permissions?.some(j => utils.wildMatch(j, i)))
     },
     async listMenu() {
+      if (menuCache.value.length) return
       const res = await service.listRoute()
       this.menu = res.data || []
     },
     transferRoute(routes, keyMenu = {}, pName = '') {
       routes.forEach(i => {
+        i.pName = pName
         i.name = pName + i.name
         keyMenu[i.name] = i
         if (i.children) {
