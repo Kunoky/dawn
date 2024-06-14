@@ -1,9 +1,9 @@
 <template>
-  <el-row :gutter="16">
-    <el-col :span="6">
+  <el-row :gutter="16" class="user-profile">
+    <el-col :span="24">
       <el-card>
         <template #header>个人信息</template>
-        <ul>
+        <ul class="info">
           <li class="dp-f lh-1 bdb">
             <span class="cl-7">
               <CIcon icon="ep:user" />
@@ -25,13 +25,13 @@
             </span>
             <span class="fx-1 ta-r">{{ user.email }}</span>
           </li>
-          <li class="dp-f lh-1 bdb">
+          <!-- <li class="dp-f lh-1 bdb">
             <span class="cl-7">
               <CIcon icon="ant-design:apartment-outlined" />
               所属部门
             </span>
             <span class="fx-1 ta-r">{{ user.orgName }}</span>
-          </li>
+          </li> -->
           <li class="dp-f lh-1 bdb">
             <span class="cl-7">
               <CIcon icon="ant-design:idcard-outlined" />
@@ -103,7 +103,7 @@
 definePage({
   meta: {
     title: '个人中心',
-    public: true,
+    // public: true,
   },
 })
 
@@ -192,3 +192,18 @@ const close = () => {
   router.back()
 }
 </script>
+<style lang="scss">
+.user-profile {
+  .info {
+    li {
+      span:first-child {
+        white-space: nowrap;
+        display: block;
+      }
+      span:last-child {
+        word-break: break-all;
+      }
+    }
+  }
+}
+</style>

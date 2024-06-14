@@ -51,7 +51,7 @@ export const useTagsViewStore = defineStore('tagsView', () => {
   }
   function closeAll() {
     list.value = [list.value[0]]
-    router.push({ name: 'Home' })
+    router.push({ name: list.value[0].name })
   }
   function checkCurrent(fallback = 0) {
     const currentAvailable = list.value.some(i => i.name === route.name)

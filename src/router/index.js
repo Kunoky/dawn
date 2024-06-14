@@ -1,7 +1,7 @@
 // import { h } from 'vue'
 import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router/auto'
 // import { ElLoading, ElMessage } from 'element-plus'
-import { getToken } from '@/utils/auth'
+// import { getToken } from '@/utils/auth'
 import { useUserStore } from '../store/user'
 
 const baseRoutes = [
@@ -56,16 +56,16 @@ router.beforeEach(async (to, from) => {
       target: '.el-main',
     })
   }, 200)
-  const hasToken = !!getToken()
-  if (to.path === '/login') {
-    if (hasToken) {
-      return '/'
-    } else {
-      return
-      // ssoLogin()
-      // return false
-    }
-  }
+  // const hasToken = !!getToken()
+  // if (to.path === '/login') {
+  //   if (hasToken) {
+  //     return '/'
+  //   } else {
+  //     return
+  //     // ssoLogin()
+  //     // return false
+  //   }
+  // }
   if (to.path !== '/home' && to.meta.public) return
   const userStore = useUserStore()
   if (!userStore.initialized) {
@@ -75,7 +75,7 @@ router.beforeEach(async (to, from) => {
   if (to.path === '/home') {
     if (!userStore.menuTree[0]) return '/401'
     const first = getFistRoute(userStore.menuTree[0])
-    return { name: first.name }
+    return first.path
   }
   const meta = userStore.keyMenu[to.name]?.meta
   to.meta = {

@@ -2,8 +2,10 @@ import axios from 'axios'
 import { useUserStore } from '@/store/user'
 import { getToken } from '@/utils/auth'
 import { i18n } from '@/i18nSetup'
+import { endlessCheck } from './common'
 // import axiosTauriApiAdapter from 'axios-tauri-api-adapter'
 
+const endlessChecker = endlessCheck()
 // create an axios instance
 const service = axios.create({
   baseURL: import.meta.env.VITE_SERVER_PATH, // url = base url + request url
@@ -16,6 +18,12 @@ const service = axios.create({
 // request interceptor
 service.interceptors.request.use(
   config => {
+    if (!config.noEndlessCheck && !endlessChecker(config.url + JSON.stringify(config.params)))
+      return Promise.reject({
+        config,
+        status: 423,
+        message: '频繁请求已被取消',
+      })
     // do something before request is sent
     config.headers = {
       Authorization: getToken(),
@@ -24,9 +32,11 @@ service.interceptors.request.use(
       'Content-Type': 'application/json;charset=utf-8',
       ...config.headers,
     }
-    if (config.method === 'get' && config.params) {
+    if (config.params) {
       for (let key in config.params) {
-        if (Array.isArray(config.params[key])) {
+        if (config.params[key] === '') {
+          config.params[key] = undefined
+        } else if (Array.isArray(config.params[key])) {
           config.params[key] = config.params[key].toString()
         }
       }

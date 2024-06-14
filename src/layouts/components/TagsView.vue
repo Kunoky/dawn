@@ -1,13 +1,7 @@
 <template>
   <div class="tags-view dp-f" @click.right="handleRightClick" ref="elRef">
-    <div class="tags fx-1 of-a ws-nw">
-      <router-link
-        v-for="(i, index) in store.list"
-        :to="{ name: i.name }"
-        :key="i.name"
-        :data-index="index"
-        class="tag-link"
-      >
+    <div class="tags fx-1 ws-nw">
+      <router-link v-for="(i, index) in list" :to="{ name: i.name }" :key="i.name" :data-index="index" class="tag-link">
         <el-tag :closable="!i.meta.affix && !!index" type="info" size="large" @close.prevent="store.close(index)">
           {{ i.meta.title }}
         </el-tag>
@@ -26,12 +20,15 @@
 <script setup>
 const route = useRoute()
 const store = useTagsViewStore()
+const list = computed(() => store.list.filter(i => i.meta.visible))
 watch(
   route,
   v => {
     store.add(v)
     nextTick(() => {
-      const active = elRef.value.querySelector('.router-link-exact-active > .el-tag.el-tag--info')
+      const active =
+        elRef.value.querySelector('.router-link-exact-active > .el-tag.el-tag--info') ||
+        elRef.value.querySelector('.router-link-active > .el-tag.el-tag--info')
       active?.scrollIntoView()
     })
   },
@@ -69,9 +66,17 @@ function handleMenuClick(index) {
 .tags-view {
   line-height: 40px;
   padding: 0 var(--size-m);
-  .tags > a + a {
-    margin-left: var(--size-s);
-    display: inline-block;
+  .tags {
+    height: 40px;
+    overflow: hidden;
+    &:hover {
+      overflow-y: hidden;
+      overflow-x: overlay;
+    }
+    & > a + a {
+      margin-left: var(--size-s);
+      display: inline-block;
+    }
   }
   .el-tag.el-tag--info {
     background-color: var(--gray-2);
@@ -82,6 +87,9 @@ function handleMenuClick(index) {
     .el-tag__close {
       color: var(--gray-1);
     }
+  }
+  .router-link-active:not(.router-link-exact-active) > .el-tag.el-tag--info {
+    color: var(--primary-color);
   }
 }
 </style>

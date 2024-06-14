@@ -26,12 +26,14 @@
       <el-form-item label="菜单权限">
         <el-checkbox @change="handleCheckedTreeExpand">展开/折叠</el-checkbox>
         <el-checkbox @change="handleCheckedTreeNodeAll">全选/全不选</el-checkbox>
+        <el-checkbox v-model="checkStrictly">父子联动</el-checkbox>
         <el-tree
           class="wd-100 bd"
           :data="menuTree"
           show-checkbox
           ref="menuRef"
           node-key="menuId"
+          :check-strictly="!checkStrictly"
           empty-text="加载中，请稍候"
           :props="{ label: 'menuName', children: 'children' }"
         ></el-tree>
@@ -64,6 +66,7 @@ const rules = {
   roleSort: [{ required: true, message: '角色顺序不能为空', trigger: 'blur' }],
 }
 
+const checkStrictly = ref(false)
 const loading = ref(false)
 const formRef = ref()
 const form = ref({})

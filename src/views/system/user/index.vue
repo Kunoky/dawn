@@ -29,22 +29,18 @@
       id="systemUser"
     >
       <el-table-column label="用户编号" prop="userId" />
-      <el-table-column label="用户名称" prop="userName" :show-overflow-tooltip="true" />
-      <el-table-column label="登录名称" prop="loginName" :show-overflow-tooltip="true" />
-      <el-table-column label="区域" prop="area" :formatter="$dictFormatter('regionalStatus')">
-        <!-- <template #default="{ row }">
-          {{ regionalStatus.kv[row.area] }}
-        </template> -->
-      </el-table-column>
+      <el-table-column label="用户名称" prop="userName" />
+      <el-table-column label="登录名称" prop="loginName" />
+      <el-table-column label="角色" prop="roleName" />
       <el-table-column label="手机号码" prop="phoneNumber" width="120" />
       <el-table-column label="状态" prop="status">
         <template #default="{ row }">
           <el-switch
-            v-show="!row.isSuperAdmin"
-            v-model="row.status"
+            :disabled="!!row.isSuperAdmin || !userStore.hasPermission(['system:user:edit'])"
+            :model-value="row.status"
             :active-value="true"
             :inactive-value="false"
-            @click="handleStatusChange(row)"
+            @change="handleStatusChange(row)"
           ></el-switch>
         </template>
       </el-table-column>
@@ -55,7 +51,7 @@
       </el-table-column>
       <el-table-column label="操作" width="150" class-name="small-padding fixed-width">
         <template #default="{ row }">
-          <template v-if="row.userName !== 'admin'">
+          <template v-if="!row.isSuperAdmin">
             <el-tooltip :content="$t('common.edit')" placement="top">
               <el-button link type="info" @click="handleEdit(row)" v-hasPermi="['system:user:edit']">
                 <i-ep-edit />
@@ -114,6 +110,7 @@ const visible = reactive({
   config: false,
 })
 
+const userStore = useUserStore()
 const status = useDict('status')
 // const regionalStatus = useDict('regionalStatus')
 
@@ -181,7 +178,7 @@ const params = reactive({
 // }
 
 const handleStatusChange = row => {
-  ElMessageBox.confirm(i18n.t('tip.confirm'), i18n.t('common.warning'), {
+  return ElMessageBox.confirm(i18n.t('tip.confirm'), i18n.t('common.warning'), {
     confirmButtonText: i18n.t('common.confirm'),
     cancelButtonText: i18n.t('common.cancel'),
     type: 'warning',
@@ -190,7 +187,7 @@ const handleStatusChange = row => {
       ...row,
       deleting: true,
     }
-    return req.put('user/status', { userId: row.userId, status: row.status }).finally(refresh)
+    return req.put('user/status', { userId: row.userId, status: !row.status }).finally(refresh)
   })
 }
 const handleResetPwd = row => {

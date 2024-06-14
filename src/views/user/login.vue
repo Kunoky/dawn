@@ -5,13 +5,13 @@ const { loading } = storeToRefs(userStore)
 const loginFormInstance = ref()
 const appName = __APP_NAME__
 const loginForm = reactive({
-  loginName: 'admin',
-  password: 'Admin123456',
+  username: '',
+  password: '',
   // uuid: '',
   // code: '',
 })
 const loginRules = {
-  loginName: [{ required: true, trigger: 'blur', message: '请输入用户名称' }],
+  username: [{ required: true, trigger: 'blur', message: '请输入用户名称' }],
   password: [{ required: true, trigger: 'blur', message: '请输入登录密码' }],
   // code: [{ required: true, trigger: 'blur', message: '请输入验证码' }],
 }
@@ -63,8 +63,8 @@ const handleLogin = () => {
         <div class="login-form">
           <h2>{{ appName }} 登录</h2>
           <el-form ref="loginFormInstance" :model="loginForm" :rules="loginRules" @keyup.enter="handleLogin">
-            <el-form-item prop="loginName">
-              <el-input v-model="loginForm.loginName" type="text" placeholder="登录名">
+            <el-form-item prop="username">
+              <el-input v-model="loginForm.username" type="text" placeholder="登录名">
                 <template #prefix><i-ep-user /></template>
               </el-input>
             </el-form-item>
@@ -103,7 +103,7 @@ section {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: linear-gradient(#c2a6a6 0, #3d3a68 40%);
+  background: linear-gradient(#f4f4f5 0, var(--primary-color) 75%);
   // .color>div {
   //   position: absolute;
   //   // safari卡顿
@@ -251,6 +251,9 @@ section {
   :deep(.el-input__prefix) {
     color: #fff;
     left: 8px;
+  }
+  :deep(.el-input .el-input__password) {
+    color: #fff;
   }
   :deep(.el-checkbox__input.is-checked + .el-checkbox__label),
   :deep(.el-checkbox__label) {

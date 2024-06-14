@@ -5,7 +5,7 @@ import MenuItemRecursive from '@/components/MenuItemRecursive.vue'
 import TagsView from './components/TagsView.vue'
 
 const userStore = useUserStore()
-// const appStore = useAppStore()
+const appStore = useAppStore()
 const tagsViewStore = useTagsViewStore()
 const route = useRoute()
 const router = useRouter()
@@ -13,9 +13,29 @@ const i18n = useI18n()
 const appName = __APP_NAME__
 const active = ref('')
 const isCollapse = ref(false)
-// const { lang, langs, loading } = storeToRefs(appStore)
+const { lang, langs, loading } = storeToRefs(appStore)
 const { user, menuTree, idMenu, keyMenu } = storeToRefs(userStore)
 const breadcrumb = ref([])
+const mitter = useMitt()
+const mainRef = ref()
+let mainSize = ''
+const timer = setInterval(() => {
+  if (!mainRef.value) return
+  const { scrollHeight, scrollWidth } = mainRef.value.$el
+  const size = {
+    ...mainRef.value.$el.getBoundingClientRect().toJSON(),
+    scrollHeight,
+    scrollWidth,
+  }
+  const sizeStr = JSON.stringify(size)
+  if (sizeStr !== mainSize) {
+    mainSize = sizeStr
+    mitter.emit('main-size-change', size)
+  }
+}, 300)
+onBeforeUnmount(() => {
+  clearInterval(timer)
+})
 
 watch(
   route,
@@ -44,9 +64,9 @@ function getBreadcrumb(menu, menus = []) {
   }
   return menus
 }
-// const handleLangChange = v => {
-//   appStore.setLang(v)
-// }
+const handleLangChange = v => {
+  appStore.setLang(v)
+}
 
 const userOptions = [
   {
@@ -79,7 +99,7 @@ const handleUserCommand = e => {
   }
 }
 
-// const { isDark, toggle } = useTheme()
+const { isDark, toggle } = useTheme()
 
 // 懒加载组件外面裹了一层，导致keepAlive无法获取到name进行缓存
 const setComponentName = (c, name) => {
@@ -95,10 +115,10 @@ const setComponentName = (c, name) => {
       :width="isCollapse ? '64px' : '200px'"
       class="base-layout_aside ht-100vh dp-f fd-c"
     >
-      <div class="bgc-p fs-2 fw-b dp-f ai-c jc-c logo">
-        <img v-if="isCollapse" src="/logo-s.png" class="mgv-s" />
+      <div class="fs-2 fw-b dp-f ai-c jc-c logo">
+        <img v-if="isCollapse" src="/logo-s.png" class="mgv-s" alt="logo" />
         <template v-else>
-          <img src="/logo.png" class="mgr-m" />
+          <img src="/logo.png" class="mgr-m" alt="logo" />
           <span>{{ appName }}</span>
         </template>
       </div>
@@ -122,13 +142,13 @@ const setComponentName = (c, name) => {
             <el-breadcrumb-item v-for="i in breadcrumb" :key="i.name">{{ i.meta.title }}</el-breadcrumb-item>
           </el-breadcrumb>
           <div class="">
-            <!-- <el-button link @click="toggle()" :aria-description="isDark ? $t('theme.light') : $t('theme.dark')">
+            <el-button link @click="toggle()" :aria-description="isDark ? $t('theme.light') : $t('theme.dark')">
               <i-ep-sunny v-if="isDark"></i-ep-sunny>
               <i-ep-moon v-else></i-ep-moon>
             </el-button>
             <CDropdown :modelValue="lang" @update:modelValue="handleLangChange" :options="langs">
               <span v-loading="loading.lang" class="mgl-s">{{ $t('lang') }}</span>
-            </CDropdown> -->
+            </CDropdown>
             <CDropdown v-if="user.userId" @update:modelValue="handleUserCommand" :options="userOptions">
               <span class="cs-p">{{ user.userName }}</span>
             </CDropdown>
@@ -137,7 +157,7 @@ const setComponentName = (c, name) => {
         </div>
         <TagsView />
       </el-header>
-      <el-main class="base-layout_main">
+      <el-main ref="mainRef" class="base-layout_main">
         <router-view v-slot="{ Component, route }">
           <transition name="fade-transform" mode="out-in">
             <keep-alive :include="tagsViewStore.names">
@@ -180,6 +200,7 @@ const setComponentName = (c, name) => {
     .logo {
       height: 60px;
       color: #fff;
+      background: #e71316;
       img {
         height: 22px;
       }
@@ -214,8 +235,7 @@ const setComponentName = (c, name) => {
   }
   .c-table {
     .c-table__form,
-    .c-table__main,
-    .el-pagination {
+    .c-table__main {
       background-color: var(--gray-1);
       border-radius: 2px;
       padding-left: var(--size-m);
@@ -225,6 +245,11 @@ const setComponentName = (c, name) => {
     .c-table__form {
       padding-top: var(--size-m);
       margin-bottom: var(--size-m);
+    }
+    &__main .el-table {
+      .el-scrollbar__bar.is-horizontal {
+        height: 12px;
+      }
     }
     .c-table__toolbar {
       padding-top: var(--size-m);

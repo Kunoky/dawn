@@ -42,7 +42,7 @@ a + .el-button {
 }
 
 :root {
-  --primary-color: #e71316;
+  // --primary-color: #e71316;
   --bgc: var(--gray-9);
 }
 
@@ -56,4 +56,23 @@ a + .el-button {
 
 .bs-l {
   box-shadow: 0 2px 24px var(--gray-6);
+}
+
+.el-form--inline .el-form-item__content {
+  & > .el-select,
+  & > .el-input {
+    width: 200px;
+  }
+}
+
+div.el-dialog {
+  max-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  margin: 50vh auto -50vh auto;
+  margin-top: 50vh;
+  transform: translateY(-50%);
+  .el-dialog__body {
+    overflow: auto;
+  }
 }

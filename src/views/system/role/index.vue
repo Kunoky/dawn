@@ -14,6 +14,7 @@
       <el-table-column label="状态" width="100">
         <template #default="{ row }">
           <el-switch
+            :disabled="!!row.isSuperAdmin || !userStore.hasPermission(['system:user:edit'])"
             v-model="row.status"
             :active-value="true"
             :inactive-value="false"
@@ -29,7 +30,7 @@
       </el-table-column>
       <el-table-column label="操作" class-name="small-padding fixed-width" width="80">
         <template #default="{ row }">
-          <el-tooltip content="修改" placement="top" v-if="row.roleId !== 1">
+          <el-tooltip content="修改" placement="top" v-if="!row.isSuperAdmin">
             <el-button link type="info" @click="handleEdit(row)" v-hasPermi="['system:role:edit']">
               <i-ep-edit />
             </el-button>
@@ -93,6 +94,7 @@ const visible = reactive({
   permission: false,
 })
 
+const userStore = useUserStore()
 const status = useDict('status')
 
 const handleAdd = () => {

@@ -2,21 +2,21 @@
   <el-upload
     class="uploadList"
     ref="upload"
-    :action="url + obj2params(params)"
+    :action="$baseUrl + path + '?' + $utils.obj2params(params)"
     :headers="headers"
-    drag
+    :drag="drag && !disabled"
+    :disabled="disabled"
     :on-error="handleError"
-    :limit="limit"
     :on-exceed="handleExceed"
-    :on-preview="handlePreview"
     :before-upload="beforeUpload"
     :on-remove="handleRemove"
     :on-success="handleSuccess"
+    :on-preview="onPreview"
     :accept="accept"
     v-bind="$attrs"
     v-model:file-list="fileList"
   >
-    <template #trigger>
+    <template v-if="!disabled" #trigger>
       <slot name="trigger">
         <el-icon class="el-icon--upload"><i-ep-upload-filled /></el-icon>
         <div class="el-upload__text">
@@ -29,7 +29,7 @@
     <template #file>
       <slot name="file"></slot>
     </template>
-    <template #tip>
+    <template v-if="!disabled" #tip>
       <slot name="tip">
         <div class="el-upload__tip">文件大小不超过10MB</div>
       </slot>
@@ -42,7 +42,7 @@ import { getToken } from '@/utils/auth'
 const props = defineProps({
   params: {
     type: Object,
-    required: true,
+    default: () => ({}),
   },
   modelValue: {
     type: Array,
@@ -51,15 +51,32 @@ const props = defineProps({
   accept: {
     type: String,
   },
-  limit: {
-    type: Number,
-    default: 5,
+  path: {
+    type: String,
+    default: '/attachment/upload',
+  },
+  onPreview: {
+    type: Function,
+    default: file => {
+      window.open(import.meta.env.VITE_SERVER_PATH + (file.path || file.url))
+    },
+  },
+  onExceed: {
+    type: Function,
+  },
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
+  drag: {
+    type: Boolean,
+    default: true,
   },
 })
 
-const emit = defineEmits(['update:modelValue'])
-const { obj2params } = utils
-const url = import.meta.env.VITE_SERVER_PATH + '/attachment/upload?'
+const attrs = useAttrs()
+
+const emit = defineEmits(['update:modelValue', 'success'])
 const headers = {
   Authorization: 'Bearer ' + getToken(),
   'Call-Source': 'WEB',
@@ -72,8 +89,9 @@ watch(
   fileList,
   v => {
     v.forEach(i => {
-      if (i.status === 'success') {
-        Object.assign(i, i.response?.data)
+      if (i.status === 'success' && i.response) {
+        // Object.assign(i, i.response?.data)
+        i.url = i.response.data
       }
     })
     emit('update:modelValue', v)
@@ -85,6 +103,9 @@ watch(
   () => props.modelValue,
   v => {
     fileList.value = v
+  },
+  {
+    immediate: true,
   }
 )
 function handleError(e) {
@@ -95,10 +116,6 @@ function handleError(e) {
     console.error(e)
   }
   ElMessage.error(msg)
-}
-
-const handlePreview = file => {
-  window.open(import.meta.env.VITE_SERVER_PATH + file.path)
 }
 
 function beforeUpload(file) {
@@ -114,25 +131,20 @@ function beforeUpload(file) {
 }
 
 function handleRemove(file) {
-  // console.log(file.id)
   file.id && req.delete('attachment/' + file.id)
 }
 function handleSuccess(res) {
   if (res.code === 200) {
     ElMessage.success('上传成功!')
+    emit('success', res, fileList)
   }
 }
-function handleExceed() {
-  ElMessage.error(`只能上传${props.limit} 个文件!`)
+function handleExceed(...args) {
+  props.onExceed ? props.onExceed(...args) : ElMessage.error(`只能上传${attrs.limit} 个文件!`)
 }
 
-// 清除附件列表
-const say = () => {
-  upload.value.clearFiles()
-}
 defineExpose({
   upload,
-  say,
 })
 </script>
 

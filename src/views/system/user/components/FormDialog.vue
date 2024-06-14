@@ -26,7 +26,7 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="邮箱" prop="email">
-            <el-input v-model="form.email" placeholder="请输入邮箱" maxlength="50" />
+            <el-input v-model="form.email" placeholder="请输入邮箱" maxlength="50" :disabled="!!form.userId" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -50,6 +50,11 @@
             </el-radio-group>
           </el-form-item>
         </el-col>
+        <el-col :span="12">
+          <el-form-item label="登录名称" prop="loginName">
+            <el-input v-model="form.loginName" placeholder="请输入登录名称" maxlength="30" disabled />
+          </el-form-item>
+        </el-col>
       </el-row>
       <!-- <el-row v-if="!form.userId">
         <el-col :span="12">
@@ -71,25 +76,25 @@
       </el-row> -->
       <el-row>
         <el-col :span="12">
-          <el-form-item label="角色">
+          <el-form-item label="角色" prop="roleIds">
             <el-select v-model="form.roleIds" multiple placeholder="请选择">
               <el-option v-for="i in roleOptions" :key="i.roleId" :label="i.roleName" :value="i.roleId"></el-option>
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="12">
+        <!-- <el-col :span="12">
           <el-form-item label="区域">
             <el-select v-model="form.area" placeholder="请选择">
               <el-option v-for="i in regionalStatus.options" :key="i.value" v-bind="i"></el-option>
             </el-select>
           </el-form-item>
-        </el-col>
+        </el-col> -->
         <!-- <el-col :span="12">
           <el-form-item label="ID" prop="fseId">
             <el-input v-model="form.fseId" placeholder="请输入FSE ID" />
           </el-form-item>
         </el-col> -->
-        <el-col :span="12">
+        <!-- <el-col :span="12">
           <el-form-item label="Work Center" prop="fseWorkCenter">
             <el-input v-model="form.fseWorkCenter" placeholder="请输入FSE work center" />
           </el-form-item>
@@ -112,7 +117,7 @@
           <el-form-item label="Team" prop="team">
             <el-input v-model="form.team" placeholder="请输入team" />
           </el-form-item>
-        </el-col>
+        </el-col> -->
       </el-row>
       <el-row>
         <el-col :span="24">
@@ -156,7 +161,8 @@ const rules = {
     { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] },
   ],
   phoneNumber: [{ pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/, message: '请输入正确的手机号码', trigger: 'blur' }],
-  employeeId: [{ required: true, message: '员工ID不能为空', trigger: 'blur' }],
+  // employeeId: [{ required: true, message: '员工ID不能为空', trigger: 'blur' }],
+  roleIds: [{ required: true, message: '请分配角色', trigger: 'blur' }],
 }
 
 const loading = ref(false)
@@ -165,8 +171,8 @@ const form = ref({})
 
 const gender = useDict('gender')
 const status = useDict('status')
-const bool = useDict('bool')
-const regionalStatus = useDict('regionalStatus')
+// const bool = useDict('bool')
+// const regionalStatus = useDict('regionalStatus')
 
 watch(
   () => props.modelValue,

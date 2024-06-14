@@ -9,27 +9,22 @@ const loader = {
   },
 }
 const loading = {}
-async function getData(key) {
+async function getData(key, force) {
   let data = cache[key]
-  if (!data) {
-    if (loading[key]) {
-      return await new Promise(resolve => {
-        const timer = setInterval(() => {
-          if (!loading[key]) {
-            resolve(cache[key])
-            clearInterval(timer)
-          }
-        }, 20)
-      })
-    }
-    loading[key] = true
+  if (!data || force) {
     try {
-      data = await loader[key]()
+      if (!loading[key]?.pending) {
+        loading[key] = loader[key]()
+        loading[key].pending = true
+      }
+      data = await loading[key]
     } catch (e) {
-      console.error('get catch data: ', e)
+      console.error('get cache data for key ', key, ': ', e)
     }
-    cache[key] = data
-    loading[key] = false
+    if (loading[key].pending) {
+      cache[key] = data
+      loading[key].pending = false
+    }
   }
   return data
 }
@@ -50,11 +45,15 @@ export function useCacheData(key, options = {}) {
   }
   const data = computed(() => {
     let d = cache[key]
-    if (!d && !loading[key]) {
+    if (!d && !loading[key]?.pending) {
       getData(key)
     }
     d ??= options.defaultValue
     return d
   })
   return data
+}
+
+export function updateCacheData(key) {
+  return getData(key, true)
 }

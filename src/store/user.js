@@ -1,11 +1,6 @@
 import { defineStore } from 'pinia'
 import * as service from '@/services/user'
-import {
-  setToken,
-  getToken,
-  removeToken,
-  // ssoLogin, ssoLogout
-} from '@/utils/auth'
+import { setToken, getToken, removeToken, ssoLogin, ssoLogout } from '@/utils/auth'
 import router, { dynamicRoutes } from '@/router'
 
 const menuCache = useStorageC('menu', [])
@@ -33,6 +28,7 @@ export const useUserStore = defineStore('user', {
       await Promise.all([this.getUser(), this.listMenu()])
       this.genMenu()
       this.initialized = true
+      return true
     },
     async login(user) {
       try {
@@ -60,12 +56,15 @@ export const useUserStore = defineStore('user', {
       return this.user
     },
     goLogin() {
-      // ssoLogin()
-      const route = router.currentRoute
-      router.push({
-        path: '/login',
-        query: { redirect: route.value.fullPath },
-      })
+      if (import.meta.env.VITE_OPEN_SSO) {
+        ssoLogin()
+      } else {
+        const route = router.currentRoute
+        router.push({
+          path: '/login',
+          query: { redirect: route.value.fullPath },
+        })
+      }
     },
     async logout(go2login) {
       removeToken()
@@ -76,18 +75,25 @@ export const useUserStore = defineStore('user', {
       this.initialized = false
       const route = router.currentRoute
       if (go2login || !route.value.meta?.public) {
-        this.goLogin()
-        // ssoLogout()
+        if (import.meta.env.VITE_OPEN_SSO) {
+          ssoLogout()
+        } else {
+          await req.post('/auth/logout')
+          this.goLogin()
+        }
       }
     },
     hasPermission(permissions) {
       return this.permission.some(i => permissions?.some(j => utils.wildMatch(j, i)))
     },
+    hasRole(roles) {
+      return roles.some(i => this.user.roles.includes(i)) || this.user.roles.includes('admin')
+    },
     async listMenu() {
       if (menuCache.value.length) return
       const res = await service.listRoute()
       this.menu = res.data
-      // menuCache.value = res.data
+      menuCache.value = res.data
     },
     genMenu() {
       const perms = [],
@@ -110,7 +116,7 @@ export const useUserStore = defineStore('user', {
               visible: i.visible,
             },
           }
-          i.status && i.visible && menus.push(menuItem)
+          i.status && menus.push(menuItem)
           if (i.menuType === 1) {
             keyMenu[menuItem.name] = menuItem
           }

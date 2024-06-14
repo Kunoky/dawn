@@ -1,5 +1,5 @@
 <template>
-  <el-sub-menu v-if="data.children" :index="data.name">
+  <el-sub-menu v-if="hasChildren" :index="data.name">
     <template #title>
       <CIcon :icon="data.meta.icon" />
       <span>{{ data.meta.title || data.name }}</span>
@@ -25,12 +25,13 @@
   </router-link>
 </template>
 <script setup>
-defineProps({
+const props = defineProps({
   data: {
     type: Object,
     required: true,
   },
 })
+const hasChildren = computed(() => props.data.children?.filter(i => i.meta.visible).length)
 </script>
 <style>
 .el-menu-item .c-icon,

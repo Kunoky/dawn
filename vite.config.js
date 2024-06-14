@@ -46,7 +46,7 @@ const plugins = [
         '@/utils/common': [['*', 'utils']],
       },
       {
-        '@/utils/dict': ['useDict'],
+        '@/utils/dict': ['useDict', ['_dict', 'dict']],
       },
       {
         '@/utils/request': [['default', 'req']],
@@ -124,10 +124,7 @@ export default defineConfig({
     // strictPort: true,
     proxy: {
       '^/api': {
-        // target: 'http://10.71.4.66:5006',
-        // target: 'http://10.71.15.61:8090',
-        // target: 'http://10.71.9.16:8090',
-        target: 'http://10.71.9.27:8090',
+        target: 'http://10.71.4.66:5008',
         changeOrigin: true,
         rewrite: path => path.replace(/^\/api/, '/api'),
       },
@@ -146,7 +143,7 @@ export default defineConfig({
     },
   },
   define: {
-    __APP_NAME__: '"GSS"', // 项目名
+    __APP_NAME__: '"Dawn"', // 项目名
     __TOKEN_KEY__: '"satoken"', // token键名，localStorage
   },
   test: {
