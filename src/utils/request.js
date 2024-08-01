@@ -33,11 +33,12 @@ service.interceptors.request.use(
       ...config.headers,
     }
     if (config.params) {
+      config.params = { ...config.params }
       for (let key in config.params) {
         if (config.params[key] === '') {
           config.params[key] = undefined
         } else if (Array.isArray(config.params[key])) {
-          config.params[key] = config.params[key].toString()
+          config.params[key] = config.params[key].length ? config.params[key].toString() : undefined
         }
       }
     }

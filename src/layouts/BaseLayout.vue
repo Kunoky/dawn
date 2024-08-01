@@ -19,8 +19,7 @@ const breadcrumb = ref([])
 const mitter = useMitt()
 const mainRef = ref()
 let mainSize = ''
-const timer = setInterval(() => {
-  if (!mainRef.value) return
+const resizeObserver = new ResizeObserver(() => {
   const { scrollHeight, scrollWidth } = mainRef.value.$el
   const size = {
     ...mainRef.value.$el.getBoundingClientRect().toJSON(),
@@ -32,9 +31,13 @@ const timer = setInterval(() => {
     mainSize = sizeStr
     mitter.emit('main-size-change', size)
   }
-}, 300)
+})
+
+onMounted(() => {
+  resizeObserver.observe(mainRef.value.$el)
+})
 onBeforeUnmount(() => {
-  clearInterval(timer)
+  resizeObserver?.disconnect()
 })
 
 watch(

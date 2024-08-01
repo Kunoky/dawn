@@ -10,7 +10,6 @@
       ref="formRef"
     >
       <slot name="form" :form="form"></slot>
-      <slot v-if="visible.moreForm" name="moreForm" :form="form"></slot>
       <el-form-item class="btns">
         <el-button type="primary" @click="handleQuery" :loading="pageRef?.loading">{{ $t('common.query') }}</el-button>
         <el-button @click="handleQueryReset" :disabled="pageRef?.loading">{{ $t('common.reset') }}</el-button>
@@ -18,8 +17,11 @@
           {{ visible.moreForm ? $t('common.collapse') : $t('common.expand') }}
         </el-button>
       </el-form-item>
+      <div v-if="visible.moreForm" class="pt-a lt-0 bgc-1 zi-9 bs-s pdh-m">
+        <slot name="moreForm" :form="form"></slot>
+      </div>
     </el-form>
-    <div class="c-table__main">
+    <div class="c-table__main" @mouseenter="hideMoreForm">
       <div v-if="toolStatus.bar" ref="toolbarRef" class="c-table__toolbar">
         <div v-if="toolStatus.title" class="c-table__title">
           <slot name="title">{{ title }}</slot>
@@ -47,6 +49,20 @@
               </template>
             </el-button>
           </el-tooltip>
+          <CDropdown
+            v-if="toolStatus.size"
+            v-model="tableSize"
+            :options="$tm('component.CTable.sizes')"
+            trigger="click"
+          >
+            <el-button link :aria-description="$t('component.CTable.size')">
+              <template #icon>
+                <el-tooltip :content="$t('component.CTable.size')" placement="top">
+                  <CIcon icon="ant-design:column-height-outlined" />
+                </el-tooltip>
+              </template>
+            </el-button>
+          </CDropdown>
           <el-tooltip v-if="toolStatus.save && id" :content="$t('component.CTable.save')" placement="top">
             <el-button link @click="handleSave" :aria-description="$t('component.CTable.save')">
               <template #icon>
@@ -54,7 +70,7 @@
               </template>
             </el-button>
           </el-tooltip>
-          <el-popover v-if="toolStatus.setting" trigger="click" width="280" popper-class="c-table__setting">
+          <el-popover v-if="toolStatus.setting" trigger="click" width="240" popper-class="c-table__setting">
             <template #reference>
               <el-button link :aria-description="$t('component.CTable.setting')">
                 <template #icon>
@@ -64,23 +80,7 @@
                 </template>
               </el-button>
             </template>
-            <div class="pdt-s">
-              <h4 class="dp-f jc-sb ai-c">
-                <span>{{ $t('component.CTable.size') }}</span>
-                <el-radio-group v-model="tableConfig.size">
-                  <el-radio v-for="(v, k) in $tm('component.CTable.sizes')" :label="k" :key="k" size="small">
-                    {{ v }}
-                  </el-radio>
-                </el-radio-group>
-              </h4>
-              <h4 class="dp-f jc-sb ai-c">
-                <span>{{ $t('component.CTable.border') }}</span>
-                <el-checkbox v-model="tableConfig.border"></el-checkbox>
-              </h4>
-              <h4 class="dp-f jc-sb ai-c">
-                <span>{{ $t('component.CTable.stripe') }}</span>
-                <el-checkbox v-model="tableConfig.stripe"></el-checkbox>
-              </h4>
+            <div>
               <h4>
                 <el-checkbox
                   v-model="columnCheckAll"
@@ -154,7 +154,7 @@
             </div>
           </el-popover>
         </div>
-        <el-dialog v-model="visible.export" :title="$t('common.export')">
+        <c-dialog v-bind="$ElConfig.dialog" v-model="visible.export" :title="$t('common.export')">
           <div>
             {{ $t('common.total') }}:
             <span class="cl-p">{{ exportForm.total }}</span>
@@ -173,7 +173,7 @@
               <el-button type="primary" @click="exportData">{{ $t('common.confirm') }}</el-button>
             </span>
           </template>
-        </el-dialog>
+        </c-dialog>
       </div>
       <PageWrapper ref="pageRef" v-bind="pageConf" :params="mergedParams" :default-size="defaultSize">
         <template v-slot="{ data, loading }">
@@ -182,11 +182,10 @@
             :data="data"
             v-loading="loading"
             :maxHeight="maxHeight"
+            border
             v-bind="{ ...$attrs, class: null }"
             :default-sort="cachedOrder"
-            :size="tableConfig.size"
-            :stripe="tableConfig.stripe"
-            :border="tableConfig.border"
+            :size="tableSize"
             @sort-change="handleSortChange"
           >
             <el-table-column v-if="modelValue" width="40" fixed="left">
@@ -220,6 +219,7 @@
 </template>
 <script setup>
 import PageWrapper from './PageWrapper.vue'
+import CDropdown from './CDropdown.vue'
 import FW from './FW.jsx'
 import Draggable from 'vuedraggable'
 import { cloneDeep } from 'lodash-es'
@@ -264,14 +264,6 @@ const props = defineProps({
   size: {
     type: String,
     default: 'small',
-  },
-  stripe: {
-    type: Boolean,
-    default: false,
-  },
-  border: {
-    type: Boolean,
-    default: true,
   },
   title: String, // 标题
   id: String, // 组件id，提供时可以对form，columnSetting数据进行缓存
@@ -321,7 +313,7 @@ const formRef = ref()
 const toolbarRef = ref()
 const pageRef = ref()
 const tableRef = ref()
-// const tableSize = ref(props.size)
+const tableSize = ref(props.size)
 const refresh = () => pageRef.value.refresh()
 const refreshCurrent = () => pageRef.value.run()
 
@@ -333,11 +325,6 @@ let cachedData = {
     showQuery: null,
     mergedParams: null,
     defaultOrder: undefined,
-    tableConfig: {
-      size: props.size,
-      stripe: props.stripe,
-      border: props.border,
-    },
   },
 }
 const CACHE_KEY = 'c-table__' + props.id
@@ -349,8 +336,6 @@ const defaultSize = ref(cachedData.value.defaultSize)
 const form = reactive(cachedData.value.form)
 const mergedParams = reactive(cachedData.value.mergedParams || { ...props.params, ...form })
 const showQuery = ref(cachedData.value.showQuery === false ? false : !!useSlots().form)
-const tableConfig = reactive(cachedData.value.tableConfig)
-
 const handleQuery = () => {
   // 回车事件
   if (pageRef.value.loading) return
@@ -522,7 +507,6 @@ const handleSave = () => {
     showQuery: showQuery.value,
     mergedParams,
     defaultOrder: cachedOrder.value,
-    tableConfig,
   }
   ElMessage.success(i18n.t('tip.success'))
 }
@@ -683,19 +667,22 @@ onDeactivated(() => {
 const maxHeight = ref(null)
 
 function updateHeight() {
-  if (!props.fixedHeader || !isActivated) return
-  const rect = cTableRef.value?.getBoundingClientRect()
-  const body = document.body.getBoundingClientRect()
-  const form = formRef.value?.$el?.getBoundingClientRect()
-  const toolbar = toolbarRef.value?.getBoundingClientRect()
-  const pager = pageRef.value?.pageRef.$el?.getBoundingClientRect()
-  let height = body.height - rect.top - 16
-  form && (height -= form.height + 16)
-  toolbar && (height -= toolbar.height)
-  pager && (height -= pager.height)
-  maxHeight.value = height
+  // 由于keepalive和transition机制的存在，在切换的瞬间，会有2个组件同时存在，因此导致计算高度不准确
+  setTimeout(() => {
+    if (!props.fixedHeader || !isActivated) return
+    const rect = cTableRef.value?.getBoundingClientRect()
+    const body = document.body.getBoundingClientRect()
+    const form = formRef.value?.$el?.getBoundingClientRect()
+    const toolbar = toolbarRef.value?.getBoundingClientRect()
+    const pager = pageRef.value?.pageRef.$el?.getBoundingClientRect()
+    let height = body.height - rect.top - 16
+    form && (height -= form.height + 16)
+    toolbar && (height -= toolbar.height)
+    pager && (height -= pager.height)
+    maxHeight.value = height
+  }, 300)
 }
-watch([showQuery, () => visible.moreForm], () => nextTick(updateHeight))
+watch(showQuery, updateHeight)
 
 const scrollState = {
   scrollLeft: 0,
@@ -707,6 +694,14 @@ function handleScroll() {
     scrollState.scrollLeft = scrollLeft
     scrollState.scrollTop = scrollTop
   })
+}
+
+function showMoreForm() {
+  visible.moreForm = true
+}
+
+function hideMoreForm() {
+  visible.moreForm = false
 }
 defineExpose({
   formRef,
@@ -721,11 +716,14 @@ defineExpose({
   handleQueryReset,
   handleSave,
   handleExport,
+  showMoreForm,
+  hideMoreForm,
 })
 </script>
 <style lang="scss">
 .c-table {
   &__form {
+    position: relative;
     &::after {
       content: '';
       clear: both;
@@ -787,7 +785,7 @@ defineExpose({
   &__setting.el-popper {
     padding: 0;
     h4 {
-      padding: 0 var(--size-s);
+      padding: var(--size-s);
       border-bottom: 1px solid var(--gray-3);
     }
     .group-title {
@@ -841,9 +839,15 @@ defineExpose({
     }
   }
   &__main {
-    & > .el-table th.el-table__cell {
-      background-color: var(--gray-3);
-      color: var(--gray-9);
+    & > .el-table {
+      .el-table__row {
+        content-visibility: hidden;
+        contain-intrinsic-height: 41px;
+      }
+      th.el-table__cell {
+        background-color: var(--gray-3);
+        color: var(--gray-9);
+      }
     }
   }
 }

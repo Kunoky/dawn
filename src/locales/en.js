@@ -69,8 +69,6 @@ export default {
         default: 'Middle',
         small: 'Small',
       },
-      border: 'Border',
-      stripe: 'Stripe',
       setting: 'Settings',
       display: 'Column Display',
       pinLeft: 'Pin to left',

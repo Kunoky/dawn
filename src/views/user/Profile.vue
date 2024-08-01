@@ -49,7 +49,7 @@
         </ul>
       </el-card>
     </el-col>
-    <el-col :span="18">
+    <el-col :span="0">
       <el-card>
         <template #header>个人信息</template>
         <el-tabs v-model="tab">
@@ -66,7 +66,7 @@
               </el-form-item>
               <el-form-item label="性别">
                 <el-radio-group v-model="baseForm.sex">
-                  <el-radio v-for="i in gender.options" :key="i.value" :label="i.value">
+                  <el-radio v-for="i in gender.options" :key="i.value" :value="i.value">
                     {{ i.label }}
                   </el-radio>
                 </el-radio-group>

@@ -69,8 +69,6 @@ export default {
         default: '中等',
         small: '紧凑',
       },
-      border: '边框',
-      stripe: '斑马纹',
       setting: '列设置',
       display: '列展示',
       pinLeft: '钉在左侧',

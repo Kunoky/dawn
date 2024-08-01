@@ -65,14 +65,27 @@ a + .el-button {
   }
 }
 
-div.el-dialog {
-  max-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  margin: 50vh auto -50vh auto;
-  margin-top: 50vh;
-  transform: translateY(-50%);
-  .el-dialog__body {
-    overflow: auto;
+.el-table tr > th.el-table__cell {
+  background-color: var(--gray-3);
+  color: var(--gray-9);
+}
+// div.el-dialog {
+//   max-height: 100vh;
+//   display: flex;
+//   flex-direction: column;
+//   // margin: 50vh auto -50vh auto;
+//   // margin-top: 50vh;
+//   // transform: translateY(-50%);
+//   .el-dialog__body {
+//     overflow: auto;
+//     flex: 1 1;
+//   }
+// }
+
+div.el-message-box {
+  max-width: unset;
+  width: 420px;
+  .el-message-box__message {
+    flex: 1 1;
   }
 }
