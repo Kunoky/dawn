@@ -3,7 +3,15 @@ import { useUserStore } from '@/store/user'
 import { getToken } from '@/utils/auth'
 import { i18n } from '@/i18nSetup'
 import { endlessCheck } from './common'
+import { debounce } from 'lodash-es'
 // import axiosTauriApiAdapter from 'axios-tauri-api-adapter'
+const logout = debounce(
+  () => {
+    useUserStore().logout(true)
+  },
+  2000,
+  { leading: true }
+)
 
 const endlessChecker = endlessCheck()
 // create an axios instance
@@ -69,7 +77,7 @@ service.interceptors.response.use(
     const msg = i18n.global.t('httpCode.' + code)
     // 业务异常
     if (code === 401) {
-      useUserStore().logout(true)
+      logout()
     } else if (!config.silent) {
       if (code !== 200) {
         ElMessage({
@@ -95,8 +103,8 @@ service.interceptors.response.use(
       msg = data?.msg || status + ' ' + i18n.global.t('httpCode.' + status)
       switch (status) {
         case 401:
-          useUserStore().logout(true)
-          break
+          logout()
+          return Promise.reject(error)
         default:
       }
     }

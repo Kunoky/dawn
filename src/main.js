@@ -9,6 +9,7 @@ import Role from '@/plugins/role'
 import Helper from '@/plugins/helper'
 import { useUserStore } from './store/user'
 import { ElConfig } from './config/element'
+import * as config from './config'
 import 'oocss/src/index.css'
 import './styles/index.scss'
 
@@ -28,6 +29,7 @@ app.config.globalProperties.$baseUrl = import.meta.env.VITE_SERVER_PATH
 app.config.globalProperties.$utils = utils
 app.config.globalProperties.$dict = _dict
 app.config.globalProperties.$ElConfig = ElConfig
+app.config.globalProperties.$config = config
 app.config.globalProperties.$previewFile = file => {
   window.open(import.meta.env.VITE_SERVER_PATH + '/file/download?filePath=' + (file.path || file.url))
 }

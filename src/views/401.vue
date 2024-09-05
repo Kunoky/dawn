@@ -21,4 +21,7 @@ const timer = setInterval(() => {
     clearInterval(timer)
   }
 }, 1000)
+onUnmounted(() => {
+  clearInterval(timer)
+})
 </script>

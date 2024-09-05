@@ -12,7 +12,7 @@ import IconsResolver from 'unplugin-icons/resolver'
 import { VueRouterAutoImports, getPascalCaseRouteName } from 'unplugin-vue-router'
 import VueRouter from 'unplugin-vue-router/vite'
 // import { viteMockServe } from 'vite-plugin-mock'
-import basicSsl from '@vitejs/plugin-basic-ssl'
+// import basicSsl from '@vitejs/plugin-basic-ssl'
 import DepsCache from './plugin/optimizeDepsCache'
 
 const plugins = [
@@ -25,7 +25,7 @@ const plugins = [
   vue(),
   vueJsx(),
   DepsCache(),
-  basicSsl(),
+  // basicSsl(),
   AutoImport({
     resolvers: [
       ElementPlusResolver({
@@ -120,11 +120,11 @@ export default defineConfig({
   base: '/',
   server: {
     host: '0.0.0.0',
-    port: '443',
+    port: '8000',
     // strictPort: true,
     proxy: {
       '^/api': {
-        target: 'http://10.71.4.66:5008',
+        target: 'http://10.71.4.66:6001',
         changeOrigin: true,
         rewrite: path => path.replace(/^\/api/, '/api'),
       },
