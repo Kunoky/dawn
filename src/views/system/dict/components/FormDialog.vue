@@ -11,13 +11,16 @@
       <el-form-item label="字典名称" prop="label">
         <el-input v-model="form.label" placeholder="请输入字典名称" />
       </el-form-item>
-      <el-form-item label="字典类型" prop="type">
+      <el-form-item v-if="form.pid === '0'" label="字典类型" prop="type">
         <el-input v-model="form.type" placeholder="请输入字典类型" :disabled="!!data" />
+      </el-form-item>
+      <el-form-item v-else label="字典数值" prop="value">
+        <el-input v-model="form.value" placeholder="请输入字典类型" />
       </el-form-item>
       <el-form-item label="序号" prop="orderNum">
         <el-input-number v-model="form.orderNum" :min="0" />
       </el-form-item>
-      <el-form-item label="数据类型" prop="valueType">
+      <el-form-item v-if="form.pid === '0'" label="数据类型" prop="valueType">
         <el-radio-group v-model="form.valueType">
           <el-radio
             v-for="i in [
@@ -66,10 +69,11 @@ const props = defineProps({
   modelValue: Boolean,
 })
 
-const title = computed(() => (props.data ? '编辑' : '新增') + '字典类型')
+const title = computed(() => (props.data?.id ? '编辑' : '新增') + '字典')
 
 const rules = {
   label: [{ required: true, message: '字典名称不能为空', trigger: 'blur' }],
+  value: [{ required: true, message: '字典数值不能为空', trigger: 'blur' }],
   type: [{ required: true, message: '字典类型不能为空', trigger: 'blur' }],
 }
 
@@ -83,6 +87,7 @@ watch(
     if (v) {
       form.value = {
         id: null,
+        pid: '0',
         label: '',
         value: '',
         type: '',
@@ -110,7 +115,9 @@ const handleClose = () => {
 const handleConfirm = () => {
   formRef.value.validate(valid => {
     if (valid) {
-      form.value.value = form.value.type
+      if (form.value.pid === '0') {
+        form.value.value = form.value.type
+      }
       loading.value = true
       req[form.value.id ? 'put' : 'post']('/dict', form.value)
         .then(({ code }) => {

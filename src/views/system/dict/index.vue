@@ -6,9 +6,11 @@
       }"
       ref="tableRef"
       id="systemDict"
+      row-key="id"
     >
       <el-table-column label="字典编号" prop="id" />
       <el-table-column label="字典名称" prop="label" />
+      <el-table-column label="字典键值" prop="value" />
       <el-table-column label="字典类型" prop="type" />
       <el-table-column label="排序" prop="orderNum" />
       <el-table-column label="状态" prop="status">
@@ -24,19 +26,22 @@
       </el-table-column>
       <el-table-column label="操作" width="180">
         <template #default="{ row }">
+          <el-button v-if="row.pid === '0'" link type="info" @click="handleAdd(row)" v-hasPermi="['system:dict:add']">
+            {{ $t('common.add') }}
+          </el-button>
           <el-button link type="info" @click="handleEdit(row)" v-hasPermi="['system:dict:edit']">
             {{ $t('common.edit') }}
           </el-button>
-          <RouterLink v-hasPermi="['/system/dict/:type']" :to="'/system/dict/' + row.type">
+          <!-- <RouterLink v-hasPermi="['/system/dict/:type']" :to="'/system/dict/' + row.type">
             <el-button link type="info">{{ $t('common.config') }}</el-button>
-          </RouterLink>
+          </RouterLink> -->
           <el-button link type="danger" @click="handleDel(row)" v-hasPermi="['system:dict:del']">
             {{ $t('common.delete') }}
           </el-button>
         </template>
       </el-table-column>
       <template #actions>
-        <el-button type="primary" plain @click="handleAdd" v-hasPermi="['system:dict:add']">
+        <el-button type="primary" plain @click="handleAdd()" v-hasPermi="['system:dict:add']">
           <i-ep-plus />
           {{ $t('common.add') }}
         </el-button>
@@ -54,7 +59,6 @@
   </div>
 </template>
 <script setup name="SystemDict">
-import { onMounted } from 'vue'
 import FormDialog from './components/FormDialog.vue'
 import { source, init } from '@/utils/dict'
 const { parseTime } = utils
@@ -69,9 +73,9 @@ const refresh = async force => {
 }
 onMounted(refresh)
 
-const categories = computed(() => source.value.filter(i => !i.pid || i.pid === '0'))
+const dictTree = computed(() => utils.arr2tree(source.value, 'id', 'pid')[0])
 async function listData(params) {
-  let list = categories.value.filter(i => {
+  let list = dictTree.value.filter(i => {
     if (params.label && !i.label.match(params.label)) return false
     if (params.type && !i.type.match(params.type)) return false
     return true
@@ -90,8 +94,17 @@ const visible = reactive({
   form: false,
 })
 
-const handleAdd = () => {
-  current.value = null
+const handleAdd = row => {
+  if (row) {
+    current.value = {
+      pid: row.id,
+      type: row.type,
+      orderNum: row.children?.length || 0,
+      status: true,
+    }
+  } else {
+    current.value = null
+  }
   visible.form = true
 }
 
