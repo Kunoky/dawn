@@ -167,7 +167,7 @@ export const FOO = 'Foo'
 ```js
 // 导出
 export const useUserStore = defineStore('user', () => {
-  const { data, loading, run: listData, refresh, error, params } = useAsync(params => req.get('user', params))
+  const { data, loading, run: listData, refresh, error, params } = toRefs(useAsync(params => req.get('user', params)))
 
   return {
     data,
@@ -482,13 +482,13 @@ pnpm build:tauri
 
 如此一个具有条件搜索的分页表格就完成了
 
-### 16. [IconFont](https://www.iconfont.cn/help/detail?spm=a313x.manage_type_myprojects.1998910419.d8cf4382a.27633a81kEThG6&helptype=code)
+### 16. 丰富强大的 Icon
 
-从 IconFont 市场添加自己的 icon 后
+高可用的 icon 组件，默认源为[icones](https://icones.netlify.app)
 
 ```html
 <template>
-  <IconFont icon="user" />
+  <CIcon icon="ep:user" />
 </template>
 ```
 
