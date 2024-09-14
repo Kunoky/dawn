@@ -72,7 +72,9 @@
                 </el-radio-group>
               </el-form-item>
               <el-form-item>
-                <el-button type="primary" @click="submitBase" :loading="baseLoading">{{ $t('common.save') }}</el-button>
+                <el-button type="primary" @click="submitBase" :loading="base.loading">
+                  {{ $t('common.save') }}
+                </el-button>
                 <el-button type="danger" @click="close">{{ $t('common.close') }}</el-button>
               </el-form-item>
             </el-form>
@@ -89,7 +91,7 @@
                 <el-input v-model="pwdForm.confirmPassword" placeholder="请确认新密码" type="password" show-password />
               </el-form-item>
               <el-form-item>
-                <el-button type="primary" @click="submitPwd" :loading="pwdLoading">{{ $t('common.save') }}</el-button>
+                <el-button type="primary" @click="submitPwd" :loading="pwd.loading">{{ $t('common.save') }}</el-button>
                 <el-button type="danger" @click="close">{{ $t('common.close') }}</el-button>
               </el-form-item>
             </el-form>
@@ -142,11 +144,11 @@ const baseRules = ref({
 })
 const gender = useDict('gender')
 
-const { run: editBase, loading: baseLoading } = useAsync(() => req.put('user', baseForm))
+const base = useAsync(() => req.put('user', baseForm))
 const submitBase = () => {
   baseRef.value.validate(valid => {
     if (valid) {
-      editBase().then(() => userStore.getUser(true))
+      base.run().then(() => userStore.getUser(true))
     }
   })
 }
@@ -175,14 +177,14 @@ const pwdRules = ref({
     { required: true, validator: pwdCheck, trigger: 'blur' },
   ],
 })
-const { run: editPwd, loading: pwdLoading } = useAsync(() => {
+const pwd = useAsync(() => {
   const { oldPassword, password } = pwdForm
   return req.put('user/updatePassword', { userId: user.userId, oldPassword, password })
 })
 const submitPwd = () => {
   pwdRef.value.validate(valid => {
     if (valid) {
-      editPwd()
+      pwd.run()
     }
   })
 }

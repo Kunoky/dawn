@@ -5,14 +5,14 @@
         <div class="pt-r">
           <i-ep-collection class="va-m mgr-s" />
           <span>缓存列表</span>
-          <i-ep-refresh class="pt-a rt-0 cl-p cs-p va-m" @click="refreshCache" />
+          <i-ep-refresh class="pt-a rt-0 cl-p cs-p va-m" @click="cache.refresh" />
         </div>
       </template>
       <el-table
-        v-loading="cacheLoading"
-        :data="cacheData"
+        v-loading="cache.loading"
+        :data="cache.data"
         highlight-current-row
-        @row-click="listKey"
+        @row-click="key.run"
         :height="tableHeight"
       >
         <el-table-column label="序号" width="60" type="index"></el-table-column>
@@ -36,14 +36,14 @@
         <div class="pt-r">
           <i-ep-key class="va-m mgr-s" />
           <span>键名列表</span>
-          <i-ep-refresh class="pt-a rt-0 cl-p cs-p va-m" @click="refreshKey" />
+          <i-ep-refresh class="pt-a rt-0 cl-p cs-p va-m" @click="key.refresh" />
         </div>
       </template>
       <el-table
-        v-loading="keyLoading"
-        :data="keyData"
+        v-loading="key.loading"
+        :data="key.data"
         highlight-current-row
-        @row-click="getContent"
+        @row-click="content.run"
         :height="tableHeight"
       >
         <el-table-column label="序号" width="60" type="index"></el-table-column>
@@ -66,18 +66,18 @@
           </el-button>
         </div>
       </template>
-      <ul class="cl-8" v-loading="contentLoading">
+      <ul class="cl-8" v-loading="content.loading">
         <li>
           <b>缓存名称:</b>
-          <div class="pd-m">{{ contentData.cacheName }}</div>
+          <div class="pd-m">{{ content.data.cacheName }}</div>
         </li>
         <li>
           <b>缓存键名:</b>
-          <div class="pd-m">{{ contentData.cacheKey }}</div>
+          <div class="pd-m">{{ content.data.cacheKey }}</div>
         </li>
         <li>
           <b>缓存内容:</b>
-          <div class="pd-m wb-ba">{{ contentData.cacheValue }}</div>
+          <div class="pd-m wb-ba">{{ content.data.cacheValue }}</div>
         </li>
       </ul>
     </el-card>
@@ -86,24 +86,13 @@
 <script setup name="MonitorCacheList">
 const tableHeight = ref(window.innerHeight - 240)
 
-const {
-  data: cacheData,
-  loading: cacheLoading,
-  refresh: refreshCache,
-} = useAsync(() => req.get('monitor/cache/getNames').then(res => res.data), { manual: false })
-const {
-  data: keyData,
-  loading: keyLoading,
-  run: listKey,
-  refresh: refreshKey,
-} = useAsync(row =>
+const cache = useAsync(() => req.get('monitor/cache/getNames').then(res => res.data), { manual: false })
+const key = useAsync(row =>
   req.get('monitor/cache/getKeys/' + row.cacheName).then(res => res.data.map(i => ({ key: i, name: row.cacheName })))
 )
-const {
-  data: contentData,
-  loading: contentLoading,
-  run: getContent,
-} = useAsync(row => req.get(`monitor/cache/getValue/${row.name}/${row.key}`).then(res => res.data), { initialData: {} })
+const content = useAsync(row => req.get(`monitor/cache/getValue/${row.name}/${row.key}`).then(res => res.data), {
+  initialData: {},
+})
 
 /** 列表前缀去除 */
 function nameFormatter(row) {
@@ -111,11 +100,11 @@ function nameFormatter(row) {
 }
 
 const handleClearCacheName = row => {
-  req.delete('monitor/cache/clearCacheName/' + row.cacheName).then(refreshCache)
+  req.delete('monitor/cache/clearCacheName/' + row.cacheName).then(cache.refresh)
 }
 
 const handleClearKey = row => {
-  req.delete('monitor/cache/clearCacheKey/' + row.key).then(refreshKey)
+  req.delete('monitor/cache/clearCacheKey/' + row.key).then(key.refresh)
 }
 
 const handleClearAll = () => {

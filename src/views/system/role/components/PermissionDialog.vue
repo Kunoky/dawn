@@ -1,6 +1,6 @@
 <template>
   <el-dialog :model-value="modelValue" @close="handleClose" title="分配数据权限" width="60%" v-bind="$attrs">
-    <el-form :model="form" ref="formRef" label-width="120" v-loading="dataLoading">
+    <el-form :model="form" ref="formRef" label-width="120" v-loading="gain.dataLoading">
       <el-form-item label="角色名称">
         <el-input v-model="form.roleName" :disabled="true" />
       </el-form-item>
@@ -92,7 +92,7 @@ watch(
         // remark: '',
       }
 
-      getData()
+      gain.run()
       getdept()
       nextTick(() => {
         formRef.value.clearValidate()
@@ -102,7 +102,7 @@ watch(
   { immediate: true }
 )
 
-const { run: getData, loading: dataLoading } = useAsync(() => req.get('system/role/' + (props.data?.roleId || '')), {
+const gain = useAsync(() => req.get('system/role/' + (props.data?.roleId || '')), {
   onSuccess(res) {
     for (let k in form.value) {
       form.value[k] = res.data[k]

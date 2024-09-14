@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-row v-loading="loading" :gutter="16">
+    <el-row v-loading="gain.loading" :gutter="16">
       <el-col :span="24" class="mgb-m">
         <el-card>
           <template #header>
@@ -68,7 +68,7 @@
 <script setup name="MonitorCache">
 const commandOption = ref({})
 const memoOption = ref({})
-const { data, loading } = useAsync(
+const gain = useAsync(
   () =>
     req.get('monitor/server').then(res => {
       res.data.info ??= {}
@@ -120,6 +120,7 @@ const { data, loading } = useAsync(
     initialData: { info: {} },
   }
 )
+const { data } = toRefs(gain)
 </script>
 <style lang="scss" scoped>
 li {

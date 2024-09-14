@@ -1,6 +1,6 @@
 <template>
   <el-dialog :model-value="modelValue" @close="handleClose" :title="title" width="60%" v-bind="$attrs">
-    <el-form :model="form" ref="formRef" label-width="120" :rules="rules" v-loading="dataLoading">
+    <el-form :model="form" ref="formRef" label-width="120" :rules="rules" v-loading="gain.loading">
       <el-form-item label="角色名称" prop="roleName">
         <el-input v-model="form.roleName" placeholder="请输入角色名称" />
       </el-form-item>
@@ -87,7 +87,7 @@ watch(
         // remark: '',
       }
 
-      props.data && getData()
+      props.data && gain.run()
       getMenu()
       nextTick(() => {
         formRef.value.clearValidate()
@@ -97,7 +97,7 @@ watch(
   { immediate: true }
 )
 let checkedKeys = []
-const { run: getData, loading: dataLoading } = useAsync(() => req.get('role/' + (props.data?.roleId || '')), {
+const gain = useAsync(() => req.get('role/' + (props.data?.roleId || '')), {
   onSuccess(res) {
     for (let k in form.value) {
       form.value[k] = res.data[k]
@@ -126,7 +126,7 @@ const getMenu = () => {
       nextTick(() => {
         // res.checkedKeys.forEach(i => menuRef.value.setChecked(i, true, false))
         let timer = setInterval(() => {
-          if (!dataLoading.value) {
+          if (!gain.dataLoading) {
             checkedKeys.forEach(i => menuRef.value.setChecked(i, true, false))
             clearInterval(timer)
           }

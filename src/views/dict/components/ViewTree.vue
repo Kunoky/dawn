@@ -1,6 +1,6 @@
 <template>
   <el-dialog :model-value="modelValue" @close="handleClose" title="Dictionary Tree" width="40%" v-bind="$attrs">
-    <el-tree :data="data.tree" node-key="id" v-loading="loading || deleting" default-expand-all>
+    <el-tree :data="gain.data.tree" node-key="id" v-loading="gain.loading || del.loading" default-expand-all>
       <template #default="{ node }">
         <span class="dict-tree-item">
           <span>{{ node.data.val }}</span>
@@ -18,7 +18,7 @@
       </span>
     </template>
   </el-dialog>
-  <FormDialog :data="current" v-model="visible.form" @success="refresh"></FormDialog>
+  <FormDialog :data="current" v-model="visible.form" @success="gain.run"></FormDialog>
 </template>
 
 <script setup>
@@ -37,11 +37,7 @@ const visible = reactive({
   form: false,
 })
 
-const {
-  data,
-  loading,
-  run: refresh,
-} = useAsync(
+const gain = useAsync(
   async () => {
     const res = await listDict({ category: props.root.category })
     const [tree, idNode] = utils.arr2tree(res.list)
@@ -53,17 +49,17 @@ const {
   { initialData: {} }
 )
 
-const { loading: deleting, run: del } = useAsync(async id => {
+const del = useAsync(async id => {
   await delDict(id)
   ElMessage.success(i18n.t('tip.success'))
-  refresh()
+  gain.refresh()
 })
 
 watch(
   () => props.modelValue,
   v => {
     if (v) {
-      refresh()
+      gain.refresh()
     }
   },
   { immediate: true }
@@ -89,7 +85,7 @@ const handleDel = async node => {
     confirmButtonText: i18n.t('common.confirm'),
     cancelButtonText: i18n.t('common.cancel'),
     type: 'warning',
-  }).then(() => del(utils.tree2arr([node.data], 'id')))
+  }).then(() => del.run(utils.tree2arr([node.data], 'id')))
 }
 </script>
 <style lang="scss">

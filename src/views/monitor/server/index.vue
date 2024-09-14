@@ -1,5 +1,5 @@
 <template>
-  <div v-loading="loading">
+  <div v-loading="gain.loading">
     <el-row :gutter="16" v-if="data">
       <el-col :span="12">
         <el-card>
@@ -168,9 +168,10 @@
 </template>
 
 <script setup name="MonitorServer">
-const { data, loading } = useAsync(() => req.get('monitor/server').then(res => res.data), {
+const gain = useAsync(() => req.get('monitor/server').then(res => res.data), {
   manual: false,
 })
+const { data } = toRefs(gain)
 </script>
 <style lang="scss" scoped>
 li {

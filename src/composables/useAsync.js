@@ -32,30 +32,75 @@ import { debounce } from 'lodash-es'
  *  refresh: function       
  * }
  */
+// export function useAsync(service, options = {}) {
+//   const { manual = true, initialData, onSuccess, onError, onFinally, source, delay = 0 } = options
+
+//   const data = ref(initialData)
+//   const error = ref()
+//   const loading = ref(false)
+//   const params = ref([])
+
+//   const _run = async (...p) => {
+//     try {
+//       loading.value = true
+//       error.value = null
+//       params.value = p
+//       const d = await service(...p)
+//       data.value = d
+//       onSuccess?.(d, p)
+//       return d
+//     } catch (e) {
+//       console.error(e)
+//       error.value = e
+//       onError?.(data.value, p)
+//       return Promise.reject(e)
+//     } finally {
+//       loading.value = false
+//       onFinally?.(p)
+//     }
+//   }
+//   let run = _run
+//   if (delay) {
+//     run = debounce(_run, delay)
+//   }
+//   const refresh = () => {
+//     return run(...params.value)
+//   }
+//   if (!manual) {
+//     if (source) {
+//       watch(source, () => run(...params.value), { immediate: true })
+//     } else {
+//       run(...params.value)
+//     }
+//   }
+//   return {
+//     data,
+//     error,
+//     loading,
+//     params,
+//     run,
+//     refresh,
+//   }
+// }
+
 export function useAsync(service, options = {}) {
   const { manual = true, initialData, onSuccess, onError, onFinally, source, delay = 0 } = options
-
-  const data = ref(initialData)
-  const error = ref()
-  const loading = ref(false)
-  const params = ref([])
-
   const _run = async (...p) => {
     try {
-      loading.value = true
-      error.value = null
-      params.value = p
+      state.loading = true
+      state.error = null
+      state.params = p
       const d = await service(...p)
-      data.value = d
+      state.data = d
       onSuccess?.(d, p)
       return d
     } catch (e) {
       console.error(e)
-      error.value = e
-      onError?.(data.value, p)
+      state.error = e
+      onError?.(state.data, p)
       return Promise.reject(e)
     } finally {
-      loading.value = false
+      state.loading = false
       onFinally?.(p)
     }
   }
@@ -64,21 +109,22 @@ export function useAsync(service, options = {}) {
     run = debounce(_run, delay)
   }
   const refresh = () => {
-    return run(...params.value)
+    return run(...state.params)
   }
-  if (!manual) {
-    if (source) {
-      watch(source, () => run(...params.value), { immediate: true })
-    } else {
-      run(...params.value)
-    }
-  }
-  return {
-    data,
-    error,
-    loading,
-    params,
+  const state = reactive({
+    data: initialData,
+    error: null,
+    loading: false,
+    params: [],
     run,
     refresh,
+  })
+  if (!manual) {
+    if (source) {
+      watch(source, () => run(...state.params), { immediate: true })
+    } else {
+      run(...state.params)
+    }
   }
+  return state
 }

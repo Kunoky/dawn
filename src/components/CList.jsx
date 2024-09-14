@@ -88,7 +88,7 @@ export default {
       Object.assign(mergedParams, form, props.params)
     })
     const load = typeof props.action === 'function' ? props.action : params => req.get(props.action, { params })
-    const { data, loading, run, error } = useAsync(
+    const gain = useAsync(
       () => {
         const params = {
           [props.pageKey]: page.value,
@@ -119,6 +119,8 @@ export default {
         initialData: [],
       }
     )
+    const { data, loading, error } = toRefs(gain)
+    const run = gain.run
     const loadData = force => {
       if (force) {
         page.value = 0

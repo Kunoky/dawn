@@ -1,6 +1,6 @@
 <template>
   <el-dialog :model-value="modelValue" @close="handleClose" :title="title" width="60%" v-bind="$attrs">
-    <el-form :model="form" ref="formRef" label-width="120" :rules="rules" v-loading="dataLoading">
+    <el-form :model="form" ref="formRef" label-width="120" :rules="rules" v-loading="user.loading">
       <el-row>
         <el-col :span="12">
           <el-form-item label="用户昵称" prop="userName">
@@ -78,7 +78,12 @@
         <el-col :span="12">
           <el-form-item label="角色" prop="roleIds">
             <el-select v-model="form.roleIds" multiple placeholder="请选择">
-              <el-option v-for="i in roleOptions" :key="i.roleId" :label="i.roleName" :value="i.roleId"></el-option>
+              <el-option
+                v-for="i in roleOptions.data"
+                :key="i.roleId"
+                :label="i.roleName"
+                :value="i.roleId"
+              ></el-option>
             </el-select>
           </el-form-item>
         </el-col>
@@ -201,13 +206,13 @@ watch(
       nextTick(() => {
         formRef.value.clearValidate()
       })
-      props.data?.userId && getUser()
+      props.data?.userId && user.run()
     }
   },
   { immediate: true }
 )
-const { data: roleOptions } = useAsync(() => req('role/all').then(res => res.data), { manual: false })
-const { run: getUser, loading: dataLoading } = useAsync(
+const roleOptions = useAsync(() => req('role/all').then(res => res.data), { manual: false })
+const user = useAsync(
   async () => {
     return req.get('user/' + props.data.userId)
   },

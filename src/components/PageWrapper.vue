@@ -84,10 +84,11 @@ const listData = params =>
     if (props.dataKey) return getNestProp(res, props.dataKey)
     return res
   })
-const { data, loading, run, error } = useAsync(listData, {
+const gain = useAsync(listData, {
   delay: props.delay,
 })
-
+const { data, loading, error } = toRefs(gain)
+const run = gain.run
 const refresh = () => {
   if (page.value !== 1) {
     page.value = 1
