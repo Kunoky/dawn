@@ -230,7 +230,7 @@ export function exportCSV(data, name) {
  */
 export function exportExcel(data, name) {
   name ??= new Date().toLocaleString()
-  import('xlsx').then(XLSX => {
+  return import('xlsx').then(XLSX => {
     const ws = XLSX.utils.aoa_to_sheet(data)
     const wb = XLSX.utils.book_new()
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1')

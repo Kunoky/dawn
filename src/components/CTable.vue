@@ -609,7 +609,7 @@ function defaultExport(params) {
         })
       )
     })
-    utils.exportExcel(csvData, props.exportName || document.title)
+    return utils.exportExcel(csvData, props.exportName || document.title)
   })
 }
 const exportData = () => {
