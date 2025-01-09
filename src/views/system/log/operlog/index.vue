@@ -9,7 +9,6 @@
       ref="tableRef"
       id="systemOperlog"
     >
-      <el-table-column type="selection" width="50" />
       <el-table-column label="日志编号" prop="operId" />
       <el-table-column label="系统模块" prop="title" :show-overflow-tooltip="true" />
       <el-table-column label="操作类型" prop="businessType">
