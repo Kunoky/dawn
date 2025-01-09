@@ -1,6 +1,7 @@
 <template>
   <slot v-if="placement === 'bottom'" :data="data" :total="total" :loading="loading" :error="error"></slot>
   <el-pagination
+    ref="pageRef"
     v-show="!hidePager"
     class="mgv-s"
     :style="{ justifyContent }"
@@ -9,6 +10,7 @@
     v-model:current-page="page"
     v-model:page-size="size"
     :total="total"
+    :disabled="loading"
   />
   <slot v-if="placement === 'top'" :data="data" :total="total" :loading="loading" :error="error"></slot>
 </template>
@@ -65,6 +67,7 @@ const props = defineProps({
 
 const { getNestProp } = utils
 
+const pageRef = ref()
 const page = ref(1)
 const size = ref(props.defaultSize)
 const total = ref(0)
@@ -98,6 +101,7 @@ watch([page, size], () => run(), { immediate: true })
 watch(() => props.params, refresh, { deep: true })
 
 defineExpose({
+  pageRef,
   run,
   refresh,
   data,

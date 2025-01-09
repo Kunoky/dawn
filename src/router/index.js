@@ -60,12 +60,12 @@ router.beforeEach(async (to, from) => {
       // return false
     }
   }
-  if (to.path !== '/home' && to.meta.public) return
   const userStore = useUserStore()
-  if (!userStore.initialized) {
+  if (!userStore.initialized && hasToken) {
     const res = await userStore.init()
     if (res !== true) return false
   }
+  if (to.meta.public) return
   const meta = userStore.keyMenu[to.name]?.meta
   to.meta = {
     ...to.meta,
