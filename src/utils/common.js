@@ -222,6 +222,22 @@ export function exportCSV(data, name) {
 }
 
 /**
+ * @description 导出excel
+ * @author kuroky <1048413674@qq.com>
+ * @date 2025-01-09
+ * @param {Object[]} data
+ * @param {string} name
+ */
+export function exportExcel(data, name) {
+  name ??= new Date().toLocaleString()
+  import('xlsx').then(XLSX => {
+    const ws = XLSX.utils.aoa_to_sheet(data)
+    const wb = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1')
+    XLSX.writeFile(wb, name + '.xlsx')
+  })
+}
+/**
  * @description 下载
  * @author kuroky <1048413674@qq.com>
  * @date 2024-02-01
