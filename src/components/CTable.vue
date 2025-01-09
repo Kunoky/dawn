@@ -1,5 +1,5 @@
 <template>
-  <div class="c-table" :id="id">
+  <div class="c-table" :id="id" ref="cTableRef">
     <el-form
       v-if="showQuery"
       :inline="true"
@@ -7,15 +7,22 @@
       :model="form"
       @keydown.enter="handleQuery"
       class="c-table__form"
+      ref="formRef"
     >
       <slot name="form" :form="form"></slot>
       <el-form-item class="btns">
         <el-button type="primary" @click="handleQuery" :loading="pageRef?.loading">{{ $t('common.query') }}</el-button>
         <el-button @click="handleQueryReset" :disabled="pageRef?.loading">{{ $t('common.reset') }}</el-button>
+        <el-button v-if="$slots.moreForm" @click="visible.moreForm = !visible.moreForm">
+          {{ visible.moreForm ? $t('common.collapse') : $t('common.expand') }}
+        </el-button>
       </el-form-item>
+      <div v-if="visible.moreForm" class="pt-a lt-0 bgc-1 zi-9 bs-s pdh-m">
+        <slot name="moreForm" :form="form"></slot>
+      </div>
     </el-form>
-    <div class="c-table__main">
-      <div v-if="toolStatus.bar" class="c-table__toolbar">
+    <div class="c-table__main" @mouseenter="hideMoreForm">
+      <div v-if="toolStatus.bar" ref="toolbarRef" class="c-table__toolbar">
         <div v-if="toolStatus.title" class="c-table__title">
           <slot name="title">{{ title }}</slot>
         </div>
@@ -29,7 +36,7 @@
             </el-button>
           </el-tooltip>
           <el-tooltip v-if="toolStatus.download" :content="$t('common.export')" placement="top">
-            <el-button link @click="handleExport" :aria-description="$t('common.export')">
+            <el-button link @click="handleExport" :aria-description="$t('common.export')" :loading="exportForm.loading">
               <template #icon>
                 <i-ep-download />
               </template>
@@ -147,18 +154,18 @@
             </div>
           </el-popover>
         </div>
-        <el-dialog v-model="visible.export" :title="$t('common.export')">
+        <c-dialog v-bind="$ElConfig.dialog" v-model="visible.export" :title="$t('common.export')">
           <div>
             {{ $t('common.total') }}:
-            <span class="cl-p">{{ exportFrom.total }}</span>
+            <span class="cl-p">{{ exportForm.total }}</span>
           </div>
           <div class="mgt-s">
             {{ $t('common.page') }}:
-            <el-input-number v-model="exportFrom.page" :min="1" :precision="0" />
+            <el-input-number v-model="exportForm.page" :min="1" :precision="0" />
           </div>
           <div class="mgt-s">
             {{ $t('common.size') }}:
-            <el-input-number v-model="exportFrom.size" :min="1" :max="exportFrom.total" :precision="0" />
+            <el-input-number v-model="exportForm.size" :min="1" :max="exportForm.total" :precision="0" />
           </div>
           <template #footer>
             <span class="dialog-footer">
@@ -166,7 +173,7 @@
               <el-button type="primary" @click="exportData">{{ $t('common.confirm') }}</el-button>
             </span>
           </template>
-        </el-dialog>
+        </c-dialog>
       </div>
       <PageWrapper ref="pageRef" v-bind="pageConf" :params="mergedParams" :default-size="defaultSize">
         <template v-slot="{ data, loading }">
@@ -174,6 +181,8 @@
             ref="tableRef"
             :data="data"
             v-loading="loading"
+            :maxHeight="maxHeight"
+            border
             v-bind="{ ...$attrs, class: null }"
             :default-sort="cachedOrder"
             :size="tableSize"
@@ -187,10 +196,11 @@
                   @change="handleSelectAll"
                 ></el-checkbox>
               </template>
-              <template #default="{ row }">
+              <template #default="{ row, $index }">
                 <el-checkbox
                   :modelValue="modelValueKeys.includes(getKey(row))"
                   @change="handleSelect(row, $event)"
+                  :disabled="selectable && !selectable(row, $index)"
                 ></el-checkbox>
               </template>
             </el-table-column>
@@ -265,13 +275,42 @@ const props = defineProps({
     type: Object,
     default: () => ({}),
   }, // 表单默认值
+  fixedHeader: {
+    type: Boolean,
+    default: true,
+  }, // 导出方法，(params) => Promise
+  onExport: {
+    type: [Function, String],
+  },
+  exportName: String, // 导出文件名
+  exportPage: {
+    type: Boolean,
+    default: true,
+  }, // 设置onExport后，导出是否分页
+  // 是否可选 (row: any, index: number) => boolean
+  selectable: {
+    type: Function,
+  },
 })
+
 const emit = defineEmits(['update:modelValue', 'query', 'reset'])
 
+const mitter = useMitt()
+mitter.on('main-size-change', updateHeight)
+onBeforeUnmount(() => {
+  mitter.off('main-size-change', updateHeight)
+})
+onMounted(() => {
+  handleScroll()
+})
 const visible = reactive({
   export: false,
+  moreForm: false,
 })
 const i18n = useI18n()
+const cTableRef = ref()
+const formRef = ref()
+const toolbarRef = ref()
 const pageRef = ref()
 const tableRef = ref()
 const tableSize = ref(props.size)
@@ -529,7 +568,7 @@ const handleSelect = (row, checked) => {
 }
 const handleSelectAll = v => {
   if (v) {
-    addValues(pageRef.value.data)
+    addValues(props.selectable ? pageRef.value.data.filter((i, idx) => props.selectable(i, idx)) : pageRef.value.data)
   } else {
     removeValues(pageRef.value.data)
   }
@@ -538,50 +577,65 @@ const handleSelectAll = v => {
 const isSelectAll = computed(() => allKeys.value.length && allKeys.value.every(i => modelValueKeys.value.includes(i)))
 
 // 导出
-const exportFrom = reactive({
+const exportForm = reactive({
   page: 1,
   size: 10,
   total: 0,
   loading: false,
 })
 function handleExport() {
-  exportFrom.size = pageRef.value.total
-  exportFrom.total = pageRef.value.total
+  if (props.onExport && !props.exportPage) return exportData()
+  exportForm.size = pageRef.value.total
+  exportForm.total = pageRef.value.total
   visible.export = true
 }
+function defaultExport(params) {
+  return pageRef.value.listData(params).then(res => {
+    const csvData = [[]]
+    const getText = []
+    const columns = tableRef.value.store.states.columns.value
+    columns.forEach((i, idx) => {
+      if (i.label && i.property) {
+        csvData[0].push(i.label)
+        getText.push(i.formatter ? row => i.formatter(row, i, row[i.property], idx) : row => row[i.property])
+      }
+    })
+    res.forEach(i => {
+      csvData.push(
+        getText.map(j => {
+          let v = j(i)
+          v ??= ''
+          return v
+        })
+      )
+    })
+    utils.exportExcel(csvData, props.exportName || document.title)
+  })
+}
 const exportData = () => {
-  const { sizeKey = 'pageSize', pageKey = 'pageNum' } = props.pageConf
-  exportFrom.loading = true
-  pageRef.value
-    .listData({
-      [pageKey]: exportFrom.page,
-      [sizeKey]: exportFrom.size,
-    })
-    .then(res => {
-      const csvData = [[]]
-      const getText = []
-      const columns = tableRef.value.store.states.columns.value
-      columns.forEach((i, idx) => {
-        if (i.label && i.property) {
-          csvData[0].push(i.label)
-          getText.push(i.formatter ? row => i.formatter(row, i, row[i.property], idx) : row => row[i.property])
-        }
-      })
-      res.forEach(i => {
-        csvData.push(
-          getText.map(j => {
-            let v = j(i)
-            if (/,/.test(v)) {
-              v = '"' + v + '"'
-            }
-            return v
-          })
-        )
-      })
-      utils.exportCSV(csvData, props.title)
-      visible.export = false
-    })
-    .finally(() => (exportFrom.loading = false))
+  exportForm.loading = true
+  let exportFn
+  if (props.onExport) {
+    if (typeof props.onExport === 'function') {
+      exportFn = props.onExport
+    } else {
+      exportFn = params =>
+        req.post(props.onExport, params, { responseType: 'blob', params }).then(res => {
+          utils.downloadFile(res, (props.exportName || document.title) + '.xlsx')
+        })
+    }
+  } else {
+    exportFn = defaultExport
+  }
+  let params = { ...mergedParams }
+  if (!props.onExport || props.exportPage) {
+    const { sizeKey = 'pageSize', pageKey = 'pageNum' } = props.pageConf
+    params[pageKey] = exportForm.page
+    params[sizeKey] = exportForm.size
+  }
+  exportFn(params)
+    .then(() => (visible.export = false))
+    .finally(() => (exportForm.loading = false))
 }
 
 // 0：隐藏，1：正常
@@ -599,7 +653,58 @@ const toolStatus = computed(() => ({
   ...defaultToolStatus,
   ...props.toolStatus,
 }))
+
+let isActivated = true
+onActivated(() => {
+  isActivated = true
+  //激活时更新滚动条位置，0由于没有变化所以不会触发
+  tableRef.value.scrollTo(scrollState.scrollLeft, scrollState.scrollTop)
+})
+onDeactivated(() => {
+  isActivated = false
+})
+
+const maxHeight = ref(null)
+
+function updateHeight() {
+  // 由于keepalive和transition机制的存在，在切换的瞬间，会有2个组件同时存在，因此导致计算高度不准确
+  setTimeout(() => {
+    if (!props.fixedHeader || !isActivated) return
+    const rect = cTableRef.value?.getBoundingClientRect()
+    const body = document.body.getBoundingClientRect()
+    const form = formRef.value?.$el?.getBoundingClientRect()
+    const toolbar = toolbarRef.value?.getBoundingClientRect()
+    const pager = pageRef.value?.pageRef.$el?.getBoundingClientRect()
+    let height = body.height - rect.top - 16
+    form && (height -= form.height + 16)
+    toolbar && (height -= toolbar.height)
+    pager && (height -= pager.height)
+    maxHeight.value = height
+  }, 300)
+}
+watch(showQuery, updateHeight)
+
+const scrollState = {
+  scrollLeft: 0,
+  scrollTop: 0,
+}
+function handleScroll() {
+  tableRef.value.scrollBarRef.wrapRef.addEventListener('scroll', function (e) {
+    const { scrollLeft, scrollTop } = e.target
+    scrollState.scrollLeft = scrollLeft
+    scrollState.scrollTop = scrollTop
+  })
+}
+
+function showMoreForm() {
+  visible.moreForm = true
+}
+
+function hideMoreForm() {
+  visible.moreForm = false
+}
 defineExpose({
+  formRef,
   pageRef,
   tableRef,
   form,
@@ -611,11 +716,14 @@ defineExpose({
   handleQueryReset,
   handleSave,
   handleExport,
+  showMoreForm,
+  hideMoreForm,
 })
 </script>
 <style lang="scss">
 .c-table {
   &__form {
+    position: relative;
     &::after {
       content: '';
       clear: both;
@@ -638,7 +746,8 @@ defineExpose({
         height: fit-content;
         line-height: unset;
         background: var(--gray-1);
-        color: var(--gray-7);
+        color: var(--primary-color);
+        font-weight: bold;
         padding: 0 4px;
       }
     }
@@ -657,6 +766,7 @@ defineExpose({
       .el-icon,
       .icon {
         font-size: 16px;
+        color: var(--gray-9);
       }
       & + .el-dropdown {
         margin-left: 12px;
@@ -728,8 +838,17 @@ defineExpose({
       }
     }
   }
-  .el-table th.el-table__cell {
-    background-color: var(--gray-2);
+  &__main {
+    & > .el-table {
+      .el-table__row {
+        content-visibility: hidden;
+        contain-intrinsic-height: 41px;
+      }
+      th.el-table__cell {
+        background-color: var(--gray-3);
+        color: var(--gray-9);
+      }
+    }
   }
 }
 </style>

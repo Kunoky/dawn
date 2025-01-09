@@ -36,6 +36,7 @@
   "element-plus/es/components/message-box/style/index",
   "element-plus/es/components/message/style/index",
   "element-plus/es/components/option/style/index",
+  "element-plus/es/components/overlay/style/index",
   "element-plus/es/components/pagination/style/index",
   "element-plus/es/components/popover/style/index",
   "element-plus/es/components/radio-button/style/index",
@@ -54,10 +55,13 @@
   "element-plus/es/components/tree-select/style/index",
   "element-plus/es/components/tree/style/index",
   "lodash-es",
+  "mitt",
   "pinia",
   "unplugin-vue-router/runtime",
   "vue",
+  "vue-drag-resize",
   "vue-i18n",
   "vue-router",
-  "vuedraggable"
+  "vuedraggable",
+  "xlsx"
 ]

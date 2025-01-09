@@ -108,7 +108,7 @@ section {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: linear-gradient(#c2a6a6 0, #3d3a68 40%);
+  background: linear-gradient(#f4f4f5 0, var(--primary-color) 75%);
   // .color>div {
   //   position: absolute;
   //   // safari卡顿

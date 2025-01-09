@@ -9,10 +9,9 @@ import {
 } from './utils/dict'
 import Permission from '@/plugins/permission'
 import { useUserStore } from './store/user'
+import { ElConfig } from './config/element'
 import 'oocss/src/index.css'
 import './styles/index.scss'
-
-// initDict()
 
 const pinia = createPinia()
 const app = createApp(App)
@@ -27,6 +26,7 @@ app.config.errorHandler = err => {
 app.config.globalProperties.$baseUrl = import.meta.env.VITE_SERVER_PATH
 app.config.globalProperties.$utils = utils
 app.config.globalProperties.$dict = _dict
+app.config.globalProperties.$ElConfig = ElConfig
 const dictFormatter = {}
 app.config.globalProperties.$dictFormatter = function (type) {
   return (dictFormatter[type] ??= function (row, column) {
@@ -43,3 +43,15 @@ app.use(Permission, {
 app.use(router)
 app.mount('#app')
 // })
+
+// 阻止firefox打开新tab
+document.body.ondrop = function (e) {
+  e.stopPropagation()
+  e.preventDefault()
+}
+// 阻止数字输入框悬浮时默认提示
+document.body.addEventListener('mouseover', e => {
+  if (e.target.tagName === 'INPUT' && e.target.type === 'number' && e.target.title !== ' ') {
+    e.target.title = ' '
+  }
+})

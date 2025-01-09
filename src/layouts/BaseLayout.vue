@@ -15,6 +15,30 @@ const isCollapse = ref(false)
 const { lang, langs, loading } = storeToRefs(appStore)
 const { user, menuTree, keyMenu } = storeToRefs(userStore)
 const breadcrumb = ref([])
+const mitter = useMitt()
+const mainRef = ref()
+let mainSize = ''
+const resizeObserver = new ResizeObserver(() => {
+  const { scrollHeight, scrollWidth } = mainRef.value.$el
+  const size = {
+    ...mainRef.value.$el.getBoundingClientRect().toJSON(),
+    scrollHeight,
+    scrollWidth,
+  }
+  const sizeStr = JSON.stringify(size)
+  if (sizeStr !== mainSize) {
+    mainSize = sizeStr
+    mitter.emit('main-size-change', size)
+  }
+})
+
+onMounted(() => {
+  resizeObserver.observe(mainRef.value.$el)
+})
+onBeforeUnmount(() => {
+  resizeObserver?.disconnect()
+})
+
 watch(
   route,
   async v => {
@@ -69,6 +93,34 @@ const handleUserCommand = e => {
 }
 
 const { isDark, toggle } = useTheme()
+function toggleTheme(e) {
+  const transition = document.startViewTransition(toggle)
+
+  transition.ready.then(() => {
+    const { clientX, clientY } = e
+    const radius = Math.hypot(Math.max(clientX, innerWidth - clientX), Math.max(clientY, innerHeight - clientY))
+    if (isDark.value)
+      document.documentElement.animate(
+        {
+          clipPath: [`circle(${radius}px at ${clientX}px ${clientY}px)`, `circle(0% at ${clientX}px ${clientY}px)`],
+        },
+        {
+          duration: 500,
+          pseudoElement: '::view-transition-old(root)',
+        }
+      )
+    else
+      document.documentElement.animate(
+        {
+          clipPath: [`circle(0% at ${clientX}px ${clientY}px)`, `circle(${radius}px at ${clientX}px ${clientY}px)`],
+        },
+        {
+          duration: 500,
+          pseudoElement: '::view-transition-new(root)',
+        }
+      )
+  })
+}
 
 // 懒加载组件外面裹了一层，导致keepAlive无法获取到name进行缓存
 const setComponentName = (c, name) => {
@@ -84,7 +136,7 @@ const setComponentName = (c, name) => {
       :width="isCollapse ? '64px' : '200px'"
       class="base-layout_aside ht-100vh dp-f fd-c"
     >
-      <el-menu :default-active="active" :collapse="isCollapse" class="fx-1 base-layout_menu of-o">
+      <el-menu :default-active="active" :collapse="isCollapse" theme="dark" class="fx-1 base-layout_menu of-o">
         <menu-item-recursive v-for="i in menuTree" :key="i.id" :data="i" />
       </el-menu>
       <div class="bdt bdc-4 pd-s cs-p">
@@ -104,7 +156,7 @@ const setComponentName = (c, name) => {
             <el-breadcrumb-item v-for="i in breadcrumb" :key="i.name">{{ i.meta.title }}</el-breadcrumb-item>
           </el-breadcrumb>
           <div class="">
-            <el-button link @click="toggle()" :aria-description="isDark ? $t('theme.light') : $t('theme.dark')">
+            <el-button link @click="toggleTheme" :aria-description="isDark ? $t('theme.light') : $t('theme.dark')">
               <i-ep-sunny v-if="isDark"></i-ep-sunny>
               <i-ep-moon v-else></i-ep-moon>
             </el-button>
@@ -119,7 +171,7 @@ const setComponentName = (c, name) => {
         </div>
         <TagsView />
       </el-header>
-      <el-main class="base-layout_main">
+      <el-main ref="mainRef" class="base-layout_main">
         <router-view v-slot="{ Component, route }">
           <transition name="fade-transform" mode="out-in">
             <keep-alive :include="tagsViewStore.names">
@@ -132,6 +184,15 @@ const setComponentName = (c, name) => {
   </el-container>
 </template>
 <style lang="scss">
+::view-transition-new(root),
+::view-transition-old(root) {
+  animation: none;
+}
+
+.dark::view-transition-old(root) {
+  z-index: 1;
+}
+
 .base-layout {
   color: var(--el-text-color-primary);
   background-color: var(--gray-1);
@@ -196,8 +257,7 @@ const setComponentName = (c, name) => {
   }
   .c-table {
     .c-table__form,
-    .c-table__main,
-    .el-pagination {
+    .c-table__main {
       background-color: var(--gray-1);
       border-radius: 2px;
       padding-left: var(--size-m);
@@ -207,6 +267,11 @@ const setComponentName = (c, name) => {
     .c-table__form {
       padding-top: var(--size-m);
       margin-bottom: var(--size-m);
+    }
+    &__main .el-table {
+      .el-scrollbar__bar.is-horizontal {
+        height: 12px;
+      }
     }
     .c-table__toolbar {
       padding-top: var(--size-m);
