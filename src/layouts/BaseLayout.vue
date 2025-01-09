@@ -103,6 +103,34 @@ const handleUserCommand = e => {
 }
 
 const { isDark, toggle } = useTheme()
+function toggleTheme(e) {
+  const transition = document.startViewTransition(toggle)
+
+  transition.ready.then(() => {
+    const { clientX, clientY } = e
+    const radius = Math.hypot(Math.max(clientX, innerWidth - clientX), Math.max(clientY, innerHeight - clientY))
+    if (isDark.value)
+      document.documentElement.animate(
+        {
+          clipPath: [`circle(${radius}px at ${clientX}px ${clientY}px)`, `circle(0% at ${clientX}px ${clientY}px)`],
+        },
+        {
+          duration: 500,
+          pseudoElement: '::view-transition-old(root)',
+        }
+      )
+    else
+      document.documentElement.animate(
+        {
+          clipPath: [`circle(0% at ${clientX}px ${clientY}px)`, `circle(${radius}px at ${clientX}px ${clientY}px)`],
+        },
+        {
+          duration: 500,
+          pseudoElement: '::view-transition-new(root)',
+        }
+      )
+  })
+}
 
 // 懒加载组件外面裹了一层，导致keepAlive无法获取到name进行缓存
 const setComponentName = (c, name) => {
@@ -145,7 +173,7 @@ const setComponentName = (c, name) => {
             <el-breadcrumb-item v-for="i in breadcrumb" :key="i.name">{{ i.meta.title }}</el-breadcrumb-item>
           </el-breadcrumb>
           <div class="">
-            <el-button link @click="toggle()" :aria-description="isDark ? $t('theme.light') : $t('theme.dark')">
+            <el-button link @click="toggleTheme" :aria-description="isDark ? $t('theme.light') : $t('theme.dark')">
               <i-ep-sunny v-if="isDark"></i-ep-sunny>
               <i-ep-moon v-else></i-ep-moon>
             </el-button>
@@ -173,6 +201,15 @@ const setComponentName = (c, name) => {
   </el-container>
 </template>
 <style lang="scss">
+::view-transition-new(root),
+::view-transition-old(root) {
+  animation: none;
+}
+
+.dark::view-transition-old(root) {
+  z-index: 1;
+}
+
 .base-layout {
   color: var(--el-text-color-primary);
   background-color: var(--gray-1);
