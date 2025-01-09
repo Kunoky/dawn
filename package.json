@@ -20,6 +20,7 @@
     "dev:tauri": "tauri dev"
   },
   "dependencies": {
+    "@vueup/vue-quill": "^1.2.0",
     "@vueuse/core": "^10.7.1",
     "axios": "^1.6.3",
     "dayjs": "^1.11.9",
