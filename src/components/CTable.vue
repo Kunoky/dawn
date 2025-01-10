@@ -204,7 +204,7 @@
                 ></el-checkbox>
               </template>
             </el-table-column>
-            <FW :component="getColumns()"></FW>
+            <FW :component="columns"></FW>
             <template #append>
               <slot name="append"></slot>
             </template>
@@ -335,7 +335,8 @@ const defaultSize = ref(cachedData.value.defaultSize)
 
 const form = reactive(cachedData.value.form)
 const mergedParams = reactive(cachedData.value.mergedParams || { ...props.params, ...form })
-const showQuery = ref(cachedData.value.showQuery === false ? false : !!useSlots().form)
+const slots = useSlots()
+const showQuery = ref(cachedData.value.showQuery === false ? false : !!slots.form)
 const handleQuery = () => {
   // 回车事件
   if (pageRef.value.loading) return
@@ -354,6 +355,23 @@ const handleQueryReset = () => {
   emit('reset')
   handleQuery()
 }
+
+// 0：隐藏，1：正常
+const defaultToolStatus = {
+  bar: 1,
+  title: 1,
+  search: 1,
+  download: 1,
+  refresh: 1,
+  size: 1,
+  save: 1,
+  setting: 1,
+}
+const toolStatus = computed(() => ({
+  ...defaultToolStatus,
+  ...props.toolStatus,
+}))
+
 let cachedOrder = ref(cachedData.value.defaultOrder)
 const baseOrder = ['ascending', 'descending', null]
 const handleSortChange = ({ column, prop, order }) => {
@@ -382,7 +400,7 @@ const handleSortChange = ({ column, prop, order }) => {
         mergedParams[props.orderVKey] = props.sortOrders[idx]
       } else {
         mergedParams[props.orderKey] = undefined
-        mergedParams[props.orderKey] = undefined
+        mergedParams[props.orderVKey] = undefined
       }
     }
   }
@@ -395,6 +413,7 @@ watch(
   { deep: true }
 )
 
+const columns = ref([])
 const columnsSetting = reactive(cachedData.value.columnsSetting)
 const columnsOptions = computed(() => {
   const options = [
@@ -450,17 +469,15 @@ const handleSyncColumns = runTimeColumns => {
 
 const getColumns = () => {
   let cols = []
-  useSlots()
-    .default()
-    .forEach(i => {
-      if (typeof i.type === 'symbol') {
-        if (Array.isArray(i.children)) {
-          cols.push(...i.children)
-        }
-      } else {
-        cols.push(i)
+  slots.default().forEach(i => {
+    if (typeof i.type === 'symbol') {
+      if (Array.isArray(i.children)) {
+        cols.push(...i.children)
       }
-    })
+    } else {
+      cols.push(i)
+    }
+  })
   if (!toolStatus.value.setting) return cols
   handleSyncColumns(cols)
   cols = cols.filter(i => {
@@ -474,8 +491,12 @@ const getColumns = () => {
     return true
   })
   cols.sort((a, b) => a.order - b.order)
+  columns.value = cols
   return cols
 }
+
+watchEffect(getColumns)
+
 const handleDragUpdate = ({ target }) => {
   const pIdx = target.dataset.idx
 
@@ -637,22 +658,6 @@ const exportData = () => {
     .then(() => (visible.export = false))
     .finally(() => (exportForm.loading = false))
 }
-
-// 0：隐藏，1：正常
-const defaultToolStatus = {
-  bar: 1,
-  title: 1,
-  search: 1,
-  download: 1,
-  refresh: 1,
-  size: 1,
-  save: 1,
-  setting: 1,
-}
-const toolStatus = computed(() => ({
-  ...defaultToolStatus,
-  ...props.toolStatus,
-}))
 
 let isActivated = true
 onActivated(() => {
