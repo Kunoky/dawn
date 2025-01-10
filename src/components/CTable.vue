@@ -478,19 +478,20 @@ const getColumns = () => {
       cols.push(i)
     }
   })
-  if (!toolStatus.value.setting) return cols
-  handleSyncColumns(cols)
-  cols = cols.filter(i => {
-    if (i.props?.prop) {
-      const conf = columnsSetting[i.props.prop]
-      if (!conf?.isShow) return false
-      Object.assign(i.props, conf.props)
-      i.order = conf.order
-      i.key ??= i.props.prop
-    }
-    return true
-  })
-  cols.sort((a, b) => a.order - b.order)
+  if (toolStatus.value.setting) {
+    handleSyncColumns(cols)
+    cols = cols.filter(i => {
+      if (i.props?.prop) {
+        const conf = columnsSetting[i.props.prop]
+        if (!conf?.isShow) return false
+        Object.assign(i.props, conf.props)
+        i.order = conf.order
+        i.key ??= i.props.prop
+      }
+      return true
+    })
+    cols.sort((a, b) => a.order - b.order)
+  }
   columns.value = cols
   return cols
 }
