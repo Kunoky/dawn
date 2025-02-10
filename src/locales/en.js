@@ -53,6 +53,7 @@ export default {
     total: 'Total',
     page: 'Page',
     size: 'Size',
+    fullscreen: 'Fullscreen',
   },
   tip: {
     delete: 'Data cannot be restored after deletion. Continue?',

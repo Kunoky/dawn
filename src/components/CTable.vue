@@ -28,6 +28,13 @@
         </div>
         <div class="c-table__actions">
           <slot name="actions"></slot>
+          <el-tooltip v-if="toolStatus.fullscreen" :content="$t('common.fullscreen')" placement="top">
+            <el-button link @click="toggleFullscreen" :aria-description="$t('common.fullscreen')">
+              <template #icon>
+                <i-ep-full-screen />
+              </template>
+            </el-button>
+          </el-tooltip>
           <el-tooltip v-if="toolStatus.search && $slots.form" :content="$t('common.query')" placement="top">
             <el-button link @click="showQuery = !showQuery" :aria-description="$t('common.query')">
               <template #icon>
@@ -342,6 +349,7 @@ const handleQuery = () => {
   if (pageRef.value.loading) return
   Object.assign(mergedParams, form)
   emit('query', mergedParams)
+  emit('update:modelValue', [])
   // form未更改则不触发
   nextTick(() => {
     pageRef.value.loading || refresh()
@@ -366,6 +374,7 @@ const defaultToolStatus = {
   size: 1,
   save: 1,
   setting: 1,
+  fullscreen: 1,
 }
 const toolStatus = computed(() => ({
   ...defaultToolStatus,
@@ -469,7 +478,6 @@ const handleSyncColumns = runTimeColumns => {
 
 const getColumns = () => {
   let cols = []
-  columns.value = cols
   slots.default().forEach(i => {
     if (typeof i.type === 'symbol') {
       if (Array.isArray(i.children)) {
@@ -710,6 +718,15 @@ function showMoreForm() {
 function hideMoreForm() {
   visible.moreForm = false
 }
+
+function toggleFullscreen() {
+  if (document.fullscreenElement) {
+    document.exitFullscreen()
+  } else {
+    cTableRef.value.requestFullscreen()
+  }
+}
+
 defineExpose({
   formRef,
   pageRef,
@@ -725,6 +742,7 @@ defineExpose({
   handleExport,
   showMoreForm,
   hideMoreForm,
+  toggleFullscreen,
 })
 </script>
 <style lang="scss">
@@ -856,6 +874,9 @@ defineExpose({
         color: var(--gray-9);
       }
     }
+  }
+  &:fullscreen {
+    background-color: var(--gray-3);
   }
 }
 </style>

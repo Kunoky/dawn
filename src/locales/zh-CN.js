@@ -53,6 +53,7 @@ export default {
     total: '总数',
     page: '分页',
     size: '大小',
+    fullscreen: '全屏',
   },
   tip: {
     delete: '数据删除后无法恢复，确定继续？',
