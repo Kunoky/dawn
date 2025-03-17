@@ -8,6 +8,7 @@ import {
   // init as initDict
 } from './utils/dict'
 import Permission from '@/plugins/permission'
+import Helper from '@/plugins/helper'
 import { useUserStore } from './store/user'
 import { ElConfig } from './config/element'
 import 'oocss/src/index.css'
@@ -39,6 +40,7 @@ const userStore = useUserStore()
 app.use(Permission, {
   hasPermission: userStore.hasPermission,
 })
+app.use(Helper)
 // userStore.init().then(() => {
 app.use(router)
 app.mount('#app')

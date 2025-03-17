@@ -194,6 +194,7 @@
             :default-sort="cachedOrder"
             :size="tableSize"
             @sort-change="handleSortChange"
+            @cell-click="handleCellClick"
           >
             <el-table-column v-if="modelValue" width="40" fixed="left">
               <template #header>
@@ -221,6 +222,29 @@
           </el-table>
         </template>
       </PageWrapper>
+      <el-popover
+        @hide="handleCellEdit"
+        placement="bottom-start"
+        trigger="click"
+        v-model:visible="visible.cellPopover"
+        :virtual-ref="cellRef"
+        virtual-triggering
+        :offset="-currentCell?.cell.clientHeight"
+        :show-arrow="false"
+        :persistent="false"
+        :width="currentCell?.cell.clientWidth"
+        :popper-style="`height: ${currentCell?.cell.clientHeight}px;`"
+        popper-class="c-table-cell__editor"
+      >
+        <el-tooltip :visible="!!cellError" placement="top" effect="light" teleported>
+          <template #content>
+            <span class="cl-e">{{ cellError }}</span>
+          </template>
+          <slot name="cellEditor" :value="cellValue" :prop="currentCell?.column.propperty" v-bind="currentCell">
+            <el-input v-model="cellValue" v-focus></el-input>
+          </slot>
+        </el-tooltip>
+      </el-popover>
     </div>
   </div>
 </template>
@@ -298,9 +322,18 @@ const props = defineProps({
   selectable: {
     type: Function,
   },
+  // 是否可编辑 (row: any, column: Column, cell: Element) => boolean
+  editable: {
+    type: [Boolean, Function],
+    default: false,
+  },
+  // 单元格校验 ({  value: any, prop: string, row: any, column: Column, cell: Element }): string =>  error message
+  cellValidator: {
+    type: Function,
+  },
 })
 
-const emit = defineEmits(['update:modelValue', 'query', 'reset'])
+const emit = defineEmits(['update:modelValue', 'query', 'reset', 'cell-click', 'save'])
 
 const mitter = useMitt()
 mitter.on('main-size-change', updateHeight)
@@ -313,6 +346,7 @@ onMounted(() => {
 const visible = reactive({
   export: false,
   moreForm: false,
+  cellPopover: false,
 })
 const i18n = useI18n()
 const cTableRef = ref()
@@ -727,6 +761,46 @@ function toggleFullscreen() {
   }
 }
 
+const cellRef = ref()
+const cellValue = ref()
+const cellError = ref()
+const currentCell = ref()
+function handleCellClick(row, column, cell) {
+  emit('cell-click', row, column, cell)
+  let editable = props.editable
+  if (typeof editable === 'function') {
+    editable = editable(row, column, cell)
+  }
+
+  if (!editable || visible.cellPopover) return
+  currentCell.value = {
+    row,
+    column,
+    cell,
+  }
+  cellRef.value = cell
+  cellValue.value = row[column.property]
+  visible.cellPopover = true
+}
+const handleCellEdit = () => {
+  const row = currentCell.value.row
+  const prop = currentCell.value.column.property
+  if (row[prop] === cellValue.value || cellError.value) return
+  emit('save', {
+    prop,
+    row,
+    value: cellValue.value,
+    column: currentCell.value.column,
+  })
+}
+watch(cellValue, v => {
+  cellError.value = props.cellValidator?.({
+    value: v,
+    prop: currentCell.value.column.property,
+    ...currentCell.value,
+  })
+})
+
 defineExpose({
   formRef,
   pageRef,
@@ -877,6 +951,16 @@ defineExpose({
   }
   &:fullscreen {
     background-color: var(--gray-3);
+  }
+  &-cell__editor.el-popper {
+    padding: 0;
+    background-color: var(--gray-1);
+    min-width: unset;
+    display: flex;
+    align-items: center;
+    & > * {
+      flex: 1 1;
+    }
   }
 }
 </style>
