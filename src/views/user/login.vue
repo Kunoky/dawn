@@ -170,7 +170,7 @@ section {
       width: 50px;
       height: 50px;
     }
-    &::nth-child(5) {
+    &:nth-child(5) {
       bottom: -80px;
       left: 140px;
       width: 60px;
