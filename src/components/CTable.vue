@@ -223,6 +223,7 @@
         </template>
       </PageWrapper>
       <el-popover
+        v-if="visible.cellPopover"
         @hide="handleCellEdit"
         placement="bottom-start"
         trigger="click"
