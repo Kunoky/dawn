@@ -461,16 +461,122 @@ pnpm build:tauri
 
 ### 15. 强大的业务组件封装
 
-以 CTable 通用表格为例
+以 CTable 通用表格为例, 基于 element-plus Table 的封装, 继承全部 API 并提供了更高级别的抽象支持，开箱即用。可以显著提高 CRUD 开发效率，更加专注于页面。
+
+- 自动分页与数据加载
+- 内置条件搜索表单，支持展开/收起
+- 表格列自定义配置
+  - 列显示/隐藏
+  - 列拖拽排序
+  - 列固定设置（左/右）
+  - 列宽度调整
+- 丰富的工具栏
+  - 全屏显示
+  - 刷新数据
+  - 显示/隐藏搜索
+  - 数据导出
+  - 表格尺寸调整
+  - 列设置
+- 单元格编辑功能
+  - 支持自定义编辑器
+  - 数据校验
+- 行选择功能
+  - 单选/多选支持
+  - 自定义选择条件
+- 自定义排序
+- 状态持久化
+  - 搜索条件保存
+  - 列设置保存
+  - 分页大小保存
+- 自适应高度
+- 支持自定义工具栏
+- 支持数据导出（默认导出 Excel）
+
+##### Props
+
+| 参数名         | 说明                                                                                 | 类型                                                                | 默认值                              |
+| -------------- | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------- | ----------------------------------- |
+| page-conf      | 分页配置，继承自 el-pagination,添加了 action: function/string 配置加载数据方法或接口 | `Object`                                                            | -                                   |
+| form-conf      | 查询表单配置                                                                         | `ElFormAttributes`                                                  | -                                   |
+| model-value    | 选中数据数组                                                                         | `Array`                                                             | -                                   |
+| full-value     | 是否返回完整行数据，false 时仅返回 row-key                                           | `Boolean`                                                           | `false`                             |
+| params         | 额外的请求参数                                                                       | `Object`                                                            | -                                   |
+| default-sort   | 默认排序字段                                                                         | `Object`                                                            | -                                   |
+| order-key      | 排序字段键名                                                                         | `({ column, prop, order }) => ({ orderBy: '' })/String`             | `orderByColumn`                     |
+| order-v-key    | 排序方向键名                                                                         | `String`                                                            | `isAsc`                             |
+| sort-orders    | 排序方式选项数组                                                                     | `Array`                                                             | `['ascending', 'descending', null]` |
+| size           | 表格大小                                                                             | `String`                                                            | `small`                             |
+| title          | 表格标题                                                                             | `String`                                                            | -                                   |
+| id             | 组件 ID，用于状态持久化                                                              | `String`                                                            | -                                   |
+| tool-status    | 工具栏显示状态配置                                                                   | `Object`                                                            | 见下方说明                          |
+| default-form   | 表单默认值                                                                           | `Object`                                                            | `{}`                                |
+| fixed-header   | 是否固定表头                                                                         | `Boolean`                                                           | `true`                              |
+| on-export      | 导出方法或接口                                                                       | `(params) => Promise<void>/String`                                  | -                                   |
+| export-name    | 导出文件名                                                                           | `String`                                                            | 当前页面标题                        |
+| export-page    | 是否分页导出                                                                         | `Boolean`                                                           | `true`                              |
+| selectable     | 行是否可选择的回调                                                                   | `(row, index) => boolean`                                           | -                                   |
+| editable       | 单元格是否可编辑                                                                     | `(row, column, cell) => boolean/Boolean`                            | `false`                             |
+| cell-validator | 单元格编辑校验函数                                                                   | `({  value, prop, row, column, cell }) =>  error message/undefined` | -                                   |
+
+###### tool-status 配置项说明
+
+```js
+{
+  bar: 1,          // 是否显示工具栏，1显示，0隐藏
+  title: 1,        // 是否显示标题
+  search: 1,       // 是否显示搜索按钮
+  download: 1,     // 是否显示导出按钮
+  refresh: 1,      // 是否显示刷新按钮
+  size: 1,         // 是否显示表格尺寸调整按钮
+  save: 1,         // 是否显示保存按钮
+  setting: 1,      // 是否显示列设置按钮
+  fullscreen: 1    // 是否显示全屏按钮
+}
+```
+
+##### Events
+
+| 事件名             | 说明           | 参数                             |
+| ------------------ | -------------- | -------------------------------- |
+| update:model-value | 选中数据变化   | `(value: Array)`                 |
+| query              | 查询条件变化   | `(params: Object)`               |
+| reset              | 重置查询表单   | -                                |
+| cell-click         | 单元格点击     | `(row, column, cell)`            |
+| save               | 单元格编辑保存 | `({ prop, row, value, column })` |
+
+##### Slots
+
+| 插槽名      | 说明               | 参数                                 |
+| ----------- | ------------------ | ------------------------------------ |
+| default     | 表格列配置         | -                                    |
+| form        | 查询表单内容       | `{ form }`                           |
+| more-form   | 更多查询条件表单   | `{ form }`                           |
+| title       | 自定义标题         | -                                    |
+| actions     | 自定义工具栏按钮   | -                                    |
+| append      | 表格追加内容       | -                                    |
+| empty       | 空数据显示内容     | -                                    |
+| cell-editor | 自定义单元格编辑器 | `{ value, prop, row, column, cell }` |
+
+##### Methods
+
+| 方法名           | 说明           | 参数 |
+| ---------------- | -------------- | ---- |
+| refresh          | 刷新表格数据   | -    |
+| refreshCurrent   | 刷新当前页数据 | -    |
+| handleQuery      | 触发查询       | -    |
+| handleQueryReset | 重置查询条件   | -    |
+| handleSave       | 保存当前配置   | -    |
+| handleExport     | 导出数据       | -    |
+| toggleFullscreen | 切换全屏显示   | -    |
 
 ```html
 <template>
   <CTable
     :page-conf="{
-      action: 'user',
+      action: '/user',
     }"
   >
-    <el-table-column label="昵称" prop="operId" />
+    <el-table-column label="昵称" prop="nickname" />
     <template #form="{ form }">
       <el-form-item label="昵称" prop="nickname">
         <el-input v-model="form.nickname" placeholder="请输入昵称" clearable />
@@ -480,15 +586,13 @@ pnpm build:tauri
 </template>
 ```
 
-如此一个具有条件搜索的分页表格就完成了
+### 16. 丰富强大的 Icon
 
-### 16. [IconFont](https://www.iconfont.cn/help/detail?spm=a313x.manage_type_myprojects.1998910419.d8cf4382a.27633a81kEThG6&helptype=code)
-
-从 IconFont 市场添加自己的 icon 后
+高可用的 icon 组件，默认源为[icones](https://icones.netlify.app)
 
 ```html
 <template>
-  <IconFont icon="user" />
+  <CIcon icon="ep:user" />
 </template>
 ```
 
