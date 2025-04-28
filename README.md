@@ -31,7 +31,7 @@ ruoyi：请切换至 ruoyi 分支
 17. 环境变量配置支持
 18. 统一的代码规范与风格支持
 19. echarts 支持
-20. 全局通用 axios 请求封装
+20. alova 支持
 21. 通用表格业务组件封装
 22. 通用 composables 函数封装
 23. tauri 支持
@@ -426,9 +426,9 @@ pnpm coverage
 由 [husky](https://github.com/typicode/husky) +
 [lint-staged](https://github.com/okonet/lint-staged) 提供的 `commit` 时校验。
 
-### 13. [全局通用 axios 请求封装](https://www.axios-http.cn/)
+### 13. [全局通用 alova 请求封装](https://alova.js.org)
 
-封装了 [axios](https://www.axios-http.cn/)，你可以在 `src`
+封装了 [axios](https://alova.js.org)，你可以在 `src`
 目录下所有文件中使用它 👇
 
 ```js
@@ -438,14 +438,14 @@ req.post('...', { name: '张三', age: 20 })
 // ... 以此类推
 ```
 
-上述 `req` 是 `axios`
+上述 `req` 是 `alova`
 单独创建的实例，具有简单错误提示，以及响应数据转换。具体可见
 `src/utils/request.js`。
 
 该 `req` 实例的 `baseURL` 取自环境变量文件 `.env` 的
 `VITE_SERVER_PATH`，默认为 `/`，可以按自己需求更改。
 
-具体可见 👉 [axios](https://www.axios-http.cn/)
+具体可见 👉 [alova](https://alova.js.org)
 
 ### 14. [TAURI 构建桌面应用](https://tauri.app/zh-cn/)
 
