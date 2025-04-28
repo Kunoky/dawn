@@ -21,7 +21,7 @@ const loading = ref(false)
 export async function init() {
   if (loading.value) return
   loading.value = true
-  const { data } = await req.get('dict/list')
+  const data = await req.get('dict/list')
   loading.value = false
   source.value = data
   const dictMap = {}

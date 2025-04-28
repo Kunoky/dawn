@@ -42,6 +42,7 @@ const plugins = [
       'vue-i18n',
       'pinia',
       '@vueuse/core',
+      { 'alova/client': ['useRequest', 'useWatcher', 'useFetcher', 'usePagination', 'useSSE', 'useAutoRequest'] },
       {
         '@/utils/common': [['*', 'utils']],
       },
@@ -154,6 +155,7 @@ export default defineConfig({
     preprocessorOptions: {
       scss: {
         additionalData: `@use "@/styles/element/index.scss" as *;`,
+        api: 'modern',
       },
     },
   },

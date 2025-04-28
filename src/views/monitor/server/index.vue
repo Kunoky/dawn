@@ -168,7 +168,7 @@
 </template>
 
 <script setup name="MonitorServer">
-const gain = useAsync(() => req.get('monitor/server').then(res => res.data), {
+const gain = useAsync(() => req.get('monitor/server'), {
   manual: false,
 })
 const { data } = toRefs(gain)

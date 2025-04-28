@@ -2,9 +2,9 @@
 import { operateByStoreName } from '@/utils/IDB'
 const { syncOp } = operateByStoreName('user')
 
-export const login = async user => req.post('/auth/login', user)
+export const login = async user => req.post('/auth/login', user, { full: true })
 
-export const getUser = async () => req.get('/user')
+export const getUser = async () => req.get('/user', { full: true })
 
 export const listRoute = async () => req.get('/menu/userMenuList')
 

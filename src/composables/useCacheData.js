@@ -3,7 +3,7 @@ const cache = reactive({})
 const loader = {
   maintenanceType() {
     return req.get('/data/maintenanceType').then(res => {
-      const [tree, idNode] = utils.arr2tree(res.data, 'id', 'pid')
+      const [tree, idNode] = utils.arr2tree(res, 'id', 'pid')
       return [tree, idNode]
     })
   },

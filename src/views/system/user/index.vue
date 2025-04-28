@@ -116,11 +116,11 @@ const status = useDict('status')
 
 const orgTree = ref([])
 req.get('/organization/list').then(res => {
-  res.data.forEach(i => {
+  res.forEach(i => {
     i.id = i.orgId
     i.label = i.orgName
   })
-  const [tree] = arr2tree(res.data, 'orgId', 'parentId')
+  const [tree] = arr2tree(res, 'orgId', 'parentId')
   orgTree.value = tree
 })
 

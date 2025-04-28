@@ -105,7 +105,7 @@ watch(
 const gain = useAsync(() => req.get('system/role/' + (props.data?.roleId || '')), {
   onSuccess(res) {
     for (let k in form.value) {
-      form.value[k] = res.data[k]
+      form.value[k] = res[k]
     }
     form.value.roleSort = +form.value.roleSort
     nextTick(() => {
@@ -122,7 +122,7 @@ const deptRef = ref()
 const deptTree = ref([])
 const getdept = () => {
   // req.get('system/role/deptTree/' + props.data.roleId).then(res => {
-  //   deptTree.value = res.data
+  //   deptTree.value = res
   //   if (props.data) {
   //     deptTree.value = res.depts
   //     // nextTick(() => {

@@ -71,7 +71,7 @@ const memoOption = ref({})
 const gain = useAsync(
   () =>
     req.get('monitor/server').then(res => {
-      res.data.info ??= {}
+      res.info ??= {}
       commandOption.value = {
         tooltip: {
           trigger: 'item',
@@ -84,7 +84,7 @@ const gain = useAsync(
             roseType: 'radius',
             radius: [15, 95],
             center: ['50%', '38%'],
-            data: res.data.commandStats,
+            data: res.commandStats,
             animationEasing: 'cubicInOut',
             animationDuration: 1000,
           },
@@ -92,7 +92,7 @@ const gain = useAsync(
       }
       memoOption.value = {
         tooltip: {
-          formatter: '{b} <br/>{a} : ' + res.data.info.used_memory_human,
+          formatter: '{b} <br/>{a} : ' + res.info.used_memory_human,
         },
         series: [
           {
@@ -101,11 +101,11 @@ const gain = useAsync(
             min: 0,
             max: 1000,
             detail: {
-              formatter: res.data.info.used_memory_human,
+              formatter: res.info.used_memory_human,
             },
             data: [
               {
-                value: parseFloat(res.data.info.used_memory_human),
+                value: parseFloat(res.info.used_memory_human),
                 name: '内存消耗',
               },
             ],
@@ -113,7 +113,7 @@ const gain = useAsync(
         ],
       }
 
-      return res.data
+      return res
     }),
   {
     manual: false,

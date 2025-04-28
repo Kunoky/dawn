@@ -78,7 +78,7 @@ export const useUserStore = defineStore('user', {
         if (import.meta.env.VITE_OPEN_SSO) {
           ssoLogout()
         } else {
-          await req.post('/auth/logout')
+          await req.post('/auth/logout', { noHandle: true })
           this.goLogin()
         }
       }
@@ -92,8 +92,8 @@ export const useUserStore = defineStore('user', {
     async listMenu() {
       if (menuCache.value.length) return
       const res = await service.listRoute()
-      this.menu = res.data
-      menuCache.value = res.data
+      this.menu = res
+      menuCache.value = res
     },
     genMenu() {
       const perms = [],

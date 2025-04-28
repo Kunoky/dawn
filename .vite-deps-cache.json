@@ -1,5 +1,8 @@
 [
   "@vueuse/core",
+  "alova",
+  "alova/fetch",
+  "alova/vue",
   "axios",
   "element-plus",
   "element-plus/dist/locale/en",

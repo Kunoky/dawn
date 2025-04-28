@@ -78,7 +78,7 @@ const i18n = useI18n()
 const allExpandKeys = ref([])
 const listData = params =>
   req.get('/menu/list', { params }).then(res => {
-    const [list, obj] = arr2tree(res.data, 'menuId', 'parentId')
+    const [list, obj] = arr2tree(res, 'menuId', 'parentId')
     const keys = []
     Object.values(obj).forEach(i => {
       if (i.children) {

@@ -211,15 +211,14 @@ watch(
   },
   { immediate: true }
 )
-const roleOptions = useAsync(() => req('role/all').then(res => res.data), { manual: false })
+const roleOptions = useAsync(() => req.get('role/all'), { manual: false })
 const user = useAsync(
   async () => {
     return req.get('user/' + props.data.userId)
   },
   {
     onSuccess(res) {
-      form.value = res.data
-      form.password = ''
+      form.value = { ...res, password: '' }
       nextTick(() => {
         formRef.value.clearValidate()
       })

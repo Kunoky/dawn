@@ -91,10 +91,8 @@ async function listData(params) {
   const limit = params.pageNum * params.pageSize
   const records = list.slice(limit - params.pageSize, limit)
   return {
-    data: {
-      records,
-      totalRow: list.length,
-    },
+    records,
+    totalRow: list.length,
   }
 }
 

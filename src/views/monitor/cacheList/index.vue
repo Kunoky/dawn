@@ -86,11 +86,11 @@
 <script setup name="MonitorCacheList">
 const tableHeight = ref(window.innerHeight - 240)
 
-const cache = useAsync(() => req.get('monitor/cache/getNames').then(res => res.data), { manual: false })
+const cache = useAsync(() => req.get('monitor/cache/getNames'), { manual: false })
 const key = useAsync(row =>
-  req.get('monitor/cache/getKeys/' + row.cacheName).then(res => res.data.map(i => ({ key: i, name: row.cacheName })))
+  req.get('monitor/cache/getKeys/' + row.cacheName).then(res => res.map(i => ({ key: i, name: row.cacheName })))
 )
-const content = useAsync(row => req.get(`monitor/cache/getValue/${row.name}/${row.key}`).then(res => res.data), {
+const content = useAsync(row => req.get(`monitor/cache/getValue/${row.name}/${row.key}`), {
   initialData: {},
 })
 
@@ -107,7 +107,5 @@ const handleClearKey = row => {
   req.delete('monitor/cache/clearCacheKey/' + row.key).then(key.refresh)
 }
 
-const handleClearAll = () => {
-  req.delete('monitor/cache/clearCacheAll')
-}
+const handleClearAll = () => req.delete('monitor/cache/clearCacheAll')
 </script>

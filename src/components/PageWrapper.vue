@@ -31,12 +31,12 @@ const props = defineProps({
   // 从action返回的对象中获取data的key值，缺省则是对象自身
   dataKey: {
     type: String,
-    default: 'data.records',
+    default: 'records',
   },
   // 从action返回的对象中获取total的key值
   totalKey: {
     type: String,
-    default: 'data.totalRow',
+    default: 'totalRow',
   },
   // 分页页码key值
   pageKey: {

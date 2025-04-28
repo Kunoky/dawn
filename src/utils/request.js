@@ -9,8 +9,8 @@ const logout = debounce(
   () => {
     useUserStore().logout(true)
   },
-  2000,
-  { leading: true }
+  2000
+  // { leading: true }
 )
 
 const endlessChecker = endlessCheck()
@@ -118,4 +118,112 @@ service.interceptors.response.use(
   }
 )
 
-export default service
+// export default service
+
+import { createAlova } from 'alova'
+import vueHook from 'alova/vue'
+import adapterFetch from 'alova/fetch'
+
+function parseResponse(data) {
+  return data.data
+}
+async function onError(error, method) {
+  console.error(error, method) // for debug
+  const { meta = {} } = method
+  let msg = error.message
+  if (error.status) {
+    const { status } = error
+    const data = await error.json()
+    msg = data?.msg || status + ' ' + i18n.global.t('httpCode.' + status)
+    switch (status) {
+      case 401:
+        logout()
+        return Promise.reject(error)
+      default:
+    }
+  }
+  meta.silent ||
+    ElMessage({
+      message: msg,
+      type: 'error',
+      duration: 5 * 1000,
+    })
+  return Promise.reject(error)
+}
+const alovaInstance = createAlova({
+  baseURL: import.meta.env.VITE_SERVER_PATH,
+  timeout: 60000,
+  statesHook: vueHook,
+  requestAdapter: adapterFetch(),
+  beforeRequest: method => {
+    const { config } = method
+
+    if (!config.noEndlessCheck && !endlessChecker(config.url + JSON.stringify(config.params))) {
+      method.abort()
+    }
+    config.headers = {
+      Authorization: getToken(),
+      'Call-Source': 'WEB',
+      'Api-Version': 1.0,
+      'Content-Type': 'application/json;charset=utf-8',
+      ...config.headers,
+    }
+    if (config.params) {
+      config.params = { ...config.params }
+      for (let key in config.params) {
+        if (config.params[key] === '') {
+          config.params[key] = undefined
+        } else if (Array.isArray(config.params[key])) {
+          config.params[key] = config.params[key].length ? config.params[key].toString() : undefined
+        }
+      }
+    }
+  },
+  responded: {
+    onSuccess: async (response, method) => {
+      const { status } = response
+      if (status !== 200) {
+        return onError(response, method)
+      }
+      const { meta = {}, type } = method
+      const parseData = meta.parseResponse || parseResponse
+
+      const data = await response.json()
+      if (!meta.noHandle) {
+        const code = data?.code || status
+        const msg = i18n.global.t('httpCode.' + code)
+        // 业务异常
+        if (code === 401) {
+          logout()
+        } else if (!meta.silent) {
+          if (code !== 200) {
+            ElMessage({
+              message: data.msg || msg || '操作失败',
+              type: 'warning',
+              duration: 5 * 1000,
+            })
+          } else if (type !== 'GET') {
+            ElMessage({
+              message: data.msg || msg || '操作成功',
+              type: 'success',
+              duration: 5 * 1000,
+            })
+          }
+        }
+      }
+      return meta.full ? data : parseData(data, response, method)
+    },
+    //当你使用alova/fetch请求适配器时，由于window.fetch的特点，只有在连接超时或连接中断时才会触发onError拦截器，其他情况均会触发onSuccess拦截器
+    onError,
+  },
+})
+
+alovaInstance.get = alovaInstance.Get
+alovaInstance.post = alovaInstance.Post
+alovaInstance.put = alovaInstance.Put
+alovaInstance.delete = alovaInstance.Delete
+alovaInstance.patch = alovaInstance.Patch
+
+export { alovaInstance, service }
+
+export default alovaInstance

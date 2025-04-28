@@ -100,9 +100,9 @@ let checkedKeys = []
 const gain = useAsync(() => req.get('role/' + (props.data?.roleId || '')), {
   onSuccess(res) {
     for (let k in form.value) {
-      form.value[k] = res.data[k]
+      form.value[k] = res[k]
     }
-    checkedKeys = res.data.menuIds
+    checkedKeys = res.menuIds
     nextTick(() => {
       formRef.value.clearValidate()
     })
@@ -118,8 +118,8 @@ const menuTree = ref([])
 let menus = []
 const getMenu = () => {
   req.get('menu/list').then(res => {
-    menus = res.data
-    const [list] = utils.arr2tree(res.data, 'menuId', 'parentId')
+    menus = res
+    const [list] = utils.arr2tree(res, 'menuId', 'parentId')
     menuTree.value = list.filter(i => i.status)
     if (props.data) {
       // menuTree.value = res.menus

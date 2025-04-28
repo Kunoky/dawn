@@ -131,12 +131,12 @@ function beforeUpload(file) {
 }
 
 function handleRemove(file) {
-  file.id && req.delete('attachment/' + file.id)
+  file.id && req.delete('attachment/' + file.id).send()
 }
 function handleSuccess(res) {
   if (res.code === 200) {
     ElMessage.success('上传成功!')
-    emit('success', res, fileList)
+    emit('success', res, fileList.value)
   }
 }
 function handleExceed(...args) {
